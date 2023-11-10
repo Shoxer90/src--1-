@@ -1,0 +1,348 @@
+import React from "react";
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import { memo } from "react";
+import { useState } from "react";
+import { createProduct, uniqueBarCode } from "../../../services/products/productsRequests";
+import { useEffect } from "react";
+import { Box } from "@mui/system";
+import { DialogContent, Divider, FormControl, InputLabel, MenuItem, Select, Slide, TextField } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import SnackErr from "../../dialogs/SnackErr"
+import { getMeasureByNum } from "../../../modules/modules";
+import styles from "../index.module.scss";
+import ImageLoad from "./ImageLoad";
+import ProductAdg from "./ProductAdg";
+import BarcodeInput from "./BarcodeInput";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const AddNewProduct = ({
+  setOpenNewProduct,
+  changeStatus,
+  openNewProd,
+  newProduct,
+  setProduct,
+  measure,
+  t,
+  typeCode,
+  setTypeCode,
+  getSelectData,
+  selectContent,
+}) => {
+
+  const [type, setType] = useState("success");
+	const [message,setMessage] = useState("");
+  const [measureStr, setMeasure] = useState("");
+  const [emptyValidate, setEmptyValidate] = useState(false);
+  const [isUniqBarCode,setIsUniqBarcode] = useState(true);
+
+  const onlyNumberAndADot = (event,num) => {
+    const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
+    const text = event.target.value;  
+    if(valid.test(text)){
+      if(event.target.value && event.target.name === "remainder" && newProduct?.measure === "հատ" ){
+        setProduct({
+          ...newProduct,
+          [event.target.name]: Math.round(event.target.value.trim())
+        })
+      }else{
+        setProduct({
+          ...newProduct,
+          [event.target.name]: event.target.value.trim()
+        })
+      }
+    }else{
+      return 
+    }
+  };
+
+  const newProductEmptyValidation = () => {
+    if(newProduct?.type && newProduct?.name && newProduct?.measure && newProduct?.price && newProduct?.barCode){
+      create()
+    }else{
+      setType("error")
+      setMessage(t("authorize.errors.emptyfield"))
+      setEmptyValidate(true)
+    }
+  };
+
+  const create = async() => {
+    await uniqueBarCode(newProduct?.barCode).then((res) => {
+      if(res){
+        setIsUniqBarcode(true)
+         createProduct(newProduct).then((res)=> {
+          setEmptyValidate(true)
+          if(res === 500){
+            setType("error")
+            setMessage(t("dialogs.wrong"))
+          }else if(newProduct.price < 1){
+            setType("error")
+            setMessage(t("dialogs.pricezero")) 
+            return
+          }else{
+            setEmptyValidate(false)
+            setMessage(t("productinputs.productadded"))
+            setType("success")
+            changeStatus("GetAvailableProducts")
+            setTimeout(() => {
+              handleClose()
+              setType()
+            },3000)
+          }
+        })
+      }else if(!res){
+        setIsUniqBarcode(false)
+        setMessage(t("dialogs.unicBarCode"))
+        setType("error")
+        return
+      }
+    })
+  };
+
+	const setImage = (e) => {
+    let reader = new FileReader();
+    const file = e.target.files[0]
+    reader.readAsDataURL(file)
+    reader.onload = function(){
+      setProduct({
+        ...newProduct,
+        photo: reader.result,
+      })
+    }
+	};
+	
+  const handleChangeInput = async(e) => {
+    setMessage("")
+    setType()
+    if(e.target.name === "measure") {
+      setMeasure(e.target.value)
+      await getMeasureByNum(e.target.value).then((res) => {
+        if(res === "հատ") {
+          setProduct({
+            ...newProduct,
+            [e.target.name]: res,
+            remainder: Math.round(newProduct?.remainder)
+          })
+        }else{
+          setProduct({
+            ...newProduct,
+            [e.target.name]: res,
+          })
+        }
+      })
+    }else{
+      setProduct({
+        ...newProduct,
+        [e.target.name]: e.target.value,
+      })
+    }
+  };
+
+  const handleClose = async() => {
+    setTypeCode()
+    setOpenNewProduct(!openNewProd);
+  } 
+
+  useEffect(() => {
+    openNewProd && getSelectData()
+  }, [typeCode]);
+
+  return (
+    <Dialog
+    open={openNewProd}
+    TransitionComponent={Transition}
+    keepMounted
+    width="lg"
+    onClose={handleClose}
+    >
+      <DialogTitle 
+        style={{
+          display:"flex", 
+          justifyContent:"space-between",
+          alignContent:"center", 
+          padding:"0px", 
+          margin:"10px 20px"
+        }}
+      >
+        <div>{t("productinputs.createtitle")}</div>
+        <CloseIcon 
+          sx={{":hover":{background:"#d6d3d3",borderRadius:"5px"}}}
+          onClick={handleClose}
+        /> 
+      </DialogTitle>
+      <DialogContent
+        style={{
+          display:"flex",
+          justifyContent:"space-between", 
+          flexFlow:"column nowrap"
+        }}
+      >
+        <Divider style={{backgroundColor:"gray"}}/>
+        <div className={styles.newProdForm}>
+          <ProductAdg
+            t={t}
+            emptyValidate={emptyValidate}
+            typeCode={typeCode}
+            setTypeCode={setTypeCode}
+            newProduct={newProduct}
+            handleChangeInput={handleChangeInput}
+            selectContent={selectContent}
+          />
+          <TextField 
+            error={emptyValidate && !newProduct?.name}
+            size="small"
+            variant="outlined"
+            style={{width:"90%",margin:"15px"}}
+            name="name" 
+            value={newProduct?.name}
+            label={`${t("productinputs.name")} (${50-(newProduct?.name)?.length} ${t("productinputs.symb")})`}
+            onChange={(e)=>handleChangeInput(e)} 
+            inputProps={{ maxLength: 50 }}
+          />
+          <TextField 
+            size="small"
+            variant="outlined"
+            style={{width:"90%"}}
+            name="brand" 
+            value={newProduct?.brand}
+            label={t("productinputs.brand")}
+            onChange={(e)=>handleChangeInput(e)} 
+          />
+          <div className={styles.duoInput}>
+            <TextField 
+              error={emptyValidate && !newProduct?.remainder}
+              size="small"
+              variant="outlined"
+              style={{width:"45%", height:"40px",margin:"5px 0 0 0"}}
+              InputProps={{
+                inputProps: { 
+                  min: newProduct?.measure !== "հատ" ? 0.001 : 1,
+                  step: newProduct?.measure !== "հատ" ? 0.01 : 1
+                }
+              }}
+              type="number"
+              name="remainder" 
+              value={newProduct?.remainder}
+              label={t("productinputs.count")}
+              onChange={(e)=>onlyNumberAndADot(e,3)} 
+            />
+          <FormControl sx={{ width: "40%",margin:"5px 0 0 0" }}>
+            <InputLabel>{t("productinputs.measure")}</InputLabel>
+            <Select
+              error={emptyValidate && !measureStr}
+              size="small"
+              name="measure"
+              value={measureStr}
+              label={t("productinputs.measure")}
+              onChange={(e)=>handleChangeInput(e)}
+            >
+              {measure && measure.map((item, index) => (
+                <MenuItem 
+                  key={index} 
+                  value={index+1}
+                >
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          </div>
+          <div className={styles.duoInput}>
+            <TextField 
+              size="small"
+              variant="outlined"
+              style={{width:"45%", height:"30px"}}
+              name="purchasePrice"
+              InputProps={{
+                inputProps: { 
+                  min: 1,
+                  step: 0.1
+                }
+              }}
+              type="number" 
+              value={newProduct?.purchasePrice}
+              label={t("productinputs.purchase")}
+              onChange={(e)=>onlyNumberAndADot(e,2)}
+            />
+            <div style={{margin:"auto"}}>
+              {(parseInt(newProduct?.price/(newProduct?.purchasePrice/100))-100) || 0} %
+            </div>
+          <TextField
+            error={emptyValidate && !newProduct?.price}
+            size="small"
+            variant="outlined"
+            style={{width:"40%", height:"40px"}}
+            InputProps={{
+              inputProps: { 
+                min: 1,
+                step: 1
+              }
+            }}
+            type="number"
+            name="price" 
+            value={newProduct?.price}
+            label={t("productinputs.price")}
+            onChange={(e)=>onlyNumberAndADot(e,2)}
+          />
+          </div>
+          <Box style={{display:"flex",width:"90%",justifyContent:"space-between"}}>
+            <ImageLoad func={setImage} content={newProduct?.photo} />
+              <BarcodeInput
+                emptyValidate={emptyValidate}
+                newProduct={newProduct}
+                handleChangeInput={handleChangeInput}
+                isUniqBarCode={isUniqBarCode}
+                setIsUniqBarcode={setIsUniqBarcode}
+                t={t}
+                setProduct={setProduct}
+              />
+            {/* <div style={{display:"flex", justifyContent:"space-between",flexDirection:"column"}}>
+              <TextField 
+                error={(emptyValidate && !newProduct?.barCode) || !isUniqBarCode}
+                style={{marginBottom:"10px",width:"250px"}}
+                size="small"
+                variant="outlined"
+                name="barCode" 
+                value={newProduct?.barCode}
+                label={t("productinputs.barcode")}
+                onChange={(e)=>{
+                  if(e.target.value?.length>20)return
+                  setIsUniqBarcode(true)
+                  handleChangeInput(e)
+                }} 
+              />
+              <div style={{height:"90px"}}>
+                {newProduct?.barCode && 
+                  <Barcode value={newProduct?.barCode} height={45} width={1.5} />
+                }
+              </div>
+            </div> */}
+          </Box>
+        </div>
+      </DialogContent>
+      <Dialog
+        open={message}
+        onClose={()=>setMessage("")}
+      >
+        <SnackErr  
+          type={type} 
+          message={message} 
+          close={()=>setMessage("")}
+        />
+      </Dialog>
+      <Button 
+        variant="contained" 
+        style={{backgroundColor:"#FFA500",margin:"10px auto", width:"60%"}} 
+        onClick={newProductEmptyValidation}
+      >
+        {t("buttons.create")}
+      </Button>
+    </Dialog>
+  );
+}
+
+export default memo(AddNewProduct);

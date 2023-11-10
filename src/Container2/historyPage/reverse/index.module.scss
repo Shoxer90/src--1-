@@ -1,0 +1,88 @@
+  .reverseConditions{
+    display: flex;
+    justify-content: center;
+    font-size: 110%;
+    padding:10px 20px;
+   
+  }
+
+.reverse_quantity{
+  font-size: 90%;
+  font-weight: 400;
+  margin: auto 0;
+  display: flex;
+  align-items: center;
+  input{
+    border-radius: 8px;
+    font-size: 110%;
+    width: 70px;
+    height: 30px;
+    border: solid grey 2px;
+    padding: 2px 4px;
+  }
+};
+
+
+
+.radioDialog {
+  display:flex;
+  font-size: large;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 5px;
+  &:hover{
+    background-color: lightgrey;
+  }
+  p {
+    margin: 5px 8px;
+  }
+  input[type=radio] {
+    border: 0px;
+    cursor: pointer;
+    width:15%;
+    height: 1em;
+  }
+  }
+
+  .reverceConditions{
+    & input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    
+    /* Firefox */
+    input[type=number] {
+      appearance: textfield;
+    }
+    display: flex;
+    flex-flow: column;
+    width: 300px;
+    justify-content: space-between;
+    font-size: 80%; 
+    &_item{
+    // align-items: center;
+    display: flex;
+      justify-content: space-between;
+      & input{
+        width: 60px;
+        border-radius: 5px;
+        border: solid darkgray 2px;
+        margin: 0px 3px 0px 4px;
+        padding: 2px;
+      }
+    }
+  }
+
+@media screen and(max-width: 425px) {
+
+    .radioDialog{
+      font-size: 80%;
+      >p{
+        // width: 200px;
+        width:fit-content;
+      }
+    }
+  }

@@ -1,0 +1,18 @@
+.flags{
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    &_block{
+        display: flex;
+        justify-content: space-around;
+        padding: 0px 40px;
+        margin: 5px;
+        width: 270px;
+        align-self: center;
+    }
+}
+.active{
+    border: solid #ffa6006c 2px;
+    border-radius: 4px;
+    padding: 0px 4px;
+}

@@ -1,0 +1,39 @@
+.cardList{
+  display: flex;
+  flex-flow: column;
+  margin: 10px;
+  &_item{
+    display:flex;
+    
+  }
+  
+};
+
+.payAmount{
+  margin: 10px;
+  font-weight: 600;
+  & input{
+    margin-left: 10px;
+  }
+  & input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  /* Firefox */
+  input[type=number] {
+    appearance: textfield;
+  }
+};
+
+.inputLabel{
+  margin-left: 7px;
+  letter-spacing: 3px; 
+}
+
+.payBtn{
+  display: flex;
+  justify-content: space-around;
+
+}

@@ -1,0 +1,106 @@
+.excelLoaderContent{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  &_item{
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    border-radius: 5px;
+    border: solid rgb(119, 207, 237) 1px;
+    padding: 10px;
+    margin: 5px;
+    width: 60%;
+    &_icon{
+      cursor: pointer;
+      margin: 0 auto;
+      align-content: center;
+      &:hover{
+        background-color: lightblue;
+        background-color: rgb(19, 101, 19);
+      }
+    }
+  }
+};
+
+.excelInput{
+  text-decoration: underline;
+  padding: 5px;
+    margin: 15px;
+    text-align: center;
+  &:hover{
+    color:green;
+  }
+  &>input{
+    font-size: 65%;
+  }
+}
+.table{
+  width: 96%;
+  margin: 10px 40px;
+  .tablerow{
+    &>td{
+      &>input{
+        width:  90%;
+        border: solid grey 1px;
+        border-radius: 3px;
+        margin:5px;
+        padding-left: 6px;
+      }
+    }
+  }
+}
+.measureCorrect {
+  margin: 10px;
+  color: green;
+  font-weight: 500;
+}
+
+
+@media screen and (max-width: 410px) {
+  .productContent{
+    margin-top: 270px;
+    &_item{
+      padding: 0 4px 4px 4px;
+      width:160px;
+    }
+  }
+}
+// 410 up to
+
+@media screen and (max-width: 1135px) {
+  .excelLoaderContent{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    &_item{
+      font-size: 90%;
+    }
+  }
+  .measureCorrect {
+    font-size: 90%;
+  }
+ .table{
+  margin: 10px 20px;
+  font-size: 80%;
+ }
+}
+
+
+@media screen and (max-width: 810px) {
+  .excelLoaderContent{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    &_item{
+      font-size: 80%;
+    }
+  }
+  .measureCorrect {
+    font-weight: 400;
+
+  }
+ .table{
+  margin: 5px;
+ }
+}

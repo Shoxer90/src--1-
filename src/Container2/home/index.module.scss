@@ -1,0 +1,275 @@
+.productPage{
+  // background-color: rgb(250, 250, 245);
+  // background-color: rgb(243, 243, 239);
+
+}
+.inputGroup{
+  display: flex;
+  justify-content:space-between;
+  padding-right: 10px;
+  border: solid grey 1px;
+  border-radius: 4px;
+  height: 40px;
+  width: 70%;
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  appearance: textfield;
+} 
+}
+
+.productContent{
+  padding-top: 10px;
+  margin-top: 130px;
+  display: flex;
+  justify-content: center;
+  flex-flow: row wrap;
+  &_item{
+    display: flex;
+    align-content: center;
+    flex-flow: column nowrap;
+    padding: 0 5px 10px 5px;
+    margin: 4px 5px;
+    width: 190px;
+    height: 300px;
+    border-radius: 10px;
+    >p {
+      margin:0;
+    }
+    >span {
+      margin:0;
+    }
+    >input {
+      border-radius: 2px;
+      margin: 3px 8px;
+      width: 60px;
+    }
+    &_img {
+      margin-top: 5px;
+      border:solid rgb(226, 224, 224) 1px;
+      border-radius: 2px;
+      align-self: center;
+      width: 170px;
+      height: 90px;
+      >img {
+        width: 168px;
+        height: 88px;
+        border-radius: 2px;
+        object-fit: cover;
+      }
+    }
+  }
+};
+.barcode_box{
+  display: flex;
+  width: fit-content;
+  padding: 2px 4px;
+  border: solid darkgrey 1px;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: space-around;
+
+}
+.productContent_item{
+  border: solid rgba(255,170,102,0.7) 1px;
+
+}
+
+.productContent_item_icons{
+  display:flex;
+  justify-content:space-between;
+  position: relative;
+  padding: 2px 10px;
+  background-color: rgb(248, 246, 246);
+
+}
+
+.productContent_item_addBasket{
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: center;
+  >input{
+    width: 70px;
+    border-radius: 8px;
+    font-weight: 700;
+    border: solid orange 1px;
+    padding-left: 10px;
+    margin-right:  5px;
+  }
+}
+
+.newPrInput{
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-around;
+  background-color: aquamarine;
+  &_row{
+    display: flex;
+    flex-flow: row wrap;
+    background-color: bisque;
+  }
+}
+
+.mainNav{
+  position: fixed;
+  top:70px;
+  z-index: 2;
+  background-color: #b9b8b8;
+  width: 100%;
+  align-items: center;
+  padding: 5px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  &_btn{
+    display: flex;
+    flex-flow: row nowrap;
+    width: 40%;
+    justify-content: space-around;
+    float:left;
+  }
+  .navigPart{
+    display: flex;
+    justify-content: space-between;
+    font-size: 75%;
+  }
+}
+.newProdForm{
+  padding: 10px;
+  display: flex;
+  flex-flow: column wrap;
+  grid-gap: 10px;
+  align-items: center;
+};
+
+.duoInput{
+  justify-content: space-between;
+  display: flex;
+  width: 90%;
+};
+.hovertext {
+  position: relative;
+}
+.hovertext:before {
+  content: attr(data-hover);
+  visibility: hidden;
+  opacity: 0.5;
+  min-width: 140px;
+  background-color: rgb(172, 170, 170);
+  text-align: center;
+  border-radius: 5px;
+  padding: 4px;
+  transition: opacity .5s ease-in-out;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 110%;
+}
+
+.hovertext:hover:before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.newProdSelect{
+  width: 100%;
+  border:none;
+  border-bottom: darkgrey solid 1px;
+  margin-top: 20px;
+  &>option{  
+    font-size: 80%;
+    &:hover{
+      background-color: lightgrey;
+   }
+  }
+}
+.update{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  flex-flow: column wrap;
+  grid-gap:10px;
+  &_btns{
+    display:flex;
+    justify-content: flex-end;
+    gap: 20px;
+    padding: 20px;
+  }
+}
+
+@media screen and (max-width: 980px) {
+  .productContent{
+    margin-top: 170px;
+  }
+};
+
+@media screen and (max-width: 600px) {
+  .update{
+    display: flex;
+    flex-flow: column wrap;
+      font-size: 70%;
+      &_btns{
+      justify-content: space-around;
+    }
+  }
+  .mainNav{
+    display: flex;
+  }
+  .productContent{
+    margin-top: 210px;
+  }
+}
+
+@media screen and (max-width: 396px) {
+  .productContent{
+    margin-top: 240px;
+    &_item{
+      padding: 0 4px 4px 4px;
+      width: 160px;
+    }
+  }
+}
+@media screen and (max-width: 490px) {
+  .input{
+    width: 80%;
+  }
+}
+.imageUpload{
+  &_avatar{
+    border-radius: 2%;
+    position: relative;
+    height:110px;
+    width: 110px;
+    margin: 5px;
+    position: relative;
+    &>img {
+      object-fit: contain;
+      border-radius: 5%;
+      height: 99%;
+      width: 99%;
+    }
+    &_input{
+      position: absolute;
+      top: 85%;
+      left: 85%;
+      transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      color: rgb(157, 155, 155);
+      font-size: 16px;
+      padding: 12px 24px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      text-align: center;
+      &:hover{
+        color: black;
+      }
+      &>label{
+        cursor: pointer;
+      }
+    }
+  }
+}

@@ -1,0 +1,171 @@
+.routeName{
+  padding: 0;
+  margin: 0;
+};
+
+.headerLinkBtn{
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 110%;
+};
+
+.headerLinkBtn h6{
+  font-size: 130%;
+  margin: 0 13px;
+};
+
+@media screen and (max-width: 785px){
+  .containerXX{
+    margin-bottom: 15px;
+  }
+  .headerLinkBtn h6{
+    margin: 0 5px;
+  }
+  .routeName{
+    display: none;
+    overflow: hidden;
+  }
+}
+
+.containerXX{
+  width: 100%;
+  box-sizing: border-box;
+  height: 70px;
+  position: fixed;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  max-height: fit-content;
+  justify-content: space-between; 
+  align-items: center;
+  background: white;
+  border-bottom: 1px solid rgb(211, 209, 209);
+  box-shadow: 0 1px 6px 0px darkseagreen;
+  align-items: center;
+  align-content: center;
+  padding: 10px;
+}
+
+.middleMenu{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-top: 14px;
+}
+
+.routeName{
+  padding: 0;
+  margin: 0;
+  font-size: 70%;
+}
+
+.headerLinkBtn{
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  & h6{
+    margin: 0 13px;
+  }
+}
+
+.contentX{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+}
+
+.headerLogo {
+  display: flex;
+  margin-left: 200px;
+  text-align: center;
+  align-items: center;
+  font-family: 'Montserrat', sans-serif;
+    padding: 0;
+    margin: 0;
+  :hover{
+    cursor: pointer;
+  }
+  &_username{
+    padding: 1px 10px;
+    display: flex;
+    border-radius: 5px;
+    border: solid lightgray 1.5px;
+    cursor: pointer;
+    margin: 10px ;
+    font-size: 80%;
+    font-weight: 600;
+    align-items: center;
+
+  }
+  &_title{
+    margin:0px;
+  }
+  >img{
+    height: 60px;
+    width: 60px;
+    padding: 0px;
+  }
+}
+.userAvatar{
+  >img{ 
+    height: 40px;
+    width: 40px;
+  }
+}
+
+.basketBTN{
+  background-color: green;
+  border-radius:8px;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+};
+
+.avatarImg{
+ border-radius:48%;
+ width:42px; 
+ height:40px;
+ border:solid darkorange .5px;
+ content: icon;
+}
+
+@media screen and (max-width: 425px){
+  .headerLogo{
+    >img{
+      border: solid rgb(253, 190, 72) 2px;
+      border-radius: 50%;
+      padding: 2px;
+      width: 50px;
+      height: 50px;
+
+    }
+  }
+};
+
+@media screen and (max-width: 600px){
+  .headerLogo{
+    &_title{
+      display: none;
+      overflow: hidden;
+    }
+  }
+  .basketBTN{
+    padding: 4px;
+  }
+};
+
+@media screen and (max-width: 785px){
+  .headerLinkBtn h6{
+    margin: 0 5px;
+  }
+  .routeName{
+    display: none;
+    overflow: hidden;
+  }
+}
+.routeName{
+  padding: 0;
+  margin: 0;
+}

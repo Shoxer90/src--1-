@@ -1,0 +1,95 @@
+.history{
+    position: relative;
+    top: 145px;
+    margin: 0px 10px;
+    &_search{
+        position: fixed;
+        top: 70px;
+        z-index: 2;
+        background-color: rgb(243, 243, 239);
+        width:98.5%;
+        padding:0 10px;
+        box-shadow:3px 5px 5px grey;
+    }
+}
+
+.history_searchBar {
+    padding: 0 7px;
+    display: flex;
+    justify-content: flex-end ;
+    align-items: center;
+    color: rgb(185, 59, 59);
+    &_date{
+        padding: 5px;
+    }
+    &_btn{
+        padding:5px;
+    }
+};
+
+
+.tableHeader{
+    background-color: #EAE7E7;
+    font-size: 130%;
+    color:rgb(87, 87, 87);
+    display: flex;
+    justify-content: space-between;
+    color:rgb(87, 87, 87);
+    border-bottom: solid gray 1px;
+    font-weight: 800;
+};
+
+.historyItem{
+    font-size: 1vw;
+    display: flex;
+    justify-content: space-between;
+    color:rgb(87, 87, 87);
+    border-bottom: solid gray 1px;
+    padding: 0px;
+    &:hover{
+        background-color: #EAE7E7;
+    }
+} 
+.btn_group{
+    display:flex;
+    flex-direction: row;
+}
+ @media screen and (max-width: 880px){
+ 
+    .historyItem{
+        font-size: 2vw;
+    }
+ }  
+
+
+ .rowFlexBetween{
+    display: flex;
+    justify-content:space-between;
+    // flex-flow: column nowrap;
+    // padding: 1px 5px;
+ }
+
+ @media screen and (max-width: 700px) {
+    .tableHeader{
+        font-size: 80%;
+    }
+    .history_searchBar{
+      flex-flow: column nowrap;
+    }
+
+}
+
+  @media screen and (max-width: 480px) {
+    .historyContent{
+      margin-top: 60px;
+    }
+    .tableHeader{
+        font-size: 60%;
+    }
+  }
+
+  @media screen and (max-width: 349px) {
+    .historyContent{
+      margin-top: 120px;
+    }
+  }

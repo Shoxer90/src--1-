@@ -1,0 +1,14 @@
+.loader{
+  display:flex;
+  flex-flow:row;
+  // text-align:center;
+  // align-content: center;
+  justify-content: center;
+  // color:darkgray;
+  padding-bottom:0px;
+  &_text{
+    padding: 20px;
+    font-size: 3vw;
+
+  }
+}

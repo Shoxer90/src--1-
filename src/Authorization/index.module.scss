@@ -1,0 +1,193 @@
+.auth_container{
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  justify-content: space-between;
+  border: rgb(21, 63, 39) solid;
+  // background: rgb(255,255,255);
+  border-radius: 8px;
+  padding: 2px;
+  font-size: 10wh;
+  width: 99vw;
+  .formTitle{
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-content: center;
+    >img{
+      align-self: center;
+      height: 70px;
+      width: 70px;
+    }
+}
+  &_signIn{
+    height: 74dvh;
+    display: flex;
+    flex-flow: column;
+      &_form_item{
+      border-radius: 5px;
+      border:solid grey 2px;
+      height: 40px;
+      width: 60%;
+      align-self:center;
+      padding:"5px 10px"
+    }
+  }
+    &_signIn_link{
+      width: fit-content;
+      display:flex;
+      flex-flow: column;
+      margin: auto;
+      color: rgb(36, 97, 36);
+      cursor: pointer;
+      &:hover{
+        color:orange;
+      }
+    }
+  &_welcome{
+    background-color: rgb(10, 14, 10);
+    z-index: 1;
+    position: relative;
+    &_img{
+      opacity: 0.1;
+      z-index: 0;
+      >img{
+        width: 40vw;
+        object-fit: cover;
+        height: 98dvh;
+      }
+    }
+    &_text{
+      padding: 0 20px;
+      z-index: 2;
+      position: absolute;
+      top: 27%;
+      width: 100%;
+      text-align: center;
+      font-size: 18px;
+      color: antiquewhite;
+    }
+  }
+} 
+.confirmation{
+  padding: 0 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 99vw;
+  height: 99dvh;
+  gap: 30px;
+  margin: 50px auto;
+  align-items: center;
+  >input{
+      width: 40vw;
+      font-size: 100%;
+      padding: 10px;
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+  appearance: none;
+    margin: 0;
+  }
+/* Firefox */
+input[type=number] {
+  appearance: textfield;
+}
+}
+
+
+@media screen and (max-width: 768px) {
+  .auth_container_welcome{
+    display:none;
+  }
+  .authPage{
+  width:100%;
+  border:none;
+  height: 95dvh;
+  }
+  .auth_container_signIn_form{
+    width: 100vw;
+  }
+  .frame{
+    width: 100vw;
+    display: flex;
+    justify-content: space-between;
+  }
+  .confirmation{
+    >input{
+      width: 50vw;
+      font-size: 100%;
+    }
+  }
+}
+.new_user_reg{
+  display: flex;
+  flex-flow:column wrap;
+  justify-content: space-between;
+  gap: 6px 10px;
+  font-size: 90%;
+  align-self: center;
+  & >span{
+    font-size: 70%;
+    color: red;
+    padding: 0px;
+    margin: 0px;
+  }
+  &_item{
+    display:flex;
+    justify-content: space-between;
+  }
+  input{
+    border:solid rgb(162, 160, 160) 2px;
+    border-radius: 5px;
+    padding: 5px 7px;
+    width: 45%;
+  }
+}
+
+.navBtn{
+  position: static;
+  bottom: 15px;
+  left: 0;
+}
+.authPage{
+  width:48%;
+  margin:auto;
+}
+
+.resendBTN{
+  color:green;
+  font-size:85%;
+    border-bottom: solid 2px rgb(54, 130, 54);
+    cursor:pointer;
+  &:hover{
+    font-size: 90%;
+    text-decoration: solid;
+    font-weight: 500;
+  }
+}
+
+@media screen and (max-width: 458px) {
+  .hide{
+    display: none;
+  }
+}
+
+
+@media screen and (max-width: 770px) {
+  .auth_container{
+    border: none;
+    justify-content: center;
+    align-self: center;
+    margin: 0 auto;
+  }
+  .authPage{
+      height: 98dvh;
+      width: 90%;
+    }
+  .new_user_reg{
+   & input{
+    width: 65vw;
+   }
+  }
+}

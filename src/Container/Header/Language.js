@@ -1,0 +1,38 @@
+import { Box, FormControl, NativeSelect } from "@mui/material";
+import React from "react";
+import { memo } from "react";
+import LanguageIcon from '@mui/icons-material/Language';
+import { useTranslation } from "react-i18next";
+
+const Language = () => {
+  const { i18n} = useTranslation();
+
+  const changeLanguage = (lang) => {
+    localStorage.setItem("lang", lang )
+   return i18n.changeLanguage(lang)
+  };
+
+  return(
+    <FormControl variant="standard" sx={{ minWidth:120,m:1,"&:hover":{color:"orange"} }}>
+      <Box style={{display:'flex',flexDirection:"row","&:hover":{color:"orange"}}}>
+        <LanguageIcon sx={{margin:"17px",marginTop: "10px"}} />
+        <NativeSelect
+          disableUnderline={true}
+          sx={{paddinTop: 0}}
+          defaultValue={localStorage.getItem("lang") || "am"}
+          inputProps={{
+            name: 'age',
+            id: 'uncontrolled-native',
+          }}
+          onChange={(e)=>{changeLanguage(e.target.value)}}
+        >
+         <option value={"en"}>ENG</option>
+          <option value={"ru"}>РУ</option>
+          <option value={"am"}>ՀԱՅ</option>
+        </NativeSelect>
+      </Box>
+    </FormControl>
+  )
+};
+
+export default memo(Language);

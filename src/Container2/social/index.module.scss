@@ -1,0 +1,16 @@
+.socialMedia{
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .socialContainer{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+  }
+.payxInfo{
+  display: flex;
+  flex-flow: column nowrap;
+}

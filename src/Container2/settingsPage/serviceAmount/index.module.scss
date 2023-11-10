@@ -1,0 +1,126 @@
+.creditCard{
+  width: 340px;
+  height: 200px;
+  border-radius: 12px;
+  padding: 10px 15px;
+  margin: 50px;
+  background: linear-gradient(0deg, rgba(26,61,48,1) 0%, rgba(63,182,138,1) 100%);
+  color:white;
+  font-size: 110%;
+  display:flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  align-content: center;
+  &_fullname{
+    display:flex;
+    align-self: flex-start;
+    font-size: 90%;
+    margin-bottom: 10px;
+    margin-left: 5px;
+  }
+  &_chip{
+    width: 35px;
+    align-self: start;
+    margin-left: 13px;
+    margin-top: 15px;
+  }
+  &_valid{
+    font-size: 90%;
+    display:flex;
+    align-items: center;
+    align-content:center;
+    align-self: flex-end;
+    margin: 0px;
+    margin-right: 10px;
+
+  }
+  &_numbers{
+    font-size: 125%;
+    letter-spacing: 4px;
+    margin: 5px 0px;
+  }
+  &_bank{
+    display: flex;
+    justify-content: space-between;
+    font-size: 130%;
+    letter-spacing: 2px;
+    height: 40px;
+    width: 100%;
+    &_icon{
+      opacity: 0.2;
+    cursor: pointer;
+    margin: 0 3px;
+      &:hover{
+      opacity: 1;
+      color: white;
+      }
+    }
+  }
+}  
+.card_pay_info{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-content:center;
+  align-items: center; 
+  &_table{
+    display: flex;
+    flex-flow:column nowrap;
+    color: white;
+    padding:20px 20px 0px 20px;
+    width: 500px;
+    height: fit-content;
+    & div{
+      padding: 5px;
+      display: flex;
+      justify-content: space-between;
+
+    }
+  }
+}
+.newCardContent{
+  display: flex;
+  justify-content: space-between;
+  flex-flow: column;
+  align-items: center;
+  padding: 15px;
+  .newCardForm{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    
+    input[type=number] {
+      appearance: textfield;
+    }
+  }
+}
+.newCard{
+  width: 50%;
+  margin: 10px;
+}
+
+@media screen and (max-width: 880px) {
+  .newCard{
+    width: 90%;
+
+  }
+}
+
+.cardTitleGroup{
+  display: flex;
+  justify-content: center;
+  &_item{
+    cursor: pointer;
+    &:hover{
+      // font-size: 110%;
+      color: orangered;
+    }
+
+  }
+
+}
