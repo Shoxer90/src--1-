@@ -1,8 +1,6 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect, useState } from 'react';
+
 import HistoryTable from './HistoryTable';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { getServiceHistory } from '../../../../services/cardpayments/internalPayments';
 
 const ServiceAmountHistory = ({historyAndCardData, t}) => {
   const [history, setHistory] = useState([]);
@@ -24,7 +22,6 @@ const ServiceAmountHistory = ({historyAndCardData, t}) => {
   useEffect(() => {
     getOverallHistoryFromAllData()
   },[]);
-
 
   return (
     <div >

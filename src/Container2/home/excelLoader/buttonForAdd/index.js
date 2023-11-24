@@ -46,11 +46,10 @@ const ExcelBurger = ({t,setOpenNewProduct}) => {
 
   return (
     
-    <div style ={{fontSize: "70%"}}>
+    <div style={{fontSize: "70%"}}>
       <Button
         variant="contained"
-          
-          style={{color: "white",height: "35px" }}
+        style={{color: "white",height: "35px" }}
         onClick={(event) => setAnchorEl(event.currentTarget)}
       >
         <ControlPointIcon style={{margin:"auto 1px"}}/>
@@ -65,7 +64,9 @@ const ExcelBurger = ({t,setOpenNewProduct}) => {
         <MenuItem 
         style={{padding:"1px 5px"}}
           fontSize="medium"
-          onClick={()=>setOpenNewProduct(true)}
+          onClick={()=>{
+            setAnchorEl(null)
+            setOpenNewProduct(true)}}
         >
           <div>
             <ControlPointIcon sx={{m:1}}/>
@@ -76,7 +77,10 @@ const ExcelBurger = ({t,setOpenNewProduct}) => {
         <MenuItem 
         style={{padding:"1px 5px"}}
         fontSize="medium"
-          onClick={()=>redirect("/excel")}
+          onClick={()=>{
+            setAnchorEl(null)
+            redirect("/excel")
+          }}
         >
           <div> 
             <InstallDesktopIcon sx={{m:1}}/>

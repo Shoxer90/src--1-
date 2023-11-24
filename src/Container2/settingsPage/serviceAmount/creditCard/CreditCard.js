@@ -1,23 +1,23 @@
 import React, { memo } from 'react';
-import styles from "./index.module.scss";
+import styles from "../index.module.scss"
 
 const CreditCard = ({userCardInfo}) => {
   
-  const  defaultCardTexts= {
-    name:"XXXX",
-    surname:"XXXXXXXX",
-    bank: "XXXXXX XXXX",
-    expMonth: "mm",
-    expYear:"yy",
-    cvv:"",
-    cardNumOrigin:"xxxxxxxxxxxxxxxxxx",
-  }
+  // const  defaultCardTexts= {
+  //   name:"XXXX",
+  //   surname:"XXXXXXXX",
+  //   bank: "XXXXXX XXXX",
+  //   expMonth: "mm",
+  //   expYear:"yy",
+  //   cvv:"",
+  //   cardNumOrigin:"xxxxxxxxxxxxxxxxxx",
+  // }
 
   return (
     <span className={styles.creditCard} >
       <div className={styles.creditCard_bank}>
         <span>
-         { userCardInfo?.bank || defaultCardTexts?.bank}
+         { userCardInfo?.bank }
         </span>
       </div>
 
@@ -28,7 +28,8 @@ const CreditCard = ({userCardInfo}) => {
         {userCardInfo?.cardNumOrigin.slice(0,4)} **** **** {userCardInfo?.cardNumOrigin.slice(-4)}
       </p> :
       <p className={styles.creditCard_numbers}>
-        {defaultCardTexts?.cardNumOrigin?.slice(0,4)} {defaultCardTexts?.cardNumOrigin?.slice(4,8)} {defaultCardTexts?.cardNumOrigin?.slice(8,12)} {defaultCardTexts?.cardNumOrigin?.slice(12,16)}
+        **** **** **** ****
+        {/* {defaultCardTexts?.cardNumOrigin?.slice(0,4)} {defaultCardTexts?.cardNumOrigin?.slice(4,8)} {defaultCardTexts?.cardNumOrigin?.slice(8,12)} {defaultCardTexts?.cardNumOrigin?.slice(12,16)} */}
         </p> 
       }
 
@@ -37,11 +38,11 @@ const CreditCard = ({userCardInfo}) => {
             <div>VALID </div>
             <div>THRU </div>
           </span>
-          {userCardInfo?.expMonth || defaultCardTexts.expMonth } / {userCardInfo?.expYear ||defaultCardTexts.expYear}
+          {userCardInfo?.expMonth} / {userCardInfo?.expYear }
         </div>
 
      <span className={styles.creditCard_fullname}>
-      <p>{(userCardInfo?.name || defaultCardTexts?.name)?.toUpperCase()} {(userCardInfo?.surname ||defaultCardTexts?.surname)?.toUpperCase()} </p> 
+      <p>{userCardInfo?.name} {userCardInfo?.surname?.toUpperCase()} </p> 
      </span>
 
     </span>

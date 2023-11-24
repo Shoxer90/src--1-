@@ -1,7 +1,7 @@
 import { Button, TextField } from '@mui/material';
 import React,{ memo } from 'react';
 
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 const NewCardForm = ({setNewCard, btn, newCard,func,t}) => {
 

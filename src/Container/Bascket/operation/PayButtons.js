@@ -1,13 +1,14 @@
 import React, { memo } from "react";
 import styles from "../index.module.scss";
+import { useEffect } from "react";
 
 
 const PayButtons = ({paymentInfo, setOpenPhonePay, multiSaleProducts, singleClick, setSingleClick}) => {
-const buttonBlock = {
-  opacity: "0.3",
-  border:"red",
-  pointerEvents:"none"
-}
+  const buttonBlock = {
+    opacity: "0.3",
+    border:"red",
+    pointerEvents:"none"
+  }
 
   return(
     <div 
@@ -21,14 +22,11 @@ const buttonBlock = {
           setSingleClick({pointerEvents:"none"})
           multiSaleProducts(1)
         }}
-        // style={!paymentInfo?.cashAmount ? buttonBlock : {pointerEvents:"auto"}}
-
       />
       <img
         src="/image/qr.png"
         alt="pay by QR"
         onClick={()=>{
-          // setSingleClick({pointerEvents:"none"})
           multiSaleProducts(2)
         }}
         style={!paymentInfo?.cardAmount ? buttonBlock : {pointerEvents:"auto"}}
@@ -48,7 +46,6 @@ const buttonBlock = {
         onClick={()=> {
           setSingleClick({pointerEvents:"none"})
           multiSaleProducts(4)
-          // payByUrl()
         }}
         style={!paymentInfo?.cardAmount ? buttonBlock : {width:"10%"}}
       />

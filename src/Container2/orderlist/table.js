@@ -54,9 +54,9 @@ const DenseTable = ({basketContent}) => {
               <TableCell align="center">  
                 {
                   item?.discountType === 1  || item?.discountType === 0 ?
-                  (item?.price - (item?.price * item?.discount / 100))*item?.count :
+                  ((item?.price - (item?.price * item?.discount / 100))*item?.count ).toFixed(2):
                   item?.discountType === 2 ?
-                  (item?.price - item?.discount) * item?.count : item?.price*item?.count
+                  ((item?.price - item?.discount) * item?.count).toFixed(2) : (item?.price*item?.count).toFixed(2)
                 }
               </TableCell>
             </TableRow>

@@ -57,7 +57,7 @@ export const byBarCode = async(barcode) =>{
 //check isAvailable basket products
 export const cheackProductCount = async(body) => {
   try{
-    const data = await axios.put( baseUrl + "Products/CheackProductCount",body,option());
+    const data = await axios.put( baseUrl + "Products/CheackProductCount", body, option());
     return data?.data
   }catch(err) {
     return err.response?.status

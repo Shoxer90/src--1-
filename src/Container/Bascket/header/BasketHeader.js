@@ -7,7 +7,7 @@ import styles from "../index.module.scss";
 import ConfirmDialog from "../../../Container2/dialogs/ConfirmDialog";
 import { useState } from "react";
 
-const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent,setPaymentInfo}) => {
+const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent}) => {
 
   const [openDialog,setOpenDialog] = useState(false);
 
@@ -43,7 +43,6 @@ const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent,setPay
         close={setOpenDialog}
         content={" "}
         t={t}
-        // setPaymentInfo={setPaymentInfo}
       />
     </div>
   )

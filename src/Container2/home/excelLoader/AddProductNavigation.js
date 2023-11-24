@@ -55,7 +55,7 @@ const AddProductNavigation = ({t,setOpenNewProduct}) => {
   ];
   return (
     <Box sx={{ transform: 'translateZ(0px)', flexGrow: 0 }}>
-      <Box sx={{  zIndex: 320 }}>
+      <Box sx={{zIndex: 320}}>
         <StyledSpeedDial
           sx={{ 
             '& .MuiFab-primary': { 

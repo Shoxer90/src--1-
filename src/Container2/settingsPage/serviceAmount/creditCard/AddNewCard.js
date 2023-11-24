@@ -1,7 +1,8 @@
 import React, { memo } from 'react'
 
 import CreditCard from './CreditCard';
-import styles from "./index.module.scss";
+import styles from "../index.module.scss"
+
 import { Dialog, Divider } from '@mui/material';
 import { useState } from 'react';
 import NewCardForm from './NewCardForm';

@@ -90,6 +90,7 @@
     "cancel": "Cancel",
     "save": "Save",
     "yes": "Yes",
+    "no": "No",
     "sendResetLink": "Send Reset Link",
     "back" : "Back",
     "createMultiProds": "Import Catalog"
@@ -176,7 +177,7 @@
       "notMail": "E-mail is not valid",
       "noHdm": "Hdm is not available now",
       "fail": "Request failed․ Check Recipient Information",
-      "soldOut": "There are sold out items in the basket"
+      "soldOut": "There are sold out or insufficient quantities of products in the basket finished product"
     }
   },
   "menuburger": {
@@ -263,9 +264,12 @@
     "qrlink": "QR link",
     "linkPayment": "Pay",
     "removeallprod": "Clean basket ?",
+    "removeoneprod": "Remove current product from basket ?",
     "useprepayment":"Prepayment",
     "prepaymentTitle": "Receive prepayment",
-    "nullishQuant": "There is a quantity mismatch in the basket"
+    "nullishQuant": "There is a quantity mismatch in the basket",
+    "emptyPayInfo": "There are empty or incorrect fields"
+
    
   },
   "history": {
@@ -393,6 +397,7 @@
     "attanchAmount" : "In order to verify your card 10AMD will be charged. The amount will be returned after the confirmation. Do you want to continue?",
     "newCard": "Add new card details",
     "payForService": "Pay for service  ",
+    "payForSimilarServices": "Make similar transactions at the same time",
     "inputs":{    
 
        "cardName":"Card Name",
@@ -426,7 +431,8 @@
     "unicBarCode": "A product with a similar barcode already exists.",
     "activateEhdm":"Do you really want to activate E-cash register?",
     "deactivateEhdm":"Do you really want to deactivate E-cash register??",
-    "deprecated": "The data is deprecated․ Please, confirm registration again"
+    "deprecated": "The data is deprecated․ Please, confirm registration again",
+    "saveData": "Do you want to save the collected data?"
 
   }
 }

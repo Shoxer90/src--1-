@@ -74,7 +74,7 @@ const PaymentConfirm = ({
           />
         </label>
         <div className={styles.cardList}>
-        {cardArr.map((card) => (
+        {cardArr && cardArr.map((card) => (
           <label key={card?.cardId}  className={styles.cardList_item}>
             <input 
               type="checkbox" 

@@ -92,19 +92,18 @@ const SettingsPage = ({t, whereIsMyUs, setUserData}) => {
 
           <FormControlLabel
             control={<IOSSwitch 
+              label={t("settings.switcher")}
               checked={ !!user?.isEhdmStatus}
               onChange={() => {
                  setConfirmSwitch(true)}
               }
               sx={{ m: 1 }} 
             />}
-            label={t("settings.switcher")}
           />
-          { user && 
-            <ClientInfo />
-          }
-         <Button onClick={()=>navigate("/setting/club")}>{t("cardService.btnTitle")}</Button>
-
+          {user && <ClientInfo />}
+          <Button onClick={()=>navigate("/setting/club")}>
+            {t("cardService.btnTitle")}
+          </Button>
           <Button onClick={()=>addClientInfo("password")}>
             {t("settings.changepassword")} 
           </Button>

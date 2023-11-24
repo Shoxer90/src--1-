@@ -42,7 +42,7 @@ const BarcodeInput = ({
           variant="outlined"
           name="barCode" 
           value={newProduct?.barCode}
-          label={t("productinputs.barcode")}
+          label={`${t("productinputs.barcode")} *`}
           onChange={(e)=>{
             if(e.target.value?.length>20) return
             setIsUniqBarcode(true)

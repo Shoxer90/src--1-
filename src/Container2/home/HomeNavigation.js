@@ -5,7 +5,6 @@ import {LimitContext} from "../../context/Context";
 
 import styles from "./index.module.scss";
 import ExcelBurger from "./excelLoader/buttonForAdd"
-import useDebonce from "../hooks/useDebonce";
 import SearchBarcode from "../../SearchBarcode";
 
 const HomeNavigation = ({
@@ -28,9 +27,6 @@ const HomeNavigation = ({
     await setCurrentPage(1)
     changeStatus(str,index)
   };
-  useEffect(() => {
- console.log(focusInput,"REFF")
-  }, [])
 
   return(
     <div onKeyDown={(e)=>{
@@ -90,7 +86,6 @@ const HomeNavigation = ({
         stringFrom="main"
         ref={focusInput}
       />
-     
       { !limitedUsing && <ExcelBurger t={t} setOpenNewProduct={setOpenNewProduct}/> }
     </div>
   </div>

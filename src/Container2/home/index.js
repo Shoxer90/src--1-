@@ -9,6 +9,7 @@ import HomeNavigation from "./HomeNavigation";
 import AddNewProduct from "./product/AddNewProduct";
 import { getAdg, removeProduct } from "../../services/products/productsRequests";
 import { Dialog } from "@mui/material";
+import SnackErr from "../dialogs/SnackErr";
 
 const HomePage = ({
   t,
@@ -34,8 +35,10 @@ const HomePage = ({
   const [fetching,setFetching] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [message,setMessage] = useState("");
+  const [snackMessage,setSnackMessage] = useState("");
 	const [typeCode,setTypeCode] = useState();
   const [selectContent,setSelectContent] = useState();
+  const [type, setType] = useState();
   const [newProduct,setProduct] = useState({
     purchasePrice: "",
     price: "",
@@ -62,13 +65,13 @@ const HomePage = ({
     setContent([])
     setProduct({
       measure: "",
-      purchasePrice: 0,
+      purchasePrice: "",
       price: "",
       type: "",
       brand: "",
       name: "",
-      discount: 0,
-      remainder: 0,
+      discount: "",
+      remainder: "",
       photo:""
     })
   };
@@ -85,12 +88,20 @@ const HomePage = ({
   };
 
   const getSelectData = () => {
+   
     if( !typeCode?.length) {
-     return
+    setSelectContent([])
+    return
     }else{
       getAdg(typeCode).then((res) => {
         if(res?.length > 1){
           setSelectContent(res)
+          if(res[0]?.code === typeCode) {
+            setProduct({
+              ...newProduct,
+              type:res[0].code
+            })
+          }
         }  
         else if(res?.length === 1){
           setSelectContent(res)
@@ -156,24 +167,25 @@ const HomePage = ({
         focusInput={focusInput}
       />
       {message ? 
-      <div style={{margin:"20% auto",color:"grey"}}>
-        <h1>{message}</h1>
-      </div> :
-      <HomeContent
-        t={t}
-        measure={measure}
-        setToBasket={setToBasket}
-        content={content}
-        deleteAndRefresh={deleteAndRefresh}
-        changeStatus={changeStatus} 
-        deleteBasketItem={deleteBasketItem}
-        basketExist={basketExist}
-        dataGroup={dataGroup}
-        selectContent={selectContent}
-        getSelectData={getSelectData}         
-        typeCode={typeCode}
-        setTypeCode={setTypeCode}
-      />}
+        <div style={{margin:"20% auto",color:"grey"}}>
+          <h1>{message}</h1>
+        </div> :
+        <HomeContent
+          t={t}
+          measure={measure}
+          setToBasket={setToBasket}
+          content={content}
+          deleteAndRefresh={deleteAndRefresh}
+          changeStatus={changeStatus} 
+          deleteBasketItem={deleteBasketItem}
+          basketExist={basketExist}
+          dataGroup={dataGroup}
+          selectContent={selectContent}
+          getSelectData={getSelectData}         
+          typeCode={typeCode}
+          setTypeCode={setTypeCode}
+        />
+      }
       {openNewProd && <AddNewProduct 
         t={t} 
         newProduct={newProduct}
@@ -187,8 +199,15 @@ const HomePage = ({
         setTypeCode={setTypeCode}
         selectContent={selectContent}
         setSelectContent={setSelectContent}
+        globalMessage={snackMessage}
+        setGlobalMessage={setSnackMessage}
+        setGlobalType={setType}
       />}
+      <Dialog open={Boolean(type)}>
+        <SnackErr open={snackMessage} type={type} close={setType} message={snackMessage}/>
+      </Dialog>
      
+
        <Dialog open={fetching}> 
         <Loader close={setFetching} />
      </Dialog>

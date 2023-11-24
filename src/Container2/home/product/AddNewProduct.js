@@ -15,6 +15,7 @@ import styles from "../index.module.scss";
 import ImageLoad from "./ImageLoad";
 import ProductAdg from "./ProductAdg";
 import BarcodeInput from "./BarcodeInput";
+import ConfirmDialog from "../../dialogs/ConfirmDialog";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -32,6 +33,9 @@ const AddNewProduct = ({
   setTypeCode,
   getSelectData,
   selectContent,
+  globalMessage,
+  setGlobalMessage,
+  setGlobalType
 }) => {
 
   const [type, setType] = useState("success");
@@ -39,6 +43,7 @@ const AddNewProduct = ({
   const [measureStr, setMeasure] = useState("");
   const [emptyValidate, setEmptyValidate] = useState(false);
   const [isUniqBarCode,setIsUniqBarcode] = useState(true);
+  const [openForSave,setOpenForSave] = useState(false);
 
   const onlyNumberAndADot = (event,num) => {
     const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
@@ -71,6 +76,7 @@ const AddNewProduct = ({
   };
 
   const create = async() => {
+    localStorage.removeItem("newProduct")
     await uniqueBarCode(newProduct?.barCode).then((res) => {
       if(res){
         setIsUniqBarcode(true)
@@ -143,21 +149,56 @@ const AddNewProduct = ({
   };
 
   const handleClose = async() => {
-    setTypeCode()
+    setTypeCode("")
     setOpenNewProduct(!openNewProd);
   } 
+
+  const saveData = async() => {
+    await localStorage.setItem("newProduct", JSON.stringify(newProduct))
+    setType("success")
+    handleClose()
+    setGlobalMessage(t("dialogs.done"))
+    setGlobalType("success")
+    setTimeout(()=>{
+      setGlobalType("")
+    setGlobalMessage("")
+  },3000)
+  }
+  const closeSaver = () => {
+    setOpenForSave(false)
+    handleClose()
+    setProduct({})
+    localStorage.removeItem("newProduct")
+  };
+  const closeAfterOk = () => {
+    setType("")
+    setMessage("")
+    handleClose()
+  }
+
+  const checkStorageSavedData = async() => {
+    const savedData = await JSON.parse(localStorage.getItem("newProduct"))
+    if(savedData) {
+      setProduct(savedData)
+      setTypeCode(savedData?.type)
+    } 
+  }
 
   useEffect(() => {
     openNewProd && getSelectData()
   }, [typeCode]);
 
+  useEffect(() => {
+    checkStorageSavedData()
+    setTypeCode(newProduct?.type)
+  }, []);
   return (
     <Dialog
-    open={openNewProd}
-    TransitionComponent={Transition}
-    keepMounted
-    width="lg"
-    onClose={handleClose}
+      open={openNewProd}
+      TransitionComponent={Transition}
+      keepMounted
+      width="lg"
+      id="live" aria-live="polite" 
     >
       <DialogTitle 
         style={{
@@ -171,7 +212,8 @@ const AddNewProduct = ({
         <div>{t("productinputs.createtitle")}</div>
         <CloseIcon 
           sx={{":hover":{background:"#d6d3d3",borderRadius:"5px"}}}
-          onClick={handleClose}
+          onClick={()=>setOpenForSave(true)}
+          // onClick={handleClose}
         /> 
       </DialogTitle>
       <DialogContent
@@ -181,7 +223,7 @@ const AddNewProduct = ({
           flexFlow:"column nowrap"
         }}
       >
-        <Divider style={{backgroundColor:"gray"}}/>
+        <Divider style={{backgroundColor:"gray"}} />
         <div className={styles.newProdForm}>
           <ProductAdg
             t={t}
@@ -199,7 +241,7 @@ const AddNewProduct = ({
             style={{width:"90%",margin:"15px"}}
             name="name" 
             value={newProduct?.name}
-            label={`${t("productinputs.name")} (${50-(newProduct?.name)?.length} ${t("productinputs.symb")})`}
+            label={`${t("productinputs.name")} (${50-(newProduct?.name)?.length || 50} ${t("productinputs.symb")}) *`}
             onChange={(e)=>handleChangeInput(e)} 
             inputProps={{ maxLength: 50 }}
           />
@@ -209,7 +251,7 @@ const AddNewProduct = ({
             style={{width:"90%"}}
             name="brand" 
             value={newProduct?.brand}
-            label={t("productinputs.brand")}
+            label={`${t("productinputs.brand")}`}
             onChange={(e)=>handleChangeInput(e)} 
           />
           <div className={styles.duoInput}>
@@ -224,32 +266,32 @@ const AddNewProduct = ({
                   step: newProduct?.measure !== "հատ" ? 0.01 : 1
                 }
               }}
-              type="number"
+              // type="number"
               name="remainder" 
               value={newProduct?.remainder}
               label={t("productinputs.count")}
               onChange={(e)=>onlyNumberAndADot(e,3)} 
             />
-          <FormControl sx={{ width: "40%",margin:"5px 0 0 0" }}>
-            <InputLabel>{t("productinputs.measure")}</InputLabel>
-            <Select
-              error={emptyValidate && !measureStr}
-              size="small"
-              name="measure"
-              value={measureStr}
-              label={t("productinputs.measure")}
-              onChange={(e)=>handleChangeInput(e)}
-            >
-              {measure && measure.map((item, index) => (
-                <MenuItem 
-                  key={index} 
-                  value={index+1}
-                >
-                  {item}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            <FormControl sx={{ width: "40%",margin:"5px 0 0 0" }}>
+              <InputLabel>{t("productinputs.measure")}</InputLabel>
+              <Select
+                error={emptyValidate && !measureStr}
+                size="small"
+                name="measure"
+                value={measureStr}
+                label={`${t("productinputs.measure") }*`}
+                onChange={(e)=>handleChangeInput(e)}
+              >
+                {measure && measure.map((item, index) => (
+                  <MenuItem 
+                    key={index} 
+                    value={index+1}
+                  >
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </div>
           <div className={styles.duoInput}>
             <TextField 
@@ -263,7 +305,7 @@ const AddNewProduct = ({
                   step: 0.1
                 }
               }}
-              type="number" 
+              // type="number" 
               value={newProduct?.purchasePrice}
               label={t("productinputs.purchase")}
               onChange={(e)=>onlyNumberAndADot(e,2)}
@@ -285,7 +327,7 @@ const AddNewProduct = ({
             type="number"
             name="price" 
             value={newProduct?.price}
-            label={t("productinputs.price")}
+            label={`${t("productinputs.price")} *`}
             onChange={(e)=>onlyNumberAndADot(e,2)}
           />
           </div>
@@ -300,40 +342,26 @@ const AddNewProduct = ({
                 t={t}
                 setProduct={setProduct}
               />
-            {/* <div style={{display:"flex", justifyContent:"space-between",flexDirection:"column"}}>
-              <TextField 
-                error={(emptyValidate && !newProduct?.barCode) || !isUniqBarCode}
-                style={{marginBottom:"10px",width:"250px"}}
-                size="small"
-                variant="outlined"
-                name="barCode" 
-                value={newProduct?.barCode}
-                label={t("productinputs.barcode")}
-                onChange={(e)=>{
-                  if(e.target.value?.length>20)return
-                  setIsUniqBarcode(true)
-                  handleChangeInput(e)
-                }} 
-              />
-              <div style={{height:"90px"}}>
-                {newProduct?.barCode && 
-                  <Barcode value={newProduct?.barCode} height={45} width={1.5} />
-                }
-              </div>
-            </div> */}
           </Box>
         </div>
       </DialogContent>
-      <Dialog
-        open={message}
-        onClose={()=>setMessage("")}
-      >
+      <Dialog open={message}>
         <SnackErr  
           type={type} 
           message={message} 
           close={()=>setMessage("")}
         />
       </Dialog>
+      <ConfirmDialog
+        question={t("dialogs.saveData")}
+        func={saveData}
+        title={""}
+        open={openForSave}
+        close={closeSaver}
+        content={""}
+        t={t}
+        nobutton={t("buttons.no")}
+      />
       <Button 
         variant="contained" 
         style={{backgroundColor:"#FFA500",margin:"10px auto", width:"60%"}} 
@@ -341,6 +369,7 @@ const AddNewProduct = ({
       >
         {t("buttons.create")}
       </Button>
+     
     </Dialog>
   );
 }

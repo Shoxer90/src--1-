@@ -2,15 +2,36 @@ import React, { memo, useRef, useState } from 'react';
 import styles from "../index.module.scss"
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect } from 'react';
+import ConfirmDialog from '../../../Container2/dialogs/ConfirmDialog';
 
-const BascketContentItem = ({el, avail, paymentInfo, setAvail, t, deleteBasketItem, changeCountOfBasketItem, screen,flag, setSingleClick, singleClick}) => {
+const BascketContentItem = ({el, 
+  avail, 
+  paymentInfo, 
+  setAvail, 
+  t, 
+  setIsEmpty, 
+  deleteBasketItem,
+  changeCountOfBasketItem,
+  screen,
+  flag,
+  setSingleClick, 
+  createMessage}) => {
+
   const[quantity,setQuantity] = useState();
   const [notAvailable, setNotAvailable] = useState(false);
+  const [openDialog,setOpenDialog] =useState(false);
 
   const ref = useRef();
-  
+
+  const removeOneProduct = () => {
+    notAvailable && setAvail(avail.filter(item => item!==el.id))
+    deleteBasketItem(el.id)
+    setOpenDialog(false)
+  }
 
   const handleChangeInput = async(e) => {
+    setNotAvailable(false)
+    setIsEmpty(false)
     setSingleClick({
       "cash": false,
       "card": false,
@@ -20,23 +41,28 @@ const BascketContentItem = ({el, avail, paymentInfo, setAvail, t, deleteBasketIt
     ref.current.style.color=""
     ref.current.style.border=""
     ref.current.style.fontSize=""
-    if(e.target.value === "" || +e.target.value ===0){
+    if(e.target.value === "" || +e.target.value === 0){
       ref.current.style.border="solid red 2px"
-      ref.current.style.color="red"
+      ref.current.style.
+      color="red"
     }
-   if(e.target.value.indexOf("-") !== -1 || e.target.value.indexOf("+") !== -1){
+    if(e.target.value[0] === "0" && e.target.value[1] !== "."){
+      setQuantity((+(e.target.value.slice(1, e.target.value.length-1))).toFixed())
+      return changeCountOfBasketItem( el?.id, (+e.target.value).toFixed())
+    }
+    if(e.target.value.indexOf("-") !== -1 || e.target.value.indexOf("+") !== -1){
       setQuantity(+e.target.value * -1)
       changeCountOfBasketItem( el?.id, +e.target.value * -1)
       return
     }
-    if((+e.target.value > el?.remainder) || (el?.price<=1 && paymentInfo?.discount)){
+    if((+e.target.value > el?.remainder) || (el?.price <= 1 && paymentInfo?.discount)){
     setQuantity(+el?.remainder)
       ref.current.style.color="red"
       ref.current.style.fontSize="110%"
       ref.current.style.border="solid red 2px"
-     return changeCountOfBasketItem( el?.id, el?.remainder)  
+       createMessage("error", t("dialogs.havenot"))
     }
-    if (el?.otherLangMeasure === "հատ" && e.target.value.indexOf(".") !== -1 ) {
+    if(el?.otherLangMeasure === "հատ" && e.target.value.indexOf(".") !== -1 ) {
       setQuantity((+e.target.value).toFixed())
       return changeCountOfBasketItem( el?.id, (+e.target.value).toFixed())
 
@@ -46,14 +72,14 @@ const BascketContentItem = ({el, avail, paymentInfo, setAvail, t, deleteBasketIt
         return changeCountOfBasketItem( el?.id, (+e.target.value).toFixed(3))
       }else{
         setQuantity(+e.target.value)
-        return changeCountOfBasketItem( el?.id, +e.target.value)
+        return changeCountOfBasketItem( el?.id, e.target.value)
       }
     }else{
       setQuantity(+e.target.value)
-      changeCountOfBasketItem( el?.id,  +e.target.value)
+      changeCountOfBasketItem( el?.id,  e.target.value)
     }
     setQuantity(+e.target.value)
-    changeCountOfBasketItem( el?.id, +e.target.value)
+    changeCountOfBasketItem( el?.id, e.target.value)
   }
   
   useEffect(() => {
@@ -69,7 +95,7 @@ const BascketContentItem = ({el, avail, paymentInfo, setAvail, t, deleteBasketIt
   }, [avail]);
 
   return (
-    <div className={styles.basketContent_item} style={{border:notAvailable? "red solid 2px":"none",background:notAvailable? "pink":"none"}}> 
+    <div className={styles.basketContent_item} style={{border:notAvailable? "red solid 2px":"none"}}> 
       {screen > 500 && <div className={styles.basketContent_item_image}>
         <img
           src= {el?.photo || "/default-placeholder.png"}
@@ -104,14 +130,19 @@ const BascketContentItem = ({el, avail, paymentInfo, setAvail, t, deleteBasketIt
         <div className={styles.basketContent_item_quantity}>
           <input
             ref={ref}
-            style={{ width:"100%"}}
+            style={{ width:"100%",border: !el?.count? "red solid 2px":null}}
             min={el?.otherLangMeasure === "հատ" ? "1" :"0.001"}
             step={el?.otherLangMeasure === "հատ" ? "1": "0.001"}
             max={`${el?.remainder}`}
             value={el?.count}
-            onChange={(e) =>{
-              if(isNaN(e.target.value))return
-              handleChangeInput(e)
+            onChange={(event) =>{
+              const valid = /^\d*\.?(?:\d{1,2})?$/;
+              const text = event.target.value;  
+              if(valid.test(text)){
+                  handleChangeInput(event)
+              }else{
+                return 
+              }
             }}
           />
           <div style={{margin:"3px",width:"40px", fontSize:"80%"}}>
@@ -120,13 +151,19 @@ const BascketContentItem = ({el, avail, paymentInfo, setAvail, t, deleteBasketIt
         </div>
         <div 
           className={styles.basketContent_item_garbage}
-          onClick={()=> {
-            notAvailable && setAvail(avail.filter(item => item!==el.id))
-            deleteBasketItem(el.id)
-          }}
+          onClick={()=> setOpenDialog(true)}
         >
           <DeleteIcon fontSize="medium" sx={{"&:hover":{color:"green"}}} />
         </div>
+          <ConfirmDialog 
+            question={t("basket.removeoneprod")}
+            func={removeOneProduct}
+            title={t("settings.remove")}
+            open={openDialog}
+            close={setOpenDialog}
+            content={" "}
+            t={t}
+          />
     </div>
   )
 }

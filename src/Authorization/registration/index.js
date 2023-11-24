@@ -94,7 +94,7 @@ const Registration = ({logOutFunc, t}) => {
         />
       </Dialog>
 
-      <Dialog open={isLoad} onClose  ={()=>setIsLoad(false)}>
+      <Dialog open={isLoad}>
         <Loader/>
       </Dialog>
 

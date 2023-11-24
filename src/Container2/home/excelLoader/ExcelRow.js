@@ -151,7 +151,7 @@ const ExcelRow = ({prod,inputValue,setInputValue,checkRowStatus, row, t}) => {
               color: !allLanguageMeasures.includes(prod?.measure) && "white"}}
             >
               {measureLangArr.map((measure) => {
-                return <option style={{color:"black"}}value={measure} key={measure}>{measure}</option>
+                return <option style={{color:"black"}} value={measure} key={measure}>{measure}</option>
               })} 
             </select>  
           </div>

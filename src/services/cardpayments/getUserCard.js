@@ -11,7 +11,8 @@ export const getUserCards = async() => {
       };
     try{
         const data = await axios.get( baseUrl + "InternalPayments/GetUserCardsInfo",option)
-        return data?.data
+    console.log(data,"DATA")
+    return data?.data
         
     }catch(err){
         return err.response.status

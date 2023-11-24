@@ -50,7 +50,7 @@ const PasteExcelToReact = ({t, logOutFunc, loadBasket}) => {
         "photo": "",
         "barCode":  prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код"],
         "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"],
-        "purchasePrice": +prod?.["Ապրանքի ինքնարժեք / Purchase price / Закупочная цена"],
+        "purchasePrice": +prod?.["Ապրանքի ինքնարժեք / Purchase price / Закупочная цена"] || 0,
         "price": +prod?.["Վաճառքի գին / Product price / Цена продукта"],
         "discountedprice": 0,
         "discount": 0,

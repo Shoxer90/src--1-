@@ -179,13 +179,10 @@ const UpdateProduct = ({
      getSelectData()
    }
   };
-console.log(currentProduct,"CURRENT")
   useEffect(() => {
     getMeasure()
     setCurrentProduct({
       ...product,
-      // purchasePrice: product?.purchasePrice || "",
-      // discount: product?.discount || ""
     })
     priceValidate(product?.price, product?.discount, product?.discountType)
     setTitleName(` ${product?.brand} ${product?.name} (${product?.type})`)
@@ -201,7 +198,6 @@ console.log(currentProduct,"CURRENT")
       open={openUpdateProd}
       TransitionComponent={Transition}
       maxWidth="lg"
-      onClose={handleClose} 
       PaperProps={{
         style: {
           position: 'fixed'

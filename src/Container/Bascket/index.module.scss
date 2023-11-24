@@ -89,14 +89,12 @@
       text-align: start;
       align-content: center;
       align-self: center;
-      // font-size: 90%;
       &_title{
         color: black;
         font-weight: 600;
         font-size: 120%;
       }
       &_price{
-        // font-size: 80%;
         display: flex;
         justify-content: flex-start;
       }
@@ -152,6 +150,7 @@
 
 .saleInfoInputs{
   font-size: 100%;
+  
   & div{
     margin: 5px;
     & input{
@@ -167,18 +166,6 @@
     display: flex;
     justify-content: flex-start;
     flex-flow:nowrap;
-  }
-
-  
-  & input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  
-  /* Firefox */
-  input[type=number] {
-    appearance: textfield;
   }
 };
 

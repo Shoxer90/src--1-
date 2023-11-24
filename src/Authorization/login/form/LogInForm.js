@@ -76,7 +76,7 @@ const LogInForm = ({screenWidth,t,setMessage,whereIsMyUs, message,setIsLogIn}) =
     <div style={{minHeight: "60px",color:"red",fontSize:"small"}}>
       {(errors?.password ||  errors?.username )? <p>{errors?.password?.message || t("authorize.empty")}</p>:""}
       {message &&
-        <Alert  severity="error" onClose={() => {setMessage()}}>
+        <Alert  severity="error">
           <strong>{message}</strong>
         </Alert>
     }

@@ -59,7 +59,6 @@ const App = () => {
   const dispatch = useDispatch();
   const {user} = useSelector(state => state.user);
   const focusInput = useRef();
-
   const debounce = useDebonce(searchValue, 1000);
   const debounceBasket = useDebonce(barcodeScanValue, 20);
 
@@ -91,11 +90,6 @@ const App = () => {
     }
   };
 
-  const barcodeForSearchMining = async(barcode) => {
-    setSearchValue(barcode)
-  }
-  
-
   const byBarCodeSearching = async(barcode) => {
     if(barcode === "" || barcode === " "){
       await queryFunction(dataGroup, 1).then((res) => {
@@ -126,17 +120,21 @@ const App = () => {
 
   const loadBasket = async() => {
     let existArr = []
+    let arrForSale = []
     await getBasketContent().then((res) => {
       return res ? (
-        setBasketContent(res),
+      setBasketContent(res),
       setBasketGoodsqty(res?.length),
       res.forEach((item) => {
       existArr.push(item?.id)
+      arrForSale.push({id:item?.id, count:+item?.count})
     }),
       localStorage.setItem("basketExistId", JSON.stringify(existArr)),
+      localStorage.setItem("basketIdCount", JSON.stringify(arrForSale)),
       setBasketExist(localStorage.getItem("basketExistId"))
       ) : (
-        localStorage.setItem("basketExistId", JSON.stringify(existArr)),
+      localStorage.setItem("basketExistId", JSON.stringify(existArr)),
+      localStorage.setItem("basketIdCount", JSON.stringify(arrForSale)),
       setBasketExist(localStorage.getItem("basketExistId")),
       setBasketGoodsqty(0),
       setBasketContent([])
@@ -231,13 +229,10 @@ const App = () => {
   
   const logOutFunc = () =>{
     const language = localStorage.getItem("lang");
-
     setContent([]);
     localStorage.clear();
     localStorage.setItem("lang", language)
     setIsLogIn(false)
-    // navigate("/")
-
   };  
 
   const queryFunction = async(name, page=1) => {

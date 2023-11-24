@@ -7,11 +7,11 @@ const ProductPayment = ({t,
   checkDiscountVsProdPrice, 
   paymentInfo, 
   setPaymentInfo,
-  basketContent,
-  setSingleClick
+  setSingleClick,
+  trsf,
 }) => {
   const [val, setVal] = useState(totalPrice);
-  const [ flag, setFlag] = useState();
+  const [flag, setFlag] = useState();
   const [numberMind, setNumberMind] = useState();
 
   const discountChange = (e) => {
@@ -79,10 +79,15 @@ const ProductPayment = ({t,
 
   useEffect(() => {
     cashChanges()
-  },[flag])
+  },[flag]);
+ 
 
   useEffect(() => {
-    setPaymentInfo({
+    !val && setSingleClick({pointerEvents:"none"})
+  },[])
+
+  useEffect(() => {
+    !trsf && setPaymentInfo({
       ...paymentInfo,
       cashAmount:+( 
         totalPrice 
@@ -94,14 +99,6 @@ const ProductPayment = ({t,
     })
     setVal(totalPrice)
   }, [totalPrice, paymentInfo?.discount]);
-
-  useEffect(() => {
-    setPaymentInfo({
-      ...paymentInfo,
-      cashAmount: totalPrice,
-      sales:basketContent
-    })
-  }, []);
 
   return(
     <div className={styles.saleInfoInputs}>
@@ -154,6 +151,7 @@ const ProductPayment = ({t,
         <input
           value={paymentInfo?.cardAmount || ""}
           name="cardAmount"
+          autoComplete="off"
           onChange={(e)=> {
             handleChangeInput(e)
           }}
@@ -170,6 +168,7 @@ const ProductPayment = ({t,
         <input
           value={paymentInfo?.prePaymentAmount || ""}
           name="prePaymentAmount"
+          autoComplete="off"
           onChange={(e)=> {
             handleChangeInput(e)
            

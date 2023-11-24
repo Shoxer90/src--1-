@@ -56,7 +56,6 @@ const QRPay = ({
             <h5>
               {t("basket.scan")} 
             </h5>
-          
           </div>
           <Button onClick={closeQr} style={{margin:0}}>
             <CloseIcon   />
@@ -64,23 +63,13 @@ const QRPay = ({
         </Box>
         <Divider sx={{bgcolor:"black"}}/>
         <Divider sx={{mb:2,bgcolor:"black"}}/>
-            {/* <div className={styles.qr_partners}>
-              <img src="1 (2).png" alt="arca" />
-              <img src="1 (4).png" alt="evoca" />
-              <img src="1 (3).png" alt="ardshin" />
-              <img src="1 (7).png" alt="abb" />
-              <img src="1 (6).png" alt="uni" />
-              <img src="1 (5).png" alt="payx" /> */}
-              {/* <img src="1 (1).png" alt="ararat" /> */}
-            {/* </div> */}
-            <div className={styles.qr_qr}>
-              <QRCodeSVG value={value} size={250}/>
-              <Divider sx={{mb:2,mt:2,bgcolor:"black"}}/>
-
-              <h6>
-              {t("basket.amount")}: {paymentInfo?.cardAmount} {t("units.amd")}
+          <div className={styles.qr_qr}>
+            <QRCodeSVG value={value} size={250}/>
+            <Divider sx={{mb:2,mt:2,bgcolor:"black"}}/>
+            <h6>
+             {t("basket.amount")}: {paymentInfo?.cardAmount} {t("units.amd")}
             </h6>
-            </div>
+          </div>
       </DialogContent>:
       <Alert onClose={closeQr} severity="info"
        sx={{ width: '100%' }}>

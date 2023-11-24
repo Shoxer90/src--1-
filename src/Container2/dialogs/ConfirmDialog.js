@@ -2,7 +2,16 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/
 import React from "react";
 import { memo } from "react";
 
-const ConfirmDialog = ({question,func, title,open,close,content, t}) => {
+const ConfirmDialog = ({
+  question,
+  func, 
+  title,
+  open,
+  close,
+  content,
+  t,
+  nobutton
+}) => {
   return(
     <Dialog
       open={open}
@@ -15,7 +24,7 @@ const ConfirmDialog = ({question,func, title,open,close,content, t}) => {
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={()=>close(false)}>
-          {t("buttons.cancel")}
+          {nobutton || t("buttons.cancel")}
         </Button>
         <Button onClick={func}>{t("buttons.yes")}</Button>
       </DialogActions>

@@ -48,7 +48,7 @@ const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds})
               <input 
                 id="file-input" 
                 type="file" 
-                style={{display:"none"}} 
+                style={{display:"none"}}
                 onChange={(e)=>readExcel(e)}
                 accept=".xls,.xlsx"
               />

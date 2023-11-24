@@ -32,7 +32,7 @@ const ProductAdg = ({
         style={{width:"100%", height:"20px"}}
         name="type" 
         value={typeCode}
-        label={t("productinputs.typeurl1")}
+        label={`${t("productinputs.typeurl1")} *`}
         onChange={(e)=>{
           setTypeCode()
           setTypeCode(e.target.value)

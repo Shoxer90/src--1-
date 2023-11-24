@@ -1,9 +1,18 @@
+.userService{
+  align-self: center;
+  position: absolute;
+  margin: 0px 40px;
+  width: 95%;
+  top: 70px;
+}
+
+
 .creditCard{
   width: 340px;
   height: 200px;
   border-radius: 12px;
   padding: 10px 15px;
-  margin: 50px;
+  margin: 20px 50px;
   background: linear-gradient(0deg, rgba(26,61,48,1) 0%, rgba(63,182,138,1) 100%);
   color:white;
   font-size: 110%;
@@ -58,11 +67,11 @@
   }
 }  
 .card_pay_info{
+  // margin-top: 3dvh;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column wrap;
   justify-content: space-around;
-  align-content:center;
-  align-items: center; 
+  align-self: center;
   &_table{
     display: flex;
     flex-flow:column nowrap;
@@ -74,7 +83,6 @@
       padding: 5px;
       display: flex;
       justify-content: space-between;
-
     }
   }
 }
