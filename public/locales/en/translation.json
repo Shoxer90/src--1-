@@ -210,7 +210,7 @@
     "uploadform": "Upload the completed Excel form",
     "chooseExcel": "Choose Excel file",
     "measureCorrectForm" : "Attention «Measure» field has a clear format",
-
+    "vatCorrectForm":"If there are products not subject to VAT in the product list, mark «yes» in the column, otherwise, leave it empty.",
     "prod": " products"
   },
   "productcard": {
@@ -233,6 +233,7 @@
     "price": "Product price",
     "discount": "Product discount",
     "barcode": "Internal code/ Barcode",
+    "ndsNone": "Excluding VAT",
     "description": "Description",
     "delete_btn": "Delete from store",
     "measure": "Measure",
@@ -430,9 +431,11 @@
     "quantitynull": "This quantity is not available for purchase.",
     "unicBarCode": "A product with a similar barcode already exists.",
     "activateEhdm":"Do you really want to activate E-cash register?",
-    "deactivateEhdm":"Do you really want to deactivate E-cash register??",
+    "deactivateEhdm":"Do you really want to deactivate E-cash register ??",
     "deprecated": "The data is deprecated․ Please, confirm registration again",
-    "saveData": "Do you want to save the collected data?"
+    "saveData": "Do you want to save the collected data?",
+    "excelAddProds": "Would you like to download the product(s) to your store ?",
+    "excelCancelList": "Do you want to cancel changes ?"
 
   }
 }

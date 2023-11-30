@@ -30,7 +30,8 @@ import PrivacyPolicy from "./Privacy/index";
 
 import { fetchUser } from "./store/userSlice";
 import {useDispatch, useSelector} from "react-redux";
-import PasteExcelToReact from "./Container2/home/excelLoader/PasteExcelToReact";
+import PasteExcelToReact from "./Container2/home/excelLoader";
+
 import { Alert, Snackbar } from "@mui/material";
 import useDebonce from "./Container2/hooks/useDebonce";
 import { useRef } from "react";

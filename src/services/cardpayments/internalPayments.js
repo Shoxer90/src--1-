@@ -28,8 +28,9 @@ export const changeActiveStatus = async(id) => {
   
 export const removeBankCard = async(id) => {
   try{
-    const data = await axios.put(baseUrl + `InternalPayments/DeleteCard?CardId=${id}`, option())
+    const data = await axios.delete(baseUrl + `InternalPayments/DeleteCard?CardId=${id}`, option())
     console.log(data,"DATA")
+
     return data
   }catch(err){
     console.log(err,"err")

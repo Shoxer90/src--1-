@@ -3,6 +3,7 @@
   flex-flow: row nowrap;
   justify-content: space-around;
   &_item{
+    cursor: pointer;
     display: flex;
     flex-flow: column;
     justify-content: space-between;
@@ -12,7 +13,6 @@
     margin: 5px;
     width: 60%;
     &_icon{
-      cursor: pointer;
       margin: 0 auto;
       align-content: center;
       &:hover{

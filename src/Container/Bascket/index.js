@@ -159,11 +159,11 @@ const newSaleValidate = async() => {
 
 
   const sale = async(saletype) => {
-    let saleResponse = ""
+    let saleResponse = "";
     if(saletype === 1) {
       saleResponse = await saleProductFromBasket(paymentInfo)
     }else if(saletype === 2) {
-      saleResponse =  await payRequestQR(paymentInfo)
+      saleResponse = await payRequestQR(paymentInfo)
     }else if(saletype === 3) {
       setOpenPhonePay(true)
       return

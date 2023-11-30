@@ -18,50 +18,39 @@ const ClientCardContainer = () => {
   
   const {t} = useTranslation()
   const [userCardInfo,setUserCardInfo] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
   const [currentCard, setCurrentCard] = useState("");
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [message, setMessage] = useState({message:"", type:""});
   const [payForSeveralServices, setPayForSeveralServices] = useState(true);
   const [paymentAmount,setPaymentAmount] = useState(0);
   const [historyAndCardData, setHistoryAndCardData] = useState([]);
+  const [isDelete,setIsDelete] = useState(false);
+
   // const [payData,setPayData] = useState({
   //   serviceType: 0,
   //   // price: commitment,
   //   isBinding: true
   // });
 
-  const  defaultCardTexts= {
-    name:"XXXX",
-    surname:"XXXXXXXX",
-    bank: "XXXXXX XXXX",
-    expMonth: "mm",
-    expYear:"yy",
-    cvv:"",
-    cardNumOrigin:"xxxxxxxxxxxxxxxxxx",
-  };
-
   const removeCard = async(id) => {
     await removeBankCard(id).then((res) => {
-    if(res === 200) {
+      setIsDelete(!isDelete)
+      setOpenConfirmation(false)
       setMessage({message:t("dialogs.done"),type:"success"})
-    }else{
-      setMessage({message:t("dialogs.wrong"),type:"error"})
-    }
-  })
- };
+      changeActiveCard(userCardInfo[0]?.cardId)
+    })
+  };
 
   const changeActiveCard = async(id) => {
-   await changeActiveStatus(id).then((res) => {
+    await changeActiveStatus(id).then((res) => {
+     setCurrentCard(id)
     })
-  setCurrentCard(id)
-};
+  };
 
   const getCards = async() => {
     let cardArr = [];
     let fullName = '';
     await getUserCards().then((resp) => {
-      console.log(resp,"ACRDDD")
       if(resp.length === 1){
         fullName =  resp[0]?.cardHolder.split(" ");
         setUserCardInfo([{
@@ -95,15 +84,13 @@ const ClientCardContainer = () => {
     if (!currentCard) {
       changeActiveCard(resp[0]?.cardId)
     }
-    console.log(cardArr,"CARD ARAY")
-    console.log(currentCard,"current card")
     return setUserCardInfo(cardArr);
   }) 
   };
 
   useEffect(() => {
     getCards()
-  }, [currentCard]); 
+  }, [currentCard,isDelete]); 
 
   return (
     <div className={styles.userService}>
@@ -111,35 +98,18 @@ const ClientCardContainer = () => {
         <div className={styles.card_pay_info}>
           <div style={{display:"flex",alignItems:"center"}}>
             {
-              userCardInfo && userCardInfo.map((item, index) => (
-               item?.isActive ?
-                <CreditCardWrapper 
-                  key={index}
-                  setOpenConfirmation={setOpenConfirmation}
-                  element={<CreditCard 
-                    key={index} 
-                    userCardInfo={item }
-                  />}
-                /> :<CreditCardWrapper 
-                setOpenConfirmation={setOpenConfirmation}
-                element={<CreditCard 
-                  key={index} 
-                  userCardInfo={<CreditCardWrapper 
+              userCardInfo?.length && userCardInfo.map((item, index) => {
+                if(item?.isActive) {
+                  return <CreditCardWrapper 
+                    key={index}
                     setOpenConfirmation={setOpenConfirmation}
                     element={<CreditCard 
                       key={index} 
-                      userCardInfo={<CreditCardWrapper 
-                        setOpenConfirmation={setOpenConfirmation}
-                        element={<CreditCard 
-                          key={index} 
-                          userCardInfo={defaultCardTexts}
-                        />}
-                      />}
+                      userCardInfo={item }
                     />}
-                  />}
-                />}
-              />
-              ))
+                  />
+                }
+            })
             }
             <ServicePayDetails
               t={t}

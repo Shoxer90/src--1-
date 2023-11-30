@@ -36,22 +36,24 @@ const PasteExcelToReact = ({t, logOutFunc, loadBasket}) => {
         reject(error)
       }
     })
+    
     promise.then((res) => {
      const arr = []
-     res.forEach((prod) => {
+     console.log( res,"res")
+     res.forEach(prod => {
       return arr.push({
         "id": 0,
-        "type": `${prod?.["ԱՏԳ ԱԱ կոդ կամ ԱԴԳՏ դասակարգիչ / LP FEA code or PCTA classifier / ПП ВЭД код или КПВД классификатор"]}`,
+        "type": prod?.["ԱՏԳ ԱԱ կոդ կամ ԱԴԳՏ դասակարգիչ / LP FEA code or PCTA classifier / ПП ВЭД код или КПВД классификатор *"] || "",
         "dep": 0,
-        "name": prod?.["Ապրանքի անվանումը (50 նիշ) / Product Name (50 Symbols) / Название товара (50 символа)"],
-        "brand": prod?.["Ապրանքանիշ / Brand / Бренд"],
-        "measure": prod?.["Չափման միավոր / Measure / Мера"],
-        "otherLangMeasure":  prod?.["Չափման միավոր / Measure / Мера"],
+        "name": prod?.["Ապրանքի անվանումը (50 նիշ) / Product Name (50 Symbols) / Название товара (50 символа) *"] || "",
+        "brand": prod?.["Ապրանքանիշ / Brand / Бренд"] || "",
+        "measure": prod?.["Չափման միավոր / Measure / Мера *"] || "",
+        "otherLangMeasure":  prod?.["Չափման միավոր / Measure / Мера *"],
         "photo": "",
-        "barCode":  prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код"],
-        "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"],
+        "barCode":  prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] || "",
+        "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"] || "",
         "purchasePrice": +prod?.["Ապրանքի ինքնարժեք / Purchase price / Закупочная цена"] || 0,
-        "price": +prod?.["Վաճառքի գին / Product price / Цена продукта"],
+        "price": +prod?.["Վաճառքի գին / Product price / Цена продукта *"] || "",
         "discountedprice": 0,
         "discount": 0,
         "discountType": 0,
@@ -61,18 +63,17 @@ const PasteExcelToReact = ({t, logOutFunc, loadBasket}) => {
         "category": 0,
         "description":  "",
         "__rowNum__": prod?.__rowNum__,
-        "keyWords": [
-          {
-            "id": 0,
-            "keyWord": ""
-          }
-        ]
+        "keyWords": [{
+          "id": 0,
+          "keyWord": ""
+        }],
+        "nds": +prod?.["ԱԱՀ - ով չհարկվող / Excluding VAT / Без учета НДС"] ? true : false,
       })
     })
     setUploadFile(arr)
-      setIsLoad(false)
-    })
-};
+    setIsLoad(false)
+  })
+  };
 
 const checkRowStatus = async(obj, row) => {
   const rowObjToArr = Array.from(Object.values(obj))
@@ -115,6 +116,7 @@ const checkRowStatus = async(obj, row) => {
       confirmExcelList(uploadFile)
     }
   };
+
   const closeWindowAndReload = () => {
     setMessage()
     navigate("/")
@@ -146,7 +148,7 @@ const checkRowStatus = async(obj, row) => {
             <tr>
               <th scope="col"> N </th>
               <th scope="col">
-                <div>{t("productinputs.code")}</div>
+                <div>{`${t("productinputs.code")} *`}</div>
                 <a style={{fontSize:"65%",padding:"1px"}} 
                   target="_blank"
                   rel="noreferrer"
@@ -154,13 +156,14 @@ const checkRowStatus = async(obj, row) => {
                   {t("productinputs.typeurl1")}
                 </a>
                 </th>
-              <th scope="col">{t("productinputs.name")}</th>
+              <th scope="col">{`${t("productinputs.name")} *`}</th>
               <th scope="col">{t("productinputs.brand")}</th>
               <th scope="col">{t("productinputs.count")}</th>
-              <th scope="col">{t("productinputs.measure")}</th>
+              <th scope="col">{`${t("productinputs.measure")} *`}</th>
               <th scope="col">{t("productinputs.purchase")}</th>
-              <th scope="col">{t("productinputs.price")}</th>
-              <th scope="col">{t("productinputs.barcode")}</th>
+              <th scope="col">{`${t("productinputs.price")} *`}</th>
+              <th scope="col">{`${t("productinputs.barcode")} *`}</th>
+              <th scope="col">{t("productinputs.ndsNone")}</th>
             </tr>
           </thead>
           {uploadFile.map((prod,index) => {

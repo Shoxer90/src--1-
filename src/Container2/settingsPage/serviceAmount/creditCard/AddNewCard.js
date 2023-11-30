@@ -1,26 +1,23 @@
-import React, { memo } from 'react'
-
-import CreditCard from './CreditCard';
-import styles from "../index.module.scss"
+import React, { memo } from 'react';
 
 import { Dialog, Divider } from '@mui/material';
-import { useState } from 'react';
-import NewCardForm from './NewCardForm';
 import CloseIcon from '@mui/icons-material/Close';
 
+import CreditCard from './CreditCard';
+import NewCardForm from './NewCardForm';
 
+import styles from "../index.module.scss";
 
-// const AddNewCard = ({userCardInfo, t, isOpen, setIsOpen, createCreditCard}) => {
-  const AddNewCard = ({
-    func, 
-    card,
-    setCard, 
-    isOpen, 
-    setIsOpen, 
-    t, 
-    title,
-    btn
-    }) => {
+const AddNewCard = ({
+func, 
+card,
+setCard, 
+isOpen, 
+setIsOpen, 
+t, 
+title,
+btn
+}) => {
 
   return (
     <div className={styles.newCard} >

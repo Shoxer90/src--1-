@@ -1,18 +1,28 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { allLanguageMeasures, takeMeMeasureArr } from '../../../modules/modules';
 
 import styles from "./index.module.scss";
 import { adgValidation, barcodeValidation, measureValidation, nameLimitValidation, priceValidation } from '../../../modules/excelCeilValidation';
 
-const ExcelRow = ({prod,inputValue,setInputValue,checkRowStatus, row, t}) => {
+const ExcelRow = ({
+  prod,
+  inputValue,
+  setInputValue,
+  checkRowStatus,
+  row, 
+  t
+}) => {
   const [measureLangArr,setMeasureLangArr] = useState([]);
   const [isValidCurrentProd, setIsValidCurrentProd] = useState({});
+  const ref = useRef();
+
   const errorStyle = {
     border: "solid red 2px",
     color:"red"
   }
 
   const handleChange = (name,value) => {
+    console.log(name,value,"NAME VALUE")
     const arr = [];
     inputValue.map((row) => {
       if(row?.__rowNum__=== prod?.__rowNum__){
@@ -76,7 +86,7 @@ const ExcelRow = ({prod,inputValue,setInputValue,checkRowStatus, row, t}) => {
   useEffect(()=> {
     filterValidRow()
    },[inputValue]);
-
+console.log(ref,"ref")
   return (
     <tr className={styles.tablerow}>
       <th scope="row">{prod?.__rowNum__}</th>
@@ -88,7 +98,7 @@ const ExcelRow = ({prod,inputValue,setInputValue,checkRowStatus, row, t}) => {
               adgValidation(e.target.value)
             ): setIsValidCurrentProd({
               ...isValidCurrentProd,
-              adg:false
+              adg: false
             })  
           }}  
           value={prod?.type}
@@ -109,12 +119,11 @@ const ExcelRow = ({prod,inputValue,setInputValue,checkRowStatus, row, t}) => {
           }}
           value={prod?.name}
           name="name"
-          style={!isValidCurrentProd?.name ? errorStyle : undefined}
+          style={!isValidCurrentProd?.name || !prod?.name  ? errorStyle : undefined}
         />
       </td>
       <td>
         <input
-          onError={!prod?.brand} 
           onChange={(e)=> handleChange(e.target.name,e.target.value)} 
           value={prod?.brand} 
           name="brand" 
@@ -139,11 +148,12 @@ const ExcelRow = ({prod,inputValue,setInputValue,checkRowStatus, row, t}) => {
       </td>
        <td>
           <div>
-            {
+            {/* {
               !allLanguageMeasures.includes(prod?.measure) &&
-              <span style={{position: "absolute",textAlign:"center",paddingLeft:"5px",color:"red"}}>{prod?.measure}</span>
-            }
+              <span  onClick={()=> ref.current.click() } style={{position: "absolute",textAlign:"center",paddingLeft:"5px",color:"red"}}>{prod?.measure}</span>
+            } */}
             <select 
+            ref={ref}
               onChange={(e)=> handleChange(e.target.name,e.target.value)}
               value={allLanguageMeasures.includes(prod?.measure)? t(`units.${prod?.measure}`) : t(`authorize.errors.err`)} 
               name="measure"
@@ -152,7 +162,7 @@ const ExcelRow = ({prod,inputValue,setInputValue,checkRowStatus, row, t}) => {
             >
               {measureLangArr.map((measure) => {
                 return <option style={{color:"black"}} value={measure} key={measure}>{measure}</option>
-              })} 
+              })}  
             </select>  
           </div>
       </td>
@@ -172,7 +182,7 @@ const ExcelRow = ({prod,inputValue,setInputValue,checkRowStatus, row, t}) => {
           }}
           value={prod?.price} 
           name="price"
-          style={!isValidCurrentProd?.price ? errorStyle : undefined}
+          style={!isValidCurrentProd?.price || !prod?.price? errorStyle : undefined}
         />
       </td>
       <td>
@@ -184,7 +194,15 @@ const ExcelRow = ({prod,inputValue,setInputValue,checkRowStatus, row, t}) => {
           }}
           value={prod?.barCode}
           name="barCode"
-          style={!isValidCurrentProd?.barCode ? errorStyle : undefined}
+          style={!isValidCurrentProd?.barCode || prod?.barCode===undefined || !prod?.barCode? errorStyle : undefined}
+        />
+      </td>
+      <td>
+        <input 
+          type="checkbox"
+          onChange={(e)=> handleChange(e.target.name,e.target.checked)} 
+          checked={prod?.nds} 
+          name="nds"
         />
       </td>
   </tr>

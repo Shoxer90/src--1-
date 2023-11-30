@@ -1,7 +1,7 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import ActivateCreditCard from "../creditCard/ActivateCreditCard";
 
-import { Button, Checkbox, FormControlLabel } from "@mui/material";
+import { Button } from "@mui/material";
 import PaymentIcon from '@mui/icons-material/Payment';
 
 import styles from "./index.module.scss";
@@ -15,8 +15,11 @@ const ServicePayDetails = ({
   payForSeveralServices,
   setPayForSeveralServices, 
 }) => {
+
+  const [ isOpen, setIsOpen] = useState(false);
+
   return (
-      <div style={{display:"flex", flexFlow:"column",margin:"20px"}}>
+    <div style={{display:"flex", flexFlow:"column",margin:"20px"}}>
       {userCardInfo?.length ? 
         <ActivateCreditCard 
           t={t} 
@@ -35,7 +38,6 @@ const ServicePayDetails = ({
 
       </div>
       {/* checkbox for choosing pay for several services or for one,if you want use it change payForSeveralServices to false in useState */}
-
         {/* <FormControlLabel
         style={{alignSelf:"start"}} 
           sx={{m:0, mt:3}}
@@ -45,10 +47,10 @@ const ServicePayDetails = ({
             onClick={(e)=>setPayForSeveralServices(e.target.checked)}
           />}
         /> */}
-
-        <div className={styles.serviceAmount} >
-          {payForSeveralServices && <>
-            <div>
+      <div className={styles.serviceAmount} >
+        {payForSeveralServices && 
+          <>
+            <div style={{fontWeight:500}}>
               <span>{t("basket.totalndiscount")} </span>
               <span style={{marginLeft:"10px"}}> {paymentAmount} {t("units.amd")}</span>
             </div>
@@ -63,7 +65,8 @@ const ServicePayDetails = ({
               }}>
               {t("basket.linkPayment")} 
             </Button> 
-          </>}
+          </>
+        }
       </div>
     </div>
   )

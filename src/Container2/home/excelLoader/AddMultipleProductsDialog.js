@@ -1,5 +1,5 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from "./index.module.scss";
@@ -9,11 +9,15 @@ import { getExcelEmptyForm} from '../../../services/excel/excel';
 import { saveAs } from 'file-saver';
 import { useNavigate } from 'react-router-dom';
 import MeasureCorrect from './MeasureCorrect';
+import VatCorrect from './VatCorrect';
+import ConfirmDialog from '../../dialogs/ConfirmDialog';
 
 
 const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds}) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
+  const ref = useRef();
+  const [openConfirm, setOpenConfirm] = useState(0);
 
 // download excel
   const fileReader = async() => {
@@ -21,34 +25,40 @@ const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds})
       saveAs(new Blob([resp], {type: 'application/octet-stream'}), `StoreXEmptyForm.xlsx`)
     })
   };
+  const handleSubmit = () => {
+    createMultipleProds()
+    setOpenConfirm(0)
+  }
 
   return (
     <div>
       <h5>{t("mainnavigation.multipleproduct")}</h5>
      {!uploadFile &&
+
         <DialogContent dividers className={styles.excelLoaderContent}>
           <div className={styles.excelLoaderContent_item}>
             <p>{t("mainnavigation.multipleProductText1")}</p>
+            <MeasureCorrect t={t}/>
+            <VatCorrect t={t} />
             <Button variant="contained" sx={{backgroundColor:"green",fontSize:"70%"}} onClick={fileReader} >
               <GetAppIcon />
               {t("mainnavigation.downloadform")}
             </Button>
           </div>
-          <div className={styles.excelLoaderContent_item}>
+          <div onClick={() => ref.current.click()} className={styles.excelLoaderContent_item}>
             <p>{t("mainnavigation.multipleProductText2")}</p>
-            <MeasureCorrect t={t}/>
             <Button
               variant="contained" 
               sx={{backgroundColor:"green",fontSize:"60%"}} 
             >
-              <label htmlFor="file-input">
+              <label htmlFor="file-input" style={{cursor:"pointer"}}>
                 <FileUploadIcon />
                 {t("mainnavigation.uploadform")}
               </label>
               <input 
-                id="file-input" 
+                ref={ref}
                 type="file" 
-                style={{display:"none"}}
+                style={{display:"none",cursor: "pointer"}}
                 onChange={(e)=>readExcel(e)}
                 accept=".xls,.xlsx"
               />
@@ -58,16 +68,32 @@ const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds})
       }
       <DialogActions>
         {uploadFile && 
-          <Button variant="contained" style={{margin:"2px 20px",background:"green"}} onClick={createMultipleProds}>
+          <Button 
+            variant="contained" 
+            style={{margin:"2px 20px",background:"green"}} 
+            onClickCapture={()=> setOpenConfirm(1)}
+          >
             {t("buttons.createMultiProds")}
           </Button>
         }
-        <Button autoFocus style={{margin:"2px 20px"}} onClick={()=>navigate("/")}>
+        <Button 
+          autoFocus 
+          style={{margin:"2px 20px"}} 
+          onClickCapture={()=> setOpenConfirm(2)}
+        >
           {t("buttons.cancel")}
         </Button>
       </DialogActions>
+      <ConfirmDialog 
+        question={openConfirm===1?t("dialogs.excelAddProds"): t("dialogs.excelCancelList")}
+        func={openConfirm===1? handleSubmit :()=>navigate("/")}
+        title={openConfirm===1?t("buttons.submit"): t("buttons.cancel")}
+        open={Boolean(openConfirm)}
+        close={setOpenConfirm}
+        t={t}
+      />
     </div>
   )
-}
+};
 
 export default memo(AddMultipleProductsDialog);
