@@ -51,6 +51,7 @@
 
   },
   "units": {
+    "min": "minimal",
     "amd": " AMD",
     "loader": "Loading...",
     "refresh": "Program not responding, please reload the page",
@@ -377,7 +378,10 @@
     "successTitle":"Data for Login to StoreX",
     "isregistrehdm": "In order to activate the function of generating e-cash register, it is necessary to have contract  with PayX LLC on the service of e-cash register",
     "addCard": "Pay by New Card",
-    "payByActiveCard": "Make a payment with an active card"
+    "payByActiveCard": "Make a payment with an active card",
+    "checkArcaStatus": "Checking Card Attach Status",
+    "priceListSubTitle1": "Services"
+
 
   },
   "cardService":{

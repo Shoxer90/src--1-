@@ -6,7 +6,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { updateProduct } from "../../../services/products/productsRequests";
 import { Box } from "@mui/system";
-import { Divider, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Checkbox, Divider, FormControl, FormControlLabel, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -362,6 +362,17 @@ const UpdateProduct = ({
           <div style={{height:"40px",width:"98%",color:"red",fontSize:"80%"}}>
           {fixMessage && <p>{fixMessage}</p>}
           </div>
+          <Box>
+            {currentProduct?.dep === 2 && 
+              <FormControlLabel 
+                style={{alignSelf:"start"}}
+                name="dep"
+                control={<Checkbox />} 
+                label={t("productinputs.ndsNone")}
+                checked={currentProduct?.dep === 2}
+              />
+            }
+          </Box>
           <Box>
             <div style={{margin:"0px"}}>
               {t("productinputs.updatedate")} 

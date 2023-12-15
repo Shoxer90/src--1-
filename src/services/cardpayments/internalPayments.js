@@ -29,11 +29,8 @@ export const changeActiveStatus = async(id) => {
 export const removeBankCard = async(id) => {
   try{
     const data = await axios.delete(baseUrl + `InternalPayments/DeleteCard?CardId=${id}`, option())
-    console.log(data,"DATA")
-
     return data
   }catch(err){
-    console.log(err,"err")
     return err.response.status
   }
 };
@@ -73,10 +70,19 @@ export const bindNewCard = async() => {
     },
   };
   try{
-    const data = await axios.post(baseUrl + `InternalPayments/AttachCard`, {isBinding: true}, option)
+    const data = await axios.post(baseUrl + `InternalPayments/AttachCard`, {isBinding: false}, option)
     return data?.data
   }catch(err){
     return err.response.status
   }
 };
+
+export const sendIdForPayStatusChecking = async(id) => {
+  try{
+    const data = await axios.get( baseUrl + `InternalPayments/CheackStatusArca?OrderId=${id}`, option)
+    return data?.data
+  }catch(err){
+    return err?.response?.status
+  }
+}
   

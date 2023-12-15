@@ -1,9 +1,7 @@
 .userService{
-  align-self: center;
-  position: absolute;
-  margin: 0px 40px;
-  width: 95%;
-  top: 70px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
 }
 
 
@@ -12,7 +10,7 @@
   height: 200px;
   border-radius: 12px;
   padding: 10px 15px;
-  margin: 20px 50px;
+  margin: 10px;
   background: linear-gradient(0deg, rgba(26,61,48,1) 0%, rgba(63,182,138,1) 100%);
   color:white;
   font-size: 110%;
@@ -69,7 +67,7 @@
 .card_pay_info{
   // margin-top: 3dvh;
   display: flex;
-  flex-flow: column wrap;
+  // flex-flow: row wrap;
   justify-content: space-around;
   align-self: center;
   &_table{
@@ -128,7 +126,13 @@
       // font-size: 110%;
       color: orangered;
     }
-
   }
+}
 
+@media screen and (max-width: 1200px) {
+  .card_pay_info{
+    flex-flow: column wrap;
+    margin: 0px;
+    padding: 0px;
+  }
 }

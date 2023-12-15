@@ -7,6 +7,7 @@ import styles from "../index.module.scss"
   const [val,setVal] = useState("");
 
   const handleChangePrepayment = async(event) => {
+    if(event.target.value === ".")return
     !event.target.value.length || !+event.target.value ?
      setSingleClick({pointerEvents:"none"}) : setSingleClick({})
     const valid = /^\d*\.?(?:\d{1,2})?$/;
@@ -17,8 +18,6 @@ import styles from "../index.module.scss"
       return 
     }
   };
-console.log(basketContent?.length,"CONTENT")
-console.log(paymentInfo?.cashAmount,"cash")
   useEffect(() => {
    !basketContent?.length && !val && setSingleClick({pointerEvents:"none"}) &&
    setPaymentInfo({
@@ -42,7 +41,6 @@ console.log(paymentInfo?.cashAmount,"cash")
       <div>
       <span>{t("basket.useprepayment")}</span>
       <input
-        type="number"
         value={val}
         name="cashAmount"
         onChange={(e)=>{
@@ -57,7 +55,6 @@ console.log(paymentInfo?.cashAmount,"cash")
       <div>
        <span>{t("history.cash")}</span> 
         <input
-          type="number"
           value={val-paymentInfo?.cardAmount || ""}
           name="cashAmount"
           readOnly

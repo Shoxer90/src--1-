@@ -4,13 +4,12 @@ import { useNavigate } from "react-router-dom";
 import ClientShopAvatar from "./ClientShopAvatar";
 import { Button, Card, Dialog, FormControlLabel } from "@mui/material";
 import  { changeEHDM} from "../../services/user/userInfoQuery";
-import Cashiers from "./Cashiers";
+import SettingsContent from "./content";
 import SnackErr from "../dialogs/SnackErr";
 import ClientInfo from "./ClientInfo";
 import AddNewClientInfo from "../dialogs/AddNewClientInfo";
 import IOSSwitch from "../../modules/iosswitch";
 import ConfirmDialog from "../dialogs/ConfirmDialog";
-
 import styles from "./index.module.scss";
 import { useSelector } from "react-redux";
 
@@ -23,6 +22,7 @@ const SettingsPage = ({t, whereIsMyUs, setUserData}) => {
   const [message, setMessage] = useState();  
   const [confirmSwitch, setConfirmSwitch] = useState(false);
   const navigate = useNavigate();
+
 
   const {user} = useSelector(state => state.user)
 
@@ -49,19 +49,41 @@ const SettingsPage = ({t, whereIsMyUs, setUserData}) => {
   }, [synth, message]);
 
   return( 
-    <Card
-      sx={{ 
-        width: "95%",
-        position: "absolute",
-        top: "70px",
-        left: 0,
-        margin: 2, 
-        boxShadow: 12, 
+    <div
+      style={{ 
+        marginTop: "75px",
         height: "86vh",
-        display: "inline-block", 
-        overflowY: "auto"
       }}
     >
+      <div className={styles.settings}>
+        <div className={styles.settings_user}>
+          <ClientShopAvatar 
+            client={ user}
+            setClient={setUserData}
+          />
+          <h4 className={styles.settings_user_name}>
+            {user?.firstname} {user?.lastname}  
+          </h4>
+
+          <FormControlLabel
+            control={<IOSSwitch 
+              label={t("settings.switcher")}
+              checked={ !!user?.isEhdmStatus}
+              onChange={() => {
+                 setConfirmSwitch(true)}
+              }
+              sx={{ m: 1 }} 
+            />}
+          />
+          {user && <ClientInfo />}
+        
+          <Button onClick={()=>addClientInfo("password")}>
+            {t("settings.changepassword")} 
+          </Button>
+          
+        </div>
+        <SettingsContent />
+      </div>
       {confirmSwitch && 
         <ConfirmDialog
           question={user?.isEhdmStatus ? 
@@ -80,37 +102,6 @@ const SettingsPage = ({t, whereIsMyUs, setUserData}) => {
           <SnackErr type={type} message={message}/>
         </Dialog>
       }
-      <div className={styles.settings}>
-        <div className={styles.settings_user}>
-          <ClientShopAvatar 
-            client={ user}
-            setClient={setUserData}
-          />
-          <h4 className={styles.settings_user_name}>
-            { user?.firstname} { user?.lastname}  
-          </h4>
-
-          <FormControlLabel
-            control={<IOSSwitch 
-              label={t("settings.switcher")}
-              checked={ !!user?.isEhdmStatus}
-              onChange={() => {
-                 setConfirmSwitch(true)}
-              }
-              sx={{ m: 1 }} 
-            />}
-          />
-          {user && <ClientInfo />}
-          <Button onClick={()=>navigate("/setting/club")}>
-            {t("cardService.btnTitle")}
-          </Button>
-          <Button onClick={()=>addClientInfo("password")}>
-            {t("settings.changepassword")} 
-          </Button>
-          
-        </div>
-        <Cashiers t={t} screen={window.innerWidth}/>
-      </div>
       <AddNewClientInfo 
         t={t}
         message={message}
@@ -122,7 +113,7 @@ const SettingsPage = ({t, whereIsMyUs, setUserData}) => {
         type={type}
         setType={setType}
       />
-    </Card>
+    </div>
   )
 };
 

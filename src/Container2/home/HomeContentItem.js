@@ -156,7 +156,6 @@ const HomeContentItem = ({
             {t("productcard.remainder")} {product?.remainder} {t(`units.${product?.measure}`)}
           </div>
           <div style={{fontSize:"80%",letterSpacing:"0.1px",padding:"3px"}}>
-          <span style={{fontWeight:"700"}}>III </span>
             {product?.barCode}
           </div>
           <div className={styles.productContent_item_addBasket}>

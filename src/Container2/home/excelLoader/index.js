@@ -10,12 +10,13 @@ import Loader from '../../loading/Loader';
 import SnackErr from '../../dialogs/SnackErr';
 import { useNavigate } from 'react-router-dom';
 
-const PasteExcelToReact = ({t, logOutFunc, loadBasket}) => {
+const PasteExcelToReact = ({t, logOutFunc, loadBasket,setFlag,flag}) => {
   const navigate = useNavigate();
   const [uploadFile,setUploadFile] = useState();
   const [isLoad,setIsLoad] = useState();
   const [message,setMessage] = useState({m:"",t:""});
   const [rowStatus,setRowStatus] = useState({});
+  const [barCodes,setBarCodes] = useState([]);
 
  const readExcel = (e) => {
   setIsLoad(true)
@@ -38,22 +39,24 @@ const PasteExcelToReact = ({t, logOutFunc, loadBasket}) => {
     })
     
     promise.then((res) => {
-     const arr = []
-     console.log( res,"res")
+     const arr = [];
+     const barcodeList = []
      res.forEach(prod => {
+      prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] && barcodeList.push(prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"])
       return arr.push({
         "id": 0,
         "type": prod?.["ԱՏԳ ԱԱ կոդ կամ ԱԴԳՏ դասակարգիչ / LP FEA code or PCTA classifier / ПП ВЭД код или КПВД классификатор *"] || "",
-        "dep": 0,
+        "dep":  prod?.["ԱԱՀ - ով չհարկվող / Excluding VAT / Без учета НДС"] ? 2 : 0,
         "name": prod?.["Ապրանքի անվանումը (50 նիշ) / Product Name (50 Symbols) / Название товара (50 символа) *"] || "",
         "brand": prod?.["Ապրանքանիշ / Brand / Бренд"] || "",
-        "measure": prod?.["Չափման միավոր / Measure / Мера *"] || "",
-        "otherLangMeasure":  prod?.["Չափման միավոր / Measure / Мера *"],
+        "measure": prod?.["Չափման միավոր / Measure / Мера *"] ,
+        // "otherLangMeasure":  prod?.["Չափման միավոր / Measure / Мера *"],
+        "otherLangMeasure": "",
         "photo": "",
         "barCode":  prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] || "",
-        "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"] || "",
-        "purchasePrice": +prod?.["Ապրանքի ինքնարժեք / Purchase price / Закупочная цена"] || 0,
-        "price": +prod?.["Վաճառքի գին / Product price / Цена продукта *"] || "",
+        "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"] || 0,
+        "purchasePrice": prod?.[" Ապրանքի ինքնարժեք / Purchase price / Закупочная цена "] ,
+        "price": +prod?.[" Վաճառքի գին / Product price / Цена продукта * "] || 0,
         "discountedprice": 0,
         "discount": 0,
         "discountType": 0,
@@ -67,15 +70,16 @@ const PasteExcelToReact = ({t, logOutFunc, loadBasket}) => {
           "id": 0,
           "keyWord": ""
         }],
-        "nds": +prod?.["ԱԱՀ - ով չհարկվող / Excluding VAT / Без учета НДС"] ? true : false,
       })
     })
     setUploadFile(arr)
+   
     setIsLoad(false)
   })
   };
 
 const checkRowStatus = async(obj, row) => {
+  console.log(obj,"OB")
   const rowObjToArr = Array.from(Object.values(obj))
   if(rowObjToArr.includes(false)) {
     setRowStatus({
@@ -105,10 +109,14 @@ const checkRowStatus = async(obj, row) => {
       setMessage({m: t("dialogs.done"),t: "success"})
     })
  }
+ console.log(uploadFile, "uploadFile")
 
   const createMultipleProds = async() => {
+    console.log(rowStatus, "RowStatus")
+    console.log(uploadFile, "uploadFile")
+
     setIsLoad(true)
-    let statusArray = Array.from(Object.values(rowStatus))
+    let statusArray = Array.from(Object.values(rowStatus));
     if(statusArray.includes(false)) {
       setIsLoad(false)
       setMessage({m: t("cardService.wrongCeil"),t: "error"})
@@ -119,10 +127,8 @@ const checkRowStatus = async(obj, row) => {
 
   const closeWindowAndReload = () => {
     setMessage()
-    navigate("/")
-    loadBasket()
+    setFlag(flag+1)
   }
-
 
   return (
     <div style={{marginTop:"100px"}}>
@@ -130,9 +136,9 @@ const checkRowStatus = async(obj, row) => {
         <Loader close={()=>setIsLoad(false)}/>
       </Dialog>
       {message &&
-      <Dialog open={Boolean(message?.m)}>
-        <SnackErr message={message?.m} close={message?.t==="success" ? closeWindowAndReload: setMessage} type={message?.t} />
-      </Dialog>
+        <Dialog open={Boolean(message?.m)}>
+          <SnackErr message={message?.m} close={message?.t==="success" ? closeWindowAndReload: setMessage} type={message?.t} />
+        </Dialog>
       }
       <AddMultipleProductsDialog 
         uploadFile={uploadFile}
@@ -161,7 +167,7 @@ const checkRowStatus = async(obj, row) => {
               <th scope="col">{t("productinputs.count")}</th>
               <th scope="col">{`${t("productinputs.measure")} *`}</th>
               <th scope="col">{t("productinputs.purchase")}</th>
-              <th scope="col">{`${t("productinputs.price")} *`}</th>
+              <th scope="col">{`${t("productinputs.price")} (${t("units.min")} 1 ${t("units.amd")})*`}</th>
               <th scope="col">{`${t("productinputs.barcode")} *`}</th>
               <th scope="col">{t("productinputs.ndsNone")}</th>
             </tr>
@@ -176,11 +182,12 @@ const checkRowStatus = async(obj, row) => {
                 checkRowStatus={checkRowStatus}
                 row={index+1}
                 t={t}
+                setBarCodes={setBarCodes}
+                barCodes={barCodes}
               />
             </tbody>
           })}
         </table>
-        
       }
     </div>
   );

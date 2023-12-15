@@ -7,7 +7,7 @@ import { useState } from "react";
 import { createProduct, uniqueBarCode } from "../../../services/products/productsRequests";
 import { useEffect } from "react";
 import { Box } from "@mui/system";
-import { DialogContent, Divider, FormControl, InputLabel, MenuItem, Select, Slide, TextField } from "@mui/material";
+import { Checkbox, DialogContent, Divider, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Slide, TextField } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import SnackErr from "../../dialogs/SnackErr"
 import { getMeasureByNum } from "../../../modules/modules";
@@ -39,11 +39,12 @@ const AddNewProduct = ({
 }) => {
 
   const [type, setType] = useState("success");
-	const [message,setMessage] = useState("");
+  const [regime, setRegime] = useState();
+	const [message, setMessage] = useState("");
   const [measureStr, setMeasure] = useState("");
+  const [openForSave, setOpenForSave] = useState(false);
   const [emptyValidate, setEmptyValidate] = useState(false);
-  const [isUniqBarCode,setIsUniqBarcode] = useState(true);
-  const [openForSave,setOpenForSave] = useState(false);
+  const [isUniqBarCode, setIsUniqBarcode] = useState(true);
 
   const onlyNumberAndADot = (event,num) => {
     const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
@@ -76,13 +77,27 @@ const AddNewProduct = ({
   };
 
   const create = async() => {
-    localStorage.removeItem("newProduct")
+    if(!newProduct?.barCode ||
+      !newProduct?.name ||
+      !newProduct?.price ||
+      !newProduct?.type ||
+      !newProduct?.measure
+    ) {
+      setEmptyValidate(true)
+      setType("error")
+      setMessage(t("authorize.errors.emptyfield"))
+      return
+    }
     await uniqueBarCode(newProduct?.barCode).then((res) => {
       if(res){
+
         setIsUniqBarcode(true)
          createProduct(newProduct).then((res)=> {
           setEmptyValidate(true)
-          if(res === 500){
+          if(res === 400){
+            setType("error")
+            setMessage(t("authorize.errors.emptyfield"))
+          }else if(res === 500) {
             setType("error")
             setMessage(t("dialogs.wrong"))
           }else if(newProduct.price < 1){
@@ -183,7 +198,6 @@ const AddNewProduct = ({
       setTypeCode(savedData?.type)
     } 
   }
-
   useEffect(() => {
     openNewProd && getSelectData()
   }, [typeCode]);
@@ -191,6 +205,7 @@ const AddNewProduct = ({
   useEffect(() => {
     checkStorageSavedData()
     setTypeCode(newProduct?.type)
+    setRegime( localStorage.getItem("taxRegime"))
   }, []);
   return (
     <Dialog
@@ -343,6 +358,21 @@ const AddNewProduct = ({
                 setProduct={setProduct}
               />
           </Box>
+          {
+            regime === "1" &&
+            <div className={styles.duoInput}>
+            <FormControlLabel 
+              style={{alignSelf:"start"}}
+              name="dep"
+              control={<Checkbox />} 
+              label={t("productinputs.ndsNone")}
+              checked={newProduct?.dep}
+              onChange={(e)=> setProduct({
+                ...newProduct,
+                [e.target.name]: e.target.checked? 2 : 0,
+              })}
+            />
+          </div>}
         </div>
       </DialogContent>
       <Dialog open={message}>

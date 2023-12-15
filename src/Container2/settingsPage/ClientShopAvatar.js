@@ -17,7 +17,7 @@ const ClientShopAvatar = ({client, setClient}) => {
         logo: reader.result
       })
     }
-  }
+  };
 
   return(
     <div className={styles.settingsCont_avatar}>

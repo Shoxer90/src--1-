@@ -3,13 +3,13 @@ import  React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { memo } from "react";
-import { getCashiers, operationCashiers, setCashierEhdmStatus, setCashierReverseStatus, updateCashiersData } from "../../services/user/userInfoQuery";
+import { getCashiers, operationCashiers, setCashierEhdmStatus, setCashierReverseStatus, updateCashiersData } from "../../../services/user/userInfoQuery";
 import styles from "./index.module.scss";
-import NewCashier from "../dialogs/NewCashier";
-import UpdateCashiers from "../dialogs/updateCashiers";
-import ConfirmDialog from "../dialogs/ConfirmDialog";
+import NewCashier from "../../dialogs/NewCashier";
+import UpdateCashiers from "../../dialogs/updateCashiers";
+import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import CashiersItem from "./CashiersItem";
-import SnackErr from "../dialogs/SnackErr";
+import SnackErr from "../../dialogs/SnackErr";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 const Cashiers = ({t, logOutFunc, screen}) => {
@@ -107,8 +107,10 @@ const Cashiers = ({t, logOutFunc, screen}) => {
 
   return (
     <div style={{width:"100%"}}>
-      <div className={styles.cashier_title}>
-        <h3 style={{color:"#1976d2"}}>{t("settings.cashiers")}</h3>
+      {/* <div className={styles.cashier_title}>
+        <h6 style={{color:"#1976d2"}}>
+          {t("dialogs.newcashier")}
+        </h6>
         <Avatar
           onClick={()=>{
             setOpenCashierDail(true)
@@ -122,9 +124,22 @@ const Cashiers = ({t, logOutFunc, screen}) => {
          >
          <GroupAddIcon />
         </Avatar> 
-      </div>
+      </div> */}
       <Divider color="black" />
       <div className={styles.cashier}>
+      <Avatar
+          onClick={()=>{
+            setOpenCashierDail(true)
+            setUserInfo({})
+          }}
+          sx={{ 
+            "&:hover": { bgcolor: '#1976d2' , color:"white"}, 
+            margin: 1,
+            cursor:"pointer"
+          }}
+         >
+         <GroupAddIcon />
+        </Avatar> 
         {cashiers && cashiers.map((employee, index) => ( 
           <CashiersItem 
             key={index}

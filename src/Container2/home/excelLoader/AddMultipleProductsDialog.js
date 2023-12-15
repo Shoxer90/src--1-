@@ -25,6 +25,7 @@ const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds})
       saveAs(new Blob([resp], {type: 'application/octet-stream'}), `StoreXEmptyForm.xlsx`)
     })
   };
+
   const handleSubmit = () => {
     createMultipleProds()
     setOpenConfirm(0)
@@ -33,8 +34,7 @@ const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds})
   return (
     <div>
       <h5>{t("mainnavigation.multipleproduct")}</h5>
-     {!uploadFile &&
-
+      {!uploadFile &&
         <DialogContent dividers className={styles.excelLoaderContent}>
           <div className={styles.excelLoaderContent_item}>
             <p>{t("mainnavigation.multipleProductText1")}</p>
@@ -77,7 +77,7 @@ const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds})
           </Button>
         }
         <Button 
-          autoFocus 
+          variant="contained"
           style={{margin:"2px 20px"}} 
           onClickCapture={()=> setOpenConfirm(2)}
         >
@@ -86,7 +86,7 @@ const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds})
       </DialogActions>
       <ConfirmDialog 
         question={openConfirm===1?t("dialogs.excelAddProds"): t("dialogs.excelCancelList")}
-        func={openConfirm===1? handleSubmit :()=>navigate("/")}
+        func={openConfirm===1? handleSubmit : ()=> navigate("/")}
         title={openConfirm===1?t("buttons.submit"): t("buttons.cancel")}
         open={Boolean(openConfirm)}
         close={setOpenConfirm}

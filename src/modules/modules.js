@@ -83,4 +83,5 @@ export const takeMeMeasureArr = (lang) => {
     return ["հատ", "կգ", "գրամ", "լիտր", "մետր", "ք/մ", "խ/մ", "այլ" ]
   }
 };
-export const allLanguageMeasures = ["հատ", "կգ", "գրամ", "լիտր", "մետր", "ք/մ", "խ/մ", "այլ", "pcs", "kg", "gramm", "liter", "metre", "sq/m", "cub/m", "other","шт", "кг", "грамм", "литр", "метр", "кв/м", "куб/м"]
+
+export const allLanguageMeasures = ["հատ", "կգ", "գրամ", "լիտր", "մետր", "ք/մ", "խ/մ", "այլ", "pcs", "kg", "gramm", "liter", "metre", "sq/m", "cub/m", "other","шт", "кг", "грамм", "литр", "метр", "кв/м", "куб/м","другой"]
