@@ -1,14 +1,17 @@
-import { getAdg } from "../services/products/productsRequests"
+import { getAdg, uniqueBarCode } from "../services/products/productsRequests"
 import { allLanguageMeasures } from "./modules"
 
-export const barcodeValidation = (value) => {
+export const barcodeValidation = async(value) => {
      const valid = /^[a-zA-Z0-9_]+$/
-    if(valid.test(value)){
-      return true
+     if(valid.test(value)){
+       const uniq = await uniqueBarCode(value)
+       return uniq
     }else{
-      return false
+      // return false
+      return "notValid"
     }
-  }
+  };
+  
   export const priceValidation = (value) => {
      const valid = /^\d*\.?(?:\d{1,2})?$/
     if(valid.test(value)){
@@ -22,6 +25,7 @@ export const barcodeValidation = (value) => {
     let flag = 0
     const arr = await getAdg(arg)
     if(arr?.length){
+      console.log(arr,"adg arr")
         arr.forEach((item) => {
            if(item?.code === arg){
                 return flag++

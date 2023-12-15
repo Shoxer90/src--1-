@@ -1,40 +1,21 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo } from 'react';
 
-import HistoryTable from './HistoryTable';
+import HistoryTable  from "./HistoryTable"
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const ServiceAmountHistory = ({historyAndCardData, t}) => {
-  const [history, setHistory] = useState([]);
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 
-  const getOverallHistoryFromAllData = () => {
-    let historyDataArr = []
-    historyAndCardData.forEach((item) => {
-      historyDataArr.push(...item?.userServicePayment)
-    })
-    setHistory(historyDataArr)
-  };
+const ServiceAmountHistory = ({serviceHistory, t}) => (
 
-  const getHistoryDataById = (arg) => {
-   const individualHistory = historyAndCardData.filter(item => item?.id === arg)
-   setHistory(individualHistory?.userServicePayment)
+  <Accordion  elevation={0}>
+    <AccordionSummary  sx={{justifyContent:"start",padding:0}} expandIcon={<ExpandMoreIcon />}>
+     <Typography  align="left"> {t("cardService.historySubTitle")}</Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+      <HistoryTable history={serviceHistory} />
+    </AccordionDetails>
+  </Accordion>
 
-  };
-
-  useEffect(() => {
-    getOverallHistoryFromAllData()
-  },[]);
-
-  return (
-    <div >
-      <h3>{t("cardService.historySubTitle")}</h3>
-      {history && 
-        <HistoryTable 
-         history={history}
-         getHistoryDataById={getHistoryDataById}
-        />
-      }
-      
-    </div>
-  )
-}
+)
 
 export default memo(ServiceAmountHistory);

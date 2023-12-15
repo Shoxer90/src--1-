@@ -10,19 +10,23 @@ const ExcelRow = ({
   setInputValue,
   checkRowStatus,
   row, 
-  t
+  t,
+  setBarCodes,
+  barCodes
 }) => {
   const [measureLangArr,setMeasureLangArr] = useState([]);
   const [isValidCurrentProd, setIsValidCurrentProd] = useState({});
+  const [isBarCodeNotRepeat,setIsBarCodeNotRepeat] = useState();
+  const [ceilName, setCeilName] = useState("");
+  const [errorName,setErrorName] = useState("");
   const ref = useRef();
 
   const errorStyle = {
     border: "solid red 2px",
-    color:"red"
+    color: "red"
   }
 
   const handleChange = (name,value) => {
-    console.log(name,value,"NAME VALUE")
     const arr = [];
     inputValue.map((row) => {
       if(row?.__rowNum__=== prod?.__rowNum__){
@@ -35,38 +39,138 @@ const ExcelRow = ({
         return arr.push(row)
       }
     })
+    setCeilName(name)
     setInputValue(arr)
   };
+
+  const uniqBarcodeInExcel = async() => {
+    setErrorName("")
+    let catchSameCode = 0
+    const arr = barCodes;
+    arr.map((item)=> {
+      if(item?.code === prod?.barCode && item?.row !== row) {
+        setErrorName("Կրկնվող բառկոդ/ ներքին կոդ")
+        catchSameCode++
+        return false
+      }
+    })
+    if(!catchSameCode){
+      arr.push({
+        code: prod?.barCode,
+        row: row
+      })
+      // return barcodeValidation(prod?.barCode)
+      return await barcodeValidation(prod?.barCode).then((res)=> {
+        if(!res) {
+           setErrorName("Խանութում առկա է նույն ներքին կոդով ապրանք/ ծառայություն")
+        }else if(res === "notValid"){
+          setErrorName("Ներքին կոդի/բառկոդի սխալ ֆորմատ")
+          return false
+        }
+          return res
+      })  
+    }
+  }
+
+  const barcodeCeilManagement = async() => {
+    setErrorName("")
+    let catchSameCode = 0
+    const arr = barCodes;
+    arr.map((item)=> {
+      if(item?.code === prod?.barCode && item?.row !== row) {
+        setErrorName("Կրկնվող բառկոդ/ ներքին կոդ")
+        return catchSameCode++
+      }
+    })
+      if(catchSameCode) {
+        return false
+      }else{
+          arr[`${row}`]={code:prod?.barCode,row:row}
+          setBarCodes(arr)
+      //  return barcodeValidation(prod?.barCode)
+       return await barcodeValidation(prod?.barCode).then((res)=> {
+        console.log(res,"resssss 123")
+        if(!res) {
+           setErrorName("Խանութում առկա է նույն ներքին կոդով ապրանք/ ծառայություն")
+        }else if(res === "notValid"){
+          setErrorName("Ներքին կոդի/բառկոդի սխալ ֆորմատ")
+          return false
+
+        }
+          return res
+        
+      })  
+      }
+    };
 
   const filterValidRow = async() => {
     setIsValidCurrentProd({
       type: await adgValidation(prod?.type),
       measure: await measureValidation(prod?.measure),
-      name: nameLimitValidation(prod?.name, prod?.name?.length),
-      price: priceValidation(prod?.price),
-      purchasePrice: priceValidation(prod?.purchasePrice),
-      remainder: priceValidation(prod?.remainder),
-      barCode: barcodeValidation(prod?.barCode),
+      name: await nameLimitValidation(prod?.name, prod?.name?.length),
+      price: prod?.price < 1 ? false : await priceValidation(prod?.price),
+      purchasePrice: await priceValidation(prod?.purchasePrice),
+      remainder: await priceValidation(prod?.remainder),
+      barCode: await uniqBarcodeInExcel(),
+      // barCode: await barcodeValidation(prod?.barCode),
+    });
+  };
+
+  const setDataToUploading = (response) => {
+    return setIsValidCurrentProd({
+      ...isValidCurrentProd,
+      [ceilName]: response
     })
   };
+
+  const filterValidCeil = async() => {
+    let response = null;
+    switch (ceilName) {
+      case "type":
+        response =  await adgValidation(prod?.type)
+        console.log(response,"RESPONSE")
+        setDataToUploading(response)
+        break;
+      case "measure":
+        response =  await measureValidation(prod?.measure)
+        setDataToUploading(response)
+        break;
+      case "name":
+        response = await nameLimitValidation(prod?.name, prod?.name?.length)
+        setDataToUploading(response)
+        break;
+      case "price":
+        response = prod?.price < 1 ? false : await priceValidation(prod?.price)
+        setDataToUploading(response)
+        break;
+      case "purchasePrice":
+        response =  await priceValidation(prod?.purchasePrice)
+
+        break;
+      case "remainder":
+        response = await priceValidation(prod?.remainder)
+        setDataToUploading(response)
+        break;
+      case "barCode":
+        response =  await barcodeCeilManagement()
+        setDataToUploading(response)
+      break;
+    }
+  }
 
   const onlyNumberAndADot = (event) => {
     const valid = /^\d*\.?(?:\d{1,2})?$/;
     const text = event.target.value;  
     if(valid.test(text)){
-      handleChange(event.target.name, +event.target.value)
-    }else{
-      return 
+      return handleChange(event.target.name, +event.target.value)
     }
   };
 
   const onlyNumberAndLetters = (event) => {
-    const valid = /^[a-zA-Z0-9_]+$/
+    const valid = /^[a-zA-Z0-9_]+$/;
     const text = event.target.value;  
     if(valid.test(text)){
-      handleChange(event.target.name, event.target.value)
-    }else{
-      return  handleChange(event.target.name,event.target.value.slice(0,-1) )
+      return handleChange(event.target.name, event.target.value)
     }
   };
 
@@ -77,16 +181,20 @@ const ExcelRow = ({
 
   useEffect(() => {
     getMeasureSelectOptions()
-  },[t])
+  },[t]);
 
   useEffect(()=> {
     checkRowStatus(isValidCurrentProd, row)
   },[isValidCurrentProd]);
 
   useEffect(()=> {
-    filterValidRow()
-   },[inputValue]);
-console.log(ref,"ref")
+    filterValidCeil()
+  },[inputValue]);
+
+  useEffect(()=> {
+  filterValidRow()
+  },[]);
+
   return (
     <tr className={styles.tablerow}>
       <th scope="row">{prod?.__rowNum__}</th>
@@ -94,9 +202,9 @@ console.log(ref,"ref")
         <input 
           onChange={(e)=>{
            return e.target.value.trim() || prod?.type ? (
-              handleChange(e.target.name,e.target.value),
-              adgValidation(e.target.value)
-            ): setIsValidCurrentProd({
+              handleChange(e.target.name,e.target.value)
+            )
+            : setIsValidCurrentProd({
               ...isValidCurrentProd,
               adg: false
             })  
@@ -148,19 +256,20 @@ console.log(ref,"ref")
       </td>
        <td>
           <div>
-            {/* {
-              !allLanguageMeasures.includes(prod?.measure) &&
-              <span  onClick={()=> ref.current.click() } style={{position: "absolute",textAlign:"center",paddingLeft:"5px",color:"red"}}>{prod?.measure}</span>
-            } */}
             <select 
-            ref={ref}
-              onChange={(e)=> handleChange(e.target.name,e.target.value)}
-              value={allLanguageMeasures.includes(prod?.measure)? t(`units.${prod?.measure}`) : t(`authorize.errors.err`)} 
+              ref={ref}
+              onChange={(e)=>{
+                console.log(e.target.name,e.target.value)
+                handleChange(e.target.name,e.target.value)}
+              } 
+              value={t(`units.${prod?.measure}`) } 
               name="measure"
-              style={{border: !allLanguageMeasures.includes(prod?.measure) && "solid red 2px", 
+              style={{
+                border: !allLanguageMeasures.includes(prod?.measure) && "solid red 2px", 
               color: !allLanguageMeasures.includes(prod?.measure) && "white"}}
             >
               {measureLangArr.map((measure) => {
+                console.log(measureLangArr)
                 return <option style={{color:"black"}} value={measure} key={measure}>{measure}</option>
               })}  
             </select>  
@@ -168,7 +277,7 @@ console.log(ref,"ref")
       </td>
       <td>
         <input 
-          onChange={(e)=> onlyNumberAndADot(e)} 
+          onChange={(e)=>onlyNumberAndADot(e)} 
           value={prod?.purchasePrice} 
           name="purchasePrice"
           style={!isValidCurrentProd?.purchasePrice ? errorStyle : undefined}
@@ -177,32 +286,35 @@ console.log(ref,"ref")
       </td>
       <td>
         <input 
-          onChange={(e)=> {
-            onlyNumberAndADot(e)
-          }}
+          onChange={(e)=>onlyNumberAndADot(e)}
           value={prod?.price} 
           name="price"
           style={!isValidCurrentProd?.price || !prod?.price? errorStyle : undefined}
         />
       </td>
       <td>
-        <input 
-          onChange={(e)=>{
-            !e.target.value ?
-            handleChange(e.target.name,e.target.value):
-            onlyNumberAndLetters(e)
-          }}
-          value={prod?.barCode}
-          name="barCode"
-          style={!isValidCurrentProd?.barCode || prod?.barCode===undefined || !prod?.barCode? errorStyle : undefined}
-        />
+        <span className={errorName && styles.hovertext}  data-hover={errorName} >
+          <input 
+            onChange={(e)=>{
+              if(e.target.value.length < prod?.barCode.length){
+               handleChange(e.target.name,e.target.value)
+              }else{
+                onlyNumberAndLetters(e)
+              }
+            }}
+            value={prod?.barCode}
+            name="barCode"
+            style={!isValidCurrentProd?.barCode || prod?.barCode===undefined || !prod?.barCode? errorStyle : undefined}
+          />
+        </span>
+        
       </td>
       <td>
         <input 
           type="checkbox"
-          onChange={(e)=> handleChange(e.target.name,e.target.checked)} 
-          checked={prod?.nds} 
-          name="nds"
+          onChange={(e)=> handleChange(e.target.name,e.target.checked? 2 : 0)} 
+          checked={prod?.dep} 
+          name="dep"
         />
       </td>
   </tr>

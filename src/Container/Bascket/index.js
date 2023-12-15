@@ -183,11 +183,9 @@ const newSaleValidate = async() => {
       setMessage(`${t("dialogs.sorry")}, ${t("dialogs.wrong")}`)
       return
     }else if(result === 400){
-      console.log("MTAV 400")
       checkAvail()
       return createMessage("error",t("authorize.errors.soldOut"))
     }else if(result === 406){
-      console.log("MTAV 406")
       checkAvail()
       createMessage("error", t("basket.total_zero"))
       return false

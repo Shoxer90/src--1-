@@ -14,7 +14,7 @@ const {user} = useSelector(state => state.user)
       <div className={styles.settingsCont_info_name_header}>
         <PhoneInTalkIcon sx={{m:1}} />
         <span className={styles.settingsCont_info_item}>
-          ({user.phoneNewForm?.slice(0,3)}) {user.phoneNewForm?.slice(3, 5)}-{user.phoneNewForm?.slice(5, 7)}-{user.phoneNewForm?.slice(7,9)}
+          +374({user.phoneNewForm?.slice(0,2)}) {user.phoneNewForm?.slice(2, 4)}-{user.phoneNewForm?.slice(4, 6)}-{user.phoneNewForm?.slice(6,8)}
         </span>
       </div>
       <div className={styles.settingsCont_info_name_header}>
@@ -25,7 +25,7 @@ const {user} = useSelector(state => state.user)
       </div>
       <div className={styles.settingsCont_info_name_header}>
         <AlternateEmailIcon sx={{m:1}} />
-        { user?.email}
+        {user?.email}
       </div>
     </Card>
   )

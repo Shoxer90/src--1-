@@ -1,6 +1,5 @@
 import React, { useState, memo, useEffect } from 'react';
-import { Button, Checkbox, Dialog, FormControlLabel } from '@mui/material';
-import PaymentIcon from '@mui/icons-material/Payment';
+import { Dialog } from '@mui/material';
 
 import CreditCard from './creditCard/CreditCard';
 import styles from "./index.module.scss";
@@ -22,22 +21,18 @@ const ClientCardContainer = () => {
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [message, setMessage] = useState({message:"", type:""});
   const [payForSeveralServices, setPayForSeveralServices] = useState(true);
-  const [paymentAmount,setPaymentAmount] = useState(0);
   const [historyAndCardData, setHistoryAndCardData] = useState([]);
   const [isDelete,setIsDelete] = useState(false);
-
-  // const [payData,setPayData] = useState({
-  //   serviceType: 0,
-  //   // price: commitment,
-  //   isBinding: true
-  // });
+  const [hadIsActive, setHadIsActive] = useState(false);
+  // const [openDialogForPay,setOpenDialogForPay] = useState(false);
+ 
 
   const removeCard = async(id) => {
     await removeBankCard(id).then((res) => {
       setIsDelete(!isDelete)
       setOpenConfirmation(false)
-      setMessage({message:t("dialogs.done"),type:"success"})
       changeActiveCard(userCardInfo[0]?.cardId)
+      setMessage({message:t("dialogs.done"),type:"success"})
     })
   };
 
@@ -52,7 +47,7 @@ const ClientCardContainer = () => {
     let fullName = '';
     await getUserCards().then((resp) => {
       if(resp.length === 1){
-        fullName =  resp[0]?.cardHolder.split(" ");
+        fullName = resp[0]?.cardHolder.split(" ");
         setUserCardInfo([{
           id: resp[0]?.cardId,
           name: fullName[0],
@@ -63,29 +58,33 @@ const ClientCardContainer = () => {
           cardNumOrigin: resp[0]?.pan,
           isActive: true
         }])
-        return changeActiveCard(resp[0]?.cardId)
+        changeActiveCard(resp[0]?.cardId)
+        return
+      }else{
+        resp && resp.map((card) => {
+          fullName = card?.cardHolder.split(" ");
+          cardArr.push({
+            id: card?.cardId,
+            isActive: card?.isActive,
+            name: fullName[0],
+            surname: fullName[1],
+            bank: card?.bankName,
+            expMonth: card?.expiration.slice(-2),
+            expYear: card?.expiration.slice(0,4),
+            cardNumOrigin: card?.pan,
+          })
+          if(card?.isActive === true){
+            setHadIsActive(true)
+            setCurrentCard(card?.cardId)
+          }
+          return cardArr
+        })
       }
-    resp && resp.map((card) => {
-      fullName = card?.cardHolder.split(" ");
-      if(card?.isActive === true){
-        setCurrentCard(card?.cardId)
+      if(!hadIsActive){
+        changeActiveCard(resp[0]?.cardId)
       }
-      return cardArr.push({
-        id: card?.cardId,
-        isActive: card?.isActive,
-        name: fullName[0],
-        surname: fullName[1],
-        bank: card?.bankName,
-        expMonth: card?.expiration.slice(-2),
-        expYear: card?.expiration.slice(0,4),
-        cardNumOrigin: card?.pan,
-      })
-    })
-    if (!currentCard) {
-      changeActiveCard(resp[0]?.cardId)
-    }
-    return setUserCardInfo(cardArr);
-  }) 
+      return setUserCardInfo(cardArr)
+    }) 
   };
 
   useEffect(() => {
@@ -93,60 +92,54 @@ const ClientCardContainer = () => {
   }, [currentCard,isDelete]); 
 
   return (
-    <div className={styles.userService}>
-      <h2 style={{color:"#FFA500"}}>{t("cardService.btnTitle")}</h2>
-        <div className={styles.card_pay_info}>
-          <div style={{display:"flex",alignItems:"center"}}>
-            {
-              userCardInfo?.length && userCardInfo.map((item, index) => {
-                if(item?.isActive) {
-                  return <CreditCardWrapper 
-                    key={index}
-                    setOpenConfirmation={setOpenConfirmation}
-                    element={<CreditCard 
-                      key={index} 
-                      userCardInfo={item }
-                    />}
-                  />
-                }
-            })
-            }
-            <ServicePayDetails
-              t={t}
-              paymentAmount={paymentAmount}
-              currentCard={currentCard}
-              userCardInfo={userCardInfo}
-              changeActiveCard={changeActiveCard}
-              setPayForSeveralServices={setPayForSeveralServices}
-              payForSeveralServices={payForSeveralServices}
+  <div className={styles.userService}>
+    <div className={styles.card_pay_info}>
+      <div style={{display:"flex", flexFlow:"column", alignItems:"center"}}>
+        {
+          userCardInfo?.length && userCardInfo.map((item, index) => {
+            return item?.isActive &&
+              <CreditCardWrapper 
+              key={index}
+              setOpenConfirmation={setOpenConfirmation}
+              element={<CreditCard 
+                key={index} 
+                userCardInfo={item}
+              />}
             />
-          </div>
-            {userCardInfo &&
-              <Services 
-                t={t} 
-                payForSeveralServices={payForSeveralServices}
-                setPaymentAmount={setPaymentAmount}
-                paymentAmount={paymentAmount}
-              />
-            }
-        </div> 
-        <ConfirmDialog
-          question={t("cardService.remove")}
-          func={()=>removeCard(currentCard)}
-          title={t("settings.remove")}
-          open={openConfirmation}
-          close={setOpenConfirmation}
-          content={" "}
-          t={t}
-        />
-        {/* <ServiceAmountHistory historyAndCardData={historyAndCardData} t={t}/> */}
-        {message &&
-          <Dialog open={Boolean(message?.message)}>
-            <SnackErr message={message?.message} close={setMessage} type={message?.type} />
-          </Dialog>
+          })
         }
-    </div>
+        <ServicePayDetails
+          t={t}
+          currentCard={currentCard}
+          userCardInfo={userCardInfo}
+          changeActiveCard={changeActiveCard}
+        />
+      </div>
+      {userCardInfo &&
+        <Services 
+          t={t} 
+          payForSeveralServices={payForSeveralServices}
+          userCardInfo={userCardInfo}
+          changeActiveCard={changeActiveCard}
+        />
+      }
+    </div> 
+    <ConfirmDialog
+      question={t("cardService.remove")}
+      func={()=>removeCard(currentCard)}
+      title={t("settings.remove")}
+      open={openConfirmation}
+      close={setOpenConfirmation}
+      content={" "}
+      t={t}
+    />
+    {message &&
+      <Dialog open={Boolean(message?.message)}>
+        <SnackErr message={message?.message} close={setMessage} type={message?.type} />
+      </Dialog>
+    }
+  </div>
   )
-}
+};
 
 export default memo(ClientCardContainer);

@@ -49,7 +49,8 @@ const HomePage = ({
     remainder: "",
     barCode: "",
     photo:"",
-    measure:""
+    measure:"",
+    pan: 0
   }); 
 
   const deleteAndRefresh = async(id) => {

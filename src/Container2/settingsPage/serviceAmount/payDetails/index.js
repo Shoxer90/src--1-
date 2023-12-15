@@ -1,25 +1,17 @@
 import React, { memo, useState } from "react";
 import ActivateCreditCard from "../creditCard/ActivateCreditCard";
 
-import { Button } from "@mui/material";
-import PaymentIcon from '@mui/icons-material/Payment';
-
-import styles from "./index.module.scss";
-
 const ServicePayDetails = ({
   t,
   currentCard,
   userCardInfo,
-  paymentAmount,
   changeActiveCard,
-  payForSeveralServices,
-  setPayForSeveralServices, 
 }) => {
 
   const [ isOpen, setIsOpen] = useState(false);
 
   return (
-    <div style={{display:"flex", flexFlow:"column",margin:"20px"}}>
+    <div>
       {userCardInfo?.length ? 
         <ActivateCreditCard 
           t={t} 
@@ -34,9 +26,6 @@ const ServicePayDetails = ({
           {t("cardService.createCard2")}
         </div>
       }
-      <div style={{height:"60px"}}>
-
-      </div>
       {/* checkbox for choosing pay for several services or for one,if you want use it change payForSeveralServices to false in useState */}
         {/* <FormControlLabel
         style={{alignSelf:"start"}} 
@@ -47,27 +36,34 @@ const ServicePayDetails = ({
             onClick={(e)=>setPayForSeveralServices(e.target.checked)}
           />}
         /> */}
+      {/* <span className={styles.serviceAmount} style={{margin:"0px"}}>
+        <span>{t("basket.totalndiscount")} </span>
+        <span> {paymentAmount?.current} {t("units.amd")}</span>
+      </span>
       <div className={styles.serviceAmount} >
         {payForSeveralServices && 
           <>
             <div style={{fontWeight:500}}>
-              <span>{t("basket.totalndiscount")} </span>
-              <span style={{marginLeft:"10px"}}> {paymentAmount} {t("units.amd")}</span>
+              <span>{t("basket.linkPayment")}</span>
+              <span style={{marginLeft:"10px"}}> {paymentAmount?.selected} {t("units.amd")}</span>
             </div>
             <Button
               variant="contained" 
               startIcon={<PaymentIcon />}
-              disabled={paymentAmount === 0}
+              // disabled={paymentAmount?.selected === 0}
+            
+              onClick={() =>setOpenDialogForPay(true)}
               style={{
                 marginLeft:"10px",
                 letterSpacing:"3px", 
-                background: !paymentAmount? "lightgrey": "#63B48D",
-              }}>
+                background: !paymentAmount?.selected ? "lightgrey": "#63B48D",
+              }}
+              >
               {t("basket.linkPayment")} 
             </Button> 
           </>
         }
-      </div>
+      </div> */}
     </div>
   )
 };

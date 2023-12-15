@@ -9,6 +9,7 @@ import ProductChanges from "./Container2/analytics";
 import HomePage from "./Container2/home"
 import Confirmation from "./Authorization/Confirmation";
 import FeedBackPage from "./Container2/feedback";
+import CheckStatusArCa from "./Container2/settingsPage/serviceAmount/attachCard"
 
 import { byBarCode, productQuery } from "./services/products/productsRequests";
 import { getBasketContent } from "./modules/modules";
@@ -75,6 +76,7 @@ const App = () => {
     await dispatch(fetchUser()).then((res) => {
       localStorage.setItem("status", JSON.stringify(res?.payload?.isEhdmStatus)) 
       localStorage.setItem("reverse", JSON.stringify(res?.payload?.reverceStatus))
+      localStorage.setItem("taxRegime", JSON.stringify(res?.payload?.taxRegime))
       checkUserStatus()
       if(res?.error?.message === "Rejected"){
         logOutFunc()
@@ -333,6 +335,8 @@ const App = () => {
           />
           <Route path="/basket/*" element={<BasketList t={t} />} />
           <Route path="/confirmation/*" element={<Confirmation t={t} />} />
+          <Route path="/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
+
         </Routes> :
         <>
           <Header
@@ -382,6 +386,8 @@ const App = () => {
                 logOutFunc={logOutFunc}
                 t={t} 
                 loadBasket={loadBasket}
+                setFlag={setFlag}
+                flag={flag}
               />} />
             <Route path="/feedback" element={
               <FeedBackPage 
@@ -398,11 +404,11 @@ const App = () => {
                 setUserData={setUserData}
               />
             } />
-            <Route path="/setting/club" element={<ClientCardContainer />} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} t={t}  measure={measure} />} />
             <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
             <Route path="/basket/*" element={<BasketList t={t} />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+            <Route path="/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
           </Routes> 
           <Basket 
             t={t}

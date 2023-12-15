@@ -5,7 +5,7 @@ import { FormControl, InputLabel, NativeSelect } from '@mui/material';
 const ActivateCreditCard = ({t, userCardInfo,currentCard, changeActiveCard}) => {
 
   return (
-    <FormControl sx={{minWidth:"200px",mt:10}} >
+    <FormControl style={{width:"100%"}}>
       <InputLabel variant="standard" htmlFor="uncontrolled-native">
         {t("cardService.chooseCard")}
       </InputLabel>

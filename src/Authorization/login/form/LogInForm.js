@@ -12,7 +12,7 @@ const LogInForm = ({screenWidth,t,setMessage,whereIsMyUs, message,setIsLogIn}) =
   const { 
     register,
     formState:{
-        errors,
+      errors,
     },
     handleSubmit,
     reset
@@ -35,6 +35,7 @@ const LogInForm = ({screenWidth,t,setMessage,whereIsMyUs, message,setIsLogIn}) =
     ): (
       whereIsMyUs(),
       setIsLogIn(true),
+      navigate("/"),
       reset()
     );
   };
@@ -46,7 +47,7 @@ const LogInForm = ({screenWidth,t,setMessage,whereIsMyUs, message,setIsLogIn}) =
   >
     <input 
       style={{
-        width:screenWidth > 768 ?"60%": "100%",
+        width:screenWidth > 768 ? "60%": "100%",
         fontSize:"130%",
         marginBottom:"10px",
         alignSelf:"center",
@@ -79,7 +80,7 @@ const LogInForm = ({screenWidth,t,setMessage,whereIsMyUs, message,setIsLogIn}) =
         <Alert  severity="error">
           <strong>{message}</strong>
         </Alert>
-    }
+      }
     </div>
     <Button
       type="submit"
@@ -94,6 +95,6 @@ const LogInForm = ({screenWidth,t,setMessage,whereIsMyUs, message,setIsLogIn}) =
     </Button>
   </form>
   )
-}
+};
 
 export default memo(LogInForm);

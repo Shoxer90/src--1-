@@ -7,12 +7,12 @@ import Loader from '../../../loading/Loader';
 import { bindNewCard, payAndSubscribe } from '../../../../services/cardpayments/internalPayments';
 import ConfirmDialog from '../../../dialogs/ConfirmDialog';
 import ActionMessage from '../../../dialogs/ActionMessage';
+import inputStyle from "../../../../Container/Bascket/"
 
 const PaymentConfirm = ({
   open,
   close,
   cardArr,
-  initialPrice,
   changeActiveCard, 
   setPayData, 
   payData, 
@@ -65,7 +65,9 @@ const PaymentConfirm = ({
       { payData &&
       <DialogContent>
         <h4 style={{margin:"10px 0px"}}>{t("settings.payByActiveCard")}</h4>
-        <label className={styles.payAmount}>
+        <label
+          className={inputStyle.basketContent_item_quantity}
+         >
           {t("basket.totalndiscount")}
           <input
             style={{padding: "3px"}}
@@ -75,15 +77,17 @@ const PaymentConfirm = ({
         </label>
         <div className={styles.cardList}>
         {cardArr && cardArr.map((card) => (
+          
           <label key={card?.cardId}  className={styles.cardList_item}>
             <input 
+              key={card?.cardId}  
               type="checkbox" 
               checked={payData?.serviceType !=="2" && card?.isActive}  
               onClick={()=>{
                 if(!card?.isActive) {
                   setPayData({
                     ...payData,
-                    serviceType:"1"
+                    serviceType: 1
                   })
                   changeActiveCard(card?.id)
                 }
@@ -102,10 +106,10 @@ const PaymentConfirm = ({
           <input 
             type="checkbox" 
             className={styles.inputLabel}
-            checked={payData?.serviceType !== "1" && Boolean(payData?.serviceType === "2")}
+            checked={payData?.serviceType !== "1" && Boolean(payData?.serviceType === 2)}
             onChange={()=>setPayData({
               ...payData,
-              serviceType:"2"
+              serviceType:2
             })}
           />
           <span className={styles.inputLabel} style={{fontSize:"80%"}}>
@@ -152,7 +156,7 @@ const PaymentConfirm = ({
       t={t}
     />
     <ConfirmDialog
-      question={`${t("cardService.payForService")} ${initialPrice}`}
+      question={`${t("cardService.payForService")} ${payData?.price}`}
       func = {payForService}
       open = {openPayDialog}
       close = {setOpenPayDialog}
@@ -161,7 +165,6 @@ const PaymentConfirm = ({
     />
     <Dialog open={load}>
       <Loader />
-
     </Dialog>
     {message?.message && 
       <ActionMessage
