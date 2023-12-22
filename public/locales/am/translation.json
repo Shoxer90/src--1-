@@ -345,6 +345,7 @@
     "success": "հաջողությամբ գրանցված է",
     "information": "Տեղեկատվություն",
     "cashiers": "Գանձապահներ",
+    "cashier": "Գանձապահ",
     "phone": "Հեռախոս",
     "email": "էլ. հասցե",
     "address": "Հասցե",
@@ -375,9 +376,8 @@
     "addCard": "Վճարել նոր քարտով",
     "payByActiveCard": "Կատարել վճարումը ակտիվ քարտով",
     "checkArcaStatus": "Քարտի կցման կարգավիճակի ստուգում",
-    "priceListSubTitle1": "Ծառայություններ"
-
-
+    "priceListSubTitle1": "Ծառայություններ",
+    "paymentMethods": "Վճարման եղանակ"
   },
   "cardService":{
     "btnTitle" : "Սպասարկում",
@@ -399,6 +399,8 @@
     "newCard": "Ավելացնել քարտային տվյալներ",
     "payForService": "Վճարել սպասարկման դիմաց՝ ",
     "payForSimilarServices": "Կատարել 1-ից ավել գործարք միաժամանակ",
+    "attachCard":"Կցել քարտ",
+
     "inputs":{
       "cardName":"Քարտի անվանումը",
       "cardNumber":"Քարտի համարը",

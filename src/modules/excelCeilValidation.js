@@ -25,7 +25,6 @@ export const barcodeValidation = async(value) => {
     let flag = 0
     const arr = await getAdg(arg)
     if(arr?.length){
-      console.log(arr,"adg arr")
         arr.forEach((item) => {
            if(item?.code === arg){
                 return flag++

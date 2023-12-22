@@ -350,6 +350,7 @@
     "success": "is successfully registrated",
     "information": "Information",
     "cashiers": "Cashiers",
+    "cashier": "Cashiers",
     "phone": "Phone",
     "email": "E-mail",
     "address": "Address",
@@ -380,9 +381,8 @@
     "addCard": "Pay by New Card",
     "payByActiveCard": "Make a payment with an active card",
     "checkArcaStatus": "Checking Card Attach Status",
-    "priceListSubTitle1": "Services"
-
-
+    "priceListSubTitle1": "Services",
+    "paymentMethods": "Payment method"
   },
   "cardService":{
     "btnTitle" : "Services",
@@ -403,6 +403,8 @@
     "newCard": "Add new card details",
     "payForService": "Pay for service  ",
     "payForSimilarServices": "Make similar transactions at the same time",
+    "attachCard":"Attach Card",
+  
     "inputs":{    
 
        "cardName":"Card Name",

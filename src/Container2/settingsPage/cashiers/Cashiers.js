@@ -106,28 +106,13 @@ const Cashiers = ({t, logOutFunc, screen}) => {
   }, [register]);
 
   return (
-    <div style={{width:"100%"}}>
-      {/* <div className={styles.cashier_title}>
-        <h6 style={{color:"#1976d2"}}>
-          {t("dialogs.newcashier")}
-        </h6>
-        <Avatar
-          onClick={()=>{
-            setOpenCashierDail(true)
-            setUserInfo({})
-          }}
-          sx={{ 
-            "&:hover": { bgcolor: '#1976d2' , color:"white"}, 
-            margin: 1,
-            cursor:"pointer"
-          }}
-         >
-         <GroupAddIcon />
-        </Avatar> 
-      </div> */}
+    <div style={{ margin: "90px"}}>
+      <div className={styles.cashier_title}> 
+       <h1> {t("settings.cashiers")}</h1>
+      </div>
       <Divider color="black" />
       <div className={styles.cashier}>
-      <Avatar
+        <Avatar
           onClick={()=>{
             setOpenCashierDail(true)
             setUserInfo({})

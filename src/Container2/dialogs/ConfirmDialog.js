@@ -24,7 +24,7 @@ const ConfirmDialog = ({
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={()=>close(false)}>
-          {nobutton || t("buttons.cancel")}
+          {nobutton || t("buttons.no")}
         </Button>
         <Button onClick={func}>{t("buttons.yes")}</Button>
       </DialogActions>

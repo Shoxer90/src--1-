@@ -89,7 +89,6 @@ const ExcelRow = ({
           setBarCodes(arr)
       //  return barcodeValidation(prod?.barCode)
        return await barcodeValidation(prod?.barCode).then((res)=> {
-        console.log(res,"resssss 123")
         if(!res) {
            setErrorName("Խանութում առկա է նույն ներքին կոդով ապրանք/ ծառայություն")
         }else if(res === "notValid"){
@@ -112,7 +111,6 @@ const ExcelRow = ({
       purchasePrice: await priceValidation(prod?.purchasePrice),
       remainder: await priceValidation(prod?.remainder),
       barCode: await uniqBarcodeInExcel(),
-      // barCode: await barcodeValidation(prod?.barCode),
     });
   };
 
@@ -128,7 +126,6 @@ const ExcelRow = ({
     switch (ceilName) {
       case "type":
         response =  await adgValidation(prod?.type)
-        console.log(response,"RESPONSE")
         setDataToUploading(response)
         break;
       case "measure":
@@ -156,11 +153,14 @@ const ExcelRow = ({
         setDataToUploading(response)
       break;
     }
+    setCeilName("")
   }
 
   const onlyNumberAndADot = (event) => {
+    console.log( typeof  event.target.value, "value")
     const valid = /^\d*\.?(?:\d{1,2})?$/;
-    const text = event.target.value;  
+    let text = +event.target.value;  
+    
     if(valid.test(text)){
       return handleChange(event.target.name, +event.target.value)
     }
@@ -175,7 +175,7 @@ const ExcelRow = ({
   };
 
   const getMeasureSelectOptions = async() => {
-    const arr = await takeMeMeasureArr(localStorage.getItem("lang"))
+    const arr = await takeMeMeasureArr(localStorage.getItem("lang"));
     setMeasureLangArr(arr)
   };
 
@@ -189,7 +189,7 @@ const ExcelRow = ({
 
   useEffect(()=> {
     filterValidCeil()
-  },[inputValue]);
+  },[ceilName]);
 
   useEffect(()=> {
   filterValidRow()
@@ -214,11 +214,11 @@ const ExcelRow = ({
           style={!isValidCurrentProd?.type ? errorStyle : undefined}
         />
       </td>
-      <td>
+      <td  className={styles.hovertext} data-hover={prod?.name}>
         <input 
           onChange={(e)=>{
             if(e.target.value?.length <= 50 || 
-              e.target.value?.length < prod?.type?.length
+              e.target.value.length < prod?.name?.length
             ){
               handleChange(e.target.name,e.target.value)
             }else{
@@ -230,8 +230,9 @@ const ExcelRow = ({
           style={!isValidCurrentProd?.name || !prod?.name  ? errorStyle : undefined}
         />
       </td>
-      <td>
+      <td className={styles.hovertext} data-hover={prod?.brand}>
         <input
+          
           onChange={(e)=> handleChange(e.target.name,e.target.value)} 
           value={prod?.brand} 
           name="brand" 
@@ -259,17 +260,16 @@ const ExcelRow = ({
             <select 
               ref={ref}
               onChange={(e)=>{
-                console.log(e.target.name,e.target.value)
-                handleChange(e.target.name,e.target.value)}
-              } 
-              value={t(`units.${prod?.measure}`) } 
+                handleChange(e.target.name,e.target.value)
+              }} 
               name="measure"
               style={{
                 border: !allLanguageMeasures.includes(prod?.measure) && "solid red 2px", 
-              color: !allLanguageMeasures.includes(prod?.measure) && "white"}}
+                color: !allLanguageMeasures.includes(prod?.measure) && "white"
+              }}
             >
+              {!allLanguageMeasures.includes(prod?.measure) && <option hidden selected></option>}
               {measureLangArr.map((measure) => {
-                console.log(measureLangArr)
                 return <option style={{color:"black"}} value={measure} key={measure}>{measure}</option>
               })}  
             </select>  
@@ -277,7 +277,12 @@ const ExcelRow = ({
       </td>
       <td>
         <input 
-          onChange={(e)=>onlyNumberAndADot(e)} 
+          onChange={(e)=>{
+            if(typeof e.target.value === "string" || e.target.value.length < prod?.purchasePrice.length){
+              handleChange(e.target.name, +e.target.value.replace(/[^1-9]+/g,""))
+            }
+            onlyNumberAndADot(e)}
+          } 
           value={prod?.purchasePrice} 
           name="purchasePrice"
           style={!isValidCurrentProd?.purchasePrice ? errorStyle : undefined}
@@ -286,7 +291,11 @@ const ExcelRow = ({
       </td>
       <td>
         <input 
-          onChange={(e)=>onlyNumberAndADot(e)}
+          onChange={(e)=>{
+            if(typeof e.target.value === "string" || e.target.value.length < prod?.purchasePrice.length){
+              handleChange(e.target.name, +e.target.value.replace(/[^1-9]+/g,""))
+            }onlyNumberAndADot(e)}
+          }
           value={prod?.price} 
           name="price"
           style={!isValidCurrentProd?.price || !prod?.price? errorStyle : undefined}

@@ -1,41 +1,24 @@
-.settings{
-  display: flex;
-  flex-flow: row nowrap;
-  font-family: 'Montserrat', sans-serif;
-  align-content: center;
-  justify-content: flex-start;
-  box-shadow: #b2bbb5;
-  &_user{
-    padding: 10px;
-    min-width: 300px;
-    min-height: 85vh;
-    background-color:#eeeeee;
-    &_name{
-      margin: 20px 0;
-      text-shadow: 2px 2px 4px #bcbcbc;
-    }
-  }
+.settings_user{
+  margin: 90px auto;
 }
 .settingsCont{
-  width: 100%;
-  background-color: black;
-  padding: 20px;
+  width: 40dvw;
+  margin: auto;
   font-family: 'Montserrat', sans-serif;
-  // overflow: hidden;
   &_avatar{
-    margin:auto;
+    margin:15px auto;
     border-radius: 5%;
     position: relative;
-    margin-top: 10px;
     height:200px;
     width: 200px;
+    box-shadow: 2px 3px 15px #ccd3cf;
+    position: relative;
       &>img {
       object-fit: cover;
       border-radius: 5%;
       height: 100%;
-      width: 100%;}
-      box-shadow: 2px 3px 15px #ccd3cf;
-      position: relative;
+      width: 100%;
+     }
       &_input{
           position: absolute;
           top: 85%;
@@ -170,19 +153,16 @@
   
 }
 @media only screen and (max-width: 1024px) {
+  .settingsCont{
+    width: 80dvw;
+  }
   .cashier {
   grid-template-columns: 1fr ;
   }
 }
 
 @media only screen and (max-width: 700px) {
-  .settings {
-  flex-flow:column;
-  width: 98vw;
-  &_user{
-  min-height: fit-content;
-  }
-  }
+
   .settingsCont_avatar{
     margin:auto;
   }

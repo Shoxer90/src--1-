@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 const ClientInfo = () => {
 const {user} = useSelector(state => state.user)
   return (
-    <Card sx={{m:1}}>
+    <Card className={styles.settingsCont}>
       <div className={styles.settingsCont_info_name_header}>
         <PhoneInTalkIcon sx={{m:1}} />
         <span className={styles.settingsCont_info_item}>

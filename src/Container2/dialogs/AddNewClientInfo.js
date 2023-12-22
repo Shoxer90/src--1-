@@ -7,7 +7,7 @@ import ConfirmDialog from "./ConfirmDialog";
 import CloseIcon from '@mui/icons-material/Close';
 import styles from "./index.module.scss";
 
-const AddNewClientInfo = ({label, message, setMessage, t, openAddDialog, setType, setOpenAddDialog}) => {
+const AddNewClientInfo = ({label, message, setMessage, t, openAddDialog, setOpenAddDialog}) => {
   const [addData, setAddData] = useState({id:0});
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -22,28 +22,24 @@ const AddNewClientInfo = ({label, message, setMessage, t, openAddDialog, setType
     if(label?.length + 1 === Object.values(addData)?.length){
       addfunc(addData)
     }else{
-      setMessage(t("dialogs.required"))
+      setMessage({m:t("dialogs.required"), t:"error"})
       setTimeout(() => {
-        setMessage()
+        setMessage({m:"",t:""})
       }, 3000)
     }
   };
 
   const addfunc = async (data) => {
-    setMessage("")
+    setMessage({m:"", t:""})
       if((data[t("settings.changepassword")] === "" || data[t("settings.changepassword")] === undefined) ||
         (data[t("settings.confirmpassword")] === "" || data[t("settings.confirmpassword")] === undefined)
       ){
-        setType("error")
-        setMessage(t("dialogs.empty"))
+        setMessage({m:t("dialogs.empty"), t:"error"})
       }else if(data[t("settings.changepassword")] !== data[t("settings.confirmpassword")]){
-        setType("error")
-        setMessage(t("dialogs.mismatch"))
+        setMessage({m:t("dialogs.mismatch"), t:"error"})
       }else{
          await updateUserPassword({"password":`${data[t("settings.changepassword")]}`}).then((resp) => {
-          setMessage(resp)
-          setType("success")
-          setMessage(t("dialogs.done"))
+          setMessage({m:t("dialogs.done"), t:"success"})
           setOpenAddDialog(false)
         })
       }
@@ -52,8 +48,7 @@ const AddNewClientInfo = ({label, message, setMessage, t, openAddDialog, setType
 
  const closeDialogue = () => {
   setTimeout(()=>{
-    setMessage("")
-    setType("")
+    setMessage({m:"",t:""})
   },3000)
  }
   
