@@ -350,6 +350,7 @@
     "success":"успешно зарегистрирован",
     "information": "Информация",
     "cashiers": "Кассиры",
+    "cashier": "Кассир(а)",
     "phone": "Телефон",
     "email": "Эл. почта",
     "address": "Адрес",
@@ -380,7 +381,10 @@
     "addCard": "Оплата новой картой",
     "payByActiveCard": "Оплатить активной картой",
     "checkArcaStatus": "Проверка статуса прикрепления карты",
-    "priceListSubTitle1": "Услуги"
+
+    "priceListSubTitle1": "Услуги",
+    "paymentMethods": "Способ оплаты"
+
 
   },
   
@@ -403,6 +407,8 @@
     "newCard" :"Добавить реквизиты карты",
     "payForService": "Оплата услуги ",
     "payForSimilarServices": "Совершить несколько  транзакций одновременно»",
+    "attachCard":"Привязать карту",
+
 
     "inputs":{
        "cardName":"Название карты",

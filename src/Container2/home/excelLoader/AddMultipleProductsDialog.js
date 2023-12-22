@@ -1,5 +1,5 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from "./index.module.scss";
@@ -29,7 +29,7 @@ const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds})
   const handleSubmit = () => {
     createMultipleProds()
     setOpenConfirm(0)
-  }
+  };
 
   return (
     <div>
@@ -84,6 +84,7 @@ const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds})
           {t("buttons.cancel")}
         </Button>
       </DialogActions>
+
       <ConfirmDialog 
         question={openConfirm===1?t("dialogs.excelAddProds"): t("dialogs.excelCancelList")}
         func={openConfirm===1? handleSubmit : ()=> navigate("/")}

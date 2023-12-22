@@ -1,5 +1,5 @@
 .userService{
-  margin: 0 auto;
+  margin: 70px auto;
   display: flex;
   justify-content: space-around;
 }
@@ -7,23 +7,23 @@
 
 .creditCard{
   width: 340px;
-  height: 200px;
+  height: 180px;
   border-radius: 12px;
   padding: 10px 15px;
-  margin: 10px;
   background: linear-gradient(0deg, rgba(26,61,48,1) 0%, rgba(63,182,138,1) 100%);
-  color:white;
-  font-size: 110%;
+  color:rgb(214, 206, 206);
+  // background: #f4ebfe;
+  font-size: 90%;
   display:flex;
   flex-flow: column nowrap;
   align-items: center;
   align-content: center;
   &_fullname{
     display:flex;
-    align-self: flex-start;
-    font-size: 90%;
+    font-size: 70%;
     margin-bottom: 10px;
     margin-left: 5px;
+    letter-spacing: 3px;
   }
   &_chip{
     width: 35px;
@@ -34,9 +34,9 @@
   &_valid{
     font-size: 90%;
     display:flex;
+    justify-content: flex-end;
     align-items: center;
-    align-content:center;
-    align-self: flex-end;
+    text-align: center;
     margin: 0px;
     margin-right: 10px;
 
@@ -55,8 +55,8 @@
     width: 100%;
     &_icon{
       opacity: 0.2;
-    cursor: pointer;
-    margin: 0 3px;
+      cursor: pointer;
+      margin: 0 3px;
       &:hover{
       opacity: 1;
       color: white;

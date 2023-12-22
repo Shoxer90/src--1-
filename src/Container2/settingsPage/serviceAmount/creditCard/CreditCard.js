@@ -1,17 +1,18 @@
 import React, { memo } from 'react';
 import styles from "../index.module.scss"
 
-const CreditCard = ({userCardInfo}) => {
+// const CreditCard = ({userCardInfo}) => {
+  const CreditCard = ({}) => {
   
-  // const  defaultCardTexts= {
-  //   name:"XXXX",
-  //   surname:"XXXXXXXX",
-  //   bank: "XXXXXX XXXX",
-  //   expMonth: "mm",
-  //   expYear:"yy",
-  //   cvv:"",
-  //   cardNumOrigin:"xxxxxxxxxxxxxxxxxx",
-  // }
+  const  userCardInfo= {
+    name:"Ararat",
+    surname:"Avetisyan",
+    bank: "Ameria Bank",
+    expMonth: "07",
+    expYear:"24",
+    cvv:"",
+    cardNumOrigin:"141212313132132132",
+  }
 
   return (
     <span className={styles.creditCard} >
@@ -29,21 +30,30 @@ const CreditCard = ({userCardInfo}) => {
       </p> :
       <p className={styles.creditCard_numbers}>
         **** **** **** ****
-        {/* {defaultCardTexts?.cardNumOrigin?.slice(0,4)} {defaultCardTexts?.cardNumOrigin?.slice(4,8)} {defaultCardTexts?.cardNumOrigin?.slice(8,12)} {defaultCardTexts?.cardNumOrigin?.slice(12,16)} */}
         </p> 
       }
+     {/* new with visa mastercard logo */}
+     <div style={{display:"flex", margin:"5px",justifyContent:"space-between", width:"100%"}}>
+        <div>
+          <div className={styles.creditCard_valid}>
+            <span style={{fontSize:"30%", justifyContent:"space-between",margin:"0px 10px"}}>
+              <div>VALID </div>
+              <div>THRU </div>
+            </span>
+            <span>
+              {userCardInfo?.expMonth} / {userCardInfo?.expYear }
+            </span>
+          </div>
 
-        <div className={styles.creditCard_valid}>
-          <span style={{fontSize:"30%", justifyContent:"space-between",margin:"0px 10px"}}>
-            <div>VALID </div>
-            <div>THRU </div>
+          <span className={styles.creditCard_fullname}>
+            <p>{userCardInfo?.name?.toUpperCase()} {userCardInfo?.surname?.toUpperCase()} </p> 
           </span>
-          {userCardInfo?.expMonth} / {userCardInfo?.expYear }
         </div>
-
-     <span className={styles.creditCard_fullname}>
-      <p>{userCardInfo?.name} {userCardInfo?.surname?.toUpperCase()} </p> 
-     </span>
+        <div>
+          <img src={userCardInfo?.cardNumOrigin[0] == 4 ? "/visa.png" :"/mastercard.png"} alt="card_type"  style={{width:"60px",height:"50px"}}/>
+        </div>
+     </div>
+     
 
     </span>
   )

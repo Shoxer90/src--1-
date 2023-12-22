@@ -2,7 +2,7 @@ import React from "react";
 import { memo } from "react";
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import styles from "./index.module.scss";
-import { updateLogo } from "../../services/user/getUser";
+import { updateLogo } from "../../../services/user/getUser";
 
 const ClientShopAvatar = ({client, setClient}) => {
 

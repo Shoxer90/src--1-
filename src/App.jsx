@@ -36,7 +36,8 @@ import PasteExcelToReact from "./Container2/home/excelLoader";
 import { Alert, Snackbar } from "@mui/material";
 import useDebonce from "./Container2/hooks/useDebonce";
 import { useRef } from "react";
-
+import Cashiers from "./Container2/settingsPage/cashiers/Cashiers";
+import SettingsUser from "./Container2/settingsPage/user"
 const App = () => {
 
   const [limitedUsing, setLimitedUsing] = useState();
@@ -277,7 +278,7 @@ const App = () => {
     setDataGroup("GetAvailableProducts")
     setCurrentPage(1)
     loadBasket()
-  },[isLogin])
+  },[isLogin,flag])
 
   useEffect(() => { 
     loadBasket()
@@ -388,6 +389,8 @@ const App = () => {
                 loadBasket={loadBasket}
                 setFlag={setFlag}
                 flag={flag}
+                setCurrentPage={setCurrentPage}
+                setDataGroup={setDataGroup}
               />} />
             <Route path="/feedback" element={
               <FeedBackPage 
@@ -399,11 +402,16 @@ const App = () => {
               <SettingsPage 
                 logOutFunc={logOutFunc}
                 whereIsMyUs={whereIsMyUs}
-                t={t} 
+                t={t}
+                user={user} 
                 userData={userData}
                 setUserData={setUserData}
               />
+
             } />
+            <Route path="/setting/cashiers" element={<Cashiers t={t} screen={window.innerWidth} /> } />
+            <Route path="/setting/services" element={<ClientCardContainer />} />
+            <Route path="/setting/user" element={<SettingsUser user={user} t={t} setUserData={setUserData} whereIsMyUs={whereIsMyUs} />} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} t={t}  measure={measure} />} />
             <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
             <Route path="/basket/*" element={<BasketList t={t} />} />

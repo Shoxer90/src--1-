@@ -10,7 +10,7 @@ import Loader from '../../loading/Loader';
 import SnackErr from '../../dialogs/SnackErr';
 import { useNavigate } from 'react-router-dom';
 
-const PasteExcelToReact = ({t, logOutFunc, loadBasket,setFlag,flag}) => {
+const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,flag}) => {
   const navigate = useNavigate();
   const [uploadFile,setUploadFile] = useState();
   const [isLoad,setIsLoad] = useState();
@@ -41,6 +41,7 @@ const PasteExcelToReact = ({t, logOutFunc, loadBasket,setFlag,flag}) => {
     promise.then((res) => {
      const arr = [];
      const barcodeList = []
+     console.log(res,"res aupload")
      res.forEach(prod => {
       prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] && barcodeList.push(prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"])
       return arr.push({
@@ -50,13 +51,12 @@ const PasteExcelToReact = ({t, logOutFunc, loadBasket,setFlag,flag}) => {
         "name": prod?.["Ապրանքի անվանումը (50 նիշ) / Product Name (50 Symbols) / Название товара (50 символа) *"] || "",
         "brand": prod?.["Ապրանքանիշ / Brand / Бренд"] || "",
         "measure": prod?.["Չափման միավոր / Measure / Мера *"] ,
-        // "otherLangMeasure":  prod?.["Չափման միավոր / Measure / Мера *"],
         "otherLangMeasure": "",
         "photo": "",
         "barCode":  prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] || "",
         "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"] || 0,
-        "purchasePrice": prod?.[" Ապրանքի ինքնարժեք / Purchase price / Закупочная цена "] ,
-        "price": +prod?.[" Վաճառքի գին / Product price / Цена продукта * "] || 0,
+        "purchasePrice": +prod?.[" Ապրանքի ինքնարժեք / Purchase price / Закупочная цена "] || 0,
+        "price": +prod?.[" Վաճառքի գին / Product price / Цена продукта * "]|| 0,
         "discountedprice": 0,
         "discount": 0,
         "discountType": 0,
@@ -78,8 +78,9 @@ const PasteExcelToReact = ({t, logOutFunc, loadBasket,setFlag,flag}) => {
   })
   };
 
+  console.log(uploadFile,"UPLOAD FILE")
+
 const checkRowStatus = async(obj, row) => {
-  console.log(obj,"OB")
   const rowObjToArr = Array.from(Object.values(obj))
   if(rowObjToArr.includes(false)) {
     setRowStatus({
@@ -100,6 +101,7 @@ const checkRowStatus = async(obj, row) => {
       setIsLoad(false)
       if(res === 200){
         setMessage({m: t("dialogs.done"),t: "success"})
+        // navigate("/")
       }else if(res === 401){
         logOutFunc()
       }else{
@@ -108,13 +110,9 @@ const checkRowStatus = async(obj, row) => {
       }
       setMessage({m: t("dialogs.done"),t: "success"})
     })
- }
- console.log(uploadFile, "uploadFile")
+ };
 
   const createMultipleProds = async() => {
-    console.log(rowStatus, "RowStatus")
-    console.log(uploadFile, "uploadFile")
-
     setIsLoad(true)
     let statusArray = Array.from(Object.values(rowStatus));
     if(statusArray.includes(false)) {
@@ -126,8 +124,9 @@ const checkRowStatus = async(obj, row) => {
   };
 
   const closeWindowAndReload = () => {
-    setMessage()
-    setFlag(flag+1)
+    setMessage({m:"",t:""})
+    navigate("/")
+    window.location.reload(false);
   }
 
   return (
@@ -162,7 +161,7 @@ const checkRowStatus = async(obj, row) => {
                   {t("productinputs.typeurl1")}
                 </a>
                 </th>
-              <th scope="col">{`${t("productinputs.name")} *`}</th>
+              <th scope="col">{`${t("productinputs.name")} max 50 ${t("productinputs.symb")}*`}</th>
               <th scope="col">{t("productinputs.brand")}</th>
               <th scope="col">{t("productinputs.count")}</th>
               <th scope="col">{`${t("productinputs.measure")} *`}</th>
