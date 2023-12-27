@@ -105,9 +105,16 @@
     }
   }
 }
-.newCard{
-  width: 50%;
-  margin: 10px;
+
+
+.carret{
+  margin: 20px 35px;
+}
+
+.slider-control-bottomcenter{
+  & button{
+    margin: 20px; 
+  }
 }
 
 @media screen and (max-width: 880px) {
@@ -115,6 +122,12 @@
     width: 90%;
 
   }
+  
+  .slider-control-bottomcenter{
+    & button{
+      margin: 10px; 
+    }
+}
 }
 
 .cardTitleGroup{

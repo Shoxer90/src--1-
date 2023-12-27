@@ -1,0 +1,19 @@
+.smallCard{
+  display: flex;
+  justify-content: space-around;
+  flex-flow: column wrap;
+  width: 120px;
+  height: 75px;
+  border-radius: 7px;
+  font-size: 75%;
+  background: linear-gradient(0deg, rgba(26,61,48,1) 0%, rgba(63,182,138,1) 100%);
+  color: white;
+  margin: 5px;
+  cursor: pointer;
+  &_checkbox{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px;
+    margin-bottom: 5px;
+  }
+}

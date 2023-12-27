@@ -378,7 +378,8 @@
     "dublicatemail": "Cashier with this email address already exists",
     "successTitle":"Data for Login to StoreX",
     "isregistrehdm": "In order to activate the function of generating e-cash register, it is necessary to have contract  with PayX LLC on the service of e-cash register",
-    "addCard": "Pay by New Card",
+    "payWithNewCard": "Pay by New Card",
+    "payWithNewCardAndAttach": "Attach a new card and pay",
     "payByActiveCard": "Make a payment with an active card",
     "checkArcaStatus": "Checking Card Attach Status",
     "priceListSubTitle1": "Services",
@@ -387,6 +388,7 @@
   "cardService":{
     "btnTitle" : "Services",
     "chooseCard": "Choose active card",
+    "chooseAnotherCard": "Choose a card from the list",
     "amount" : "Monthly service",
     "amountDate": "Next payment date",
     "currentCommitment": "Current Commitment",

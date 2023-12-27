@@ -11,9 +11,10 @@ const CheckStatusArCa = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
   const [message,setMessage] = useState();
+
   const closeSuccessMessage = () => {
     setMessage({message:"", type:""})
-    navigate("/setting/club")
+    navigate("/setting/services")
   }
   
   useEffect(() => {

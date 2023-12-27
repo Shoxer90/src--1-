@@ -108,7 +108,6 @@ export const saleProductFromBasket = async(content) => {
       Authorization: localStorage.getItem("token"),
     },
   };
-
   try{
     const data = await axios.put(baseUrl + `Sale/Sale`, content, option)
     return data.data

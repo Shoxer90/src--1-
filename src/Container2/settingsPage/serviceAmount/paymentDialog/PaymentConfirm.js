@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, Divider, IconButton } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, Divider, IconButton, Input } from '@mui/material';
 import React, { memo, useState } from 'react';
 
 import styles from "./index.module.scss";
@@ -13,15 +13,16 @@ const PaymentConfirm = ({
   open,
   close,
   cardArr,
-  changeActiveCard, 
   setPayData, 
   payData, 
 }) => {
+  console.log(payData,"paydata in dialog")
   const {t} = useTranslation();
   const [load,setLoad] = useState(false);
   const [openDialog, setOpenDialog]= useState();
   const [openPayDialog, setOpenPayDialog]= useState();
   const [message, setMessage] = useState({message:"", type:""});
+
 
   const getLinkForNewCard = async() => {
     setLoad(true)
@@ -43,109 +44,99 @@ const PaymentConfirm = ({
     })
   };
 
-  const onlyNumberAndADot = (event) => {
-    const valid = /^\d*\.?(?:\d{1,2})?$/;
-    const text = event.target.value;  
-    if(valid.test(text)){
-      setPayData({
-        ...payData,
-        price:+event.target.value
-      })
-    }else{
-      return 
-    }
-  };   
-
   return (
     <>
-    <Dialog
-      open={open}
-      onClose={close}  
+      <Dialog
+        open={open}
+        onClose={close}  
       >
-      { payData &&
-      <DialogContent>
-        <h4 style={{margin:"10px 0px"}}>{t("settings.payByActiveCard")}</h4>
-        <label
-          className={inputStyle.basketContent_item_quantity}
-         >
-          {t("basket.totalndiscount")}
+      {payData &&
+        <DialogContent>
+          <h4 style={{margin:"10px 0px"}}>
+            {t("basket.totalndiscount")} <span style={{textDecoration:"underline"}}> {payData?.price} {t("units.amd")}</span>
+          </h4>
           <input
-            style={{padding: "3px"}}
-            value={payData?.price}
-            onChange={(e) => onlyNumberAndADot(e)}
+            id="activeCard"
+            type="radio"
+            name="pay operation"
+            onChange={()=> {
+              console.log("pay from active card")
+            }}
           />
-        </label>
-        <div className={styles.cardList}>
-        {cardArr && cardArr.map((card) => (
-          
-          <label key={card?.cardId}  className={styles.cardList_item}>
-            <input 
-              key={card?.cardId}  
-              type="checkbox" 
-              checked={payData?.serviceType !=="2" && card?.isActive}  
-              onClick={()=>{
-                if(!card?.isActive) {
-                  setPayData({
-                    ...payData,
-                    serviceType: 1
-                  })
-                  changeActiveCard(card?.id)
-                }
-              }}
-            />
-            <div className={styles.inputLabel}>
-              {card?.cardNumOrigin.slice(0,4)} **** **** {card?.cardNumOrigin.slice(-4)}
-              {card?.isActive && 
-              <span style={{fontSize:"70%",color:"green",marginLeft:"5px",letterSpacing:"1px"}}>({t("settings.active")})</span>}
-            </div>
+          <label for="activeCard" style={{marginLeft:"10px",textAlign:"center"}}>
+            {t("settings.payByActiveCard")}
           </label>
-        ))}
-        </div>
-        <div>
-          <Divider sx={{bgcolor:"black"}}/>
-          <input 
-            type="checkbox" 
-            className={styles.inputLabel}
-            checked={payData?.serviceType !== "1" && Boolean(payData?.serviceType === 2)}
-            onChange={()=>setPayData({
-              ...payData,
-              serviceType:2
-            })}
-          />
-          <span className={styles.inputLabel} style={{fontSize:"80%"}}>
-            {t("settings.addCard")}
-          </span>
-        </div>
+        
+          {!cardArr?.length &&
+            <div>
+              <input
+                id="chooseCard"
+                type="radio"
+                name="pay operation"
+                onChange={()=> {
+                  console.log("pay from active card")
+                }}
+              />
+              <label for="chooseCard" style={{marginLeft:"10px",textAlign:"center"}}>
+                {t("cardService.chooseAnotherCard")}
+              </label>
+              <Divider sx={{bgcolor:"black"}}/>
+              {cardArr.map((card) =>(
+                <label>
+                  <input
+                    type="radio"
+                    name="choose"
+                    onChange={() => console.log("pay withattachedcard")}
+                  />
+                  <div className={styles.inputLabel}>
+                    {card?.pan.slice(0,4)} **** **** {card?.pan.slice(-4)}
+                    {card?.isActive && 
+                    <span style={{fontSize:"70%",color:"green",marginLeft:"5px",letterSpacing:"1px"}}>({t("settings.active")})</span>}
+                  </div>
+                </label>
+              ))}
+            </div>
+          }
+        
+          <Divider sx={{bgcolor:"black"}} />
+            <div>
+              <input 
+                id="no attach"
+                type="radio"
+                name="pay operation"
+                onChange={()=>console.log("pay without attach new card")}
+                />
+                <label for="no attach" style={{marginLeft:"10px",textAlign:"center"}}>
+                  {t("settings.payWithNewCard")}
+                </label>
 
-      </DialogContent>}
+            </div>
+            <div>
+              <input 
+                id="attach"
+                type="radio" 
+                name="pay operation"
+                onChange={()=>console.log("pay and attach new card")}
+              />
+              <label for="attach" style={{marginLeft:"10px",textAlign:"center"}}>
+                {t("settings.payWithNewCardAndAttach")}
+              </label>
+            </div>
+        </DialogContent>
+      }
       <DialogActions>
-
-      <div className={styles.payBtn}>
         <Button
           variant="contained"
           onClick={close}
         >
           Cancel
         </Button>
-          { payData?.serviceType === "2" ?
-            <IconButton 
-              // attanchAmount
-              onClick={()=>setOpenDialog(true)}
-              style={{padding:0, marginLeft:"10px"}}
-            >
-              <Button variant="contained">ok</Button>
-            </IconButton>:
-            <Button
-              variant="contained"
-              onClick={() => setOpenPayDialog(true)}
-              style={{marginLeft:"10px"}}
-            > 
-             Ok
-            </Button>
-          }
-      </div>
+        <Button variant="contained">
+          ok
+        </Button>
       </DialogActions>
     </Dialog>
+
     <ConfirmDialog
       question={t("cardService.attanchAmount")}
       func = {getLinkForNewCard}
@@ -173,7 +164,6 @@ const PaymentConfirm = ({
         setMessage={setMessage}
       />
     }
-
     </>
   )
 }
