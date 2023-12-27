@@ -2,8 +2,9 @@ import React, { memo } from 'react';
 import styles from "../index.module.scss"
 
 // const CreditCard = ({userCardInfo}) => {
-  const CreditCard = ({}) => {
+  const CreditCard = ({card}) => {
   
+
   const  userCardInfo= {
     name:"Ararat",
     surname:"Avetisyan",
@@ -18,20 +19,16 @@ import styles from "../index.module.scss"
     <span className={styles.creditCard} >
       <div className={styles.creditCard_bank}>
         <span>
-         { userCardInfo?.bank }
+         { card?.bankName }
         </span>
       </div>
 
       <img src="/chip.png" alt="" className={styles.creditCard_chip}  />
 
-      {userCardInfo?.cardNumOrigin ?
       <p className={styles.creditCard_numbers}>
         {userCardInfo?.cardNumOrigin.slice(0,4)} **** **** {userCardInfo?.cardNumOrigin.slice(-4)}
-      </p> :
-      <p className={styles.creditCard_numbers}>
-        **** **** **** ****
-        </p> 
-      }
+      </p> 
+      
      {/* new with visa mastercard logo */}
      <div style={{display:"flex", margin:"5px",justifyContent:"space-between", width:"100%"}}>
         <div>
