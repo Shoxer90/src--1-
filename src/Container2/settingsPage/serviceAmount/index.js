@@ -13,7 +13,7 @@ import ServiceTitle from './ServiceTitle';
 import AliceCarousel from 'react-alice-carousel';
 import "react-alice-carousel/lib/alice-carousel.css";
 import { getPaymentCardServices, postNewCreditCard } from '../../../services/internal/InternalPayments';
-import AutoPaymentSwitch from "./autoPayment/index.js"
+import AutoPaymentSwitch from "./autoPayment/index.js";
 import SmallCardForCarousel from './creditCard/SmallCardForCarousel.js';
 import styles from "./index.module.scss"
 const responsive = {
@@ -53,11 +53,7 @@ const ClientCardContainer = () => {
   const [internalPayments, setInternalPayments] = useState({}); 
   const [payData, setPayData] = useState({
     isBinding: internalPayments?.autopayment?.hasAutoPayment,
-    serviceType: 0,
-    // if i pay with new card
-    // attach: true,
-    // if I pay With my attached active card
-    // "cardId": 0
+    serviceType: null,
   });
   const [responseUrl,setResponseUrl] = useState("");
 
@@ -66,28 +62,8 @@ const ClientCardContainer = () => {
   const [userCardInfo,setUserCardInfo] = useState([]);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [message, setMessage] = useState({message:"", type:""});
-  const [payForSeveralServices, setPayForSeveralServices] = useState(true);
-  const [historyAndCardData, setHistoryAndCardData] = useState([]);
   const [isDelete,setIsDelete] = useState(false);
-  const [hadIsActive, setHadIsActive] = useState(false);
   const [refresh,setRefresh] = useState(false);
-
-  // pay withattachedCard post https://storex.payx.am/api/InternalPayments/PayWithAttachCard'
-    // {
-    //   "serviceType": 0,
-    //   "cardId": 0,
-    //   "isBinding": true
-    // }
-    // pay with new card ppost https://storex.payx.am/api/InternalPayments/Pay'
-    // {
-    //   "serviceType": 0,
-    //   "isBinding": true,
-    // pay without attach
-    //   "attach": false
-    // pay with attach
-    //   "attach": true
-    // }
- 
 
   const removeCard = async(id) => {
     await removeBankCard(id).then((res) => {
@@ -100,58 +76,15 @@ const ClientCardContainer = () => {
 
   const changeActiveCard = async(id) => {
     await changeActiveStatus(id).then((res) => {
-    //  setCurrentCard(id)
     })
-  };
-
-  const getCards = async() => {
-    let cardArr = [];
-    let fullName = '';
-    await getUserCards().then((resp) => {
-      if(resp.length === 1){
-        fullName = resp[0]?.cardHolder.split(" ");
-        setUserCardInfo([{
-          id: resp[0]?.cardId,
-          name: fullName[0],
-          surname: fullName[1],
-          bank: resp[0]?.bankName,
-          expMonth: resp[0]?.expiration.slice(-2),
-          expYear: resp[0]?.expiration.slice(0,4),
-          cardNumOrigin: resp[0]?.pan,
-          isActive: true
-        }])
-        changeActiveCard(resp[0]?.cardId)
-        return
-      }else{
-        resp && resp.map((card) => {
-          fullName = card?.cardHolder.split(" ");
-          cardArr.push({
-            id: card?.cardId,
-            isActive: card?.isActive,
-            name: fullName[0],
-            surname: fullName[1],
-            bank: card?.bankName,
-            expMonth: card?.expiration.slice(-2),
-            expYear: card?.expiration.slice(0,4),
-            cardNumOrigin: card?.pan,
-          })
-          if(card?.isActive === true){
-            setHadIsActive(true)
-            // setCurrentCard(card?.cardId)
-          }
-          return cardArr
-        })
-      }
-      if(!hadIsActive){
-        changeActiveCard(resp[0]?.cardId)
-      }
-      return setUserCardInfo(cardArr)
-    }) 
   };
 
   const getInfo = async() => {
     await getPaymentCardServices().then((res) =>{
       setInternalPayments(res)
+      setPayData({
+        isBinding: res?.autopayment?.hasAutoPayment,
+      })
     })
   };
 
@@ -159,7 +92,7 @@ const ClientCardContainer = () => {
    await postNewCreditCard().then((res) => {
       setResponseUrl(res)
     })
-  }
+  };
 
   useEffect(() => {
     getInfo()
@@ -181,9 +114,10 @@ const ClientCardContainer = () => {
           <Services 
             content={internalPayments}
             t={t} 
-            payForSeveralServices={payForSeveralServices}
             userCardInfo={userCardInfo}
             changeActiveCard={changeActiveCard}
+            payData={payData} 
+            setPayData={setPayData}
           />
         }
       </Box>
@@ -212,7 +146,7 @@ const ClientCardContainer = () => {
           <span style={{marginLeft:"7px"}}>
             {t("cardService.attachCard")}
           </span>
-          {responseUrl && <a ref={ref} href={responseUrl}></a>}
+          {responseUrl && <a ref={ref} href={responseUrl}>""</a>}
         </Card>
 
       </Box>

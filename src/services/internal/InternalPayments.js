@@ -22,11 +22,7 @@ export const postNewCreditCard = async() => {
 };
 
 export const payForServiceWithAttachedCard = async(body) => {
-  // {
-  //   "serviceType": 0,
-  //   "cardId": 0,
-  //   "isBinding": true
-  // }
+  
   try{
     const data = await axios.post( baseUrl + `InternalPayments/PayWithAttachCard`, body, option());
     console.log(data,"data")
@@ -51,6 +47,16 @@ export const setActiveCard = async(id) => {
   }
 };
 
+ export const payForServiceWithNewCard = async(body) => {
+  try{
+    const data = await axios.post( baseUrl + `InternalPayments/Pay`, body, option());
+    console.log(data,"data")
+    return data?.data
 
+  }catch(err){
+    console.log(err,"err")
+    return err
+  }
+};
 
 

@@ -10,34 +10,15 @@ const ServiceItemSecond = ({
   service,
   userCardInfo,
   changeActiveCard,
+  payData, setPayData,
 }) => {
   const [openDialogForPay,setOpenDialogForPay] = useState(false);
-
-  const [payData,setPayData] = useState({
-    serviceType: service?.id,
-    price: service?.price,
-    // isBinding: service?.userServicePayment[service?.userServicePayment.length-1]?.isBinding === true ? true : false
-  });
+  const [activateBtn,setActivateBtn] = useState(false);
 
   const disableStyle={
     // pointerEvents: "none",
     opacity: 0.3
   }
-
-  const handleChangeAmountForPay = (val) => {
-    const valid = /^\d*\.?(?:\d{1,2})?$/;
-    const text = val;  
-    if(valid.test(text)){
-      setPayData({
-        ...payData,
-        price: val
-      })
-    }else{
-      return 
-    }
-  };
-
-  console.log(payData,"payData");
 
   return (
     <>
@@ -55,8 +36,15 @@ const ServiceItemSecond = ({
               variant="contained" 
               size="small" 
               onClick={()=>{
-               return service?.isActive ?
-                setOpenDialogForPay(true) : alert("For more info please call PayX")
+               if(service?.isActive) {
+                  setPayData({
+                    ...payData,
+                    serviceType: service?.id
+                  })
+                  setOpenDialogForPay(true)
+               }else{
+                  alert("For more info please call PayX")
+                }
               }}
             >
               {t("basket.linkPayment")}
@@ -95,6 +83,10 @@ const ServiceItemSecond = ({
         changeActiveCard={changeActiveCard} 
         setPayData={setPayData}
         payData={payData}
+        content={content}
+        price={service?.price}
+        activateBtn={activateBtn}
+        setActivateBtn={setActivateBtn}
       />
     </>
   );
