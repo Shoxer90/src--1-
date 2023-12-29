@@ -6,7 +6,8 @@ const Services = ({
   t,
   userCardInfo,
   content,
-  changeActiveCard
+  changeActiveCard,
+  payData, setPayData,
 }) => {
 
   return (
@@ -20,6 +21,8 @@ const Services = ({
               content={content}
               userCardInfo={userCardInfo}
               changeActiveCard={changeActiveCard}
+              payData={payData}
+              setPayData={setPayData}
             />
           </div>
         ))}
