@@ -5,9 +5,10 @@ import SnackErr from "../../../dialogs/SnackErr";
 import { Dialog } from "@mui/material";
 import Loader from "../../../loading/Loader";
 import { useTranslation } from "react-i18next";
+
 const CheckStatusArCa = () => {
   const search = useLocation().search;
-  const orderId = new URLSearchParams(search).get("OrderId");
+  const orderId = new URLSearchParams(search).get("orderId");
   const {t} = useTranslation();
   const navigate = useNavigate();
   const [message,setMessage] = useState();
@@ -20,7 +21,7 @@ const CheckStatusArCa = () => {
   useEffect(() => {
     orderId && 
     sendIdForPayStatusChecking(`${orderId}`).then((res) => {
-      res === 200 ?  
+      !res?.error ?  
        setMessage({type:"success", message:t("basket.paymentsuccess")}) :
       setMessage({type:"error", message:t("dialogs.wrong")})
     })

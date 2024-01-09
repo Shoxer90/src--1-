@@ -4,10 +4,10 @@ import styles from "./index.module.scss";
 
 const Services = ({
   t,
-  userCardInfo,
   content,
   changeActiveCard,
   payData, setPayData,
+  logOutFunc
 }) => {
 
   return (
@@ -19,10 +19,10 @@ const Services = ({
               t={t} 
               service={service}
               content={content}
-              userCardInfo={userCardInfo}
               changeActiveCard={changeActiveCard}
               payData={payData}
               setPayData={setPayData}
+              logOutFunc={logOutFunc}
             />
           </div>
         ))}
