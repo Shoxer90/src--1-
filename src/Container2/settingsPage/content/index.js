@@ -1,10 +1,6 @@
 import React, { memo, useState, useEffect } from "react" ;
-import Cashiers from "../cashiers/Cashiers";
-import ClientCardContainer from "../serviceAmount";
 import { useTranslation } from "react-i18next";
 
-import styles from "./index.module.scss";
-import { Card, Divider } from "@mui/material";
 import SettingsCard from "./settingCard/index";
 import LeftTop from "./settingCard/components/user/LeftTop";
 import LeftTopCashiers from "./settingCard/components/cashiers/LeftTopCashiers";
@@ -34,8 +30,6 @@ const SettingsContent = ({
       setCashiers(res.data)
     })
   }, []);
-// }, [register]);
-
 
   return (
     <div style={{width:"100%",display:"flex"}}>
@@ -52,9 +46,7 @@ const SettingsContent = ({
         rightTop={<RightTop />}
         leftBottom={<LeftBottom mainContent={user} />}
         rightBottom={<RightBottom mainContent={user} />}
-        func={(e)=>{
-          navigate("/setting/user")}
-        }
+        func={()=> navigate("/setting/user")}
       />
 
       {cashiers && 
@@ -64,19 +56,17 @@ const SettingsContent = ({
           }
           rightTop={<RightTop />}
           leftBottom={<LeftBottomCashiers cashiers={cashiers} t={t} />}
-          // rightBottom={<RightBottom mainContent={user} />}
           func={()=>navigate("/setting/cashiers")}
         />
       }
-        <SettingsCard
-          leftTop={
-            <LeftTopServices />
-          }
-          rightTop={<RightTop />}
-          leftBottom={<LeftBottomServices t={t} />}
-          // rightBottom={<RightBottom mainContent={user} />}
-          func={()=>navigate("/setting/services")}
-        />
+      <SettingsCard
+        leftTop={
+          <LeftTopServices />
+        }
+        rightTop={<RightTop />}
+        leftBottom={<LeftBottomServices t={t} />}
+        func={()=>navigate("/setting/services")}
+      />
     </div>
   )
 };

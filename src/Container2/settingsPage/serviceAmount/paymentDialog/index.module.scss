@@ -35,5 +35,22 @@
 .payBtn{
   display: flex;
   justify-content: space-around;
+}
 
+.subscription{
+  font-weight: 600;
+  &_item{
+    border-radius: 10px;
+    border: solid 2px grey;
+    padding: 4px 7px;
+    margin: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    &:hover{
+      background: rgb(200, 240, 240);
+      scale: 1.02;
+      // transition: 1.5;
+    }
+  }
 }

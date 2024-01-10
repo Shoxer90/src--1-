@@ -30,7 +30,7 @@ export const payForServiceWithAttachedCard = async(body) => {
 
   }catch(err){
     console.log(err,"err")
-    return err
+    return err?.response?.status
   }
 };
 
@@ -60,3 +60,13 @@ export const setActiveCard = async(id) => {
 };
 
 
+export const autoPaymentSwitch = async(bool) => {
+  try {
+    const data = await axios.put( baseUrl + `InternalPayments/SetBinging?BindingStatus=${bool}`, {}, option());
+    console.log(data,"about bool")
+    return data
+  }catch(err) {
+    console.log(err,"err")
+    return err
+  }
+};

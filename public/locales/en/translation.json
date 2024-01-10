@@ -389,6 +389,8 @@
     "btnTitle" : "Services",
     "chooseCard": "Choose active card",
     "chooseAnotherCard": "Choose a card from the list",
+    
+    "attachedCards": "Attached Cards",
     "amount" : "Monthly service",
     "amountDate": "Next payment date",
     "currentCommitment": "Current Commitment",
@@ -406,6 +408,14 @@
     "payForService": "Pay for service  ",
     "payForSimilarServices": "Make similar transactions at the same time",
     "attachCard":"Attach Card",
+    "notInDate": "Dear customer, you have an outstanding payment obligation. Kindly complete the payment to continue using our services",
+    "balance": "Balance",
+    "prepayment": "Leave advance payment",
+    "subscription": "Subscription",
+    "monthCount" : "month",
+
+
+
   
     "inputs":{    
 
@@ -443,7 +453,8 @@
     "deprecated": "The data is deprecated․ Please, confirm registration again",
     "saveData": "Do you want to save the collected data?",
     "excelAddProds": "Would you like to download the product(s) to your store ?",
-    "excelCancelList": "Do you want to cancel changes ?"
+    "excelCancelList": "Do you want to cancel changes ?",
+    "isInDate": "You currently have no current commitment"
 
   }
 }

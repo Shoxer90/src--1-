@@ -46,8 +46,10 @@ const LeftTop = ({
             sx={{ m: 1 }} 
           />}
         />
-        <div style={{color:"#5a5a5a"}}>
-          {`${mainContent?.firstname} ${mainContent?.lastname}`}
+        <div style={{color:"#5a5a5a",fontSize:"80%", display:"flex",justifyContent:"space-between"}}>
+          <span style={{marginRight:"10px"}}>{mainContent?.firstname}</span>
+          <span> {mainContent?.lastname}</span>
+           
         </div>
       </div>
       {confirmSwitch && 

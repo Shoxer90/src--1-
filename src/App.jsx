@@ -61,6 +61,7 @@ const App = () => {
   const [from, setFrom] = useState("");
   const dispatch = useDispatch();
   const {user} = useSelector(state => state.user);
+  const [isBlockedUser,setBlockedUser] = useState(false);
   const focusInput = useRef();
   const debounce = useDebonce(searchValue, 1000);
   const debounceBasket = useDebonce(barcodeScanValue, 20);
@@ -81,6 +82,13 @@ const App = () => {
       checkUserStatus()
       if(res?.error?.message === "Rejected"){
         logOutFunc()
+        // syntethic possibility
+        // }else if(res?.payload?.isInDate === false){
+      }else if(res?.payload?.isInDate === false){
+        navigate("/setting/services")
+        setBlockedUser(true)
+      }else if(res?.payload?.isInDate === true){
+        setBlockedUser(false)
       }
     })
   };
@@ -336,7 +344,7 @@ const App = () => {
           />
           <Route path="/basket/*" element={<BasketList t={t} />} />
           <Route path="/confirmation/*" element={<Confirmation t={t} />} />
-          <Route path="/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
+          <Route path="/api/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
 
         </Routes> :
         <>
@@ -348,12 +356,11 @@ const App = () => {
             setCurrentPage={setCurrentPage}
             setIsLogIn={setIsLogIn}
             user={user}
-            // user={user?.firstname+ " " + user?.lastname}
             logo={user?.logo}
             active={user?.isEhdmStatus}
             setContent={setContent}
           />
-          <Routes>
+          {!isBlockedUser ? <Routes>
             <Route
               path="/"
               element={
@@ -410,15 +417,22 @@ const App = () => {
 
             } />
             <Route path="/setting/cashiers" element={<Cashiers t={t} screen={window.innerWidth} /> } />
-            <Route path="/setting/services" element={<ClientCardContainer />} />
             <Route path="/setting/user" element={<SettingsUser user={user} t={t} setUserData={setUserData} whereIsMyUs={whereIsMyUs} />} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} t={t}  measure={measure} />} />
             <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
             <Route path="/basket/*" element={<BasketList t={t} />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-            <Route path="/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
-          </Routes> 
-          <Basket 
+            <Route path="/api/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
+            <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc}/>} />
+          </Routes> :
+          <Routes>
+            <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+            <Route path="/api/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
+            <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />
+            <Route path="*" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />
+          </Routes>
+        }
+         {!isBlockedUser && <Basket 
             t={t}
             userName={user?.firstname + " " + user?.lastname}
             logOutFunc={logOutFunc}
@@ -438,7 +452,7 @@ const App = () => {
             setSearchValue={setBarcodeScanValue}
             byBarCodeSearching={byBarCodeSearching}
             setFrom={setFrom}
-          />
+          />}
          <Snackbar  
             sx={{ height: "100%" }}
             anchorOrigin={{   

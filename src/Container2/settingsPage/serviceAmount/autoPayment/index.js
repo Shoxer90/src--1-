@@ -3,12 +3,21 @@ import styles from "../index.module.scss"
 import { FormControlLabel } from "@mui/material";
 import IOSSwitch from "../../../../modules/iosswitch";
 import { useTranslation } from "react-i18next";
+import { autoPaymentSwitch } from "../../../../services/internal/InternalPayments";
 
 
-const  AutoPaymentSwitch = ({payData,setPayData,isAutoPay}) => {
- const {t} = useTranslation();
+const  AutoPaymentSwitch = ({payData, setPayData,hasAutoPayment}) => {
+  const {t} = useTranslation();
 
- return (
+  const switchSetBinding = async(bool) => {
+    await autoPaymentSwitch(bool)
+    return setPayData({
+      ...payData,
+      isBinding: bool
+    })
+  }
+
+  return (
     <div style={{display:"flex",justifyContent:"flex-start",marginLeft:"35px"}}>
       <FormControlLabel 
         labelPlacement="start"
@@ -16,12 +25,9 @@ const  AutoPaymentSwitch = ({payData,setPayData,isAutoPay}) => {
         sx={{m:0,p:.7}}
         label={<span style={{fontSize:"80%",marginRight:"20px",fontWeight:600}}>{t("cardService.authomatic")}</span>} 
         control={<IOSSwitch  
+          // value={payData?.isBinding}
           checked={payData?.isBinding}
-          // checked={payData?.isBinding === true ? true : false}
-          onChange={(e)=>setPayData({
-            ...payData,
-            isBinding: e.target.checked
-          })}
+          onChange={(e)=>switchSetBinding(e.target.checked)}
         />}
       />
     </div>

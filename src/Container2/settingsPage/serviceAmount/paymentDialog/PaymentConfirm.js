@@ -1,13 +1,14 @@
-import { Button, Dialog, DialogActions, DialogContent, Divider, IconButton, Input } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, Divider } from '@mui/material';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
 import styles from "./index.module.scss";
 import { useTranslation } from 'react-i18next';
 import Loader from '../../../loading/Loader';
-import { bindNewCard, payAndSubscribe } from '../../../../services/cardpayments/internalPayments';
+import { bindNewCard } from '../../../../services/cardpayments/internalPayments';
 import ConfirmDialog from '../../../dialogs/ConfirmDialog';
 import ActionMessage from '../../../dialogs/ActionMessage';
 import { payForServiceWithAttachedCard, payForServiceWithNewCard } from '../../../../services/internal/InternalPayments';
+import IsInDate from './IsInDate';
 
 const PaymentConfirm = ({
   open,
@@ -17,8 +18,8 @@ const PaymentConfirm = ({
   payData, 
   content,
   price,
+  logOutFunc,
 }) => {
-  console.log(payData,"paydata in dialog")
   const {t} = useTranslation();
   const [load,setLoad] = useState(false);
   const [openDialog, setOpenDialog]= useState();
@@ -27,6 +28,12 @@ const PaymentConfirm = ({
   const [activateBtn,setActivateBtn] = useState(false);
   const [newLink,setNewLink] = useState("")
   const ref = useRef();
+  const circleBorder = {
+    border:"lightgrey solid 2px",
+    borderRadius:"15px",
+    padding:"5px 10px",
+    margin: "10px 0"
+  }
 
   const getLinkForNewCard = async() => {
     setLoad(true)
@@ -42,16 +49,22 @@ const PaymentConfirm = ({
     setLoad(true)
     let response = "";
     if(activateBtn === 1) {
-      response = await payForServiceWithAttachedCard(payData)
-    }else{
-      response = await payForServiceWithNewCard(payData).then((res) => {
-        setLoad(false)       
-        !res?.error ? setNewLink(res?.formUrl):
-        setMessage({message:t("dialog.wrong"), type:"error"})
+      await payForServiceWithAttachedCard(payData).then((res) => {
+        if(res === 401){
+          logOutFunc()
+        }else{
+          setLoad(false)       
+          setMessage({message:t("basket.paymentsuccess"), type:"success"})
+        }
 
       })
+    }else{
+      response = await payForServiceWithNewCard(payData).then((res) => {
+      setLoad(false)       
+        !res?.error ? setNewLink(res?.formUrl):
+        setMessage({message:t("dialog.wrong"), type:"error"})
+      })
     }
-    console.log(response,"respomse")
   };
 
   useEffect(() => {
@@ -68,13 +81,13 @@ const PaymentConfirm = ({
         open={open}
         onClose={close}  
       >
-      {!content?.isInDate &&
+      {content?.isInDate ?
         <DialogContent>
           <h4 style={{margin:"10px 0px"}}>
-            {t("basket.totalndiscount")} <span style={{textDecoration:"underline"}}> {price} {t("units.amd")}</span>
+            {t("basket.totalndiscount")} <span> {price} {t("units.amd")}</span>
           </h4>
-          {!content?.autopayment?.defaultCard && 
-            <>
+          {content?.autopayment?.defaultCard && 
+            <div style={circleBorder}>
               <input
                 id="activeCard"
                 type="radio"
@@ -84,44 +97,49 @@ const PaymentConfirm = ({
                   setActivateBtn(1)
                   setPayData({
                     ...payData,
-                    cardId: content?.autopayment?.defaultCard
+                    cardId: content?.autopayment?.defaultCard?.cardId
                   })
                 }}
               />
               <label htmlFor="activeCard" style={{marginLeft:"10px",textAlign:"center"}}>
-                {t("settings.payByActiveCard")}
+                  {t("settings.payByActiveCard")} <strong>{`${content?.autopayment?.defaultCard?.pan}`}</strong>
               </label>
-            </>
+            </div>
           }
-          {!cardArr?.length &&
-            <div style={{fontWeight:600}}>
-              {t("cardService.chooseAnotherCard")}
-              <Divider sx={{bgcolor:"black"}}/>
-              {cardArr.map((card) =>(
-                <label>
-                  <input
-                    type="radio"
-                    name="pay operation"
-                    onChange={() => {
-                      delete payData?.attach
-                      setActivateBtn(1)
-                      setPayData({
-                        ...payData,
-                        cardId: card?.cardId
-                      })
-                    }}
-                  />
-                  <div className={styles.inputLabel}>
-                    {card?.pan.slice(0,4)} **** **** {card?.pan.slice(-4)}
-                    {card?.isActive && 
-                    <span style={{fontSize:"70%",color:"green",marginLeft:"5px",letterSpacing:"1px"}}>({t("settings.active")})</span>}
+          {cardArr?.length &&
+            <div>
+              <div style={{fontWeight:600,marginLeft:"25px"}}>
+                {t("cardService.chooseAnotherCard")}
+              </div>
+              <div>
+                {cardArr.map((card) =>(
+                  <div style={circleBorder}>
+                  <label>
+                    <input
+                      type="radio"
+                      name="pay operation"
+                      onChange={() => {
+                        delete payData?.attach
+                        setActivateBtn(1)
+                        setPayData({
+                          ...payData,
+                          cardId: card?.cardId
+                        })
+                      }}
+                    />
+                    <span className={styles.inputLabel}>
+                      {card?.pan.slice(0,4)} **** **** {card?.pan.slice(-4)}
+                      {card?.isActive && 
+                      <span style={{fontSize:"70%",color:"green",marginLeft:"5px",letterSpacing:"1px"}}>({t("settings.active")})</span>}
+                    </span>
+                  </label>
                   </div>
-                </label>
-              ))}
+                ))}
+              </div>
             </div>
           }
           <Divider sx={{bgcolor:"black"}} />
-            <div>
+            <div style={circleBorder}>
               <input 
                 id="no attach"
                 type="radio"
@@ -139,7 +157,7 @@ const PaymentConfirm = ({
                 {t("settings.payWithNewCard")}
               </label>
             </div>
-            <div>
+            <div style={circleBorder}>
               <input 
                 id="attach"
                 type="radio" 
@@ -151,16 +169,16 @@ const PaymentConfirm = ({
                     ...payData,
                     attach: true
                   })
-                  console.log("pay with attach new card")
                 }}
               />
               <label htmlFor="attach" style={{marginLeft:"10px",textAlign:"center"}}>
                 {t("settings.payWithNewCardAndAttach")}
               </label>
             </div>
-        </DialogContent>
+        </DialogContent> : 
+        <IsInDate />
       }
-      <DialogActions>
+      {content?.isInDate ? <DialogActions>
         <Button
           variant="contained"
           onClick={close}
@@ -177,7 +195,16 @@ const PaymentConfirm = ({
         >
           {t("basket.linkPayment")}
         </Button>
-      </DialogActions>
+        </DialogActions>: 
+        <DialogActions>
+          <Button
+            variant="contained"
+            onClick={close}
+          >
+            {t("buttons.close")}
+          </Button>
+        </DialogActions>
+      }
     </Dialog>
     {newLink && <a ref={ref} href={newLink}>""</a>}
 

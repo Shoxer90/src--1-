@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Button, Card, FormControlLabel } from "@mui/material";
 import PaymentConfirm from "../paymentDialog/PaymentConfirm";
 
@@ -8,17 +8,18 @@ const ServiceItemSecond = ({
   t,
   content,
   service,
-  userCardInfo,
+  logOutFunc,
   changeActiveCard,
   payData, setPayData,
 }) => {
   const [openDialogForPay,setOpenDialogForPay] = useState(false);
   const [activateBtn,setActivateBtn] = useState(false);
-
+  const [payDate, setNextPayDate] = useState();
   const disableStyle={
     // pointerEvents: "none",
     opacity: 0.3
-  }
+  };
+
 
   return (
     <>
@@ -74,7 +75,6 @@ const ServiceItemSecond = ({
             </span>
           }
         </div>
-        {/* <ServiceAmountHistory serviceHistory={service?.userServicePayment} t={t}/> */}
       </Card>
       <PaymentConfirm
         open={openDialogForPay}
@@ -87,6 +87,7 @@ const ServiceItemSecond = ({
         price={service?.price}
         activateBtn={activateBtn}
         setActivateBtn={setActivateBtn}
+        logOutFunc={logOutFunc}
       />
     </>
   );
