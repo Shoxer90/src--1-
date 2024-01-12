@@ -1,5 +1,6 @@
 import React, { memo, useState, useEffect } from "react" ;
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import SettingsCard from "./settingCard/index";
 import LeftTop from "./settingCard/components/user/LeftTop";
@@ -10,8 +11,9 @@ import LeftBottom from "./settingCard/components/user/LeftBottom";
 import LeftBottomCashiers from "./settingCard/components/cashiers/LeftBottomCashiers";
 import RightBottom from "./settingCard/components/user/RightBottom";
 import RightTop from "./settingCard/components/user/RightTop";
-import { useNavigate } from "react-router-dom";
 import { getCashiers } from "../../../services/user/userInfoQuery";
+
+import styles from "./index.module.scss";
 
 const SettingsContent = ({
   user,
@@ -32,7 +34,7 @@ const SettingsContent = ({
   }, []);
 
   return (
-    <div style={{width:"100%",display:"flex"}}>
+    <div className={styles.content}>
       <SettingsCard
         leftTop={
           <LeftTop  

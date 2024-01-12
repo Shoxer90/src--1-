@@ -1,22 +1,19 @@
 .smallCard{
   display: flex;
+  flex-flow:column;
   justify-content: space-around;
-  flex-flow: column wrap;
-  width: 120px;
+  min-width: 120px;
   height: 75px;
-  border-radius: 7px;
+  border-radius: 5px;
   font-size: 75%;
   background: linear-gradient(0deg, rgba(26,61,48,1) 0%, rgba(63,182,138,1) 100%);
   color: white;
-  margin: 5px;
+  margin: 10px;
+  margin-bottom: 20px;
   cursor: pointer;
-  &:hover{
-    
-  }
-  &_checkbox{
-    display: flex;
-    justify-content: flex-end;
-    margin-right: 10px;
-    margin-bottom: 5px;
-  }
 }
+@media screen and (max-width: 1000px) {
+ 
+  
+}
+

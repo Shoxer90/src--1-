@@ -1,6 +1,6 @@
 .settingsCard{
   width: 30dvw;
-  // min-width: 500px;
+  display:flex;
   height: 250px;
   display:grid;
   grid-template-columns: 2fr 1fr;
@@ -43,4 +43,19 @@
   color:#5a5a5a;
   font-weight:500;
   
+}
+@media screen and (max-width: 1000px) {
+  .settingsCard{
+    flex-flow: column;
+    width: 90dvw;
+   
+  }
+  .imageUser_div{
+    &_img{
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: white solid 7px;
+    }
+  }
 }

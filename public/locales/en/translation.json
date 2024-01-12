@@ -48,7 +48,6 @@
     "priceListRow7":"REceipt providing via SMS message (for each)",
     "priceListRow8":"Sending Link payment requests via SMS message",
     "priceListRow9":"QR and Link Payment Acceptance"
-
   },
   "units": {
     "min": "minimal",
@@ -173,7 +172,6 @@
       "wrongnumber": "Wrong phone number",
       "discount": "Please check the Discount field, it cannot be empty",
       "discount2": "The Discount field cannot be more than 99%",
-      "":"",
       "err":"error",
       "notMail": "E-mail is not valid",
       "noHdm": "Hdm is not available now",
@@ -187,9 +185,7 @@
     "logout": "LogOut",
     "feedback":"Contact us",
     "subject": "Subject",
-  "letter": "Feedback or suggestions"
-
-
+    "letter": "Feedback or suggestions"
   },
   "menubar": {
     "home": "Home",
@@ -245,7 +241,6 @@
     "productadded":"The product is available in your store",
     "symb": "symbols", 
     "orderList": "Shopping list"
-
   },
   "basket": {
     "title": "Basket",
@@ -271,8 +266,6 @@
     "prepaymentTitle": "Receive prepayment",
     "nullishQuant": "There is a quantity mismatch in the basket",
     "emptyPayInfo": "There are empty or incorrect fields"
-
-   
   },
   "history": {
     "start_date": "Start date",
@@ -321,10 +314,7 @@
     "getCard": "Get by transfer",
     "receiptPrice2": "Receipt price",
     "transaction":"Transaction"
-
-
-    
-}, 
+  }, 
   "updates": {
     "changes": "Changes",
     "sales": "Sales",
@@ -338,8 +328,6 @@
     "date": "Date",
     "measure": "Unit",
     "price": "Price"
-
-
   },
   "settings": {
     "switcher": "E-Cash",
@@ -363,8 +351,10 @@
     "active": "Active",
     "blocked": "Blocked",
     "update": "Update cashier data",
-    "ehdmAuth": "Permission to Print on E-Cash",
-    "reverseAuth": "E-Cash Return Permission",
+    "ehdmAuth": "Permission to Print on E-CCR",
+    "hdmAuth": "Permission to Print on CCR",
+    "reverseAuth": "E-CCR Return Permission",
+    "notAvailableInWeb": "Not Available on Web Site",
     "create": "New cashier",
     "remove": "Remove",
     "remove2": "Want to remove the cashier " ,
@@ -378,7 +368,7 @@
     "dublicatemail": "Cashier with this email address already exists",
     "successTitle":"Data for Login to StoreX",
     "isregistrehdm": "In order to activate the function of generating e-cash register, it is necessary to have contract  with PayX LLC on the service of e-cash register",
-    "payWithNewCard": "Pay by New Card",
+    "payWithNewCard": "Pay with a card not attached",
     "payWithNewCardAndAttach": "Attach a new card and pay",
     "payByActiveCard": "Make a payment with an active card",
     "checkArcaStatus": "Checking Card Attach Status",
@@ -390,7 +380,7 @@
     "chooseCard": "Choose active card",
     "chooseAnotherCard": "Choose a card from the list",
     
-    "attachedCards": "Attached Cards",
+    "attachedCards": "My Cards",
     "amount" : "Monthly service",
     "amountDate": "Next payment date",
     "currentCommitment": "Current Commitment",
@@ -413,22 +403,13 @@
     "prepayment": "Leave advance payment",
     "subscription": "Subscription",
     "monthCount" : "month",
-
-
-
-  
+    "wrongCeil":  "There is a field with an incorrect format",
     "inputs":{    
-
-       "cardName":"Card Name",
-       "cardNumber":"Card Number",
-       "expMonth":"exp. Month",
-       "expYear" : "exp. Year"
-     },
-    "wrongCeil":  "There is a field with an incorrect format"
-
-
-
-
+      "cardName":"Card Name",
+      "cardNumber":"Card Number",
+      "expMonth":"exp. Month",
+      "expYear" : "exp. Year"
+    }
   },
   "dialogs": {
     "done": "Operation is success completed!",
@@ -455,6 +436,5 @@
     "excelAddProds": "Would you like to download the product(s) to your store ?",
     "excelCancelList": "Do you want to cancel changes ?",
     "isInDate": "You currently have no current commitment"
-
   }
 }

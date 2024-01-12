@@ -4,9 +4,6 @@ import { useTranslation } from 'react-i18next';
 import AddCardIcon from '@mui/icons-material/AddCard';
 import { Box, Button, Card, Dialog, Divider } from '@mui/material';
 
-import AliceCarousel from 'react-alice-carousel';
-import "react-alice-carousel/lib/alice-carousel.css";
-
 import Services from './services';
 import CreditCard from './creditCard/CreditCard';
 import ServiceTitle from './ServiceTitle';
@@ -22,24 +19,18 @@ import styles from "./index.module.scss"
 import ConfirmDialog from '../../dialogs/ConfirmDialog.js';
 import SnackErr from '../../dialogs/SnackErr.js';
 import PrepaymentConfirm from './paymentDialog/PrepaymentConfirm.js';
-
-
-const responsive = {
-  320: {items: 1},
-  568:{items: 2},
-  1024:{items: 7},
-  2040:{items: 8}
-};
+import st from "./creditCard/index.module.scss";
 
 const stylesCard = {
-  m:2,
+  m: window.innerWidth > 1000 ? 2 : .2,
+  mb: 1,
   boxShadow: 3,
   borderRadius: 5,
   height:"fit-content"
 };
 
 const stylesBox = {
-  m:5,
+  // m:5,
   mb:1,
   mt:0,
   minHeight: "30dvh",
@@ -50,7 +41,6 @@ const stylesBox = {
 
 const stylesServCard = {
   background:"#def7ee",
-  borderRadius: 3
 };
 
 const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
@@ -109,24 +99,22 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
   }, [responseUrl]);
 
   return (
-  <div style={{margin:"70px"}}>
+  <div className={styles.clientContainer} >
     <h2> {t("cardService.btnTitle")}</h2>
-    <Divider color="black" />
+    <Divider color="black" sx={{m:1}} />
     {isBlockedUser && <p style={{color:"red"}}>{t("cardService.notInDate")}</p>}
     <Card sx={stylesCard}>
       <ServiceTitle title={t("landing.priceListSubTitle1")} />
-      <Box sx={stylesBox}>
-        {internalPayments &&
-          <Services 
-            content={internalPayments}
-            t={t} 
-            changeActiveCard={changeActiveCard}
-            payData={payData} 
-            setPayData={setPayData}
-            logOutFunc={logOutFunc}
-          />
-        }
-      </Box>
+      {internalPayments &&
+        <Services 
+          content={internalPayments}
+          t={t} 
+          changeActiveCard={changeActiveCard}
+          payData={payData} 
+          setPayData={setPayData}
+          logOutFunc={logOutFunc}
+        />
+      }
     </Card>
 
     <Card sx={stylesCard}>
@@ -135,20 +123,20 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
         payData={payData}
         setPayData={setPayData}
       />
-      <Box sx={stylesBox} >
-        {internalPayments?.autopayment?.defaultCard && <CreditCardWrapper 
-          setOpenConfirmation={setOpenConfirmation}
-          element={<CreditCard 
-            card={internalPayments?.autopayment?.defaultCard}
-          />}
-        />}
-        <Card 
-          sx={stylesServCard} 
-          className={styles.attachCardContainer}
-        >
+
+      <Box sx={stylesBox} className={styles.payWay}>
+
+        {internalPayments?.autopayment?.defaultCard && 
+          <CreditCardWrapper 
+            setOpenConfirmation={setOpenConfirmation}
+            element={<CreditCard card={internalPayments?.autopayment?.defaultCard}/>}
+          />
+        }
+
+        <Card className={styles.attachCardContainer} sx={{borderRadius:4,background:"#def7ee"}}>
           <div>
-            <CardTravelIcon fontSize="large" sx={{w:10}}/>
-            <span style={{marginLeft:"7px",fontWeight: 600,}}>
+            <CardTravelIcon fontSize="large" />
+            <span style={{fontWeight: 600}}>
               {t("cardService.balance")} 6000 AMD
             </span>
           </div>
@@ -159,48 +147,35 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
             {t("cardService.prepayment")}
           </Button>
         </Card>
+      </Box>
 
+
+    </Card>
+    <Card sx={stylesCard}>
+      <ServiceTitle title={t("cardService.attachedCards")} />
+      <div style={{display:"flex",overflow:"auto",margin:"20px"}}>
         <Card 
+          className={st.smallCard}
           sx={stylesServCard} 
-          className={styles.attachCardContainer}
           onClick={addNewCreditCard}
         >
-          <div>
-            <AddCardIcon fontSize="large" sx={{w:10}}/>
-            <span style={{marginLeft:"7px"}}>
-              {t("cardService.attachCard")}
-            </span>
-          </div>
-          {responseUrl && <a ref={ref} href={responseUrl}>{""}</a>}
+          <AddCardIcon fontSize="medium" sx={{m:"0 auto"}} />
+          <div>{t("cardService.attachCard")}</div>
         </Card>
-
-      </Box>
-     {internalPayments?.cards?.length ? 
-        <Box>
-          <ServiceTitle title={t("cardService.attachedCards")} />
-          <div className={styles.carret}>
-            {/* <AliceCarousel 
-              animationDuration={1000}
-              responsive={responsive}
-              items={internalPayments?.cards}
-              disableButtonsControls
-            > */}
-              {internalPayments?.cards && 
-                internalPayments?.cards.map((card,index) => (
-                  <SmallCardForCarousel
-                    card={card}
-                    key={card?.cardId}
-                    refresh={refresh}
-                    setRefresh={setRefresh}
-                    index={index}
-                  />
-                ))
-              }
-            {/* </AliceCarousel> */}
-          </div>
-        </Box> : ""
-      }
-    </Card>
+          { responseUrl && <a ref={ref} href={responseUrl}>{""}</a> }
+          { internalPayments?.cards?.length && 
+            internalPayments?.cards.map((card,index) => (
+              <SmallCardForCarousel
+                card={card}
+                key={card?.cardId}
+                refresh={refresh}
+                setRefresh={setRefresh}
+                index={index}
+              />
+            ))
+          }
+      </div>
+    </Card> 
     <ConfirmDialog
       open={openConfirmation}
       close={setOpenConfirmation}

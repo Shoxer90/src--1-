@@ -9,8 +9,10 @@ import ConfirmDialog from '../../../dialogs/ConfirmDialog';
 import ActionMessage from '../../../dialogs/ActionMessage';
 import { payForServiceWithAttachedCard, payForServiceWithNewCard } from '../../../../services/internal/InternalPayments';
 import IsInDate from './IsInDate';
+import AttachedCardsItem from './AttachedCardsItem';
 
 const PaymentConfirm = ({
+
   open,
   close,
   cardArr,
@@ -47,7 +49,6 @@ const PaymentConfirm = ({
 
   const payForService = async() => {
     setLoad(true)
-    let response = "";
     if(activateBtn === 1) {
       await payForServiceWithAttachedCard(payData).then((res) => {
         if(res === 401){
@@ -59,7 +60,7 @@ const PaymentConfirm = ({
 
       })
     }else{
-      response = await payForServiceWithNewCard(payData).then((res) => {
+       await payForServiceWithNewCard(payData).then((res) => {
       setLoad(false)       
         !res?.error ? setNewLink(res?.formUrl):
         setMessage({message:t("dialog.wrong"), type:"error"})
@@ -84,7 +85,7 @@ const PaymentConfirm = ({
       {content?.isInDate ?
         <DialogContent>
           <h4 style={{margin:"10px 0px"}}>
-            {t("basket.totalndiscount")} <span> {price} {t("units.amd")}</span>
+            {t("basket.totalndiscount")} <span> {price} {t("units.amd")}</span> 
           </h4>
           {content?.autopayment?.defaultCard && 
             <div style={circleBorder}>
@@ -102,7 +103,7 @@ const PaymentConfirm = ({
                 }}
               />
               <label htmlFor="activeCard" style={{marginLeft:"10px",textAlign:"center"}}>
-                  {t("settings.payByActiveCard")} <strong>{`${content?.autopayment?.defaultCard?.pan}`}</strong>
+                {t("settings.payByActiveCard")} <strong>{`${content?.autopayment?.defaultCard?.pan}`}</strong>
               </label>
             </div>
           }
@@ -113,27 +114,13 @@ const PaymentConfirm = ({
               </div>
               <div>
                 {cardArr.map((card) =>(
-                  <div style={circleBorder}>
-                  <label>
-                    <input
-                      type="radio"
-                      name="pay operation"
-                      onChange={() => {
-                        delete payData?.attach
-                        setActivateBtn(1)
-                        setPayData({
-                          ...payData,
-                          cardId: card?.cardId
-                        })
-                      }}
-                    />
-                    <span className={styles.inputLabel}>
-                      {card?.pan.slice(0,4)} **** **** {card?.pan.slice(-4)}
-                      {card?.isActive && 
-                      <span style={{fontSize:"70%",color:"green",marginLeft:"5px",letterSpacing:"1px"}}>({t("settings.active")})</span>}
-                    </span>
-                  </label>
-                  </div>
+                  <AttachedCardsItem 
+                   card={card} 
+                   circleBorder={circleBorder}
+                   payData={payData}
+                   setActivateBtn={setActivateBtn}
+                   setPayData={setPayData}
+                  />
                 ))}
               </div>
             </div>
@@ -189,7 +176,11 @@ const PaymentConfirm = ({
           disabled={!activateBtn}
           variant="contained"
           onClick={()=>{
-            setOpenPayDialog(true)
+            if(activateBtn === 2 && payData?.attach) {
+              setOpenDialog(true)
+            }else{
+              setOpenPayDialog(true)
+            }
            
           }}
         >

@@ -64,16 +64,17 @@ const UpdateProduct = ({
     const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
     const text = event.target.value;  
     if(valid.test(text)){
-      console.log(event.target.value)
+      console.log(typeof event.target.value)
       if(event.target.value === "0"){
         if(currentProduct?.measure === "հատ"){
           return
         }else{
           console.log("TEXUMA")
-          return setCurrentProduct({
+           setCurrentProduct({
             ...currentProduct,
-            [event.target.name]: `${event.target.value}`
+            [event.target.name]: "0."
           })
+          return
         }
       }
       else if(event.target.value && event.target.name === "remainder" && currentProduct?.measure === "հատ" ){

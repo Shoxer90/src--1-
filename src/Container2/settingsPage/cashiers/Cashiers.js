@@ -106,12 +106,9 @@ const Cashiers = ({t, logOutFunc, screen}) => {
   }, [register]);
 
   return (
-    <div style={{ margin: "90px"}}>
+    <div style={{ marginTop: "90px"}}>
       <div className={styles.cashier_title}> 
        <h1> {t("settings.cashiers")}</h1>
-      </div>
-      <Divider color="black" />
-      <div className={styles.cashier}>
         <Avatar
           onClick={()=>{
             setOpenCashierDail(true)
@@ -119,12 +116,14 @@ const Cashiers = ({t, logOutFunc, screen}) => {
           }}
           sx={{ 
             "&:hover": { bgcolor: '#1976d2' , color:"white"}, 
-            margin: 1,
+            ml: 1,
             cursor:"pointer"
           }}
          >
          <GroupAddIcon />
         </Avatar> 
+      </div>
+      <div className={styles.cashier}>
         {cashiers && cashiers.map((employee, index) => ( 
           <CashiersItem 
             key={index}
@@ -152,11 +151,9 @@ const Cashiers = ({t, logOutFunc, screen}) => {
       />
     }
     {newCashierSuccess &&
-    <Dialog
-     open={newCashierSuccess}
-    >
-      <SnackErr message={t("")} type="success" close={setCashierSuccess(false)}/>
-    </Dialog>
+      <Dialog open={newCashierSuccess}>
+        <SnackErr message={t("")} type="success" close={setCashierSuccess(false)}/>
+      </Dialog>
     }
     <UpdateCashiers
       t={t} 

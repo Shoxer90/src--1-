@@ -6,7 +6,6 @@ import styles from "../../index.module.scss";
 
 // cashier
 const LeftTopCashiers = ({cashiers}) => {
-  console.log(cashiers,"cashiers 11")
   const {t} = useTranslation();
   
   return (

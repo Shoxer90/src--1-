@@ -1,16 +1,26 @@
 import React, { memo, useEffect, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, Divider, Slide } from "@mui/material";
 import { t } from "i18next";
-import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
 import styles from "./index.module.scss";
+import PrepaymentItem from "./PrepaymentItem";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const activeStyle = {
+  boxShadow: "10px 5px 5px grey",
+  scale:"1.04",
+  transition: "width 2s",
+  background: "rgb(200, 240, 240)"
+};
+
 const PrepaymentConfirmation = ({open,close}) => {
 
-  const [activeRow,setActiveRow] = useState(0)
+  const [activeRow,setActiveRow] = useState(0);
+  const [paymentData,setPaymentData] = useState({
+    // body for fetch
+  }); 
 
   const subscriptionData = [
     {
@@ -25,15 +35,6 @@ const PrepaymentConfirmation = ({open,close}) => {
       monthCount: 3,
       price: 9000
     },
-    {
-      monthCount: 4,
-      price: 12000
-    },
-    {
-      monthCount: 5,
-      price: 15000
-    },
-    
   ];
 
   const activateRow = (row) => {
@@ -43,13 +44,8 @@ const PrepaymentConfirmation = ({open,close}) => {
       setActiveRow(row)
     }
   };
-  const activeStyle = {
-    boxShadow: "10px 5px 5px grey",
-    scale:"1.04",
-    transition: "width 2s",
-    background: "rgb(200, 240, 240)"
 
-  };
+
  const prepayment = () =>{
   console.log("oppa")
  };
@@ -68,23 +64,18 @@ const PrepaymentConfirmation = ({open,close}) => {
       <DialogContent>
         <p style={{fontSize:"150%",margin:"5px 20px"}}>{t("cardService.subscription")}</p>
         <Divider  sx={{m:1}}  color="black" />
-        <div  className={styles.subscription} >
+        <div  className={styles.subscription}>
           {
             subscriptionData && subscriptionData.map((item,index) => (
-              <div 
-                className={styles.subscription_item} 
-                onClick={()=>activateRow(index+1)}
-                style={activeRow === index+1 ? activeStyle: null}
-              >
-                <span>
-                  <FileDownloadDoneIcon sx={{color:"green",mr:2}} />
-                  {item?.monthCount} {t("cardService.monthCount")} 
-                </span>
-                <span style={{width:"20%"}}></span>
-                <span>
-                  {item?.price} {t("units.amd")}
-                </span>
-              </div>
+              <PrepaymentItem
+                {...item} 
+                activeRow={activeRow}
+                index={index}
+                activeStyle={activeStyle}
+                activateRow={activateRow}
+                setPaymentData={setPaymentData}
+                paymentData={paymentData}
+              />
             ))
           }
         </div>

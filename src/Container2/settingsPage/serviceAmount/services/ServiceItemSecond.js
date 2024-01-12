@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import { Button, Card, FormControlLabel } from "@mui/material";
 import PaymentConfirm from "../paymentDialog/PaymentConfirm";
 
@@ -14,12 +14,7 @@ const ServiceItemSecond = ({
 }) => {
   const [openDialogForPay,setOpenDialogForPay] = useState(false);
   const [activateBtn,setActivateBtn] = useState(false);
-  const [payDate, setNextPayDate] = useState();
-  const disableStyle={
-    // pointerEvents: "none",
-    opacity: 0.3
-  };
-
+  const disableStyle={opacity: 0.3};
 
   return (
     <>
@@ -37,13 +32,13 @@ const ServiceItemSecond = ({
               variant="contained" 
               size="small" 
               onClick={()=>{
-               if(service?.isActive) {
+                if(service?.isActive){
                   setPayData({
                     ...payData,
                     serviceType: service?.id
                   })
                   setOpenDialogForPay(true)
-               }else{
+                }else{
                   alert("For more info please call PayX")
                 }
               }}

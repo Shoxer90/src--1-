@@ -62,8 +62,7 @@ export const setActiveCard = async(id) => {
 
 export const autoPaymentSwitch = async(bool) => {
   try {
-    const data = await axios.put( baseUrl + `InternalPayments/SetBinging?BindingStatus=${bool}`, {}, option());
-    console.log(data,"about bool")
+    const data = await axios.put( baseUrl + `InternalPayments/SetBinding?BindingStatus=${bool}`, {}, option());
     return data
   }catch(err) {
     console.log(err,"err")
