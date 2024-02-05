@@ -39,7 +39,9 @@ const handleChangeInput = (e) => {
     const valid =/^\d+(\.\d{1,2})?$/;
     const text = e.target.value;  
     const isValid = valid.test(text);
-    if(e.target.value[e.target.value.length-1] === "." ){
+    if(e.target.value[e.target.value.length-1] === "." ||
+     (e.target.value[e.target.value.length-1] === "0" && e.target.value[e.target.value.length-2] === ".")
+    ){
       setBlockTheButton(true)
       setPaymentInfo({
         ...paymentInfo,
@@ -68,14 +70,18 @@ const handleChangeInput = (e) => {
         - totalPrice * paymentInfo?.discount / 100
         - paymentInfo?.cardAmount 
         - paymentInfo?.prePaymentAmount 
-      ).toFixed(2)
+      ).toFixed(2),
+      partnerTin: ""
+
     })
   };
 
   useEffect(() => {
   !trsf && cashChanges()
   setVal(totalPrice)
-  }, [totalPrice,flag, paymentInfo?.discount]);
+  setBlockTheButton(false)
+
+  }, [totalPrice, flag, paymentInfo?.discount]);
 
   return(
     paymentInfo && <div className={styles.saleInfoInputs}>
@@ -84,7 +90,7 @@ const handleChangeInput = (e) => {
           {t("history.total")} 
         </span>
         <input 
-        value={numberSpacing(totalPrice)} 
+        value={numberSpacing(totalPrice.toFixed(2))}
         readOnly/>
       </div>
 
@@ -121,7 +127,7 @@ const handleChangeInput = (e) => {
         <span>
           {t("history.cash")}
         </span>
-        <input value={numberSpacing(paymentInfo?.cashAmount)} readOnly />
+        <input value={numberSpacing(paymentInfo?.cashAmount.toFixed(2))} readOnly />
       </div>
       <div>
         <span>
@@ -165,6 +171,7 @@ const handleChangeInput = (e) => {
         <input
           type="number"
           value={paymentInfo?.partnerTin}
+          autoComplete="off"
           name="partnerTin"
           onChange={(e)=> {
             if(`${e.target.value}`?.length <= 8){

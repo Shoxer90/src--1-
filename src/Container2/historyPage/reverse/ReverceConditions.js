@@ -60,7 +60,7 @@ const ReverceConditions = ({saleInfo , t, reverseTotal, conditionState,setCondit
             </span> : ""
           }
           {saleInfo?.res?.printResponseInfo?.cardAmount ?
-            <span> {t("history.whichCasheless")} 
+            <span> {t("history.whichCashless")} 
               <strong style={{margin:"0 5px"}}> 
                {saleInfo?.res?.printResponseInfo?.cardAmount} {t("units.amd")}
               </strong>

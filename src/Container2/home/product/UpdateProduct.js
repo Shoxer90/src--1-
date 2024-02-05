@@ -63,8 +63,12 @@ const UpdateProduct = ({
     setFixMessage("")
     const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
     let text = event.target.value; 
-    if(event.target.value === "00"){
-      text = "0.0"; 
+    if(event.target.value === "0"){
+      if(`${event.target.value}`.length > currentProduct?.[event.target.name].length){
+        text = "0."; 
+      }else{
+        text= "";
+      }
     }
     if(valid.test(text)){
       if(event.target.value && event.target.name === "remainder" && currentProduct?.measure === "հատ" ){

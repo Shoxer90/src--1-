@@ -310,6 +310,7 @@
     "cashregister": "Cash register",
     "whichCash": "From which cash",
     "whichCashless": "From which cashless",
+
     "whichPrepayment": "From which prepayment",
     "forReverse": "Refundable amount",
     "getCash": "Get cash",

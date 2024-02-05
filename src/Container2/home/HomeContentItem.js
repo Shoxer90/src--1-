@@ -48,32 +48,29 @@ const HomeContentItem = ({
     setQuantity("")
   };
 
-  const createProdQuant = (e) => {
-    if(e.target.value.indexOf("-") !== -1){
-      setQuantity(+e.target.value * -1)
-      return
-    }
-    if(e.target.value === "0" || e.target.value === 0){
-    setQuantity("")
-    return
-    }
-    if((e.target.value.indexOf(".") !== -1 && e.target.value.split('.')[1]?.length > 3)){
-      return
-    }else{
-      if(e.target.value > product?.remainder) {
-        setQuantity(e.target.value)
-        return
-      } 
-      else if(quantity === 0 || quantity === "0"){
-        setQuantity("")
-        setQuantity(e.target.value.slice(-1))
-      }else if(product?.otherLangMeasure === "հատ") {
-        setQuantity(Math.round(e.target.value))
+  const onlyNumberAndADot = (event,num) => {
+    const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
+    let text = event.target.value; 
+    if(event.target.value === "0" || event.target.value === "."){
+      if(`${event.target.value}`.length > quantity?.length){
+        text = "0."; 
       }else{
-        setQuantity(e.target.value)
+        text= "";
       }
     }
+    if(valid.test(text)){
+      if(product?.measure === "հատ" || product?.measure === "шт" || product?.measure === "pcs") {
+        console.log(product?.measure,"MEASURE")
+        setQuantity(Math.round(text.trim()))
+      }else{ 
+        console.log(measure," 1212 1212")
+        setQuantity(text.trim())
+      }
+    }else{
+      return 
+    }
   };
+  // 
 
   useEffect(() => {
     setStarSynth(product?.isFavorite)
@@ -141,7 +138,6 @@ const HomeContentItem = ({
                 { product?.discountType === 1 && ( Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice) }
                 {/* { product?.discountType === 2 && (product?.price - product?.discount) } */}
                 { product?.discountType === 0 && ( Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice)  }
-
                 { t("units.amd") }
               </strong>
             </span>
@@ -150,7 +146,7 @@ const HomeContentItem = ({
       </div>
       {product?.remainder ?
         <>
-          <div style={{fontSize:quantity > product?.remainder ? "90%":"70%", margin:"5px", color: quantity > product?.remainder && "red"}}>
+          <div style={{fontSize:"70%", margin:"5px", color: quantity > product?.remainder && "red",fontWeight: quantity > product?.remainder && "700"}}>
             {t("productcard.remainder")} {product?.remainder} {t(`units.${product?.measure}`)}
           </div>
           <div style={{fontSize:"80%",letterSpacing:"0.1px",padding:"3px"}}>
@@ -162,9 +158,8 @@ const HomeContentItem = ({
               step={product?.otherLangMeasure !== "հատ" ? "0.001" : "1"}
               max={`${product.remainder}`}
               placeholder="1"
-              type="number" 
               value={quantity}  
-              onChange={(e)=>createProdQuant(e)} 
+              onChange={(e)=>onlyNumberAndADot(e,3)} 
               disabled={basketExist.includes(product?.id)}
             />
             <ShoppingBasketIcon 

@@ -24,7 +24,9 @@ import styles from "../index.module.scss"
       && event.target.value.length > `${paymentInfo?.cashAmount}`.length)
     ){
       return
-    }else if(event.target.value[event.target.value.length-1] === "."){
+    }else if(event.target.value[event.target.value.length-1] === "." ||
+     (event.target.value[event.target.value.length-1] === "0" && event.target.value[event.target.value.length-2] === ".")
+    ) {
       setSingleClick({pointerEvents:"none"})
       setBlockTheButton(true)
       setVal(event.target.value)
@@ -48,10 +50,12 @@ import styles from "../index.module.scss"
       const valid =/^\d+(\.\d{1,2})?$/;
       const text = e.target.value;  
       const isValid = valid.test(text)
-      if(e.target.value[e.target.value.length-1] === "."){
-      setSingleClick({pointerEvents:"none"})
-      setBlockTheButton(true)
-      setPaymentInfo({
+      if(e.target.value[e.target.value.length-1] === "." ||
+        (e.target.value[e.target.value.length-1] === "0" && e.target.value[e.target.value.length-2] === ".")
+      ){
+        setSingleClick({pointerEvents:"none"})
+        setBlockTheButton(true)
+        setPaymentInfo({
           ...paymentInfo,
           cardAmount: e.target.value,
           cashAmount: (val - ( e.target.value || 0)),
@@ -68,7 +72,6 @@ import styles from "../index.module.scss"
       }
     }
   };
-
 
   useEffect(() => {
     setPaymentInfo({

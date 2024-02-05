@@ -94,13 +94,13 @@ const  Bascket = ({
   };
 
   const createPaymentSales = async() => {
-    // setSingleClick({})
     setIsEmpty(false)
     createMessage("","")
     let total = 0
     let arr = await localStorage.getItem("basketIdCount")
     const salesArr = await JSON.parse(arr)
     if(salesArr?.length) {
+      setSingleClick({})
       basketContent.forEach((item) => {
         total += (item?.discountPrice * item?.count)
         if(item?.count === "" || item?.count == 0){

@@ -10,15 +10,18 @@ const PayButtons = ({
   blockTheButton,
   singleClick
 }) => {
+
   const buttonBlock = {
     opacity: "0.3",
     border:"red",
     pointerEvents:"none"
-  }
+  };
+  console.log(!paymentInfo?.cashAmount,"CARD AMOUNT INSIDE")
   return(
     <div 
       className={styles.bask_container_body_footer_icons}
-      style={blockTheButton ? buttonBlock : null}>
+      style={blockTheButton ? buttonBlock : null}
+    >
       <img
         src="/image/cash.png"
         alt="cash pay"
@@ -26,7 +29,7 @@ const PayButtons = ({
           setSingleClick({pointerEvents:"none"})
           multiSaleProducts(1)
         }}
-        style={!paymentInfo?.cashAmount && !paymentInfo?.cardAmount && !paymentInfo?.prePaymentAmount ? buttonBlock : null}
+        style={!paymentInfo?.cashAmount ? buttonBlock : null}
       />
       <img
         src="/image/qr.png"

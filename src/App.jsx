@@ -391,7 +391,7 @@ const App = () => {
             setContent={setContent}
           />
           {/* {isBlockedUser ? <Routes> */}
-          {isBlockedUser ? <Routes>
+          {!isBlockedUser ? <Routes>
             <Route
               path="/"
               element={
@@ -463,7 +463,7 @@ const App = () => {
             <Route path="*" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />
           </Routes>
         }
-         {isBlockedUser && <Basket 
+         {!isBlockedUser && <Basket 
             t={t}
             userName={user?.firstname + " " + user?.lastname}
             logOutFunc={logOutFunc}
