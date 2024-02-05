@@ -34,6 +34,7 @@ const AddNewProduct = ({
   getSelectData,
   selectContent,
   globalMessage,
+  setSelectContent,
   setGlobalMessage,
   setGlobalType
 }) => {
@@ -48,7 +49,10 @@ const AddNewProduct = ({
 
   const onlyNumberAndADot = (event,num) => {
     const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
-    const text = event.target.value;  
+    let text = event.target.value; 
+    if(event.target.value === "00"){
+      text = "0.0"; 
+    }
     if(valid.test(text)){
       if(event.target.value && event.target.name === "remainder" && newProduct?.measure === "հատ" ){
         setProduct({
@@ -58,7 +62,7 @@ const AddNewProduct = ({
       }else{
         setProduct({
           ...newProduct,
-          [event.target.name]: event.target.value.trim()
+          [event.target.name]: text.trim()
         })
       }
     }else{
@@ -87,7 +91,12 @@ const AddNewProduct = ({
       setType("error")
       setMessage(t("authorize.errors.emptyfield"))
       return
+    }else if(newProduct?.price<1){
+      setType("error")
+        setMessage(t("dialogs.pricezero")) 
+        return
     }
+
     await uniqueBarCode(newProduct?.barCode).then((res) => {
       if(res){
 
@@ -185,11 +194,6 @@ const AddNewProduct = ({
     setProduct({})
     localStorage.removeItem("newProduct")
   };
-  const closeAfterOk = () => {
-    setType("")
-    setMessage("")
-    handleClose()
-  }
 
   const checkStorageSavedData = async() => {
     const savedData = await JSON.parse(localStorage.getItem("newProduct"))
@@ -207,6 +211,7 @@ const AddNewProduct = ({
     setTypeCode(newProduct?.type)
     setRegime( localStorage.getItem("taxRegime"))
   }, []);
+
   return (
     <Dialog
       open={openNewProd}
@@ -228,7 +233,6 @@ const AddNewProduct = ({
         <CloseIcon 
           sx={{":hover":{background:"#d6d3d3",borderRadius:"5px"}}}
           onClick={()=>setOpenForSave(true)}
-          // onClick={handleClose}
         /> 
       </DialogTitle>
       <DialogContent
@@ -238,7 +242,7 @@ const AddNewProduct = ({
           flexFlow:"column nowrap"
         }}
       >
-        <Divider style={{backgroundColor:"gray"}} />
+        <Divider style={{backgroundColor:"gray"}} /> 
         <div className={styles.newProdForm}>
           <ProductAdg
             t={t}
@@ -248,6 +252,8 @@ const AddNewProduct = ({
             newProduct={newProduct}
             handleChangeInput={handleChangeInput}
             selectContent={selectContent}
+            setSelectContent={setSelectContent}
+            setProduct={setProduct}
           />
           <TextField 
             error={emptyValidate && !newProduct?.name}
@@ -259,7 +265,9 @@ const AddNewProduct = ({
             label={`${t("productinputs.name")} (${50-(newProduct?.name)?.length || 50} ${t("productinputs.symb")}) *`}
             onChange={(e)=>handleChangeInput(e)} 
             inputProps={{ maxLength: 50 }}
-          />
+            autoComplete="off"
+
+          /> 
           <TextField 
             size="small"
             variant="outlined"
@@ -268,12 +276,16 @@ const AddNewProduct = ({
             value={newProduct?.brand}
             label={`${t("productinputs.brand")}`}
             onChange={(e)=>handleChangeInput(e)} 
+            autoComplete="off"
+
           />
           <div className={styles.duoInput}>
             <TextField 
               error={emptyValidate && !newProduct?.remainder}
               size="small"
               variant="outlined"
+              autoComplete="off"
+
               style={{width:"45%", height:"40px",margin:"5px 0 0 0"}}
               InputProps={{
                 inputProps: { 
@@ -314,6 +326,7 @@ const AddNewProduct = ({
               variant="outlined"
               style={{width:"45%", height:"30px"}}
               name="purchasePrice"
+              autoComplete="off"
               InputProps={{
                 inputProps: { 
                   min: 1,
@@ -332,6 +345,7 @@ const AddNewProduct = ({
             error={emptyValidate && !newProduct?.price}
             size="small"
             variant="outlined"
+            autoComplete="off"
             style={{width:"40%", height:"40px"}}
             InputProps={{
               inputProps: { 

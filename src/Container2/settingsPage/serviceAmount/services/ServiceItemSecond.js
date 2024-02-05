@@ -1,20 +1,47 @@
-import React, { memo, useState } from "react";
-import { Button, Card, FormControlLabel } from "@mui/material";
+import React, { memo, useEffect, useState } from "react";
+import { Button, Card, Dialog, FormControlLabel } from "@mui/material";
 import PaymentConfirm from "../paymentDialog/PaymentConfirm";
 
 import styles from "./index.module.scss";
+import ConfirmDialog from "../../../dialogs/ConfirmDialog";
+import PayXInfo from "../../../social/PayXInfo";
+import SnackErr from "../../../dialogs/SnackErr";
+import { t } from "i18next";
 
 const ServiceItemSecond = ({
-  t,
-  content,
   service,
+  content,
+  isDelete,
+  payData, 
   logOutFunc,
-  changeActiveCard,
-  payData, setPayData,
+  setPayData,
 }) => {
   const [openDialogForPay,setOpenDialogForPay] = useState(false);
-  const [activateBtn,setActivateBtn] = useState(false);
+  const [message, setMessage] = useState({message:"",type:""});
+
+  const closeMessage = () => {
+    setOpenDialogForPay(false)
+    setMessage({message:"", type:""})
+  }
+
+  const [openAlert, setOpenAlert] = useState(false);
   const disableStyle={opacity: 0.3};
+
+  const notAvailableService = () => {
+    if(service?.isActive){
+      setOpenDialogForPay(true)
+    }else{
+      setOpenAlert(true)
+    }
+  }
+
+  useEffect(() =>{
+    service?.isActive &&
+    setPayData({
+      ...payData,
+      serviceType: service?.id
+    })
+  }, [isDelete]);
 
   return (
     <>
@@ -22,6 +49,7 @@ const ServiceItemSecond = ({
         sx={{ p:1.1,boxShadow:5,borderRadius:"8px"}} 
         className={styles.service_item}
         style={!service?.isActive ? disableStyle: null}
+        onClick={notAvailableService}
       >
         <FormControlLabel
           labelPlacement="start" 
@@ -31,17 +59,7 @@ const ServiceItemSecond = ({
             <Button 
               variant="contained" 
               size="small" 
-              onClick={()=>{
-                if(service?.isActive){
-                  setPayData({
-                    ...payData,
-                    serviceType: service?.id
-                  })
-                  setOpenDialogForPay(true)
-                }else{
-                  alert("For more info please call PayX")
-                }
-              }}
+              onClick={notAvailableService}
             >
               {t("basket.linkPayment")}
             </Button>
@@ -71,18 +89,30 @@ const ServiceItemSecond = ({
           }
         </div>
       </Card>
+      <Dialog open={message?.message}>
+        <SnackErr type={message?.type} message={message?.message} close={closeMessage} />
+      </Dialog>
       <PaymentConfirm
+        isPrepayment={false}
         open={openDialogForPay}
         close={()=> setOpenDialogForPay(false)}
         cardArr={content?.cards}
-        changeActiveCard={changeActiveCard} 
         setPayData={setPayData}
         payData={payData}
         content={content}
         price={service?.price}
-        activateBtn={activateBtn}
-        setActivateBtn={setActivateBtn}
         logOutFunc={logOutFunc}
+        message={message}
+        setMessage={setMessage}
+      />
+      <ConfirmDialog
+        question={<strong>{t("cardService.notAvailableService")}</strong>}
+        func={()=>setOpenAlert(false)}
+        open={openAlert}
+        close={setOpenAlert}
+        content={<PayXInfo t={t} />}
+        t={t}
+        nobutton={true}
       />
     </>
   );

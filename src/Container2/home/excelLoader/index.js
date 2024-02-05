@@ -39,9 +39,9 @@ const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,
     })
     
     promise.then((res) => {
+      console.log(res,"RESULT FROM EXCEL")
      const arr = [];
      const barcodeList = []
-     console.log(res,"res aupload")
      res.forEach(prod => {
       prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] && barcodeList.push(prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"])
       return arr.push({
@@ -50,13 +50,14 @@ const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,
         "dep":  prod?.["ԱԱՀ - ով չհարկվող / Excluding VAT / Без учета НДС"] ? 2 : 0,
         "name": prod?.["Ապրանքի անվանումը (50 նիշ) / Product Name (50 Symbols) / Название товара (50 символа) *"] || "",
         "brand": prod?.["Ապրանքանիշ / Brand / Бренд"] || "",
-        "measure": prod?.["Չափման միավոր / Measure / Мера *"] ,
+        "measure": prod?.["Չափման միավոր / Measure / Мера *"],
         "otherLangMeasure": "",
         "photo": "",
         "barCode":  prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] || "",
         "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"] || 0,
         "purchasePrice": +prod?.[" Ապրանքի ինքնարժեք / Purchase price / Закупочная цена "] || 0,
-        "price": +prod?.[" Վաճառքի գին / Product price / Цена продукта * "]|| 0,
+        "price": +prod?.["Վաճառքի գին / Product price / Цена продукта *"]|| 0,
+        // "price": +prod?.[" Վաճառքի գին / Product price / Цена продукта * "],
         "discountedprice": 0,
         "discount": 0,
         "discountType": 0,
@@ -77,8 +78,6 @@ const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,
     setIsLoad(false)
   })
   };
-
-  console.log(uploadFile,"UPLOAD FILE")
 
 const checkRowStatus = async(obj, row) => {
   const rowObjToArr = Array.from(Object.values(obj))
@@ -101,7 +100,6 @@ const checkRowStatus = async(obj, row) => {
       setIsLoad(false)
       if(res === 200){
         setMessage({m: t("dialogs.done"),t: "success"})
-        // navigate("/")
       }else if(res === 401){
         logOutFunc()
       }else{
@@ -110,7 +108,7 @@ const checkRowStatus = async(obj, row) => {
       }
       setMessage({m: t("dialogs.done"),t: "success"})
     })
- };
+  };
 
   const createMultipleProds = async() => {
     setIsLoad(true)
@@ -146,6 +144,8 @@ const checkRowStatus = async(obj, row) => {
         createMultipleProds={createMultipleProds}
       />
       <Divider sx={{bc:"green",w:2}}/>
+      <form autocomplete="off">
+
       {
         uploadFile &&
         <table className={styles.table}>
@@ -172,7 +172,7 @@ const checkRowStatus = async(obj, row) => {
             </tr>
           </thead>
           {uploadFile.map((prod,index) => {
-            return <tbody>
+            return <tbody autocomplete="off">
               <ExcelRow
                 prod={prod} 
                 key={index+1} 
@@ -181,13 +181,14 @@ const checkRowStatus = async(obj, row) => {
                 checkRowStatus={checkRowStatus}
                 row={index+1}
                 t={t}
-                setBarCodes={setBarCodes}
+                setBarCodes={setBarCodes}y
                 barCodes={barCodes}
               />
             </tbody>
           })}
         </table>
       }
+      </form>
     </div>
   );
 }

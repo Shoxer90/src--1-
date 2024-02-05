@@ -30,7 +30,6 @@ const stylesCard = {
 };
 
 const stylesBox = {
-  // m:5,
   mb:1,
   mt:0,
   minHeight: "30dvh",
@@ -45,7 +44,7 @@ const stylesServCard = {
 
 const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
   const ref = useRef();
-  const [internalPayments, setInternalPayments] = useState({}); 
+  const [internalPayments, setInternalPayments] = useState(); 
   const [payData, setPayData] = useState({
     isBinding: internalPayments?.autopayment?.hasAutoPayment,
     serviceType: null,
@@ -57,9 +56,12 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
   const [message, setMessage] = useState({message:"", type:""});
   const [isDelete,setIsDelete] = useState(false);
   const [refresh,setRefresh] = useState(false);
+  const [currentId, setCurrentId] = useState();
+  const [countDown, setCountDown] = useState(0);
 
-  const removeCard = async(id) => {
+  const removeCard = async(id=internalPayments?.autopayment?.defaultCard?.cardId) => {
     await removeBankCard(id).then((res) => {
+
       setIsDelete(!isDelete)
       setOpenConfirmation(false)
       setMessage({message:t("dialogs.done"),type:"success"})
@@ -71,12 +73,27 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
     })
   };
 
+  // "notInDate": "Հարգելի հաճախորդ,դուք ունեք վճարման պարտավորություն: Ծառայությունների հետագա օգտագործման համար խնդրում ենք կատարել վճարումը",
+  // "notInDateTrueDays": "Հարգելի հաճախորդ,դուք ունեք վճարման պարտավորություն: Մեր ծառայությունները հասանելի կլինեն  ",
+  // "notInDateTrueDays2": "Խնդրում ենք կատարել վճարումը",
+  // "dayCount": " օր",
+  // "dayCount1": " օր",
   const getInfo = async() => {
     await getPaymentCardServices().then((res) =>{
       setInternalPayments(res)
-      console.log(res,"resssss")
-      if(!res?.isInDate){
+      if(!res?.isInDate && res?.days){
+        setCountDown(res?.days)
         setMessage({message:t("cardService.notInDate"), type:"error"})
+        setMessage({
+          type:"error",
+          message:
+           `${t("cardService.notInDateTrueDays")} 
+            ${res?.days} 
+            ${res?.days > 1 ? t("cardService.dayCount") : t("cardService.dayCount1")}
+            ${t("cardService.notInDateTrueDays2")}`
+        })
+      }else if(!res?.isInDate && !res?.days) {
+        setMessage({type:"error", message:t("cardService.notInDate")})
       }
       setPayData({
         isBinding: res?.autopayment?.hasAutoPayment,
@@ -90,13 +107,24 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
     })
   };
 
+  const closePrepaymentDialog = () => {
+    delete payData?.months
+    delete payData?.cardId
+   setPayData({
+      ...payData,
+      isBinding: internalPayments?.autopayment?.hasAutoPayment,
+    });
+    setOpenPrepayment(false)
+  }
+
   useEffect(() => {
     getInfo()
-  }, [refresh]);
+  }, [refresh, isDelete]);
 
   useEffect(() => {
    responseUrl && ref.current.click()
   }, [responseUrl]);
+
 
   return (
   <div className={styles.clientContainer} >
@@ -108,48 +136,49 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
       {internalPayments &&
         <Services 
           content={internalPayments}
-          t={t} 
-          changeActiveCard={changeActiveCard}
           payData={payData} 
           setPayData={setPayData}
           logOutFunc={logOutFunc}
+          isDelete={isDelete}
         />
       }
     </Card>
 
     <Card sx={stylesCard}>
       <ServiceTitle title={t("settings.paymentMethods")} />
-      <AutoPaymentSwitch
+      {internalPayments?.autopayment?.defaultCard ? <AutoPaymentSwitch
         payData={payData}
         setPayData={setPayData}
-      />
+      />: ""}
 
       <Box sx={stylesBox} className={styles.payWay}>
 
-        {internalPayments?.autopayment?.defaultCard && 
-          <CreditCardWrapper 
-            setOpenConfirmation={setOpenConfirmation}
-            element={<CreditCard card={internalPayments?.autopayment?.defaultCard}/>}
-          />
-        }
+          {internalPayments?.autopayment?.defaultCard ?
+            <CreditCardWrapper 
+              setOpenConfirmation={setOpenConfirmation}
+              element={<CreditCard card={internalPayments?.autopayment?.defaultCard}
+            />}
+          />:""}
 
         <Card className={styles.attachCardContainer} sx={{borderRadius:4,background:"#def7ee"}}>
           <div>
             <CardTravelIcon fontSize="large" />
             <span style={{fontWeight: 600}}>
-              {t("cardService.balance")} 6000 AMD
+              {t("cardService.balance")} {internalPayments?.balance} {t("units.amd")}
             </span>
           </div>
           <Button variant="outlined" 
             style={{ color: "rgba(26,61,48,1)", border:"solid rgba(26,61,48,1) 2px"}}
-            onClick={()=>setOpenPrepayment(true)}
+            onClick={()=>{
+              delete payData?.isBinding
+              delete payData?.attach
+              return setOpenPrepayment(true)
+            }}
           >
             {t("cardService.prepayment")}
           </Button>
         </Card>
       </Box>
-
-
     </Card>
     <Card sx={stylesCard}>
       <ServiceTitle title={t("cardService.attachedCards")} />
@@ -163,7 +192,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
           <div>{t("cardService.attachCard")}</div>
         </Card>
           { responseUrl && <a ref={ref} href={responseUrl}>{""}</a> }
-          { internalPayments?.cards?.length && 
+          { internalPayments?.cards?.length ?
             internalPayments?.cards.map((card,index) => (
               <SmallCardForCarousel
                 card={card}
@@ -171,19 +200,28 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
                 refresh={refresh}
                 setRefresh={setRefresh}
                 index={index}
+                setOpenConfirmation={setOpenConfirmation}
+                setCurrentId={setCurrentId}
               />
-            ))
+            )): ""
           }
       </div>
     </Card> 
     <ConfirmDialog
       open={openConfirmation}
       close={setOpenConfirmation}
-      func={removeCard}
+      func={()=>removeCard(currentId)}
       t={t}
       question={t("cardService.remove")}
     />
-    <PrepaymentConfirm open={openPrepayment} close={()=>setOpenPrepayment(false)}/>
+    <PrepaymentConfirm 
+      isPrepayment={false}
+      open={openPrepayment} 
+      close={closePrepaymentDialog}
+      content={internalPayments}
+      payData={payData}
+      setPayData={setPayData}
+    />
 
     <Dialog open={message?.message}>
       <SnackErr message={message?.message} type={message?.type} close={setMessage} />

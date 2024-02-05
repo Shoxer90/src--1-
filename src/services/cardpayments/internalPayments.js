@@ -63,14 +63,14 @@ export const getServiceHistoryAndPayAmount = async() => {
   }
 };
   
-export const bindNewCard = async() => {
+export const bindNewCard = async(body) => {
   const option = {
     headers: {
       Authorization:  `Bearer ${localStorage.getItem("token")}`,
     },
   };
   try{
-    const data = await axios.post(baseUrl + `InternalPayments/AttachCard`, {isBinding: false}, option)
+    const data = await axios.post(baseUrl + `InternalPayments/Pay`, body, option)
     return data?.data
   }catch(err){
     return err.response.status
@@ -80,8 +80,13 @@ export const bindNewCard = async() => {
 export const sendIdForPayStatusChecking = async(id) => {
   try{
     const data = await axios.get( baseUrl + `InternalPayments/CheackStatusArca?OrderId=${id}`, option)
-    return data?.data
+    if(data?.ok){
+      return 200
+    }
+    console.log(data,"data")
+    // return data
   }catch(err){
+    console.log(err?.response?.satus,"rr")
     return err?.response?.status
   }
 }

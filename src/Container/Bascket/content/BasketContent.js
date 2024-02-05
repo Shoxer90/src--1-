@@ -4,18 +4,17 @@ import { memo } from "react";
 import styles from "../index.module.scss";
 import BascketContentItem from "./BaskteContentItem";
 
-const BasketContent = ({t,
+const BasketContent = ({
+  t,
+  avail,
+  paymentInfo, 
+  setAvail,
   basketContent, 
   changeCountOfBasketItem, 
   deleteBasketItem,
   screen,
-  setFlag,
   flag,
   setSingleClick,
-  singleClick,
-  avail,
-  paymentInfo, 
-  setAvail,
   loadBasket,
   setIsEmpty,
   createMessage}) => {
@@ -26,22 +25,21 @@ const BasketContent = ({t,
       {basketContent && basketContent?.map((el, i) => (
         <span key={i}>
           <BascketContentItem 
-            changeCountOfBasketItem={changeCountOfBasketItem}
-            deleteBasketItem={deleteBasketItem}
-            loadBasket={loadBasket}
             el={el}
-            t={t}
-            index={i}
-            screen={screen}
-            setFlag={setFlag}
-            flag={flag}
-            setSingleClick={setSingleClick}
-            singleClick={singleClick}
             avail={avail}
             setAvail={setAvail}
             paymentInfo={paymentInfo}
-            createMessage={createMessage}
+            t={t}
             setIsEmpty={setIsEmpty}
+            deleteBasketItem={deleteBasketItem}
+            changeCountOfBasketItem={changeCountOfBasketItem}
+            screen={screen}
+            flag={flag}
+            setSingleClick={setSingleClick}
+            createMessage={createMessage}
+            //unused props
+            loadBasket={loadBasket}
+          
           />
           <Divider sx={{backgroundColor:"gray"}} color="black" />
 

@@ -1,8 +1,9 @@
+
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { allLanguageMeasures, takeMeMeasureArr } from '../../../modules/modules';
 
 import styles from "./index.module.scss";
-import { adgValidation, barcodeValidation, measureValidation, nameLimitValidation, priceValidation } from '../../../modules/excelCeilValidation';
+import { adgValidation, barcodeValidation, measureValidation, nameLimitValidation, priceValidation, priceValidationNum } from '../../../modules/excelCeilValidation';
 
 const ExcelRow = ({
   prod,
@@ -16,7 +17,6 @@ const ExcelRow = ({
 }) => {
   const [measureLangArr,setMeasureLangArr] = useState([]);
   const [isValidCurrentProd, setIsValidCurrentProd] = useState({});
-  const [isBarCodeNotRepeat,setIsBarCodeNotRepeat] = useState();
   const [ceilName, setCeilName] = useState("");
   const [errorName,setErrorName] = useState("");
   const ref = useRef();
@@ -52,6 +52,8 @@ const ExcelRow = ({
         setErrorName("Կրկնվող բառկոդ/ ներքին կոդ")
         catchSameCode++
         return false
+      }else{
+        return item
       }
     })
     if(!catchSameCode){
@@ -80,7 +82,10 @@ const ExcelRow = ({
       if(item?.code === prod?.barCode && item?.row !== row) {
         setErrorName("Կրկնվող բառկոդ/ ներքին կոդ")
         return catchSameCode++
+      }else{
+        return item
       }
+
     })
       if(catchSameCode) {
         return false
@@ -109,7 +114,7 @@ const ExcelRow = ({
       name: await nameLimitValidation(prod?.name, prod?.name?.length),
       price: prod?.price < 1 ? false : await priceValidation(prod?.price),
       purchasePrice: await priceValidation(prod?.purchasePrice),
-      remainder: await priceValidation(prod?.remainder),
+      remainder: await priceValidationNum(prod?.remainder,3),
       barCode: await uniqBarcodeInExcel(),
     });
   };
@@ -152,20 +157,26 @@ const ExcelRow = ({
         response =  await barcodeCeilManagement()
         setDataToUploading(response)
       break;
+      default:
+        break;
     }
     setCeilName("")
   }
 
-  const onlyNumberAndADot = (event) => {
-    console.log( typeof  event.target.value, "value")
-    const valid = /^\d*\.?(?:\d{1,2})?$/;
-    let text = +event.target.value;  
-    
-    if(valid.test(text)){
-      return handleChange(event.target.name, +event.target.value)
+  const onlyNumberAndADot = (event,num) => {
+    const valid = num === 3 ? /^\d*\.?(?:\d{1,3})?$/ : /^\d*\.?(?:\d{1,2})?$/;
+    let text = event.target.value;  
+    console.log(prod?.[event.target.name],"prod[event.target.name]).length")
+    if(valid.test(text) || `${prod?.[event.target.name]}`.length > event.target.value.length) {
+      if(event.target.value[event.target.value.length - 1]=== ".") {
+        return handleChange(event.target.name, event.target.value)
+      }else{
+        return handleChange(event.target.name, +event.target.value)
+      }
     }
   };
 
+ 
   const onlyNumberAndLetters = (event) => {
     const valid = /^[a-zA-Z0-9_]+$/;
     const text = event.target.value;  
@@ -192,8 +203,14 @@ const ExcelRow = ({
   },[ceilName]);
 
   useEffect(()=> {
-  filterValidRow()
+    filterValidRow()
   },[]);
+
+  useEffect(()=>{
+    if(prod?.measure=== "հատ" || prod?.measure === "pcs" || prod?.measure === "шт") {
+      handleChange("remainder",Math.round(prod?.remainder))
+    }
+  },[prod?.measure])
 
   return (
     <tr className={styles.tablerow}>
@@ -241,13 +258,12 @@ const ExcelRow = ({
       <td>
         <input 
           onChange={(e)=>{
-            if(prod?.measure === "հատ" ||
-              prod?.measure === "psc" || 
-              prod?.measure === "шт"
-            ){
+            if(prod?.measure === "հատ" || prod?.measure === "pcs" || prod?.measure === "шт" ){
+              console.log(e.target.name, +e.target.value, "JJJJJ")
               handleChange(e.target.name, +e.target.value.replace(/[^1-9]+/g,""))
             }else{
-              onlyNumberAndADot(e)
+              console.log(e.target.name, +e.target.value, "fffdf")
+              onlyNumberAndADot(e,3)
             }
           }}
           value={prod?.remainder} 
@@ -268,7 +284,7 @@ const ExcelRow = ({
                 color: !allLanguageMeasures.includes(prod?.measure) && "white"
               }}
             >
-              {!allLanguageMeasures.includes(prod?.measure) && <option hidden selected></option>}
+              {allLanguageMeasures.includes(prod?.measure) && <option hidden selected>{t(`units.${prod?.measure}`)}</option>}
               {measureLangArr.map((measure) => {
                 return <option style={{color:"black"}} value={measure} key={measure}>{measure}</option>
               })}  
@@ -278,10 +294,7 @@ const ExcelRow = ({
       <td>
         <input 
           onChange={(e)=>{
-            if(typeof e.target.value === "string" || e.target.value.length < prod?.purchasePrice.length){
-              handleChange(e.target.name, +e.target.value.replace(/[^1-9]+/g,""))
-            }
-            onlyNumberAndADot(e)}
+            onlyNumberAndADot(e,2)}
           } 
           value={prod?.purchasePrice} 
           name="purchasePrice"
@@ -292,9 +305,8 @@ const ExcelRow = ({
       <td>
         <input 
           onChange={(e)=>{
-            if(typeof e.target.value === "string" || e.target.value.length < prod?.purchasePrice.length){
-              handleChange(e.target.name, +e.target.value.replace(/[^1-9]+/g,""))
-            }onlyNumberAndADot(e)}
+            onlyNumberAndADot(e,2)
+          }
           }
           value={prod?.price} 
           name="price"
@@ -331,3 +343,4 @@ const ExcelRow = ({
 }
 
 export default memo(ExcelRow);
+

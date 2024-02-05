@@ -207,6 +207,7 @@
     "uploadform": "Upload the completed Excel form",
     "chooseExcel": "Choose Excel file",
     "measureCorrectForm" : "Attention «Measure» field has a clear format",
+    "barcodeCorrectForm": "The product's internal code/barcode may include only Latin letters and numbers.",
     "vatCorrectForm":"If there are products not subject to VAT in the product list, mark «yes» in the column, otherwise, leave it empty.",
     "prod": " products"
   },
@@ -257,9 +258,10 @@
     "sent": "The message is sent",
     "amount":"Amount due by",
     "scan": "Scan QR for payment",
-    "paymentsuccess": "The payment was successfully completed!",
+    "paymentsuccess": "Operation was successful",
     "qrlink": "QR link",
     "linkPayment": "Pay",
+    "orderPayment": "Cashless amount payable",
     "removeallprod": "Clean basket ?",
     "removeoneprod": "Remove current product from basket ?",
     "useprepayment":"Prepayment",
@@ -379,7 +381,6 @@
     "btnTitle" : "Services",
     "chooseCard": "Choose active card",
     "chooseAnotherCard": "Choose a card from the list",
-    
     "attachedCards": "My Cards",
     "amount" : "Monthly service",
     "amountDate": "Next payment date",
@@ -399,6 +400,11 @@
     "payForSimilarServices": "Make similar transactions at the same time",
     "attachCard":"Attach Card",
     "notInDate": "Dear customer, you have an outstanding payment obligation. Kindly complete the payment to continue using our services",
+    "notInDateTrueDays": "Dear Customer, We would like to remind you that there are ",
+    "notInDateTrueDays2": " left until the end of the monthly payment period. If you do not pay, you will not be able to use our services",
+    "dayCount": " days",
+    "dayCount1": " day",
+    "notAvailableService": "For details of this service, please contact PayX",
     "balance": "Balance",
     "prepayment": "Leave advance payment",
     "subscription": "Subscription",
@@ -435,6 +441,11 @@
     "saveData": "Do you want to save the collected data?",
     "excelAddProds": "Would you like to download the product(s) to your store ?",
     "excelCancelList": "Do you want to cancel changes ?",
-    "isInDate": "You currently have no current commitment"
+    "isInDate": "You currently have no current commitment",
+    "checkCardStatus200": "Transaction successfully confirmed",
+    "checkCardStatus400": "System failure. Please try again later",
+    "checkCardStatus410": "Insufficient funds",
+    "checkCardStatus411": "Incorrect card data input",
+    "checkCardStatus412": "Transaction is declined"
   }
 }

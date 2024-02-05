@@ -6,27 +6,21 @@ import { memo } from "react";
 import { useEffect } from "react";
 
 const PayQRLink = ({
+  cardAmount,
   t,
-  setMessage,
   totalPrice,
   qrData,
   closeLinkQrAndRefresh,
 }) => {
 
-  const openDialogAndCopyLink = async() => {
-    await navigator.clipboard.writeText(qrData?.message)
-    setMessage(t("dialogs.linkcopy"))
-    setTimeout(()=> setMessage(""), 2000)
-  }
   useEffect(() => {
-     navigator.clipboard.writeText(qrData?.message)
-    //  openDialogAndCopyLink()
+    navigator.clipboard.writeText(qrData)
   }, []);
 
   return(
     <Dialog
       sx={{ height: '98vh'}}
-      open={totalPrice >= 1}
+      open={Boolean(qrData)}
     >
       <DialogContent style={{display:"flex",flexDirection: "column", justifyContent: "center"}}>
         <Box style={{display:"flex", flexDirection:"row", justifyContent: "space-between", textAlign:"center"}}>
@@ -46,12 +40,12 @@ const PayQRLink = ({
       </div>
       <Button
         variant="disable"
-        sx={{margin:3,color:"green"}}
+        sx={{margin:3, color:"green"}}
       >
        {t("dialogs.linkcopy")}
       </Button>
       <p style={{justifyContent:"center",marginTop:"10px"}}>
-        {t("basket.amount")}: {totalPrice} {t("units.amd")}
+        {t("basket.orderPayment")}: {cardAmount} {t("units.amd")}
       </p>
       <Divider sx={{bgcolor:"black"}}/>
       <Divider sx={{bgcolor:"black"}}/>

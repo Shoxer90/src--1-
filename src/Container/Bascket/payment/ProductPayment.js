@@ -9,6 +9,9 @@ const ProductPayment = ({t,
   setPaymentInfo,
   setSingleClick,
   trsf,
+  setBlockTheButton,
+  blockTheButton
+
 }) => {
   const [val, setVal] = useState(totalPrice);
   const [flag, setFlag] = useState();
@@ -31,7 +34,33 @@ const ProductPayment = ({t,
     }
   };
 
-  const cashChanges = (e) => {
+const handleChangeInput = (e) => {
+  if((+e.target.value <= +val && val > 0) || +e.target.value < +paymentInfo?.cardAmount){ 
+    const valid =/^\d+(\.\d{1,2})?$/;
+    const text = e.target.value;  
+    const isValid = valid.test(text);
+    if(e.target.value[e.target.value.length-1] === "." ){
+      setBlockTheButton(true)
+      setPaymentInfo({
+        ...paymentInfo,
+        [e.target.name]:e.target.value,
+      })
+    }else if(isValid || e.target.value === ""){
+      setBlockTheButton(false)
+      setVal(numberMind)
+      setPaymentInfo({
+        ...paymentInfo,
+        [e.target.name]:+e.target.value,
+      })
+      setFlag(e.target.value)
+    }
+    setSingleClick({})
+  }else{
+    return
+  }
+};
+
+  const cashChanges = () => {
     setPaymentInfo({
       ...paymentInfo,
       cashAmount:+( 
@@ -41,72 +70,22 @@ const ProductPayment = ({t,
         - paymentInfo?.prePaymentAmount 
       ).toFixed(2)
     })
-  }
-
-  const handleChangeInput = (e) => {
-    setSingleClick({})
-    if(+e.target.value <= +val){
-      setPaymentInfo({
-        ...paymentInfo,
-        [e.target.name]:+e.target.value,
-      })
-    }
-    if(+e.target.value < +paymentInfo?.[e.target.name]){ 
-      setVal(numberMind)
-      setPaymentInfo({
-        ...paymentInfo,
-        [e.target.name]:+e.target.value,
-      })
-    }
-    setFlag(e.target.value)
-
-    if(val-e.target.value < 1 && Boolean((val-e.target.value)%1)) {
-      if(!(+e.target.value < +paymentInfo?.[e.target.name])){
-        setPaymentInfo({
-          ...paymentInfo,
-          cashAmount: 0,
-          [e.target.name]: val
-        })
-      }else {
-        setPaymentInfo({
-          ...paymentInfo,
-          cashAmount: 0,
-          [e.target.name]: 0
-        })
-      }
-    } 
   };
 
   useEffect(() => {
-    cashChanges()
-  },[flag]);
- 
-
-  useEffect(() => {
-    !val && setSingleClick({pointerEvents:"none"})
-  },[])
-
-  useEffect(() => {
-    !trsf && setPaymentInfo({
-      ...paymentInfo,
-      cashAmount:+( 
-        totalPrice 
-        - totalPrice * paymentInfo?.discount / 100
-      ).toFixed(2),  
-      cardAmount: 0, 
-      prePaymentAmount: 0,
-      partialAmount: 0,
-    })
-    setVal(totalPrice)
-  }, [totalPrice, paymentInfo?.discount]);
+  !trsf && cashChanges()
+  setVal(totalPrice)
+  }, [totalPrice,flag, paymentInfo?.discount]);
 
   return(
-    <div className={styles.saleInfoInputs}>
+    paymentInfo && <div className={styles.saleInfoInputs}>
       <div>
         <span>
           {t("history.total")} 
         </span>
-        <input value={numberSpacing(totalPrice)} readOnly/>
+        <input 
+        value={numberSpacing(totalPrice)} 
+        readOnly/>
       </div>
 
       {/* Ժամակավոր կասեցնել զեղչային ինփութը*/}

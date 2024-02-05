@@ -74,6 +74,8 @@ const App = () => {
     debounceBasket && byBarCodeSearching(debounceBasket)
   },[debounceBasket]);
 
+
+
   const whereIsMyUs = async() => {
     await dispatch(fetchUser()).then((res) => {
       localStorage.setItem("status", JSON.stringify(res?.payload?.isEhdmStatus)) 
@@ -83,12 +85,21 @@ const App = () => {
       if(res?.error?.message === "Rejected"){
         logOutFunc()
         // syntethic possibility
-        // }else if(res?.payload?.isInDate === false){
-      }else if(res?.payload?.isInDate === false){
-        navigate("/setting/services")
-        setBlockedUser(true)
-      }else if(res?.payload?.isInDate === true){
-        setBlockedUser(false)
+        }else if(res?.payload?.isInDate === false && !res?.payload?.days){
+         navigate("/setting/services")
+         setBlockedUser(true)
+       }else if(res?.payload?.isInDate === false && res?.payload?.days){
+      
+        // setMessage({
+        //   type:"error",
+        //   message:
+        //    `${t("cardService.notInDateTrueDays")} 
+        //     ${res?.payload?.days} 
+        //     ${res?.payload?.days > 1 ? t("cardService.dayCount") : t("cardService.dayCount1")}
+        //     ${t("cardService.notInDateTrueDays2")}`
+        // })
+     }else if(res?.payload?.isInDate === true){
+         setBlockedUser(false)
       }
     })
   };
@@ -162,7 +173,8 @@ const App = () => {
           return handleArr.push({...prod, count: value})
         }else{
          return handleArr.push(prod)
-        }
+        
+          }
       })  
     })
     localStorage.setItem("bascket1", JSON.stringify(handleArr))
@@ -175,6 +187,7 @@ const App = () => {
     await setFlag(flag+1)
     await loadBasket()
   };
+  
   const deleteBasketGoods = async() => {
     setFlag(flag+1)
     await localStorage.removeItem('bascket1')
@@ -199,7 +212,9 @@ const App = () => {
       })
     }
     localStorage.setItem("bascket1", JSON.stringify(basket))
+    // setFlag(flag+1)
     return loadBasket()
+
   };
 
   const setToBasketFromSearchInput = (wishProduct, quantity) => {
@@ -277,6 +292,21 @@ const App = () => {
         })
     }
   };
+
+  useEffect(() =>{
+    const ll = setInterval(() =>{
+      setMessage({
+        type:"error",
+        message:
+         `${t("cardService.notInDateTrueDays")} 
+          ${user?.days} 
+          ${user?.days > 1 ? t("cardService.dayCount") : t("cardService.dayCount1")}
+          ${t("cardService.notInDateTrueDays2")}`
+      })
+    },86400000 )
+    return ()=>clearInterval(ll)
+  }, []);
+
   
   useEffect(() => { 
     getMeasure()
@@ -288,16 +318,16 @@ const App = () => {
     loadBasket()
   },[isLogin,flag])
 
-  useEffect(() => { 
-    loadBasket()
-  }, [flag]);
+  // useEffect(() => { 
+  //   loadBasket()
+  // }, [flag]);
 
   useEffect(() => {
     whereIsMyUs() 
   },[])
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>
-    <div className="App">
+    <div className="App"  autoComplete="off">
       {!isLogin ?
         <Routes>
           <Route path="*" element={ 
@@ -344,7 +374,7 @@ const App = () => {
           />
           <Route path="/basket/*" element={<BasketList t={t} />} />
           <Route path="/confirmation/*" element={<Confirmation t={t} />} />
-          <Route path="/api/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
+          {/* <Route path="/InternalPayments/CheackStatusArca?orderId" element={<CheckStatusArCa />} /> */}
 
         </Routes> :
         <>
@@ -360,7 +390,8 @@ const App = () => {
             active={user?.isEhdmStatus}
             setContent={setContent}
           />
-          {!isBlockedUser ? <Routes>
+          {/* {isBlockedUser ? <Routes> */}
+          {isBlockedUser ? <Routes>
             <Route
               path="/"
               element={
@@ -422,17 +453,17 @@ const App = () => {
             <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
             <Route path="/basket/*" element={<BasketList t={t} />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-            <Route path="/api/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
+            <Route path="/api/InternalPayments/CheackStatusArca/" element={<CheckStatusArCa />} />
             <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc}/>} />
           </Routes> :
           <Routes>
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-            <Route path="/api/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
+            <Route path="/api/InternalPayments/CheackStatusArca/" element={<CheckStatusArCa />} />
             <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />
             <Route path="*" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />
           </Routes>
         }
-         {!isBlockedUser && <Basket 
+         {isBlockedUser && <Basket 
             t={t}
             userName={user?.firstname + " " + user?.lastname}
             logOutFunc={logOutFunc}

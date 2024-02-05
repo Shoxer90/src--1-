@@ -4,14 +4,25 @@ import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
 import styles from "./index.module.scss";
 import { t } from "i18next";
 
-const PrepaymentItem = ({activeRow, index, activeStyle, activateRow, monthCount, price,setPaymentData, paymentData }) => {
+const PrepaymentItem = ({
+  activeRow, 
+  index, 
+  activeStyle, 
+  activateRow, 
+  months, 
+  price, 
+  setPrice, 
+  setPaymentData, 
+  paymentData 
+}) => {
    
   const handleClick = () => {
-    activateRow(index+1)
     setPaymentData({
       ...paymentData,
-      monthCount:monthCount
+      months:months
     })
+    activateRow(index+1)
+    setPrice(price)
   };
 
   return(
@@ -20,14 +31,14 @@ const PrepaymentItem = ({activeRow, index, activeStyle, activateRow, monthCount,
       onClick={handleClick}
       style={activeRow === index+1 ? activeStyle: null}
     >
-    <span>
-      <FileDownloadDoneIcon sx={{color:"green",mr:2}} />
-      {monthCount} {t("cardService.monthCount")} 
-    </span>
-    <span style={{width:"20%"}}></span>
-    <span>
-      {price} {t("units.amd")}
-    </span>
+      <span>
+        <FileDownloadDoneIcon sx={{color:"green",mr:2}} />
+        {months} {t("cardService.monthCount")} 
+      </span>
+      <span style={{width:"20%"}}></span>
+      <span>
+        {price} {t("units.amd")}
+      </span>
   </div>
   )
 };

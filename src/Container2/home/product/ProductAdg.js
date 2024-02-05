@@ -9,6 +9,8 @@ const ProductAdg = ({
   newProduct,
   handleChangeInput,
   selectContent,
+  setSelectContent,
+  setProduct,
 }) => {
 
   return (
@@ -42,6 +44,7 @@ const ProductAdg = ({
       <InputLabel  htmlFor="uncontrolled-native">
       </InputLabel>
       <NativeSelect
+        value={typeCode ? newProduct?.type: ""}
         error={emptyValidate && !newProduct?.type}
         size="small"
         style={{width:"400px"}}
@@ -53,7 +56,7 @@ const ProductAdg = ({
           e.target.value && setTypeCode(e.target.value)
         }}
       >
-        {selectContent && selectContent.map((item) => (
+        {selectContent ? selectContent.map((item) => (
           <option
             style={{width:"400px"}}
             key={item?.id} 
@@ -62,7 +65,7 @@ const ProductAdg = ({
           >
             {item?.code} | {item?.title?.length > 40 ? `${item?.title.slice(0,39)}...` : item?.title}
           </option>
-        ))}
+        )): []}
       </NativeSelect>
     </FormControl>
   </div> 

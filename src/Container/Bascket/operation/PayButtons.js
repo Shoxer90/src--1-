@@ -1,20 +1,24 @@
 import React, { memo } from "react";
+
 import styles from "../index.module.scss";
-import { useEffect } from "react";
 
-
-const PayButtons = ({paymentInfo, setOpenPhonePay, multiSaleProducts, singleClick, setSingleClick}) => {
+const PayButtons = ({
+  paymentInfo, 
+  setSingleClick,
+  setOpenPhonePay, 
+  multiSaleProducts, 
+  blockTheButton,
+  singleClick
+}) => {
   const buttonBlock = {
     opacity: "0.3",
     border:"red",
     pointerEvents:"none"
   }
-
   return(
     <div 
       className={styles.bask_container_body_footer_icons}
-      style={singleClick?.pointerEvents  && buttonBlock}
-    >
+      style={blockTheButton ? buttonBlock : null}>
       <img
         src="/image/cash.png"
         alt="cash pay"
@@ -22,14 +26,16 @@ const PayButtons = ({paymentInfo, setOpenPhonePay, multiSaleProducts, singleClic
           setSingleClick({pointerEvents:"none"})
           multiSaleProducts(1)
         }}
+        style={!paymentInfo?.cashAmount && !paymentInfo?.cardAmount && !paymentInfo?.prePaymentAmount ? buttonBlock : null}
       />
       <img
         src="/image/qr.png"
         alt="pay by QR"
         onClick={()=>{
+          setSingleClick({pointerEvents:"none"})
           multiSaleProducts(2)
         }}
-        style={!paymentInfo?.cardAmount ? buttonBlock : {pointerEvents:"auto"}}
+        style={!paymentInfo?.cardAmount ? buttonBlock : null}
       />
       <img
         src="/image/sms.png"
@@ -38,7 +44,7 @@ const PayButtons = ({paymentInfo, setOpenPhonePay, multiSaleProducts, singleClic
           setSingleClick({pointerEvents:"none"})
           setOpenPhonePay(true)
         }}
-        style={!paymentInfo?.cardAmount ? buttonBlock : {width:"10%"}}
+        style={!paymentInfo?.cardAmount ? buttonBlock : null}
       />
       <img 
         src="/image/link.png"
@@ -47,7 +53,7 @@ const PayButtons = ({paymentInfo, setOpenPhonePay, multiSaleProducts, singleClic
           setSingleClick({pointerEvents:"none"})
           multiSaleProducts(4)
         }}
-        style={!paymentInfo?.cardAmount ? buttonBlock : {width:"10%"}}
+        style={!paymentInfo?.cardAmount ? buttonBlock : null}
       />
     </div>
   )

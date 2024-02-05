@@ -24,6 +24,7 @@ const QRPay = ({
   paymentInfo
 }) => {
   const [message,setMessage] = useState();
+  
   useEffect(() => {
     let interval = setInterval(() => {
       transferQuery(trsf).then((res) => {
@@ -42,7 +43,7 @@ const QRPay = ({
       setOpenBasket(false)
       clearInterval(interval)
     }
-  }, [openQr])
+  }, [openQr]);
 
   return (
     <Dialog
@@ -64,10 +65,12 @@ const QRPay = ({
         <Divider sx={{bgcolor:"black"}}/>
         <Divider sx={{mb:2,bgcolor:"black"}}/>
           <div className={styles.qr_qr}>
-            <QRCodeSVG value={value} size={250}/>
+            <div style={{textAlign:"center"}}>
+              <QRCodeSVG value={value} size={250} />
+            </div>
             <Divider sx={{mb:2,mt:2,bgcolor:"black"}}/>
             <h6>
-             {t("basket.amount")}: {paymentInfo?.cardAmount} {t("units.amd")}
+             {t("basket.orderPayment")}: {paymentInfo?.cardAmount} {t("units.amd")}
             </h6>
           </div>
       </DialogContent>:

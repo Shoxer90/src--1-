@@ -3,6 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, Divider, Slide } from "@m
 import { t } from "i18next";
 import styles from "./index.module.scss";
 import PrepaymentItem from "./PrepaymentItem";
+import PaymentConfirm from "./PaymentConfirm";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -15,24 +16,23 @@ const activeStyle = {
   background: "rgb(200, 240, 240)"
 };
 
-const PrepaymentConfirmation = ({open,close}) => {
+const PrepaymentConfirmation = ({open,close,setPayData,payData, content}) => {
 
   const [activeRow,setActiveRow] = useState(0);
-  const [paymentData,setPaymentData] = useState({
-    // body for fetch
-  }); 
+  const [openPaymentConfirm, setOpenPaymentConfirm] = useState(false);
+  const [price, setPrice] = useState(0);
 
   const subscriptionData = [
     {
-      monthCount: 1,
+      months: 1,
       price: 3000
     },
     {
-      monthCount: 2,
+      months: 2,
       price: 6000
     },
     {
-      monthCount: 3,
+      months: 3,
       price: 9000
     },
   ];
@@ -47,12 +47,8 @@ const PrepaymentConfirmation = ({open,close}) => {
 
 
  const prepayment = () =>{
-  console.log("oppa")
+  setOpenPaymentConfirm(true)
  };
-
- useEffect(() =>{
-  setActiveRow(0)
- }, [close])
 
   return(
     <Dialog 
@@ -70,11 +66,13 @@ const PrepaymentConfirmation = ({open,close}) => {
               <PrepaymentItem
                 {...item} 
                 activeRow={activeRow}
+                setActiveRow={setActiveRow}
                 index={index}
                 activeStyle={activeStyle}
                 activateRow={activateRow}
-                setPaymentData={setPaymentData}
-                paymentData={paymentData}
+                setPaymentData={setPayData}
+                paymentData={payData}
+                setPrice={setPrice}
               />
             ))
           }
@@ -91,6 +89,18 @@ const PrepaymentConfirmation = ({open,close}) => {
           <Button onClick={close}>{t("buttons.cancel")}</Button>
         </DialogActions>
       </DialogContent>
+
+      <PaymentConfirm
+        isPrepayment={true}
+        open={openPaymentConfirm}
+        close={()=> setOpenPaymentConfirm(false)}
+        cardArr={content?.cards}
+        setPayData={setPayData}
+        payData={payData}
+        content={content}
+        price={price}
+        // logOutFunc={logOutFunc}
+      />
     </Dialog>
   )
 };

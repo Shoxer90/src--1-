@@ -2,8 +2,7 @@ import React, { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { memo } from "react";
-import ViewWeekIcon from '@mui/icons-material/ViewWeek';
-import { Alert, Card, Divider, Snackbar } from "@mui/material";
+import { Card, Divider } from "@mui/material";
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
@@ -78,7 +77,6 @@ const HomeContentItem = ({
 
   useEffect(() => {
     setStarSynth(product?.isFavorite)
-    
   },[]);
 
   return (
@@ -113,20 +111,20 @@ const HomeContentItem = ({
         />
       </div>
       <strong>
-      <span 
-        className={product?.name?.length > 19 ? styles.hovertext : undefined}
-        style={{fontSize: product?.name?.length > 15? "70%": "100%",padding:"0px", margin:"0px"}}
-        data-hover={product?.name}
-      >
+        <span 
+          className={product?.name?.length > 19 ? styles.hovertext : undefined}
+          style={{fontSize: product?.name?.length > 15? "70%": "100%",padding:"0px", margin:"0px"}}
+          data-hover={product?.name}
+        >
           {product?.name?.length > 19 ? `${product?.name.slice(0,20)}...` : product?.name}
-      </span>
-        </strong>
+        </span>
+      </strong>
       <span 
         className={product?.brand?.length > 19 ? styles.hovertext: undefined}
         data-hover={product?.brand}
         style={{fontSize: product?.brand?.length > 15 ? "70%": "80%",minHeight:"20px"}}
       >
-        {product?.brand || ""}
+        {(product?.brand?.length > 19 ? `${product?.brand.slice(0,20)}...` : product?.brand) || ""}
       </span>
       <div className={styles.productContent_item_info} style={{fontSize:"90%"}}>
         <p style={{margin:0}}>

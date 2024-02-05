@@ -80,7 +80,7 @@ const Reciept = ({
           return  <ReceiptItem key={i} {...product} i={i} />
           }) :
           <div style={{ margin:"10px",display:'flex',justifyContent:"center"}}>
-            <span>Կանխավճար  {saleData?.res?.printResponseInfo?.totalAmount.toFixed(1)}</span>
+            <span>Կանխավճար  {saleData?.res?.printResponseInfo?.totalAmount.toFixed(2)}</span>
           </div>
         }
         <Divider style={{margin:1,backgroundColor:"gray"}}/>

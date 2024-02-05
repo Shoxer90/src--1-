@@ -90,10 +90,10 @@ const HomePage = ({
 
   const getSelectData = () => {
    
-    if( !typeCode?.length) {
-    setSelectContent([])
-    return
-    }else{
+    // if( !typeCode?.length) {
+    // setSelectContent([])
+    // return
+    // }else{
       getAdg(typeCode).then((res) => {
         if(res?.length > 1){
           setSelectContent(res)
@@ -111,10 +111,11 @@ const HomePage = ({
             type:res[0].code
           })
         }else{
-          setSelectContent([{id:"", title:t("authorize.errors.adgcode"), code:""}])
+          setSelectContent([{id:"", title:[], code:""}])
+          // setSelectContent([{id:"", title:t("authorize.errors.adgcode"), code:""}])
         }
       })
-    } 
+    // } 
   };
 
   useEffect(() => {

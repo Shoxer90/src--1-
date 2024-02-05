@@ -20,6 +20,14 @@ export const barcodeValidation = async(value) => {
       return false
     }
   }
+  export const priceValidationNum = (value,num) => {
+    const valid =num ===2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/
+   if(valid.test(value)){
+     return true
+   }else{
+     return false
+   }
+ }
 
   export const adgValidation = async(arg) => {
     let flag = 0
@@ -51,10 +59,3 @@ export const barcodeValidation = async(value) => {
     }
   };
 
-  // export const getAdgWholeArr = async() => {
-  //   await getAdg("").then((res) => {
-  //     return res
-
-  //   })
-  // }
-  // export const adgArray = await getAdg(" ")

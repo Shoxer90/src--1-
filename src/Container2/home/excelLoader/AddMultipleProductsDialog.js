@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import MeasureCorrect from './MeasureCorrect';
 import VatCorrect from './VatCorrect';
 import ConfirmDialog from '../../dialogs/ConfirmDialog';
+import BarCodeCorrect from './BarCodeCorrect';
 
 
 const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds}) => {
@@ -39,6 +40,7 @@ const AddMultipleProductsDialog = ({readExcel, uploadFile, createMultipleProds})
           <div className={styles.excelLoaderContent_item}>
             <p>{t("mainnavigation.multipleProductText1")}</p>
             <MeasureCorrect t={t}/>
+            <BarCodeCorrect t={t}/>
             <VatCorrect t={t} />
             <Button variant="contained" sx={{backgroundColor:"green",fontSize:"70%"}} onClick={fileReader} >
               <GetAppIcon />

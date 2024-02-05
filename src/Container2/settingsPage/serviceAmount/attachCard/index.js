@@ -12,28 +12,46 @@ const CheckStatusArCa = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
   const [message,setMessage] = useState();
+  const [load, setLoad] = useState();
 
   const closeSuccessMessage = () => {
     setMessage({message:"", type:""})
     navigate("/setting/services")
-  }
-  
-  useEffect(() => {
-    orderId && 
-    sendIdForPayStatusChecking(`${orderId}`).then((res) => {
-      !res?.error ?  
-       setMessage({type:"success", message:t("basket.paymentsuccess")}) :
-      setMessage({type:"error", message:t("dialogs.wrong")})
+  };
+
+  const openCheckStatusPage = () => {
+    setLoad(true)
+    orderId && orderId !== null && sendIdForPayStatusChecking(`${orderId}`).then((res) => {
+      setLoad(false)
+      if(res === 200) {
+        return setMessage({type:"success", message:t("dialogs.checkCardStatus200")}) 
+      }else if(res === 410) {
+        return setMessage({type:"error", message:t("dialogs.checkCardStatus410")}) 
+      }else if(res === 411) {
+        return setMessage({type:"error", message:t("dialogs.checkCardStatus411")}) 
+      }else if(res === 412) {
+        return setMessage({type:"error", message:t("dialogs.checkCardStatus412")}) 
+      }else {
+        return setMessage({type:"error", message:t("dialogs.checkCardStatus400")})
+      }
     })
-  },[]);
+  };
+
+  useEffect(() => {
+    openCheckStatusPage()
+  },[]); 
 
   return (
     <div style={{marginTop: "300px"}}>
-      {
-        !orderId ?
-        <Loader t={t}/>:
+      {!orderId ?
+        <Loader t={t}/> :
         <Dialog open={Boolean(message?.message)}>
-          <SnackErr open={message?.message} message={message?.message} type={message?.type} close={closeSuccessMessage}/>
+          <SnackErr 
+            open={message?.message} 
+            message={message?.message} 
+            type={message?.type} 
+            close={closeSuccessMessage}
+          />
         </Dialog>
       }
       <h5>{t("settings.checkArcaStatus")}</h5>

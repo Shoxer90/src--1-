@@ -11,15 +11,11 @@ import { sendSmsForPay } from "../../../services/pay/pay";
 
 const PhonePay = ({
   t,
-  logOutFunc,
   openPhonePay,
   paymentInfo,
   setPaymentInfo,
   closePhoneDialog,
-  // handleChangeInput,
   price,
-  loadBasket,
-  deleteBasketGoods,
   setLoader,
   responseTreatment
 }) => {

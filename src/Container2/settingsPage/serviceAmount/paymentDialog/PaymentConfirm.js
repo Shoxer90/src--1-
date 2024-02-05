@@ -6,13 +6,12 @@ import { useTranslation } from 'react-i18next';
 import Loader from '../../../loading/Loader';
 import { bindNewCard } from '../../../../services/cardpayments/internalPayments';
 import ConfirmDialog from '../../../dialogs/ConfirmDialog';
-import ActionMessage from '../../../dialogs/ActionMessage';
 import { payForServiceWithAttachedCard, payForServiceWithNewCard } from '../../../../services/internal/InternalPayments';
 import IsInDate from './IsInDate';
 import AttachedCardsItem from './AttachedCardsItem';
 
 const PaymentConfirm = ({
-
+  isPrepayment,
   open,
   close,
   cardArr,
@@ -21,27 +20,23 @@ const PaymentConfirm = ({
   content,
   price,
   logOutFunc,
+  message,
+  setMessage,
 }) => {
   const {t} = useTranslation();
   const [load,setLoad] = useState(false);
   const [openDialog, setOpenDialog]= useState();
   const [openPayDialog, setOpenPayDialog]= useState();
-  const [message, setMessage] = useState({message:"", type:""});
   const [activateBtn,setActivateBtn] = useState(false);
   const [newLink,setNewLink] = useState("")
   const ref = useRef();
-  const circleBorder = {
-    border:"lightgrey solid 2px",
-    borderRadius:"15px",
-    padding:"5px 10px",
-    margin: "10px 0"
-  }
+
 
   const getLinkForNewCard = async() => {
     setLoad(true)
-    await bindNewCard().then((res) => {
+    await bindNewCard(payData).then((res) => {
       if(res) {
-        window.location.href = res?.formUrl
+        setNewLink(res?.formUrl)
       }
       setLoad(false)
     })
@@ -53,11 +48,10 @@ const PaymentConfirm = ({
       await payForServiceWithAttachedCard(payData).then((res) => {
         if(res === 401){
           logOutFunc()
-        }else{
-          setLoad(false)       
+        }else if(res === "Request processed successfully"){
+          setLoad(false)  
           setMessage({message:t("basket.paymentsuccess"), type:"success"})
         }
-
       })
     }else{
        await payForServiceWithNewCard(payData).then((res) => {
@@ -82,13 +76,13 @@ const PaymentConfirm = ({
         open={open}
         onClose={close}  
       >
-      {content?.isInDate ?
+      {(!content?.isInDate && !content?.days) ?
         <DialogContent>
           <h4 style={{margin:"10px 0px"}}>
             {t("basket.totalndiscount")} <span> {price} {t("units.amd")}</span> 
           </h4>
           {content?.autopayment?.defaultCard && 
-            <div style={circleBorder}>
+            <div className={styles.circleBorder}>
               <input
                 id="activeCard"
                 type="radio"
@@ -107,7 +101,7 @@ const PaymentConfirm = ({
               </label>
             </div>
           }
-          {cardArr?.length &&
+          {cardArr?.length ?
             <div>
               <div style={{fontWeight:600,marginLeft:"25px"}}>
                 {t("cardService.chooseAnotherCard")}
@@ -115,18 +109,17 @@ const PaymentConfirm = ({
               <div>
                 {cardArr.map((card) =>(
                   <AttachedCardsItem 
-                   card={card} 
-                   circleBorder={circleBorder}
-                   payData={payData}
-                   setActivateBtn={setActivateBtn}
-                   setPayData={setPayData}
+                    card={card} 
+                    payData={payData}
+                    setActivateBtn={setActivateBtn}
+                    setPayData={setPayData}
                   />
                 ))}
               </div>
-            </div>
+            </div>: ""
           }
           <Divider sx={{bgcolor:"black"}} />
-            <div style={circleBorder}>
+            <div className={styles.circleBorder}>
               <input 
                 id="no attach"
                 type="radio"
@@ -134,9 +127,14 @@ const PaymentConfirm = ({
                 onChange={()=>{
                   delete payData?.cardId
                   setActivateBtn(2)
+                  !isPrepayment ?
                   setPayData({
                     ...payData,
                     attach: false
+                  }):
+                  setPayData({
+                    ...payData,
+                    cardId: 0
                   })
                 }}
               />
@@ -144,7 +142,7 @@ const PaymentConfirm = ({
                 {t("settings.payWithNewCard")}
               </label>
             </div>
-            <div style={circleBorder}>
+            {!isPrepayment && <div className={styles.circleBorder}>
               <input 
                 id="attach"
                 type="radio" 
@@ -159,13 +157,14 @@ const PaymentConfirm = ({
                 }}
               />
               <label htmlFor="attach" style={{marginLeft:"10px",textAlign:"center"}}>
-                {t("settings.payWithNewCardAndAttach")}
+                  {t("settings.payWithNewCardAndAttach")}
               </label>
-            </div>
+            </div>}
         </DialogContent> : 
         <IsInDate />
       }
-      {content?.isInDate ? <DialogActions>
+      {(!content?.isInDate) ? 
+      <DialogActions>
         <Button
           variant="contained"
           onClick={close}
@@ -197,9 +196,9 @@ const PaymentConfirm = ({
         </DialogActions>
       }
     </Dialog>
-    {newLink && <a ref={ref} href={newLink}>""</a>}
+    {newLink && <a ref={ref} href={newLink} rel="noreferrer" target="_blank" >""</a>}
 
-    <ConfirmDialog
+   <ConfirmDialog
       question={t("cardService.attanchAmount")}
       func = {getLinkForNewCard}
       title = {t("cardService.newCard")}
@@ -208,24 +207,18 @@ const PaymentConfirm = ({
       content={""}
       t={t}
     />
-    <ConfirmDialog
+    {!message?.message && <ConfirmDialog
       question={`${t("cardService.payForService")} ${price} ${t("units.amd")}`}
       func = {payForService}
       open = {openPayDialog}
       close = {setOpenPayDialog}
       content={""}
       t={t}
-    />
+    />}
     <Dialog open={load}>
       <Loader />
     </Dialog>
-    {message?.message && 
-      <ActionMessage
-        type={message?.type}
-        message={message?.message}
-        setMessage={setMessage}
-      />
-    }
+
     </>
   )
 }

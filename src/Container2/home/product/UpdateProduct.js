@@ -62,22 +62,12 @@ const UpdateProduct = ({
   const onlyNumberAndADot = (event,num) => {
     setFixMessage("")
     const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
-    const text = event.target.value;  
+    let text = event.target.value; 
+    if(event.target.value === "00"){
+      text = "0.0"; 
+    }
     if(valid.test(text)){
-      console.log(typeof event.target.value)
-      if(event.target.value === "0"){
-        if(currentProduct?.measure === "հատ"){
-          return
-        }else{
-          console.log("TEXUMA")
-           setCurrentProduct({
-            ...currentProduct,
-            [event.target.name]: "0."
-          })
-          return
-        }
-      }
-      else if(event.target.value && event.target.name === "remainder" && currentProduct?.measure === "հատ" ){
+      if(event.target.value && event.target.name === "remainder" && currentProduct?.measure === "հատ" ){
         setCurrentProduct({
           ...currentProduct,
           [event.target.name]: Math.round(event.target.value.trim())
@@ -85,13 +75,12 @@ const UpdateProduct = ({
       }else{
         setCurrentProduct({
           ...currentProduct,
-          [event.target.name]: event.target.value.trim()
+          [event.target.name]: text.trim()
         })
       }
-    }
-    else{
+    }else{
       return 
-    }
+    };
   };
 
   const handleChangeInput = async(e) => {
@@ -124,7 +113,8 @@ const UpdateProduct = ({
 
   const handleClose = () => {
     setOpenUpdateProduct(!openUpdateProd);
-  }
+  };
+
   const handleDelete = async() => {
     deleteAndRefresh(currentProduct.id).then(()=> {
       changeStatus(dataGroup)
@@ -141,6 +131,7 @@ const UpdateProduct = ({
       setIsEmptyField(true)
     }
   };
+
   const handleUpdate = async() => {
     updateProduct(currentProduct).then((res) => {
       if(res === 200) { 
@@ -160,7 +151,7 @@ const UpdateProduct = ({
   const priceValidate = async (price, discount, type) => {
     if(price === "")return
     if(`${type}` === "1" || `${type}` === "0") {
-      return( Math.round(price) - discount / 100 * Math.round(price)) < 1 ? (
+      return price - discount / 100 * price < 1 ? (
         setValidPrice(false),
         setFixMessage(t("dialogs.discountlimit"))
       ) : ( 
@@ -236,9 +227,9 @@ const UpdateProduct = ({
       { metric && <DialogContent>
         <Box className={styles.update}>
         <TextField 
+          autoComplete="off"
             error={isEmptyField && !currentProduct?.name}
             size="small"
-            variant="outlined"
             name="name" 
             value={currentProduct?.name}
             label={`${t("productinputs.name")} (${50-(currentProduct?.name)?.length})`}
@@ -246,8 +237,8 @@ const UpdateProduct = ({
             inputProps={{ maxLength: 50 }}
           />
           <TextField 
+            autoComplete="off"
             size="small"
-            variant="outlined"
             name="brand" 
             value={currentProduct?.brand}
             label={t("productinputs.brand")}
@@ -256,14 +247,13 @@ const UpdateProduct = ({
           <TextField 
             error={isEmptyField && !currentProduct?.remainder}
             size="small"
-            variant="outlined"
+            autoComplete="off"
             InputProps={{
               inputProps: { 
                 min: metric === 1 ? 1 : 0.001,
                 step: metric === 1 ? 1 : 0.001
               }
             }}
-            type="number"
             name="remainder" 
             value={currentProduct?.remainder}
             label={t("productinputs.count")}
@@ -274,6 +264,8 @@ const UpdateProduct = ({
             <Select
               error={isEmptyField && !currentProduct?.measure}
               size="small"
+              autoComplete="off"
+
               name="measure"
               value={metric}
               label={t("productinputs.measure")}
@@ -291,15 +283,8 @@ const UpdateProduct = ({
           </FormControl>
           <Box style={{display:"flex",justifyContent:"space-between"}}>
             <TextField 
-               size="small"
-              variant="outlined"
-              InputProps={{
-                inputProps: { 
-                  min: 1,
-                  step: 0.01
-                }
-              }}
-              type="number"
+              autoComplete="off"
+              size="small"
               name="purchasePrice" 
               value={currentProduct?.purchasePrice || ""}
               placeholder="0"
@@ -313,7 +298,7 @@ const UpdateProduct = ({
           <TextField 
             error={isEmptyField && !currentProduct?.price}
             size="small"
-            variant="outlined"
+            autoComplete="off"
             name="price" 
             InputProps={{
               inputProps: { 
@@ -321,7 +306,6 @@ const UpdateProduct = ({
                 step: 0.01
               }
             }}
-            type="number"
             value={currentProduct?.price}
             label={t("productinputs.price")}
             onChange={(e)=>{
@@ -333,13 +317,7 @@ const UpdateProduct = ({
             <TextField 
               error={isEmptyField && currentProduct?.discount === ""}
               size="small"
-              type="number"
-              InputProps={{
-                inputProps: { 
-                  min: 0,
-                  step: 1,
-                }
-              }}
+              autoComplete="off"
               sx={{
                 "& fieldset": { border: 'none' },
                 width: "40%"
@@ -349,9 +327,11 @@ const UpdateProduct = ({
               value={currentProduct?.discount || ""}
               label={<div style={{backgroundColor:"white"}}>{t("productinputs.discount")}</div>}
                 onChange={(e)=>{
-                  if(+e.target.value>99)return
-                  if(+e.target.value.indexOf(".") !== -1 && e.target.value.split(".")[1]?.length >2)return
-                  handleChangeInput(e)
+                  if(+e.target.value > 99){
+                    console.log("99")
+                    return
+                  }
+                  onlyNumberAndADot(e,2)
                   priceValidate(currentProduct?.price, e.target.value, currentProduct?.discountType ,e)
                 }}
             />
