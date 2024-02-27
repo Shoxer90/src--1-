@@ -46,7 +46,7 @@ const ServiceItemSecond = ({
   return (
     <>
       <Card 
-        sx={{ p:1.1,boxShadow:5,borderRadius:"8px"}} 
+        sx={{ p:1.1,boxShadow:5,borderRadius:"5px"}} 
         className={styles.service_item}
         style={!service?.isActive ? disableStyle: null}
         onClick={notAvailableService}
@@ -61,22 +61,28 @@ const ServiceItemSecond = ({
               size="small" 
               onClick={notAvailableService}
             >
-              {t("basket.linkPayment")}
+             
+              {service?.isActive  ? t("basket.linkPayment") : ""} 
+              {!service?.isActive & service?.id === 1 ? t("settings.free") : ""}
+              {!service?.isActive & service?.id === 3 ? t("settings.information") : ""}
             </Button>
           }
-          label={service?.name}
+          label={t(`settings.${service?.name}`)}
         />
-        <div className={styles.service_item_simpleRow}>
+        {/* <div className={styles.service_item_simpleRow}>
           <span>{t("history.paid")}</span>
-          {service?.isActive && <span>
-            {(new Date(service?.lastPayment)).getDate()}/ 
-            {new Date(service?.lastPayment).getMonth()+1 < 10 ? ` 0${(new Date(service?.lastPayment)).getMonth()+1}`:` ${new Date(service?.lastPayment).getMonth()+1}`}
-            / {(new Date(service?.lastPayment)).getFullYear()}
-          </span>}
-        </div>
+          {service?.isActive && 
+            <span>
+              {(new Date(service?.lastPayment)).getDate()}/ 
+              {new Date(service?.lastPayment).getMonth()+1 < 10 ? ` 0${(new Date(service?.lastPayment)).getMonth()+1}`:` ${new Date(service?.lastPayment).getMonth()+1}`}
+              / {(new Date(service?.lastPayment)).getFullYear()}
+            </span>
+          }
+        </div> */}
         <div className={styles.service_item_simpleRow}>
           <span>{t("cardService.currentCommitment")}</span>
-          {service?.isActive && <span>{service?.price} {t("units.amd")}</span>}
+          {service?.isActive && !content?.isInDate  && <span>{service?.price} {t("units.amd")}</span>}
+          {service?.isActive && content?.isInDate && <span> 0 {t("units.amd")}</span>}
         </div>
         <div className={styles.service_item_simpleRow}>
          <span>{t("cardService.amountDate")}</span>

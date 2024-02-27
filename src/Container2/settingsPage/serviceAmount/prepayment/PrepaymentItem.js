@@ -1,7 +1,7 @@
 import React, { memo } from "react" ;
 import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
 
-import styles from "./index.module.scss";
+import styles from "../paymentDialog/index.module.scss"
 import { t } from "i18next";
 
 const PrepaymentItem = ({
@@ -19,7 +19,8 @@ const PrepaymentItem = ({
   const handleClick = () => {
     setPaymentData({
       ...paymentData,
-      months:months
+      months:months,
+      web:true
     })
     activateRow(index+1)
     setPrice(price)
@@ -33,7 +34,7 @@ const PrepaymentItem = ({
     >
       <span>
         <FileDownloadDoneIcon sx={{color:"green",mr:2}} />
-        {months} {t("cardService.monthCount")} 
+        {months * 30} {t("cardService.dayCount2")} 
       </span>
       <span style={{width:"20%"}}></span>
       <span>

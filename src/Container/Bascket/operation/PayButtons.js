@@ -8,15 +8,14 @@ const PayButtons = ({
   setOpenPhonePay, 
   multiSaleProducts, 
   blockTheButton,
-  singleClick
+  totalPrice,
+  val
 }) => {
-
   const buttonBlock = {
     opacity: "0.3",
     border:"red",
     pointerEvents:"none"
   };
-  console.log(!paymentInfo?.cashAmount,"CARD AMOUNT INSIDE")
   return(
     <div 
       className={styles.bask_container_body_footer_icons}
@@ -29,7 +28,8 @@ const PayButtons = ({
           setSingleClick({pointerEvents:"none"})
           multiSaleProducts(1)
         }}
-        style={!paymentInfo?.cashAmount ? buttonBlock : null}
+        // style={!val ? buttonBlock : null}
+        style={!totalPrice  && !paymentInfo?.cashAmount && !paymentInfo?.cardAmount? buttonBlock : null}
       />
       <img
         src="/image/qr.png"

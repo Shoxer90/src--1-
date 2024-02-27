@@ -1,7 +1,7 @@
   .reverseConditions{
     display: flex;
     justify-content: center;
-    font-size: 110%;
+    font-size: 75%;
     padding:10px 20px;
    
   }
@@ -61,10 +61,11 @@
     flex-flow: column;
     width: 300px;
     justify-content: space-between;
-    font-size: 80%; 
+    // font-size: 80%; 
     &_item{
-    // align-items: center;
+    align-items: center;
     display: flex;
+    margin: 3px;
       justify-content: space-between;
       & input{
         width: 60px;

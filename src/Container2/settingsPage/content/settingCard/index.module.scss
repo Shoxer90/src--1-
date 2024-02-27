@@ -27,11 +27,19 @@
 }
 
 .imageUser_div{
+  height: 90px;
+  width: 90px;
+  border: solid #5a5a5a 2px;
+  border-radius: 48%;
+  object-fit: contain;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  align-items: center;
   &_img{
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    border: white solid 7px;
+    width: 73%;
+    height: 70%;
   }
 }
 

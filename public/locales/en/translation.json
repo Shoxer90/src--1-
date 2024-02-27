@@ -313,8 +313,8 @@
 
     "whichPrepayment": "From which prepayment",
     "forReverse": "Refundable amount",
-    "getCash": "Get cash",
-    "getCard": "Get by transfer",
+    "getCard": "Refund cashless",
+    "getCash": "Refund cash",
     "receiptPrice2": "Receipt price",
     "transaction":"Transaction"
   }, 
@@ -376,7 +376,10 @@
     "payByActiveCard": "Make a payment with an active card",
     "checkArcaStatus": "Checking Card Attach Status",
     "priceListSubTitle1": "Services",
-    "paymentMethods": "Payment method"
+    "paymentMethods": "Payment method",
+    "free": "Free",
+    "ETRM": "ETRM",
+    "StoreX": "StoreX"
   },
   "cardService":{
     "btnTitle" : "Services",
@@ -384,17 +387,17 @@
     "chooseAnotherCard": "Choose a card from the list",
     "attachedCards": "My Cards",
     "amount" : "Monthly service",
-    "amountDate": "Next payment date",
-    "currentCommitment": "Current Commitment",
+    "amountDate": "Pay by",
+    "currentCommitment": "Payment due : ",
     "createCard": "Add new card",
     "createCard2": "The card will be attached after the first payment is made",
     "remove": "Whant to remove your Credit Card?",
     "updateCard": "Update Credit Card information",
-    "authomatic" : "Monthly autopayment", 
+    "authomatic" : "Automatic payment with main card", 
     "ehdm":"Issue of e-cash receipt",
     "tax": "Provision of a tax account",
     "cardClone": "Card data exists.",
-    "historySubTitle": "Service Fee History",
+    "historySubTitle": "History",
     "attanchAmount" : "In order to verify your card 10AMD will be charged. The amount will be returned after the confirmation. Do you want to continue?",
     "newCard": "Add new card details",
     "payForService": "Pay for service  ",
@@ -405,6 +408,7 @@
     "notInDateTrueDays2": " left until the end of the monthly payment period. If you do not pay, you will not be able to use our services",
     "dayCount": " days",
     "dayCount1": " day",
+    "dayCount2": " days",
     "notAvailableService": "For details of this service, please contact PayX",
     "balance": "Balance",
     "prepayment": "Leave advance payment",
@@ -442,11 +446,15 @@
     "saveData": "Do you want to save the collected data?",
     "excelAddProds": "Would you like to download the product(s) to your store ?",
     "excelCancelList": "Do you want to cancel changes ?",
-    "isInDate": "You currently have no current commitment",
+    "isInDate": "You have no current commitment",
     "checkCardStatus200": "Transaction successfully confirmed",
     "checkCardStatus400": "System failure. Please try again later",
     "checkCardStatus410": "Insufficient funds",
     "checkCardStatus411": "Incorrect card data input",
-    "checkCardStatus412": "Transaction is declined"
+    "checkCardStatus412": "Transaction is declined",
+    "limitCash": "The amount of cash back cannot exceed ",
+    "limitCard": "The amount of non-cash refund cannot exceed  ",
+    "autoPayAgreement": "By enabling the automatic payment function, you agree to automatically charge the monthly service fee to the active card."
+
   }
 }

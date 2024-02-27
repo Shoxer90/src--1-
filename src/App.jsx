@@ -74,7 +74,7 @@ const App = () => {
     debounceBasket && byBarCodeSearching(debounceBasket)
   },[debounceBasket]);
 
-
+  console.log(user,"USER")
 
   const whereIsMyUs = async() => {
     await dispatch(fetchUser()).then((res) => {
@@ -84,12 +84,11 @@ const App = () => {
       checkUserStatus()
       if(res?.error?.message === "Rejected"){
         logOutFunc()
-        // syntethic possibility
-        }else if(res?.payload?.isInDate === false && !res?.payload?.days){
-         navigate("/setting/services")
-         setBlockedUser(true)
-       }else if(res?.payload?.isInDate === false && res?.payload?.days){
-      
+      }else if(res?.payload?.isInDate === false && !res?.payload?.days){
+        navigate("/setting/services")
+        setBlockedUser(true)
+      }
+      else if(res?.payload?.isInDate === false && res?.payload?.days){
         // setMessage({
         //   type:"error",
         //   message:
@@ -98,8 +97,8 @@ const App = () => {
         //     ${res?.payload?.days > 1 ? t("cardService.dayCount") : t("cardService.dayCount1")}
         //     ${t("cardService.notInDateTrueDays2")}`
         // })
-     }else if(res?.payload?.isInDate === true){
-         setBlockedUser(false)
+      }else if(res?.payload?.isInDate === true){
+        setBlockedUser(false)
       }
     })
   };
@@ -324,7 +323,8 @@ const App = () => {
 
   useEffect(() => {
     whereIsMyUs() 
-  },[])
+  },[]);
+
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>
     <div className="App"  autoComplete="off">
@@ -374,7 +374,6 @@ const App = () => {
           />
           <Route path="/basket/*" element={<BasketList t={t} />} />
           <Route path="/confirmation/*" element={<Confirmation t={t} />} />
-          {/* <Route path="/InternalPayments/CheackStatusArca?orderId" element={<CheckStatusArCa />} /> */}
 
         </Routes> :
         <>
@@ -390,7 +389,6 @@ const App = () => {
             active={user?.isEhdmStatus}
             setContent={setContent}
           />
-          {/* {isBlockedUser ? <Routes> */}
           {!isBlockedUser ? <Routes>
             <Route
               path="/"
@@ -436,30 +434,31 @@ const App = () => {
                 t={t} 
               />
             } />
-            <Route path="/setting" element={
-              <SettingsPage 
-                logOutFunc={logOutFunc}
-                whereIsMyUs={whereIsMyUs}
-                t={t}
-                user={user} 
-                userData={userData}
-                setUserData={setUserData}
-              />
-
-            } />
+            <Route path="/setting" 
+              element={
+                <SettingsPage 
+                  logOutFunc={logOutFunc}
+                  whereIsMyUs={whereIsMyUs}
+                  t={t}
+                  user={user} 
+                  userData={userData}
+                  setUserData={setUserData}
+                />
+              }
+            />
             <Route path="/setting/cashiers" element={<Cashiers t={t} screen={window.innerWidth} /> } />
             <Route path="/setting/user" element={<SettingsUser user={user} t={t} setUserData={setUserData} whereIsMyUs={whereIsMyUs} />} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} t={t}  measure={measure} />} />
             <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
             <Route path="/basket/*" element={<BasketList t={t} />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-            <Route path="/api/InternalPayments/CheackStatusArca/" element={<CheckStatusArCa />} />
-            <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc}/>} />
+            {user?.showPaymentPage &&<Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
+            {user?.showPaymentPage &&<Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc}/>} />}
           </Routes> :
           <Routes>
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-            <Route path="/api/InternalPayments/CheackStatusArca/" element={<CheckStatusArCa />} />
-            <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />
+            {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
+            {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />}
             <Route path="*" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />
           </Routes>
         }

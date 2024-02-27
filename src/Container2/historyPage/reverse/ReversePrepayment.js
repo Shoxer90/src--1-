@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { memo } from "react";
+import React, { useEffect, useState, memo } from "react";
+import { t } from "i18next";
+
 import styles from "./index.module.scss";
 
 const ReversePrepayment = ({
@@ -8,7 +9,28 @@ const ReversePrepayment = ({
   setReversePrepayment, 
   setReverseTotal, 
 }) => {
-  const [valueForReverse,setValueForReverse] = useState();
+  const [valueForReverse,setValueForReverse] = useState("");
+
+  const handleChangeForReverse = (e) => {
+    if(e.target.value <= saleInfo?.res?.printResponseInfo?.totalAmount){
+      return onlyNumberAndADot(e.target.value)
+    }else{
+      return
+    }
+  }
+
+  const onlyNumberAndADot = (value) => {
+    const valid = /^\d*\.?(?:\d{1,2})?$/ 
+    let text = value; 
+    if(valid.test(text)){
+      if(value[value.length - 1] === "." ||
+        (value[value.length-1] === "0" && value[value.length-2] === ".")
+      ) {
+        return setValueForReverse(value)
+      }
+      return setValueForReverse(+value)
+    } 
+  };
 
   useEffect(() => {
     if(reversePrepayment){
@@ -16,7 +38,11 @@ const ReversePrepayment = ({
     }else{
       setReverseTotal(0)
     }
-  }, [valueForReverse,reversePrepayment])
+  }, [valueForReverse, reversePrepayment]);
+
+  useEffect(() => {
+    setValueForReverse(saleInfo?.res?.printResponseInfo?.totalAmount)
+  }, []);
 
   return(
     <div className={styles.radioDialog}>
@@ -24,18 +50,18 @@ const ReversePrepayment = ({
       <input 
         type="checkbox"
         name="isChecked"
+        value={reversePrepayment}
         style={{marginRight:"10px"}}
         onChange={(e)=>{ setReversePrepayment(e.target.checked)}}
       />
       <label>
-        Կանխավճարի վերադարձ
-        
+        {t("basket.useprepayment")}
         <input 
-          type="number" 
+          autoComplete="off"
           style={{width:'100px',margin:"0 15px",padding:"1px 4px"}}
           name="cashAmount"
-          value={valueForReverse || ""}
-          onChange={(e) =>(e.target.value <= saleInfo?.res?.printResponseInfo?.totalAmount)? setValueForReverse(+e.target.value):""}
+          value={valueForReverse}
+          onChange={(e) => handleChangeForReverse(e)}
         />
       </label>
     </span> 
@@ -44,4 +70,3 @@ const ReversePrepayment = ({
 };
 
 export   default memo(ReversePrepayment);
-

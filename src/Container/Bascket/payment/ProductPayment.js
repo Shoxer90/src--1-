@@ -2,7 +2,8 @@ import React, { useEffect, useState, memo} from "react";
 import styles from "../index.module.scss";
 import { numberSpacing } from "../../../modules/numberSpacing";
 
-const ProductPayment = ({t, 
+const ProductPayment = ({
+  t, 
   totalPrice,
   checkDiscountVsProdPrice, 
   paymentInfo, 
@@ -10,12 +11,9 @@ const ProductPayment = ({t,
   setSingleClick,
   trsf,
   setBlockTheButton,
-  blockTheButton
-
 }) => {
   const [val, setVal] = useState(totalPrice);
   const [flag, setFlag] = useState();
-  const [numberMind, setNumberMind] = useState();
 
   const discountChange = (e) => {
     checkDiscountVsProdPrice(e.target.value)
@@ -25,7 +23,7 @@ const ProductPayment = ({t,
         [e.target.name]:99,
         cardAmount: 0,
         prePaymentAmount: 0,
-      })
+      }) 
     }else{
       setPaymentInfo({
         ...paymentInfo,
@@ -34,8 +32,7 @@ const ProductPayment = ({t,
     }
   };
 
-const handleChangeInput = (e) => {
-  if((+e.target.value <= +val && val > 0) || +e.target.value < +paymentInfo?.cardAmount){ 
+  const handleChangeInput = (e) => {
     const valid =/^\d+(\.\d{1,2})?$/;
     const text = e.target.value;  
     const isValid = valid.test(text);
@@ -49,7 +46,6 @@ const handleChangeInput = (e) => {
       })
     }else if(isValid || e.target.value === ""){
       setBlockTheButton(false)
-      setVal(numberMind)
       setPaymentInfo({
         ...paymentInfo,
         [e.target.name]:+e.target.value,
@@ -57,9 +53,6 @@ const handleChangeInput = (e) => {
       setFlag(e.target.value)
     }
     setSingleClick({})
-  }else{
-    return
-  }
 };
 
   const cashChanges = () => {
@@ -71,17 +64,14 @@ const handleChangeInput = (e) => {
         - paymentInfo?.cardAmount 
         - paymentInfo?.prePaymentAmount 
       ).toFixed(2),
-      partnerTin: ""
-
     })
   };
 
   useEffect(() => {
-  !trsf && cashChanges()
-  setVal(totalPrice)
-  setBlockTheButton(false)
-
-  }, [totalPrice, flag, paymentInfo?.discount]);
+    !trsf && cashChanges()
+    setVal(totalPrice)
+    setBlockTheButton(false)
+  }, [totalPrice, flag, paymentInfo?.discount, paymentInfo?.cardAmount,paymentInfo?.prePaymentAmount]);
 
   return(
     paymentInfo && <div className={styles.saleInfoInputs}>
@@ -138,11 +128,9 @@ const handleChangeInput = (e) => {
           name="cardAmount"
           autoComplete="off"
           onChange={(e)=> {
+            if(+e.target.value <= val - paymentInfo?.prePaymentAmount){
             handleChangeInput(e)
-          }}
-          onFocus={()=>{
-            setVal(paymentInfo?.cashAmount)
-            setNumberMind(+paymentInfo?.cardAmount+paymentInfo?.cashAmount)
+            }
           }}
         />
       </div>
@@ -155,12 +143,9 @@ const handleChangeInput = (e) => {
           name="prePaymentAmount"
           autoComplete="off"
           onChange={(e)=> {
-            handleChangeInput(e)
-           
-          }}
-          onFocus={()=>{
-            setVal(paymentInfo?.cashAmount)
-            setNumberMind(+paymentInfo?.prePaymentAmount+paymentInfo?.cashAmount)
+            if(+e.target.value <= val - paymentInfo?.cardAmount){
+              handleChangeInput(e)
+            }
           }}
         />
       </div>
@@ -169,7 +154,6 @@ const handleChangeInput = (e) => {
           {t("basket.partner")}{" "}
         </span>
         <input
-          type="number"
           value={paymentInfo?.partnerTin}
           autoComplete="off"
           name="partnerTin"
@@ -177,7 +161,7 @@ const handleChangeInput = (e) => {
             if(`${e.target.value}`?.length <= 8){
               setPaymentInfo({
                 ...paymentInfo,
-                [e.target.name]:e.target.value
+                [e.target.name]:e.target.value.replace(/[^1-9]+/g,"")
               })
             }
           }}

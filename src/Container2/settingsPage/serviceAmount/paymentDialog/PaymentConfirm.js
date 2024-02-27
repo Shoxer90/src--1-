@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import Loader from '../../../loading/Loader';
 import { bindNewCard } from '../../../../services/cardpayments/internalPayments';
 import ConfirmDialog from '../../../dialogs/ConfirmDialog';
-import { payForServiceWithAttachedCard, payForServiceWithNewCard } from '../../../../services/internal/InternalPayments';
+import { payForServiceWithAttachedCard, payForServiceWithNewCard, prepaymentPay } from '../../../../services/internal/InternalPayments';
 import IsInDate from './IsInDate';
 import AttachedCardsItem from './AttachedCardsItem';
 
@@ -31,16 +31,29 @@ const PaymentConfirm = ({
   const [newLink,setNewLink] = useState("")
   const ref = useRef();
 
-
   const getLinkForNewCard = async() => {
     setLoad(true)
     await bindNewCard(payData).then((res) => {
-      if(res) {
-        setNewLink(res?.formUrl)
-      }
       setLoad(false)
+      if(res?.formUrl) {
+        setNewLink(res?.formUrl)
+      }else{
+        setMessage()
+      }
     })
   } ;
+
+  const handlePrepayment = async() => {
+    setLoad(true)
+    await prepaymentPay(payData).then((res) => {
+      setLoad(false)
+      if(res?.formUrl) {
+        setNewLink(res?.formUrl)
+      }else{
+        setMessage()
+      }
+    })
+  };
 
   const payForService = async() => {
     setLoad(true)
@@ -76,7 +89,7 @@ const PaymentConfirm = ({
         open={open}
         onClose={close}  
       >
-      {(!content?.isInDate && !content?.days) ?
+      {!content?.isInDate || isPrepayment ?
         <DialogContent>
           <h4 style={{margin:"10px 0px"}}>
             {t("basket.totalndiscount")} <span> {price} {t("units.amd")}</span> 
@@ -163,7 +176,7 @@ const PaymentConfirm = ({
         </DialogContent> : 
         <IsInDate />
       }
-      {(!content?.isInDate) ? 
+      {!content?.isInDate || isPrepayment ? 
       <DialogActions>
         <Button
           variant="contained"
@@ -196,8 +209,15 @@ const PaymentConfirm = ({
         </DialogActions>
       }
     </Dialog>
-    {newLink && <a ref={ref} href={newLink} rel="noreferrer" target="_blank" >""</a>}
-
+    {newLink && 
+      <a 
+        ref={ref} 
+        href={newLink} 
+        rel="noreferrer" 
+        // target="_blank" 
+      >""
+      </a>
+    }
    <ConfirmDialog
       question={t("cardService.attanchAmount")}
       func = {getLinkForNewCard}
@@ -209,7 +229,7 @@ const PaymentConfirm = ({
     />
     {!message?.message && <ConfirmDialog
       question={`${t("cardService.payForService")} ${price} ${t("units.amd")}`}
-      func = {payForService}
+      func = {isPrepayment ? handlePrepayment : payForService}
       open = {openPayDialog}
       close = {setOpenPayDialog}
       content={""}

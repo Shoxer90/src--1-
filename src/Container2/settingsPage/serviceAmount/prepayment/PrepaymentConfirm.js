@@ -1,9 +1,9 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, Divider, Slide } from "@mui/material";
 import { t } from "i18next";
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 import PrepaymentItem from "./PrepaymentItem";
-import PaymentConfirm from "./PaymentConfirm";
+import PaymentConfirm from "../paymentDialog/PaymentConfirm";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -16,7 +16,7 @@ const activeStyle = {
   background: "rgb(200, 240, 240)"
 };
 
-const PrepaymentConfirmation = ({open,close,setPayData,payData, content}) => {
+const PrepaymentConfirmation = ({open, close, setPayData,payData, content}) => {
 
   const [activeRow,setActiveRow] = useState(0);
   const [openPaymentConfirm, setOpenPaymentConfirm] = useState(false);
@@ -58,7 +58,8 @@ const PrepaymentConfirmation = ({open,close,setPayData,payData, content}) => {
       fullWidth={true}
     >
       <DialogContent>
-        <p style={{fontSize:"150%",margin:"5px 20px"}}>{t("cardService.subscription")}</p>
+        {/* <p style={{fontSize:"150%",margin:"5px 20px"}}>{t("cardService.subscription")}</p> */}
+        <p style={{fontSize:"150%",margin:"5px 20px"}}>{t("cardService.prepayment")}</p>
         <Divider  sx={{m:1}}  color="black" />
         <div  className={styles.subscription}>
           {
@@ -99,7 +100,6 @@ const PrepaymentConfirmation = ({open,close,setPayData,payData, content}) => {
         payData={payData}
         content={content}
         price={price}
-        // logOutFunc={logOutFunc}
       />
     </Dialog>
   )

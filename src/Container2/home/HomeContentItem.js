@@ -1,19 +1,16 @@
-import React, { useContext } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
-import { memo } from "react";
+import React, { useContext, useState, useEffect, memo } from "react";
 import { Card, Divider } from "@mui/material";
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import ModeIcon from '@mui/icons-material/Mode';
+import { updateIsFavorite } from "../../services/products/productsRequests";
 
 import UpdateProduct from "./product/UpdateProduct";
 
 import {LimitContext} from "../../context/Context";
 
 import styles from "./index.module.scss";
-import { updateIsFavorite } from "../../services/products/productsRequests";
 
 const HomeContentItem = ({
   t,
@@ -34,7 +31,7 @@ const HomeContentItem = ({
 }) => {
   const {limitedUsing} = useContext(LimitContext);
   const [openUpdateProd, setOpenUpdateProduct] = useState(false);
-  const [quantity,setQuantity] = useState();
+  const [quantity,setQuantity] = useState("");
   const [starSynth,setStarSynth] = useState();
   const [newPrice, setNewPrice] = useState(product?.price - (product?.price * product?.discount / 100));
 
@@ -48,29 +45,31 @@ const HomeContentItem = ({
     setQuantity("")
   };
 
-  const onlyNumberAndADot = (event,num) => {
-    const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
-    let text = event.target.value; 
-    if(event.target.value === "0" || event.target.value === "."){
-      if(`${event.target.value}`.length > quantity?.length){
-        text = "0."; 
+  const onlyNumberAndADot = (event) => {
+    let isValid = false;
+    if(event.target.value === "+" || event.target.value === "-"){
+      return setQuantity("")
+    }else if(product?.otherLangMeasure === "հատ"){
+      const needSymb = /^[0-9]*$/;
+      isValid = needSymb.test(event.target.value);
+      if(isValid && +event.target.value) {
+       return setQuantity(+event.target.value)
+      }else if(event.target.value === ""){
+       return setQuantity("")
+      }
+    }else if(product?.otherLangMeasure !== "հատ"){
+      const needSymb = /^\d+(\.\d{0,3})?$/
+      isValid = needSymb.test(event.target.value)
+      if((event.target.value ==="0" || event.target.value === 0) && `${event.target.value}`.length > `${quantity}`?.length) {
+        return setQuantity("0.")
+      }else 
+      if(isValid || event.target.value=== "") {
+        setQuantity(event.target.value)
       }else{
-        text= "";
+        return
       }
     }
-    if(valid.test(text)){
-      if(product?.measure === "հատ" || product?.measure === "шт" || product?.measure === "pcs") {
-        console.log(product?.measure,"MEASURE")
-        setQuantity(Math.round(text.trim()))
-      }else{ 
-        console.log(measure," 1212 1212")
-        setQuantity(text.trim())
-      }
-    }else{
-      return 
-    }
-  };
-  // 
+  }
 
   useEffect(() => {
     setStarSynth(product?.isFavorite)
@@ -154,8 +153,6 @@ const HomeContentItem = ({
           </div>
           <div className={styles.productContent_item_addBasket}>
             <input 
-              min={product?.otherLangMeasure === "հատ" ? "1" : "0.001"}
-              step={product?.otherLangMeasure !== "հատ" ? "0.001" : "1"}
               max={`${product.remainder}`}
               placeholder="1"
               value={quantity}  
@@ -186,7 +183,6 @@ const HomeContentItem = ({
       getSelectData={getSelectData}
       typeCode={typeCode}
       setTypeCode={setTypeCode}
-
     />}
   </>
   )

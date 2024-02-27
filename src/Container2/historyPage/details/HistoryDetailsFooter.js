@@ -27,7 +27,7 @@ const HistoryDetailsFooter = ({item,originTotal}) => {
             }
             {item?.cardAmount ?
               <div> 
-                {t("history.whichCasheless")}
+                {t("history.whichCashless")}
                 <span style={{margin:"0 5px"}}> {item?.cardAmount} {t("units.amd")}</span> 
               </div> : ""
             }

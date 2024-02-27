@@ -7,13 +7,14 @@ import styles from "./index.module.scss";
 const OrderListPayInfo = ({basketContent,t}) => {
   return (
       <div className={styles.orderContainer_payContainer}>
-        <div className={styles.orderContainer_payContainer_item}>
-          {t("basket.partner")}  
-          <span style={{margin:"0px 7px"}}> 
-           {basketContent?.partnerTin ? basketContent?.partnerTin : "................."} 
-          </span> 
-        </div>
-
+         { basketContent?.partnerTin  && 
+          <div className={styles.orderContainer_payContainer_item}>
+            {t("basket.partner")}  
+            <span style={{margin:"0px 7px"}}> 
+             {basketContent?.partnerTin} 
+            </span> 
+         </div>
+          }
         <div className={styles.orderContainer_payContainer_item}>
          {t("basket.recieptPrice")}  
          <span style={{margin:"0px 7px"}}> {basketContent?.total}{t("units.amd")} </span> 
@@ -25,11 +26,16 @@ const OrderListPayInfo = ({basketContent,t}) => {
         </div>
 
         <div  className={styles.orderContainer_payContainer_item}>
+         {t("history.card")} 
+         <span style={{margin:"0px 7px"}}> {basketContent?.cardAmount}  {t("units.amd")} </span>
+        </div>
+
+        <div  className={styles.orderContainer_payContainer_item}>
          {t("basket.useprepayment")} 
          <span style={{margin:"0px 7px"}}> {basketContent?.prePayment}  {t("units.amd")} </span>
         </div>
 
-        <Divider sx={{bcolor:"black"}} />
+        <Divider style={{ background: '#343a40', width:"60%", fontWight:600, margin:"10px 0px" }} />
         <div style={{fontSize:"100%",color:"EE8D1C"}} className={styles.orderContainer_payContainer_item}>
           <strong> 
           {t("basket.orderPayment")}

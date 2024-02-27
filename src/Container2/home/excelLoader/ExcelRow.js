@@ -17,6 +17,7 @@ const ExcelRow = ({
 }) => {
   const [measureLangArr,setMeasureLangArr] = useState([]);
   const [isValidCurrentProd, setIsValidCurrentProd] = useState({});
+  const [isBarCodeNotRepeat,setIsBarCodeNotRepeat] = useState();
   const [ceilName, setCeilName] = useState("");
   const [errorName,setErrorName] = useState("");
   const ref = useRef();
@@ -52,8 +53,6 @@ const ExcelRow = ({
         setErrorName("Կրկնվող բառկոդ/ ներքին կոդ")
         catchSameCode++
         return false
-      }else{
-        return item
       }
     })
     if(!catchSameCode){
@@ -82,10 +81,7 @@ const ExcelRow = ({
       if(item?.code === prod?.barCode && item?.row !== row) {
         setErrorName("Կրկնվող բառկոդ/ ներքին կոդ")
         return catchSameCode++
-      }else{
-        return item
       }
-
     })
       if(catchSameCode) {
         return false
@@ -166,7 +162,6 @@ const ExcelRow = ({
   const onlyNumberAndADot = (event,num) => {
     const valid = num === 3 ? /^\d*\.?(?:\d{1,3})?$/ : /^\d*\.?(?:\d{1,2})?$/;
     let text = event.target.value;  
-    console.log(prod?.[event.target.name],"prod[event.target.name]).length")
     if(valid.test(text) || `${prod?.[event.target.name]}`.length > event.target.value.length) {
       if(event.target.value[event.target.value.length - 1]=== ".") {
         return handleChange(event.target.name, event.target.value)
@@ -203,9 +198,8 @@ const ExcelRow = ({
   },[ceilName]);
 
   useEffect(()=> {
-    filterValidRow()
+  filterValidRow()
   },[]);
-
   useEffect(()=>{
     if(prod?.measure=== "հատ" || prod?.measure === "pcs" || prod?.measure === "шт") {
       handleChange("remainder",Math.round(prod?.remainder))
@@ -259,10 +253,8 @@ const ExcelRow = ({
         <input 
           onChange={(e)=>{
             if(prod?.measure === "հատ" || prod?.measure === "pcs" || prod?.measure === "шт" ){
-              console.log(e.target.name, +e.target.value, "JJJJJ")
               handleChange(e.target.name, +e.target.value.replace(/[^1-9]+/g,""))
             }else{
-              console.log(e.target.name, +e.target.value, "fffdf")
               onlyNumberAndADot(e,3)
             }
           }}
@@ -284,7 +276,8 @@ const ExcelRow = ({
                 color: !allLanguageMeasures.includes(prod?.measure) && "white"
               }}
             >
-              {allLanguageMeasures.includes(prod?.measure) && <option hidden selected>{t(`units.${prod?.measure}`)}</option>}
+              {!allLanguageMeasures.includes(prod?.measure) && <option hidden selected>{t(`units.${prod?.measure}`)}</option>}
+              {/* {allLanguageMeasures.includes(prod?.measure) && <option hidden selected>{t(`units.${prod?.measure}`)}</option>} */}
               {measureLangArr.map((measure) => {
                 return <option style={{color:"black"}} value={measure} key={measure}>{measure}</option>
               })}  
@@ -299,7 +292,6 @@ const ExcelRow = ({
           value={prod?.purchasePrice} 
           name="purchasePrice"
           style={!isValidCurrentProd?.purchasePrice ? errorStyle : undefined}
-
         />
       </td>
       <td>

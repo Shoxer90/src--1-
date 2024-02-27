@@ -63,7 +63,7 @@ const UpdateProduct = ({
     setFixMessage("")
     const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
     let text = event.target.value; 
-    if(event.target.value === "0"){
+    if(event.target.value === "0" || event.target.value === "."){
       if(`${event.target.value}`.length > currentProduct?.[event.target.name].length){
         text = "0."; 
       }else{
@@ -72,18 +72,22 @@ const UpdateProduct = ({
     }
     if(valid.test(text)){
       if(event.target.value && event.target.name === "remainder" && currentProduct?.measure === "հատ" ){
-        setCurrentProduct({
-          ...currentProduct,
-          [event.target.name]: Math.round(event.target.value.trim())
-        })
+        if(event.target.value === "."){
+          return
+        }else{
+          return setCurrentProduct({
+            ...currentProduct,
+            [event.target.name]: Math.round(event.target.value.trim())
+          })
+        }
       }else{
         setCurrentProduct({
           ...currentProduct,
-          [event.target.name]: text.trim()
+          [event.target.name]: text
         })
       }
     }else{
-      return 
+      return
     };
   };
 
@@ -252,12 +256,6 @@ const UpdateProduct = ({
             error={isEmptyField && !currentProduct?.remainder}
             size="small"
             autoComplete="off"
-            InputProps={{
-              inputProps: { 
-                min: metric === 1 ? 1 : 0.001,
-                step: metric === 1 ? 1 : 0.001
-              }
-            }}
             name="remainder" 
             value={currentProduct?.remainder}
             label={t("productinputs.count")}
@@ -332,7 +330,6 @@ const UpdateProduct = ({
               label={<div style={{backgroundColor:"white"}}>{t("productinputs.discount")}</div>}
                 onChange={(e)=>{
                   if(+e.target.value > 99){
-                    console.log("99")
                     return
                   }
                   onlyNumberAndADot(e,2)
@@ -358,7 +355,7 @@ const UpdateProduct = ({
           }
         </Box>
           <div style={{height:"40px",width:"98%",color:"red",fontSize:"80%"}}>
-          {fixMessage && <p>{fixMessage}</p>}
+           {fixMessage && <p>{fixMessage}</p>}
           </div>
           <Box>
             {currentProduct?.dep === 2 && 

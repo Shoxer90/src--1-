@@ -13,7 +13,7 @@ export const getPaymentCardServices = async() => {
 
 export const postNewCreditCard = async() => {
   try{
-    const data = await axios.post( baseUrl + `InternalPayments/AddNewCard`, {}, option());
+    const data = await axios.post( baseUrl + `InternalPayments/AddNewCard?Web=true`, {}, option());
     return data?.data?.formUrl
 
   }catch(err){
@@ -25,6 +25,17 @@ export const payForServiceWithAttachedCard = async(body) => {
   
   try{
     const data = await axios.post( baseUrl + `InternalPayments/PayWithAttachCard`, body, option());
+    return data?.data
+
+  }catch(err){
+    return err?.response?.status
+  }
+};
+
+export const prepaymentPay = async(body) => {
+  
+  try{
+    const data = await axios.post( baseUrl + `InternalPayments/PrePaymentPay`, body, option());
     return data?.data
 
   }catch(err){

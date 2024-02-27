@@ -78,8 +78,10 @@
 
 .payWay{
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   margin: 30px;
+  align-items: center;
+  align-content: center;
 }
 
 .attachCardContainer{

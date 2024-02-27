@@ -60,6 +60,9 @@ const  Bascket = ({
   const [isEmpty,setIsEmpty] = useState(false);
   const [avail,setAvail] = useState([]);
   const [blockTheButton, setBlockTheButton] = useState(true);
+  
+  const [val,setVal] = useState(0);
+
   const [paymentInfo, setPaymentInfo] = useState({
     discount: 0,
     discountType: 0,
@@ -121,6 +124,7 @@ const  Bascket = ({
         ...paymentInfo,
         cashAmount: 0,
         cardAmount: 0,
+        partnerTin: "",
         sales:[]
       })
     }
@@ -322,7 +326,7 @@ const newSaleValidate = async() => {
               stringFrom="basket"
               setFrom={setFrom}
             />
-            <Divider style={{margin:1, backgroundColor:"gray"}}/>
+            <Divider style={{margin:1, backgroundColor:"gray"}} />
             <DialogContent 
               className={styles.bask_container_body_content}  
               style={{margin:0,padding:0}}
@@ -365,13 +369,16 @@ const newSaleValidate = async() => {
             <AdvancePayment 
               t={t} 
               paymentInfo={paymentInfo}
+              setTotalPrice={setTotalPrice}
               setPaymentInfo={setPaymentInfo}
               flag={flag}
               singleClick={singleClick}
               setSingleClick={setSingleClick}
               basketContent={basketContent}
               blockTheButton={blockTheButton}
-                setBlockTheButton={setBlockTheButton}
+              setBlockTheButton={setBlockTheButton}
+              val={val}
+              setVal={setVal}
             />
             }
             <Dialog open={message}>
@@ -391,6 +398,9 @@ const newSaleValidate = async() => {
                   setSingleClick={setSingleClick}
                   multiSaleProducts={multiSaleProducts}
                   blockTheButton={blockTheButton}
+                  val={val}
+                  totalPrice={totalPrice}
+
                 />
               </div>
           </Box>

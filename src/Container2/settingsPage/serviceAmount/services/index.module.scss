@@ -31,15 +31,13 @@
 .allservices{
   display: flex;
   flex-flow: row nowrap;
-  width: 100%;
-  font-size: 80%;
-  margin: 10px 30px;
-  // padding: 30px;
+  height:fit-content;
+  font-size: 90%;
+  margin: 10px ;
 }
 
 @media screen and (max-width: 750px) {
   .allservices{
-    width:93dvw;
     flex-flow: column;
     margin: 5px auto;
     align-items: center;

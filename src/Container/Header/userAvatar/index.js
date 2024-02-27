@@ -20,7 +20,7 @@ const UserInfo = ({ user,logo,active, limitedUsing,t}) => {
     <div 
       className={styles.headerLogo_username} 
         onClick={()=>{
-        return  !limitedUsing ? navigate("/setting"):null
+        return  !limitedUsing ? navigate("/setting/services"):null
       }} 
     > 
       {screen < 785 ?

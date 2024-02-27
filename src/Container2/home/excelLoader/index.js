@@ -39,14 +39,13 @@ const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,
     })
     
     promise.then((res) => {
-      console.log(res,"RESULT FROM EXCEL")
      const arr = [];
      const barcodeList = []
      res.forEach(prod => {
       prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] && barcodeList.push(prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"])
       return arr.push({
         "id": 0,
-        "type": prod?.["ԱՏԳ ԱԱ կոդ կամ ԱԴԳՏ դասակարգիչ / LP FEA code or PCTA classifier / ПП ВЭД код или КПВД классификатор *"] || "",
+        "type": `${prod?.["ԱՏԳ ԱԱ կոդ կամ ԱԴԳՏ դասակարգիչ / LP FEA code or PCTA classifier / ПП ВЭД код или КПВД классификатор *"]}` || "",
         "dep":  prod?.["ԱԱՀ - ով չհարկվող / Excluding VAT / Без учета НДС"] ? 2 : 0,
         "name": prod?.["Ապրանքի անվանումը (50 նիշ) / Product Name (50 Symbols) / Название товара (50 символа) *"] || "",
         "brand": prod?.["Ապրանքանիշ / Brand / Бренд"] || "",
@@ -55,9 +54,8 @@ const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,
         "photo": "",
         "barCode":  prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] || "",
         "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"] || 0,
-        "purchasePrice": +prod?.[" Ապրանքի ինքնարժեք / Purchase price / Закупочная цена "] || 0,
+        "purchasePrice": +prod?.["Ապրանքի ինքնարժեք / Purchase price / Закупочная цена"] || 0,
         "price": +prod?.["Վաճառքի գին / Product price / Цена продукта *"]|| 0,
-        // "price": +prod?.[" Վաճառքի գին / Product price / Цена продукта * "],
         "discountedprice": 0,
         "discount": 0,
         "discountType": 0,

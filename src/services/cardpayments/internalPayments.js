@@ -35,20 +35,6 @@ export const removeBankCard = async(id) => {
   }
 };
 
-// export async function getSaleProducts(page, pagination) {
-//   const response = {
-//     count: "",
-//     data: ""
-//   }
-//   try{
-//     const  data = await axios.post(baseUrl + `History/${page}`, pagination, option());
-//     response.count = data.headers.count
-//     response.data = data.data
-//     return response
-//   }catch(err){
-//     return err
-//   }
-// };
 export const getServiceHistoryAndPayAmount = async() => {
   const option = {
     headers: {
@@ -77,16 +63,12 @@ export const bindNewCard = async(body) => {
   }
 };
 
-export const sendIdForPayStatusChecking = async(id) => {
+export const sendIdForPayStatusChecking = async(operation, id) => {
+
   try{
-    const data = await axios.get( baseUrl + `InternalPayments/CheackStatusArca?OrderId=${id}`, option)
-    if(data?.ok){
-      return 200
-    }
-    console.log(data,"data")
-    // return data
+    const data = await axios.get( baseUrl + `InternalPayments/${operation}?OrderId=${id}`, option)
+    return data?.status
   }catch(err){
-    console.log(err?.response?.satus,"rr")
     return err?.response?.status
   }
 }

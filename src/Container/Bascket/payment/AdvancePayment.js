@@ -9,9 +9,12 @@ import styles from "../index.module.scss"
     setSingleClick,
     blockTheButton,
     setBlockTheButton,
+    val,
+    setVal,
+    setTotalPrice
   }) => {
 
-  const [val,setVal] = useState(0);
+  // const [val,setVal] = useState(0);
   
   const handleChangePrepayment = (event) => {
     const valid = /^\d+(\.\d{1,2})?$/;
@@ -72,6 +75,10 @@ import styles from "../index.module.scss"
       }
     }
   };
+  useEffect(() => {
+    setVal(0)
+    setTotalPrice(0)
+  }, []);
 
   useEffect(() => {
     setPaymentInfo({
