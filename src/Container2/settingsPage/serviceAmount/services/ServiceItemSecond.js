@@ -1,11 +1,11 @@
 import React, { memo, useEffect, useState } from "react";
 import { Button, Card, Dialog, FormControlLabel } from "@mui/material";
-import PaymentConfirm from "../paymentDialog/PaymentConfirm";
 
 import styles from "./index.module.scss";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 import PayXInfo from "../../../social/PayXInfo";
 import SnackErr from "../../../dialogs/SnackErr";
+import PayComponent from "../pay";
 import { t } from "i18next";
 
 const ServiceItemSecond = ({
@@ -13,23 +13,23 @@ const ServiceItemSecond = ({
   content,
   isDelete,
   payData, 
-  logOutFunc,
   setPayData,
+  serviceType
 }) => {
-  const [openDialogForPay,setOpenDialogForPay] = useState(false);
   const [message, setMessage] = useState({message:"",type:""});
-
-  const closeMessage = () => {
-    setOpenDialogForPay(false)
-    setMessage({message:"", type:""})
-  }
-
+  const [openPay, setOpenPay] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const disableStyle={opacity: 0.3};
 
+  const closeMessage = () => {
+    setOpenPay(false)
+    setMessage({message:"", type:""})
+  };
+  
+
   const notAvailableService = () => {
     if(service?.isActive){
-      setOpenDialogForPay(true)
+      setOpenPay(true)
     }else{
       setOpenAlert(true)
     }
@@ -51,38 +51,22 @@ const ServiceItemSecond = ({
         style={!service?.isActive ? disableStyle: null}
         onClick={notAvailableService}
       >
-        <FormControlLabel
-          labelPlacement="start" 
-          className={styles.service_item_hightSwitch}
-          sx={{m:0,p:.7}}
-          control={
+        <div style={{display:"flex",justifyContent:"space-between"}}>
+          <h6>{t(`settings.${service?.name}`)}</h6>
+          {!service?.isActive && service?.id === 3 ? "":
             <Button 
               variant="contained" 
-              size="small" 
               onClick={notAvailableService}
+              sx={{width:"150px",height:"30px"}}
             >
-             
               {service?.isActive  ? t("basket.linkPayment") : ""} 
-              {!service?.isActive & service?.id === 1 ? t("settings.free") : ""}
-              {!service?.isActive & service?.id === 3 ? t("settings.information") : ""}
+              {!service?.isActive && service?.id === 1 ? t("settings.free") : ""}
             </Button>
           }
-          label={t(`settings.${service?.name}`)}
-        />
-        {/* <div className={styles.service_item_simpleRow}>
-          <span>{t("history.paid")}</span>
-          {service?.isActive && 
-            <span>
-              {(new Date(service?.lastPayment)).getDate()}/ 
-              {new Date(service?.lastPayment).getMonth()+1 < 10 ? ` 0${(new Date(service?.lastPayment)).getMonth()+1}`:` ${new Date(service?.lastPayment).getMonth()+1}`}
-              / {(new Date(service?.lastPayment)).getFullYear()}
-            </span>
-          }
-        </div> */}
+        </div>
         <div className={styles.service_item_simpleRow}>
           <span>{t("cardService.currentCommitment")}</span>
-          {service?.isActive && !content?.isInDate  && <span>{service?.price} {t("units.amd")}</span>}
-          {service?.isActive && content?.isInDate && <span> 0 {t("units.amd")}</span>}
+          {service?.isActive  && <span>{service?.price} {t("units.amd")}</span>}
         </div>
         <div className={styles.service_item_simpleRow}>
          <span>{t("cardService.amountDate")}</span>
@@ -98,19 +82,7 @@ const ServiceItemSecond = ({
       <Dialog open={message?.message}>
         <SnackErr type={message?.type} message={message?.message} close={closeMessage} />
       </Dialog>
-      <PaymentConfirm
-        isPrepayment={false}
-        open={openDialogForPay}
-        close={()=> setOpenDialogForPay(false)}
-        cardArr={content?.cards}
-        setPayData={setPayData}
-        payData={payData}
-        content={content}
-        price={service?.price}
-        logOutFunc={logOutFunc}
-        message={message}
-        setMessage={setMessage}
-      />
+    
       <ConfirmDialog
         question={<strong>{t("cardService.notAvailableService")}</strong>}
         func={()=>setOpenAlert(false)}
@@ -119,6 +91,15 @@ const ServiceItemSecond = ({
         content={<PayXInfo t={t} />}
         t={t}
         nobutton={true}
+      />
+      <PayComponent 
+        openPay={openPay}
+        setOpenPay={setOpenPay}  
+        price={service?.price}
+        content={content}
+        serviceType={serviceType}
+        message={message}
+        setMessage={setMessage}
       />
     </>
   );

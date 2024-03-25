@@ -1,14 +1,16 @@
 import React, { memo } from 'react';
 
 import styles from "../index.module.scss";
+import { t } from 'i18next';
 
-  const CreditCard = ({card}) => {
+  const CreditCard = ({card,isMain}) => {
 
     return (
     <span className={styles.creditCard} >
-      <div className={styles.creditCard_bank}>
+      <div className={styles.creditCard_bank} style={{marginTop:"20px"}} >
         <span>
-         {card?.bankName}
+          {card?.bankName}      
+          {isMain && <span style={{color:"#78f51d",fontWeight:700, letterSpacing:"1.5px"}}> / {t("cardService.mainCard")} </span>}
         </span>
       </div>
       <img src="/chip.png" alt="" className={styles.creditCard_chip} />
@@ -31,7 +33,9 @@ import styles from "../index.module.scss";
           </span>
         </div>
         <div>
-          <img src={card?.pan[0] == 4 ? "/visa.png" :"/mastercard.png"} alt="card_type"  style={{width:"60px",height:"50px"}}/>
+          {card?.pan[0] == 4  && <img src="/visa1.png" alt="card_type"  style={{width:"60px",marginTop:"21px",height:"20px"}}/>}
+          {card?.pan[0] == 5  && <img src="/mastercard1.png" alt="card_type"  style={{width:"60px",marginTop:"18px",height:"27px"}}/>}
+          {card?.pan[0] == 9  && <img src="/arca1.png" alt="card_type"  style={{width:"60px",marginTop:"18px", height:"25px"}}/>}
         </div>
      </div>
     </span>

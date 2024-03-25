@@ -2,17 +2,39 @@ import React from 'react';
 import styles from "../index.module.scss";
 
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-
-const CreditCardWrapper = ({element, setOpenConfirmation}) => {
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import CreditScoreIcon from '@mui/icons-material/CreditScore';
+import { Tooltip } from '@mui/material';
+import { t } from 'i18next';
+const CreditCardWrapper = ({
+  element, 
+  cardId, 
+  name, 
+  isMain,
+  handleOperation, 
+}) => {
   
   return (
-    <div style={{position:"relative",width:"fit-content"}}>
-      <span style={{position:"absolute",right:"20px",top:"20px",zIndex:"2"}}>
-        {/* <span className={styles.creditCard_bank_icon} onClick={()=>setIsOpenUpdate(true)}><DriveFileRenameOutlineIcon fontSize='large' color="whute" /></span> */}
-        <span className={styles.creditCard_bank_icon} onClick={()=>setOpenConfirmation(true)}>
-          <DeleteOutlineIcon fontSize='large' />
+  <div style={{margin: "10px 0px 10px 10px",position:"relative",width:"fit-content"}}>
+    <div style={{position:"absolute",right:"10px",top:"5px",zIndex:"2"}}>
+        {!isMain && 
+          <span className={styles.creditCard_bank_icon} onClick={()=>handleOperation(1,cardId)}>
+            <Tooltip title={t("cardService.chooseMain")} placement="bottom">
+              <CreditScoreIcon fontSize='medium' color="white" />
+            </Tooltip>
+          </span>
+        }
+        <span className={styles.creditCard_bank_icon} onClick={()=>handleOperation(2,cardId,name)}>
+          <Tooltip title={t("cardService.updateName")} placement="bottom">
+          <DriveFileRenameOutlineIcon fontSize='medium' color="white"  title="Add" placement="bottom" />
+          </Tooltip>
         </span>
-      </span>
+        <span className={styles.creditCard_bank_icon} onClick={()=>handleOperation(3,cardId)}>
+          <Tooltip title={t("settings.remove")} placement="bottom">
+            <DeleteOutlineIcon fontSize='medium' />
+          </Tooltip>
+        </span>
+      </div>
       {element}
     </div>
   )

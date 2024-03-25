@@ -60,6 +60,7 @@ const  Bascket = ({
   const [isEmpty,setIsEmpty] = useState(false);
   const [avail,setAvail] = useState([]);
   const [blockTheButton, setBlockTheButton] = useState(true);
+  const [taxCount, setTaxCount] = useState(0);
   
   const [val,setVal] = useState(0);
 
@@ -165,7 +166,7 @@ const newSaleValidate = async() => {
       "discount": 0
     });
     return false
-  }else if(paymentInfo.discount> 99) {
+  }else if(paymentInfo.discount > 99) {
     setMessage(`${t("dialogs.sorry")}, ${t("authorize.errors.discount2")}`)
     return false
   }
@@ -413,6 +414,7 @@ const newSaleValidate = async() => {
             openHDM={openHDM} 
             setOpenHDM={closeRecieptAndRefresh}
             userName={userName}
+            taxCount={taxCount}
           />
           {trsf && <QRPay 
             t={t}

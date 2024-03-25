@@ -7,16 +7,17 @@ const HistoryDetailsFooter = ({item,originTotal}) => {
   return (
     <div style={{margin:"5px",letterSpacing:"1px"}}>
         <div>
-          <div >
+          {/* <div >
             <span>{t("basket.total")} </span>
-            {/* <span>{originTotal.toFixed(2)} {t("units.amd")}</span> */}
-          </div>
-          <div>
+            <span>{originTotal.toFixed(2)} {t("units.amd")}</span>
+          </div> */}
+          {/* <div>
             <span>{t("productcard.discount")} -  {item?.additionalDiscount} % = </span>
             <span> {(originTotal - item?.total).toFixed(2)} {t("units.amd")}</span>
-          </div>
+          </div> */}
             <strong>     
-              <span>{t("history.receiptPrice2")} </span>
+              {/* <span>{t("history.receiptPrice2")} </span> */}
+              <span>{t("history.reverseTotal")}</span>
               <span> {item?.total} {t("units.amd")}</span>
             </strong>
             {item?.cashAmount ?

@@ -11,7 +11,6 @@ const PrepaymentItem = ({
   activateRow, 
   months, 
   price, 
-  setPrice, 
   setPaymentData, 
   paymentData 
 }) => {
@@ -19,11 +18,9 @@ const PrepaymentItem = ({
   const handleClick = () => {
     setPaymentData({
       ...paymentData,
-      months:months,
-      web:true
+      daysEnum:months,
     })
     activateRow(index+1)
-    setPrice(price)
   };
 
   return(
@@ -33,10 +30,14 @@ const PrepaymentItem = ({
       style={activeRow === index+1 ? activeStyle: null}
     >
       <span>
-        <FileDownloadDoneIcon sx={{color:"green",mr:2}} />
+        <FileDownloadDoneIcon sx={{color:"green", mr:2}} />
         {months * 30} {t("cardService.dayCount2")} 
       </span>
-      <span style={{width:"20%"}}></span>
+
+      <span style={{width:"20%"}}>
+        
+      </span>
+
       <span>
         {price} {t("units.amd")}
       </span>

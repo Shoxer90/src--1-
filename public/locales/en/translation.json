@@ -149,7 +149,7 @@
     "blockremove":"Unable to login .User has been blocked by administrator",
     "errors": {
       "cashLimit": "Cash transaction cannot exceed 300,000 AMD",
-      "bank_agreement":"In order to accept payments by QR or by SMS it's required to make a PayX service agreement with a bank. Tariffs are defined by banks according to the card payment service agreement․",
+      "bank_agreement":"To accept payments through QR or Link, it is necessary to sign a service contract with a partner bank.",
       "loginLimit419": "Dear user, your StoreX's trial ended and access will be stopped. For activation please contactPayX. ",
       "loginLimitAttention":" The free trial of the system is available for 7 days",
       "attention": "Note",
@@ -310,13 +310,15 @@
     "cashregister": "Cash register",
     "whichCash": "From which cash",
     "whichCashless": "From which cashless",
-
     "whichPrepayment": "From which prepayment",
     "forReverse": "Refundable amount",
     "getCard": "Refund cashless",
     "getCash": "Refund cash",
     "receiptPrice2": "Receipt price",
-    "transaction":"Transaction"
+    "transaction":"Transaction",
+    "reverseTotal": "Refund",
+    "noProdExcel": "Excel without product list",
+    "prodExcel": "Excel with product list"
   }, 
   "updates": {
     "changes": "Changes",
@@ -373,22 +375,27 @@
     "isregistrehdm": "In order to activate the function of generating e-cash register, it is necessary to have contract  with PayX LLC on the service of e-cash register",
     "payWithNewCard": "Pay with a card not attached",
     "payWithNewCardAndAttach": "Attach a new card and pay",
-    "payByActiveCard": "Make a payment with an active card",
+    "payByActiveCard": "Pay by Main Card",
+    "payByAttachedCard": "Pay by Attached Card",
     "checkArcaStatus": "Checking Card Attach Status",
     "priceListSubTitle1": "Services",
     "paymentMethods": "Payment method",
     "free": "Free",
     "ETRM": "ETRM",
-    "StoreX": "StoreX"
+    "StoreX": "StoreX",
+    "info":"Information"
   },
   "cardService":{
     "btnTitle" : "Services",
-    "chooseCard": "Choose active card",
+    "chooseCard": "Make the card the main one",
+    "chooseMain": "Make main",
+    "updateName": "Rename",
     "chooseAnotherCard": "Choose a card from the list",
     "attachedCards": "My Cards",
+    "noAttachedCards":"There are no registered cards",
     "amount" : "Monthly service",
-    "amountDate": "Pay by",
-    "currentCommitment": "Payment due : ",
+    "amountDate": "The service is active until ",
+    "currentCommitment": "Service cost",
     "createCard": "Add new card",
     "createCard2": "The card will be attached after the first payment is made",
     "remove": "Whant to remove your Credit Card?",
@@ -402,7 +409,7 @@
     "newCard": "Add new card details",
     "payForService": "Pay for service  ",
     "payForSimilarServices": "Make similar transactions at the same time",
-    "attachCard":"Attach Card",
+    "attachCard":"Attach New Card",
     "notInDate": "Dear customer, you have an outstanding payment obligation. Kindly complete the payment to continue using our services",
     "notInDateTrueDays": "Dear Customer, We would like to remind you that there are ",
     "notInDateTrueDays2": " left until the end of the monthly payment period. If you do not pay, you will not be able to use our services",
@@ -415,12 +422,19 @@
     "subscription": "Subscription",
     "monthCount" : "month",
     "wrongCeil":  "There is a field with an incorrect format",
+    "mainCard" : "Main Card",
+    "editName": "Edit Credit Card Name",
+    "bankTransfer" : "Bank transfer",
+    "bankMessage":" In the case of  bank transfer, you can transfer the amount to the following account:  1510030268626300. Availability will be provided within one working day from the moment the amount is credited to the specified account. ",
     "inputs":{    
       "cardName":"Card Name",
       "cardNumber":"Card Number",
       "expMonth":"exp. Month",
       "expYear" : "exp. Year"
-    }
+    },
+    "isBindTrue": "Autopay is enabled",
+    "isBindFalse":"Autopay is disabled",
+    "cantBind":"Automatic monthly payment service is available with a primary card"
   },
   "dialogs": {
     "done": "Operation is success completed!",
@@ -447,14 +461,15 @@
     "excelAddProds": "Would you like to download the product(s) to your store ?",
     "excelCancelList": "Do you want to cancel changes ?",
     "isInDate": "You have no current commitment",
-    "checkCardStatus200": "Transaction successfully confirmed",
+    "checkCardStatus200": "Payment completed",
+    "checkCardStatus201": "The card is attached",
     "checkCardStatus400": "System failure. Please try again later",
     "checkCardStatus410": "Insufficient funds",
     "checkCardStatus411": "Incorrect card data input",
     "checkCardStatus412": "Transaction is declined",
     "limitCash": "The amount of cash back cannot exceed ",
     "limitCard": "The amount of non-cash refund cannot exceed  ",
-    "autoPayAgreement": "By enabling the automatic payment function, you agree to automatically charge the monthly service fee to the active card."
-
+    "autoPayAgreement": "By enabling the automatic payment function, you agree to automatically charge the monthly service fee to the active card.",
+    "chooseCard": "Make the card the main one ?"
   }
 }

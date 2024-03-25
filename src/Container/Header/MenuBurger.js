@@ -9,8 +9,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 
 import LogoutIcon from '@mui/icons-material/Logout';
+import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
 import { Box } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 import { LimitContext } from '../../context/Context';
@@ -89,19 +91,56 @@ const MenuBurger = ({logout}) => {
         style={{minWidth:"300px"}}
       >
         {!limitedUsing && 
-          <Box style={{display:'flex'}}>
-           <AccountCircleIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
-            <MenuItem 
-              fontSize="medium"
-              onClick={() => {
-                navigate("/setting")
-                setAnchorEl(null)
-              }}
-            >
-              <h5>{t("menuburger.setting")}</h5>
-            </MenuItem>
-          </Box>
+        <>
+        <Box style={{display:'flex'}}>
+          <MiscellaneousServicesIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
+          <MenuItem fontSize="medium"
+            onClick={() => {
+              navigate("/setting/user")
+              setAnchorEl(null)
+            }}
+          >
+           <h5>{t("menuburger.setting")}</h5>
+          </MenuItem>
+        </Box>
+         <Box style={{display:'flex'}}>
+        <AccountCircleIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
+          <MenuItem fontSize="medium"
+            onClick={() => {
+              navigate("/setting/cashiers")
+              setAnchorEl(null)
+            }}
+          >
+           <h5>{t("settings.cashiers")}</h5>
+          </MenuItem>
+        </Box>
+        <Box style={{display:'flex'}}>
+          <HomeRepairServiceIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
+          <MenuItem fontSize="medium"
+            onClick={() => {
+              navigate("/setting/services")
+              setAnchorEl(null)
+            }}
+          >
+           <h5>{t("cardService.btnTitle")}</h5>
+          </MenuItem>
+        </Box>
+        
+        </>
+          // <Box style={{display:'flex'}}>
+          //  <AccountCircleIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
+          //   <MenuItem 
+          //     fontSize="medium"
+          //     onClick={() => {
+          //       navigate("/setting")
+          //       setAnchorEl(null)
+          //     }}
+          //   >
+          //     <h5>{t("menuburger.setting")}</h5>
+          //   </MenuItem>
+          // </Box>
         } 
+       
         <Box style={{display:'flex'}}>
           <QuestionAnswerIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
           <MenuItem fontSize="medium"

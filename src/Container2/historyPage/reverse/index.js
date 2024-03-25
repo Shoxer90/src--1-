@@ -85,6 +85,7 @@ const ReverseContainer = ({
       })
     )
   };
+  
   const reverse = async () => {
     const newArr = []
     if(saleInfo?.res?.printResponseInfo?.saleType !== 0) {

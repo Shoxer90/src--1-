@@ -89,33 +89,26 @@ const HomePage = ({
   };
 
   const getSelectData = () => {
-   
-    // if( !typeCode?.length) {
-    // setSelectContent([])
-    // return
-    // }else{
-      getAdg(typeCode).then((res) => {
-        if(res?.length > 1){
-          setSelectContent(res)
-          if(res[0]?.code === typeCode) {
-            setProduct({
-              ...newProduct,
-              type:res[0].code
-            })
-          }
-        }  
-        else if(res?.length === 1){
-          setSelectContent(res)
+    getAdg(typeCode).then((res) => {
+      if(res?.length > 1){
+        setSelectContent(res)
+        if(res[0]?.code === typeCode) {
           setProduct({
             ...newProduct,
             type:res[0].code
           })
-        }else{
-          setSelectContent([{id:"", title:[], code:""}])
-          // setSelectContent([{id:"", title:t("authorize.errors.adgcode"), code:""}])
         }
-      })
-    // } 
+      }  
+      else if(res?.length === 1){
+        setSelectContent(res)
+        setProduct({
+          ...newProduct,
+          type:res[0].code
+        })
+      }else{
+        setSelectContent([{id:"", title:[], code:""}])
+      }
+    })
   };
 
   useEffect(() => {
@@ -208,11 +201,9 @@ const HomePage = ({
       <Dialog open={Boolean(type)}>
         <SnackErr open={snackMessage} type={type} close={setType} message={snackMessage}/>
       </Dialog>
-     
-
-       <Dialog open={fetching}> 
+      <Dialog open={fetching}> 
         <Loader close={setFetching} />
-     </Dialog>
+      </Dialog>
     </div>
   )
 };

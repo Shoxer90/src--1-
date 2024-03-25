@@ -22,7 +22,6 @@ const ReverceConditions = ({saleInfo , t, reverseTotal, setReverseTotal, conditi
       return
     }else if(isValid || e.target.value === ""){
       if(reverseTotal- e.target.value <=  saleInfo?.res?.printResponseInfo?.cashAmount){
-        console.log(reverseTotal - e.target.value <=  saleInfo?.res?.printResponseInfo?.cashAmount,"")
         setCondition({
           ...conditionState,
           [e.target.name] : +e.target.value,

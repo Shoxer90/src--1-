@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Basket from "./Container/Bascket/index";
 
-import SettingsPage from "./Container2/settingsPage";
 import HistoryPage from "./Container2/historyPage";
 import Header from "./Container/Header/Header";
 import ProductChanges from "./Container2/analytics";
@@ -73,8 +72,6 @@ const App = () => {
   useEffect(() =>{
     debounceBasket && byBarCodeSearching(debounceBasket)
   },[debounceBasket]);
-
-  console.log(user,"USER")
 
   const whereIsMyUs = async() => {
     await dispatch(fetchUser()).then((res) => {
@@ -312,14 +309,11 @@ const App = () => {
   },[t])
 
   useEffect(() => {
+    getMeasure()
     setDataGroup("GetAvailableProducts")
     setCurrentPage(1)
     loadBasket()
   },[isLogin,flag])
-
-  // useEffect(() => { 
-  //   loadBasket()
-  // }, [flag]);
 
   useEffect(() => {
     whereIsMyUs() 
@@ -434,18 +428,7 @@ const App = () => {
                 t={t} 
               />
             } />
-            <Route path="/setting" 
-              element={
-                <SettingsPage 
-                  logOutFunc={logOutFunc}
-                  whereIsMyUs={whereIsMyUs}
-                  t={t}
-                  user={user} 
-                  userData={userData}
-                  setUserData={setUserData}
-                />
-              }
-            />
+            
             <Route path="/setting/cashiers" element={<Cashiers t={t} screen={window.innerWidth} /> } />
             <Route path="/setting/user" element={<SettingsUser user={user} t={t} setUserData={setUserData} whereIsMyUs={whereIsMyUs} />} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} t={t}  measure={measure} />} />
@@ -453,13 +436,13 @@ const App = () => {
             <Route path="/basket/*" element={<BasketList t={t} />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
             {user?.showPaymentPage &&<Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
-            {user?.showPaymentPage &&<Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc}/>} />}
+            {user?.showPaymentPage &&<Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType}/>} />}
           </Routes> :
           <Routes>
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
             {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
-            {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />}
-            <Route path="*" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />
+            {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser} serviceType={user?.activeServiceType}/>} />}
+            <Route path="*" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser} serviceType={user?.activeServiceType} />} />
           </Routes>
         }
          {!isBlockedUser && <Basket 

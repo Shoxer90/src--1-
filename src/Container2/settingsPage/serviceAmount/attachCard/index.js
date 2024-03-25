@@ -1,6 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { useHistory, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { sendIdForPayStatusChecking } from "../../../../services/cardpayments/internalPayments";
+import { useLocation, useNavigate } from "react-router-dom";
 import SnackErr from "../../../dialogs/SnackErr";
 import { Dialog } from "@mui/material";
 import Loader from "../../../loading/Loader";
@@ -18,18 +17,15 @@ const CheckStatusArCa = ({logOutFunc}) => {
   const queryParams = new URLSearchParams(search)
   const statusCall = queryParams.get("status");
   
+  console.log(statusCall,"statusCall")
   const removeURLPart = () => {
     queryParams.delete("status")
     setStatus(queryParams.get("status"))
   }
   
   useEffect(() =>{
-    setStatus(queryParams.get("status"))
-  },[]);
-
-  // useEffect(() =>{
-  //  status && removeURLPart()
-  // },[status]);
+    statusCall && getResponse(statusCall) && removeURLPart()
+  },[statusCall]);
 
   const closeSuccessMessage = () => {
     setMessage({message:"", type:""})
@@ -46,22 +42,17 @@ const CheckStatusArCa = ({logOutFunc}) => {
       return setMessage({type:"error", message:t("dialogs.checkCardStatus400")}) 
     }else if(statusCall === "3") {
       return setMessage({type:"error", message:t("dialogs.checkCardStatus411")}) 
+    }else if(statusCall === "5") {
+      return setMessage({type:"success", message:t("dialogs.checkCardStatus201")}) 
     }else if(statusCall === 401) {
       logOutFunc()
     }else {
       return setMessage({type:"error", message:t("dialogs.checkCardStatus400")})
     }
-  }
-
-  // useEffect(() => {
-  //   setLoad(true)
-  //   getResponse()
-  // },[]); 
+  };
 
   return (
     <div style={{marginTop: "300px"}}>
-      {/* {!orderId ? */}
-      {/* {!statusCall ? */}
       <button onClick={removeURLPart}>sdfg</button>
       {!statusCall ?
         <Loader t={t}/> :

@@ -20,6 +20,7 @@ import ReceiptFiscal from './ReceiptFiscal';
 
 const Reciept = ({ 
   setOpenHDM, 
+  taxCount,
   saleData, 
   openHDM, 
   date, 
@@ -73,6 +74,7 @@ const Reciept = ({
           partner={saleData?.res}
           userName={userName}
           date={date}
+          taxCount={taxCount}
         />
         {saleData?.res?.printResponseInfo?.receiptType !== 3 ?
           saleData?.res?.printResponseInfo?.items && saleData?.res?.printResponseInfo?.items.map((product, i) => {

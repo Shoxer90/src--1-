@@ -50,7 +50,7 @@ const QRPay = ({
       open={openQr}
       sx={{height: "95vh"}}
     >
-        {!message ? 
+      {!message ? 
       <DialogContent style={{display:"flex",flexDirection:"column",justifyContent:"center"}}>
         <Box style={{display:"flex", flexDirection:"row", justifyContent:"space-between", textAlign:"center"}}>
           <div style={{fontSize:"xlarge",marginTop:"10px"}}>

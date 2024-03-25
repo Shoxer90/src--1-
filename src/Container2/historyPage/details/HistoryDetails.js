@@ -37,7 +37,6 @@ export default function HistoryDetails({
     setOpenDetails(false);
   };
 
-
   return (
     <Dialog
       open={openDetails}
@@ -59,11 +58,15 @@ export default function HistoryDetails({
         </div>
         <Divider sx={{bgColor:"black"}}/>
         <DialogContent sx={{p:1}}>
-          {products?.length ? products.map((product, index) => 
-            <HistoryDetailsItem  key={index} {...product} t={t} index={index+1}/>):
-            <p><strong>{t("basket.useprepayment")}</strong></p>
+          {item?.saleType === 5 ?  
+            <div style={{display:"flex",justifyContent:"space-around"}}>
+              <strong>{t("basket.useprepayment")}</strong>
+              <strong>{item?.total} {t("units.amd")}</strong>
+            </div>:
+            products.map((product, index) =>
+            <HistoryDetailsItem  key={index} {...product} t={t} index={index+1}/>)
           }
-          {/* <HistoryDetailsFooter item={item} originTotal={originTotal} /> */}
+          <HistoryDetailsFooter item={item} originTotal={originTotal} />
         </DialogContent>
       </div> 
       {message &&

@@ -135,7 +135,7 @@ const HomeContentItem = ({
               <span>{t("productcard.newprice")} </span> 
               <strong>
                 { product?.discountType === 1 && ( Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice) }
-                {/* { product?.discountType === 2 && (product?.price - product?.discount) } */}
+                {/* { product?.discountType === 2 && (product?.price - product?.discount)  } */}
                 { product?.discountType === 0 && ( Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice)  }
                 { t("units.amd") }
               </strong>
@@ -146,7 +146,7 @@ const HomeContentItem = ({
       {product?.remainder ?
         <>
           <div style={{fontSize:"70%", margin:"5px", color: quantity > product?.remainder && "red",fontWeight: quantity > product?.remainder && "700"}}>
-            {t("productcard.remainder")} {product?.remainder} {t(`units.${product?.measure}`)}
+            {t("productcard.remainder")} {product?.remainder%1 ? product?.remainder.toFixed(3) : product?.remainder } {t(`units.${product?.measure}`)}
           </div>
           <div style={{fontSize:"80%",letterSpacing:"0.1px",padding:"3px"}}>
             {product?.barCode}

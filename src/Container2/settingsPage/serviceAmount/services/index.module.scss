@@ -1,7 +1,7 @@
 .service_item{
   display: flex;
   flex-flow: column wrap;
-  width: 380px;
+  width: 350px;
   padding: 20px;
   margin: 10px;
   background-color: rgb(247, 246, 246);
@@ -39,13 +39,6 @@
 @media screen and (max-width: 750px) {
   .allservices{
     flex-flow: column;
-    margin: 5px auto;
     align-items: center;
-  }
-}
-@media screen and (max-width: 1300px) {
-  .allservices{
-    margin: 10px auto;
-
   }
 }

@@ -1,36 +1,37 @@
-import { Button, Dialog, DialogActions, DialogContent, Divider } from '@mui/material';
+import { Divider } from '@mui/material';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
 import styles from "./index.module.scss";
 import { useTranslation } from 'react-i18next';
-import Loader from '../../../loading/Loader';
 import { bindNewCard } from '../../../../services/cardpayments/internalPayments';
 import ConfirmDialog from '../../../dialogs/ConfirmDialog';
-import { payForServiceWithAttachedCard, payForServiceWithNewCard, prepaymentPay } from '../../../../services/internal/InternalPayments';
-import IsInDate from './IsInDate';
 import AttachedCardsItem from './AttachedCardsItem';
 
+
+
 const PaymentConfirm = ({
-  isPrepayment,
-  open,
-  close,
   cardArr,
   setPayData, 
   payData, 
   content,
-  price,
-  logOutFunc,
-  message,
-  setMessage,
+  setMethod
 }) => {
   const {t} = useTranslation();
   const [load,setLoad] = useState(false);
   const [openDialog, setOpenDialog]= useState();
-  const [openPayDialog, setOpenPayDialog]= useState();
-  const [activateBtn,setActivateBtn] = useState(false);
+  const [activateBtn,setActivateBtn] = useState(0);
   const [newLink,setNewLink] = useState("")
   const ref = useRef();
 
+  const activeStyle = {
+    boxShadow: "10px 5px 5px grey",
+    scale:"1.04",
+    transition: "width 2s",
+    background: "rgb(200, 240, 240)"
+  };
+  
+  console.log(payData,"PAYDATA");
+  
   const getLinkForNewCard = async() => {
     setLoad(true)
     await bindNewCard(payData).then((res) => {
@@ -38,208 +39,145 @@ const PaymentConfirm = ({
       if(res?.formUrl) {
         setNewLink(res?.formUrl)
       }else{
-        setMessage()
-      }
-    })
-  } ;
-
-  const handlePrepayment = async() => {
-    setLoad(true)
-    await prepaymentPay(payData).then((res) => {
-      setLoad(false)
-      if(res?.formUrl) {
-        setNewLink(res?.formUrl)
-      }else{
-        setMessage()
+        // do something
       }
     })
   };
-
-  const payForService = async() => {
-    setLoad(true)
-    if(activateBtn === 1) {
-      await payForServiceWithAttachedCard(payData).then((res) => {
-        if(res === 401){
-          logOutFunc()
-        }else if(res === "Request processed successfully"){
-          setLoad(false)  
-          setMessage({message:t("basket.paymentsuccess"), type:"success"})
-        }
-      })
-    }else{
-       await payForServiceWithNewCard(payData).then((res) => {
-      setLoad(false)       
-        !res?.error ? setNewLink(res?.formUrl):
-        setMessage({message:t("dialog.wrong"), type:"error"})
-      })
-    }
-  };
-
-  useEffect(() => {
-    setActivateBtn(false)
-  },[open])
 
   useEffect(() => {
     newLink && ref?.current.click()
   },[newLink]);
+
+  useEffect(() => {
+    setPayData({
+      ...payData,
+      cardId: content?.autopayment?.defaultCard?.cardId || cardArr[0].cardId
+    })
+  },[]);
   
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={close}  
-      >
-      {!content?.isInDate || isPrepayment ?
-        <DialogContent>
-          <h4 style={{margin:"10px 0px"}}>
-            {t("basket.totalndiscount")} <span> {price} {t("units.amd")}</span> 
-          </h4>
-          {content?.autopayment?.defaultCard && 
-            <div className={styles.circleBorder}>
-              <input
-                id="activeCard"
-                type="radio"
-                name="pay operation"
-                onChange={()=> {
-                  delete payData?.attach
-                  setActivateBtn(1)
-                  setPayData({
-                    ...payData,
-                    cardId: content?.autopayment?.defaultCard?.cardId
-                  })
-                }}
-              />
-              <label htmlFor="activeCard" style={{marginLeft:"10px",textAlign:"center"}}>
-                {t("settings.payByActiveCard")} <strong>{`${content?.autopayment?.defaultCard?.pan}`}</strong>
-              </label>
-            </div>
-          }
-          {cardArr?.length ?
-            <div>
-              <div style={{fontWeight:600,marginLeft:"25px"}}>
-                {t("cardService.chooseAnotherCard")}
-              </div>
-              <div>
-                {cardArr.map((card) =>(
-                  <AttachedCardsItem 
-                    card={card} 
-                    payData={payData}
-                    setActivateBtn={setActivateBtn}
-                    setPayData={setPayData}
-                  />
-                ))}
-              </div>
-            </div>: ""
-          }
-          <Divider sx={{bgcolor:"black"}} />
-            <div className={styles.circleBorder}>
-              <input 
-                id="no attach"
-                type="radio"
-                name="pay operation"
-                onChange={()=>{
-                  delete payData?.cardId
-                  setActivateBtn(2)
-                  !isPrepayment ?
-                  setPayData({
-                    ...payData,
-                    attach: false
-                  }):
-                  setPayData({
-                    ...payData,
-                    cardId: 0
-                  })
-                }}
-              />
-              <label htmlFor="no attach" style={{marginLeft:"10px",textAlign:"center"}}>
-                {t("settings.payWithNewCard")}
-              </label>
-            </div>
-            {!isPrepayment && <div className={styles.circleBorder}>
-              <input 
-                id="attach"
-                type="radio" 
-                name="pay operation"
-                onChange={()=>{
-                  delete payData?.cardId
-                  setActivateBtn(2)
-                  setPayData({
-                    ...payData,
-                    attach: true
-                  })
-                }}
-              />
-              <label htmlFor="attach" style={{marginLeft:"10px",textAlign:"center"}}>
-                  {t("settings.payWithNewCardAndAttach")}
-              </label>
-            </div>}
-        </DialogContent> : 
-        <IsInDate />
-      }
-      {!content?.isInDate || isPrepayment ? 
-      <DialogActions>
-        <Button
-          variant="contained"
-          onClick={close}
+    <div style={{fontWeight:"600",fontSize:"90%"}}>
+      <div>
+      {content?.autopayment?.defaultCard &&  
+      <>
+        <h6> {t("settings.payByActiveCard")}</h6>
+        <div 
+          className={styles.subscription_item}
+          style={activateBtn === 0 ? activeStyle :null}
         >
-          {t("buttons.cancel")}
-        </Button>
-        <Button 
-          disabled={!activateBtn}
-          variant="contained"
-          onClick={()=>{
-            if(activateBtn === 2 && payData?.attach) {
-              setOpenDialog(true)
-            }else{
-              setOpenPayDialog(true)
-            }
-           
-          }}
-        >
-          {t("basket.linkPayment")}
-        </Button>
-        </DialogActions>: 
-        <DialogActions>
-          <Button
-            variant="contained"
-            onClick={close}
-          >
-            {t("buttons.close")}
-          </Button>
-        </DialogActions>
-      }
-    </Dialog>
-    {newLink && 
-      <a 
-        ref={ref} 
-        href={newLink} 
-        rel="noreferrer" 
-        // target="_blank" 
-      >""
-      </a>
-    }
-   <ConfirmDialog
-      question={t("cardService.attanchAmount")}
-      func = {getLinkForNewCard}
-      title = {t("cardService.newCard")}
-      open= {openDialog}
-      close = {setOpenDialog}
-      content={""}
-      t={t}
-    />
-    {!message?.message && <ConfirmDialog
-      question={`${t("cardService.payForService")} ${price} ${t("units.amd")}`}
-      func = {isPrepayment ? handlePrepayment : payForService}
-      open = {openPayDialog}
-      close = {setOpenPayDialog}
-      content={""}
-      t={t}
-    />}
-    <Dialog open={load}>
-      <Loader />
-    </Dialog>
+          <label>
+            <input
+              id="activeCard"
+              type="radio"
+              name="pay operation"
+              checked={payData?.cardId === content?.autopayment?.defaultCard?.cardId}
+              onChange={()=> {
+                delete payData?.attach
+                setActivateBtn(0)
+                setMethod(1)
+                setPayData({
+                  ...payData,
+                  cardId: content?.autopayment?.defaultCard?.cardId
+                })
+              }}
+            />
+            <span style={{marginRight:"5px"}}>
+              {content?.autopayment?.defaultCard?.pan[0] == 5 && <img src="/mastercard1.png" alt="card_type" style={{width:"45px",height:"15px"}} />}
+              {content?.autopayment?.defaultCard?.pan[0] == 4 && <img src="/visa1.png" alt="card_type" style={{width:"45px",height:"11px"}} />}
+              {content?.autopayment?.defaultCard?.pan[0] == 9 && <img src="/arca1.png" alt="card_type" style={{width:"45px",height:"15px"}} />}
+            </span>
+            {content?.autopayment?.defaultCard?.bankName } {" "}
+            {`${content?.autopayment?.defaultCard?.pan}`}
 
-    </>
+          </label>
+        </div>
+        <Divider sx={{m:1}} color="black" />
+      </>
+      }
+   
+      {cardArr?.length ?
+        <div>
+          <h6>{t("settings.payByAttachedCard")}</h6>
+            {cardArr.map((card,index)=>(
+              !card?.isDefault ?
+              <AttachedCardsItem 
+                card={card} 
+                payData={payData}
+                setActivateBtn={setActivateBtn}
+                setPayData={setPayData}
+                setMethod={setMethod}
+                index={index}
+                activateBtn={activateBtn}
+                activeStyle={activeStyle}
+              /> : null
+            ))}
+        </div>: ""
+      }
+      </div>
+      <Divider sx={{bgcolor:"black"}} />
+      <div 
+        className={styles.subscription_item}
+        style={activateBtn === 100 ? activeStyle :null}
+      >
+        <label htmlFor="no attach"  >
+        <input 
+          id="no attach"
+          type="radio"
+          name="pay operation"
+          onChange={()=>{
+            delete payData?.cardId
+            setActivateBtn(100)
+            setMethod(2)
+            setPayData({
+              ...payData,
+              attach: false
+            })
+          }}
+        />
+          <span style={{marginLeft:"10px"}}>{t("settings.payWithNewCard")} </span>
+        </label>
+      </div>
+      <div   
+        className={styles.subscription_item}
+        style={activateBtn === 101 ? activeStyle :null}
+      >
+        <label htmlFor="attach">
+        <input 
+          id="attach"
+          type="radio" 
+          name="pay operation"
+          onChange={()=>{
+            delete payData?.cardId
+            setActivateBtn(101)
+            setMethod(2)
+            setPayData({
+              ...payData,
+              attach: true
+            })
+          }}
+        />
+          <span style={{marginLeft:"10px"}}>{t("settings.payWithNewCardAndAttach")}</span>
+        </label>
+      </div>
+      {newLink && 
+        <a 
+          ref={ref} 
+          href={newLink} 
+          rel="noreferrer" 
+          // target="_blank" 
+        >""
+        </a>
+      }
+      <ConfirmDialog
+        question={t("cardService.attanchAmount")}
+        func = {getLinkForNewCard}
+        title = {t("cardService.newCard")}
+        open= {openDialog}
+        close = {setOpenDialog}
+        content={""}
+        t={t}
+      />
+    </div>
   )
 }
 

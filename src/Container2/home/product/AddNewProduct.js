@@ -213,7 +213,7 @@ const AddNewProduct = ({
   useEffect(() => {
     checkStorageSavedData()
     setTypeCode(newProduct?.type)
-    setRegime( localStorage.getItem("taxRegime"))
+    setRegime(localStorage.getItem("taxRegime"))
   }, []);
 
   return (

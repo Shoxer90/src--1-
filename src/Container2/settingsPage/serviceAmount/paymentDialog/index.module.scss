@@ -29,7 +29,7 @@
 
 .inputLabel{
   margin-left: 7px;
-  letter-spacing: 3px; 
+  font-size: 85%;
 }
 
 .payBtn{
@@ -50,22 +50,6 @@
     &:hover{
       background: rgb(200, 240, 240);
       scale: 1.02;
-      // transition: 1.5;
     }
-  }
-}
-
-
-.circleBorder{
-  border:lightgrey solid 2px;
-  border-radius:15px;
-  padding: 5px 10px;
-  margin: 10px 0;
-  &:hover{
-    background: rgb(200, 240, 240);
-
-  }
-  & input{
-    cursor: pointer;
   }
 }

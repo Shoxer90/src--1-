@@ -25,7 +25,7 @@ export const payForServiceWithAttachedCard = async(body) => {
   
   try{
     const data = await axios.post( baseUrl + `InternalPayments/PayWithAttachCard`, body, option());
-    return data?.data
+    return data
 
   }catch(err){
     return err?.response?.status
@@ -72,3 +72,14 @@ export const autoPaymentSwitch = async(bool) => {
     return err
   }
 };
+
+
+export const changeCreditCardName = async(str) => {
+  try {
+    const data = await axios.put( baseUrl + `InternalPayments/UpdateCardName`, str, option());
+    return data
+  }catch(err) {
+    return err
+  }
+};
+

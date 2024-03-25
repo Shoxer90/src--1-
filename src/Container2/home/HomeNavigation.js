@@ -1,4 +1,4 @@
-import React, { useContext, memo, useEffect } from "react";
+import React, { useContext, memo } from "react";
 
 import { Button } from "@mui/material";
 import {LimitContext} from "../../context/Context";
