@@ -94,7 +94,7 @@ const NewCashier = ({
   return (
     <>
       <Dialog
-        open={openCashierDial}
+        open={!!openCashierDial}
         TransitionComponent={Transition}
         keepMounted
         fullWidth
@@ -191,7 +191,7 @@ const NewCashier = ({
           {t("buttons.create")}
         </Button>
       </Dialog>
-      <Dialog open={load}>
+      <Dialog open={!!load}>
         <Loader />
       </Dialog>
         <InfoDialog 

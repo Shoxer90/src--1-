@@ -96,11 +96,12 @@ export const basketListCreator = async(id) => {
 export const basketListUrl = async(body) => {
   try{
     const data = await axios.post(baseUrl + `Sale/CopyBasketListV2`, body, option())
-    return data?.data
+    return data
   }catch(err){
     return err?.response?.status
   }
 }
+
 
 export const saleProductFromBasket = async(content) => {
   const option = {

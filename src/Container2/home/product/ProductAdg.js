@@ -9,8 +9,6 @@ const ProductAdg = ({
   newProduct,
   handleChangeInput,
   selectContent,
-  setSelectContent,
-  setProduct,
 }) => {
 
   return (

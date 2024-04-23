@@ -14,7 +14,14 @@ const {user} = useSelector(state => state.user)
       <div className={styles.settingsCont_info_name_header}>
         <PhoneInTalkIcon sx={{m:1}} />
         <span className={styles.settingsCont_info_item}>
-          +374({user.phoneNewForm?.slice(0,2)}) {user.phoneNewForm?.slice(2, 4)}-{user.phoneNewForm?.slice(4, 6)}-{user.phoneNewForm?.slice(6,8)}
+          {user?.phoneNewForm.includes("+374") ?
+            <>
+             {user?.phoneNewForm?.slice(0,4)} ({user?.phoneNewForm?.slice(4,6)}) {user?.phoneNewForm?.slice(6, 8)}-{user?.phoneNewForm?.slice(8, 10)}-{user?.phoneNewForm?.slice(6,8)} 
+            </>:
+            <>
+              +374({user?.phoneNewForm?.slice(0,2)}) {user?.phoneNewForm?.slice(2, 4)}-{user?.phoneNewForm?.slice(4, 6)}-{user?.phoneNewForm?.slice(6,8)}
+            </>
+          }
         </span>
       </div>
       <div className={styles.settingsCont_info_name_header}>

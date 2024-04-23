@@ -47,7 +47,7 @@ const QRPay = ({
 
   return (
     <Dialog
-      open={openQr}
+      open={!!openQr}
       sx={{height: "95vh"}}
     >
       {!message ? 

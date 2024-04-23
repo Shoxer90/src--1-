@@ -9,8 +9,9 @@ import { createProductList } from '../../../services/products/productsRequests';
 import Loader from '../../loading/Loader';
 import SnackErr from '../../dialogs/SnackErr';
 import { useNavigate } from 'react-router-dom';
+import { t } from 'i18next';
 
-const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,flag}) => {
+const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
   const navigate = useNavigate();
   const [uploadFile,setUploadFile] = useState();
   const [isLoad,setIsLoad] = useState();
@@ -18,8 +19,8 @@ const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,
   const [rowStatus,setRowStatus] = useState({});
   const [barCodes,setBarCodes] = useState([]);
 
- const readExcel = (e) => {
-  setIsLoad(true)
+  const readExcel = (e) => {
+   setIsLoad(true)
     const promise = new Promise((resolve,reject) => {
         
     const fileReader = new FileReader();
@@ -54,8 +55,8 @@ const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,
         "photo": "",
         "barCode":  prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] || "",
         "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"] || 0,
-        "purchasePrice": +prod?.["Ապրանքի ինքնարժեք / Purchase price / Закупочная цена"] || 0,
-        "price": +prod?.["Վաճառքի գին / Product price / Цена продукта *"]|| 0,
+        "purchasePrice": +(prod?.["Ապրանքի ինքնարժեք / Purchase price / Закупочная цена"])?.toFixed(2) || 0,
+        "price": +(prod?.["Վաճառքի գին / Product price / Цена продукта *"])?.toFixed(2)|| 0,
         "discountedprice": 0,
         "discount": 0,
         "discountType": 0,
@@ -77,23 +78,23 @@ const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,
   })
   };
 
-const checkRowStatus = async(obj, row) => {
-  const rowObjToArr = Array.from(Object.values(obj))
-  if(rowObjToArr.includes(false)) {
-    setRowStatus({
-      ...rowStatus,
-      [row]:false,
-    })
-  }else{
-    setRowStatus({
-      ...rowStatus,
-      [row]:true,
-    })
-  }
-}
+  const checkRowStatus = async(obj, row) => {
+    const rowObjToArr = Array.from(Object.values(obj))
+    if(rowObjToArr.includes(false)) {
+      setRowStatus({
+        ...rowStatus,
+        [row]:false,
+      })
+    }else{
+      setRowStatus({
+        ...rowStatus,
+        [row]:true,
+      })
+    }
+  };
 
 
- const confirmExcelList = async(res) => {
+  const confirmExcelList = async(res) => {
     createProductList(res).then((res)=> {
       setIsLoad(false)
       if(res === 200){
@@ -123,11 +124,11 @@ const checkRowStatus = async(obj, row) => {
     setMessage({m:"",t:""})
     navigate("/")
     window.location.reload(false);
-  }
+  };
 
   return (
     <div style={{marginTop:"100px"}}>
-      <Dialog open={isLoad}>
+      <Dialog open={!!isLoad}>
         <Loader close={()=>setIsLoad(false)}/>
       </Dialog>
       {message &&
@@ -140,9 +141,10 @@ const checkRowStatus = async(obj, row) => {
         setUploadFile={setUploadFile}
         readExcel={readExcel}
         createMultipleProds={createMultipleProds}
+        setCurrentPage={setCurrentPage}
       />
       <Divider sx={{bc:"green",w:2}}/>
-      <form autocomplete="off">
+      <form autoComplete="off">
 
       {
         uploadFile &&
@@ -170,7 +172,7 @@ const checkRowStatus = async(obj, row) => {
             </tr>
           </thead>
           {uploadFile.map((prod,index) => {
-            return <tbody autocomplete="off">
+            return <tbody autoComplete="off">
               <ExcelRow
                 prod={prod} 
                 key={index+1} 

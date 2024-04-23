@@ -13,7 +13,7 @@ import SnackErr from "../dialogs/SnackErr";
 
 const HomePage = ({
   t,
-  isLogin,
+  changeStatus,
   measure,
   dataGroup,
   setDataGroup,
@@ -26,11 +26,12 @@ const HomePage = ({
   currentPage,
   setCurrentPage,
   setFrom,
-  focusInput,
-  searchValue, setSearchValue, byBarCodeSearching
+  searchValue, 
+  setSearchValue, 
+  byBarCodeSearching,
+  isLogin
 }) => {
   
-  const [isFilter,setIsFilter] = useState(false);
   const [openNewProd,setOpenNewProduct] = useState(false);
   const [fetching,setFetching] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
@@ -58,36 +59,6 @@ const HomePage = ({
     deleteBasketItem(id)
   };
 
-  const changeStatus = async(str) => {
-    await setCurrentPage(1)
-    setDataGroup(str)
-    await setIsFilter(false)
-    setFetching(true)
-    setContent([])
-    setProduct({
-      measure: "",
-      purchasePrice: "",
-      price: "",
-      type: "",
-      brand: "",
-      name: "",
-      discount: "",
-      remainder: "",
-      photo:""
-    })
-  };
-  
-  const scrollHandler = (e) => { 
-    if(content?.length <= +totalCount){
-      if(e.target.documentElement.scrollHeight - (
-        e.target.documentElement.scrollTop + window.innerHeight) < 300) {
-        setFetching(true)
-      }
-    }else{
-      document.removeEventListener("scroll",scrollHandler)
-    }
-  };
-
   const getSelectData = () => {
     getAdg(typeCode).then((res) => {
       if(res?.length > 1){
@@ -111,13 +82,26 @@ const HomePage = ({
     })
   };
 
+  const scrollHandler = (e) => { 
+    setFetching(false)
+    if(content?.length <= +totalCount){
+      if(e.target.documentElement.scrollHeight - (
+        e.target.documentElement.scrollTop + window.innerHeight) < 100) {
+        setFetching(true)
+      }
+    }else{
+      document.removeEventListener("scroll",scrollHandler)
+    }
+  };
+
+
   useEffect(() => {
-    fetching && !isFilter &&
+    fetching && 
     queryFunction(dataGroup,currentPage).then((res) => { 
     setFetching(false)
       if(res?.data?.length === 0){
-        return setIsFilter(true)
-      }else if(!content?.length ) {
+        return 
+      }else if(!content?.length) {
         setContent([...res?.data])
       }
       else{
@@ -135,31 +119,23 @@ const HomePage = ({
   useEffect(() => {
     document.addEventListener("scroll", scrollHandler)
     return function () {
-      document.removeEventListener("scroll",scrollHandler)
+      document.removeEventListener("scroll", scrollHandler)
     } 
   }, []);
-
-  useEffect(() => {
-    setFetching(true)
-    setContent([])
-  },[])
-
   return(
     <div className={styles.productPage}>
       <HomeNavigation 
+        byBarCodeSearching={byBarCodeSearching} 
         t={t}
         setOpenNewProduct={setOpenNewProduct}
-        openNewProd={openNewProd}
-        changeStatus={changeStatus}
-        byBarCodeSearching={byBarCodeSearching} 
         setCurrentPage={setCurrentPage}
-        setMessage={setMessage}
-        message={message}
-        dataGroup={dataGroup}
-        searchValue={searchValue}
         setSearchValue={setSearchValue}
+        changeStatus={changeStatus}
+        searchValue={searchValue}
+        openNewProd={openNewProd}
+        dataGroup={dataGroup}
         setFrom={setFrom}
-        focusInput={focusInput}
+        setMessage={setMessage}
       />
       {message ? 
         <div style={{margin:"20% auto",color:"grey"}}>
@@ -179,6 +155,7 @@ const HomePage = ({
           getSelectData={getSelectData}         
           typeCode={typeCode}
           setTypeCode={setTypeCode}
+          setDataGroup={setDataGroup} 
         />
       }
       {openNewProd && <AddNewProduct 
@@ -201,7 +178,7 @@ const HomePage = ({
       <Dialog open={Boolean(type)}>
         <SnackErr open={snackMessage} type={type} close={setType} message={snackMessage}/>
       </Dialog>
-      <Dialog open={fetching}> 
+      <Dialog open={!!fetching}> 
         <Loader close={setFetching} />
       </Dialog>
     </div>

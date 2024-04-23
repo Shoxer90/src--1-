@@ -9,7 +9,8 @@ const Services = ({
   payData, 
   logOutFunc,
   setPayData,
-  serviceType
+  serviceType,
+  refresh, setRefresh
 }) => {
 
   return(
@@ -24,6 +25,8 @@ const Services = ({
           logOutFunc={logOutFunc}
           setPayData={setPayData}
           serviceType={serviceType}
+          refresh={refresh}
+          setRefresh={setRefresh}
         />
       ))}
     </div>

@@ -58,7 +58,7 @@ export default function SharePage({
 
   return (
     <Dialog
-      open={open}
+      open={!!open}
       TransitionComponent={Transition}
     >
       <Tabs

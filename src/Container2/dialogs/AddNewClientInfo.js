@@ -54,7 +54,7 @@ const AddNewClientInfo = ({label, message, setMessage, t, openAddDialog, setOpen
   
   return (
     <Dialog
-      open={openAddDialog}
+      open={!!openAddDialog}
       onClose={()=>setOpenAddDialog(false)}
       width="lg"
     >

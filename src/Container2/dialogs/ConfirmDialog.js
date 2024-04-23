@@ -15,7 +15,7 @@ const ConfirmDialog = ({
 
   return(
     <Dialog
-      open={open}
+      open={!!open}
       maxWidth="sm"
     >
       <DialogTitle>{title}</DialogTitle>

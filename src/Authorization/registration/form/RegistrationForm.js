@@ -5,6 +5,8 @@ import { useState } from "react";
 import { isUniqueNik, registrationNew } from "../../../services/auth/auth";
 import { Button, FormControl, FormHelperText, InputAdornment, TextField } from "@mui/material";
 import { mailValidate } from "../../../modules/mailValidate";
+import PreRegistrateAgreement from "../preRegistrate/PreRegistrateAgreement";
+import TermsConditionsLink from "../preRegistrate/TermsConditionsLink";
 
 
 const RegistrationForm = ({newUser, setNewUser, t, successSubmit, setIsLoad}) => { 
@@ -15,6 +17,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit, setIsLoad}) =>
   const [unique,setUnique] = useState(true);
   const [submitClick, setSubmitClick] = useState(false);
   const [validMail, setValidMail] = useState(false);
+  const [agree,setAgree] = useState(false);
 
   const handleChange = (e) => {
     setSubmitClick(false)
@@ -80,7 +83,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit, setIsLoad}) =>
   };
 
   return(
-    <div className={styles.reg_form}> 
+    <div className={styles.reg_form} autoComplete="off"> 
       <TextField  size="small" sx={{m:.4}} 
         className={styles.reg_form_input}
         error={!newUser?.legalName && submitClick}
@@ -222,10 +225,17 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit, setIsLoad}) =>
           </span>
         }
       </div>
+      <PreRegistrateAgreement agree={agree} setAgree={setAgree} t={t} title={<TermsConditionsLink t={t} />}/>
+
       <Button 
         type="submit" 
         variant="contained"
-        onClick={() => {if(!submitClick)registrateUser(newUser)}}
+        // disabled={!agree}
+        onClick={() => {
+          
+          if(!agree)setMessage({message: `${t("authorize.beforeRegisterDialog")} ${t("authorize.beforeRegisterTerms")}`, type:"error"})
+          else if(!submitClick)registrateUser(newUser)
+        }}
         sx={{ backgroundColor:"rgb(17, 46, 17)",width:"300px",alignSelf:"center",m:1}}
       >
         {t("authorize.register")}

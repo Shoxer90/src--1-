@@ -12,7 +12,6 @@ const activeStyle = {
   boxShadow: "10px 5px 5px grey",
   scale:"1.04",
   transition: "width 2s",
-  background: "rgb(200, 240, 240)"
 };
 
 const PrepaymentConfirmation = ({setBills, billsData, price }) => {

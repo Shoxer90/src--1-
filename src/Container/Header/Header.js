@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useContext, memo} from "react";
+import React, { useEffect , useContext, memo} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 
 import Logo from "./Logo";
@@ -20,16 +20,17 @@ const Header = ({
   setOpenBasket,
   basketGoodsqty,
   logOutFunc,
-  setCurrentPage,
+  // setCurrentPage,
   user,
   logo,
   active,
   setContent,
+  activeBtn, setActiveBtn
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [activeBtn, setActiveBtn] = useState();
   const {limitedUsing} = useContext(LimitContext);
+  // const [activeBtn, setActiveBtn] = useState();
 
   useEffect(() => {
     setActiveBtn(location.pathname)
@@ -39,12 +40,12 @@ const Header = ({
       <div className={styles.containerXX}> 
         <div style={{display:"flex", padding:"5px"}}
           onClick={() => {
-            setCurrentPage(1)
+            // setCurrentPage(1)
             navigate("/")
             setActiveBtn("/")
           }
         }>
-          <Logo user={user} t={t} active={active} setContent={setContent} />
+          <Logo />
         </div>
         <div className={styles.middleMenu} >
           <div className={styles.headerLinkBtn}>
@@ -57,8 +58,8 @@ const Header = ({
                 if(activeBtn === "/"){
                   return
                 }else{
-                  setContent([])
-                  setCurrentPage(1)
+                  // setContent([])
+                  // setCurrentPage(1)
                   navigate("/")
                   setActiveBtn("/")
                 }
@@ -73,8 +74,8 @@ const Header = ({
                 fontSize:(activeBtn === "/history" &&"140%")
               }}
               onClick={() => {
-                setContent([])
-                setCurrentPage(1)
+                // setContent([])
+                // setCurrentPage(1)
                 navigate("/history?status=Paid&page=1")
                 setActiveBtn("/history")
               }}
@@ -88,8 +89,8 @@ const Header = ({
                 fontSize:(activeBtn === "/product-info/updates" && "140%")
               }}
               onClick={() => {
-                setContent([])
-                setCurrentPage(1)
+                // setContent([])
+                // setCurrentPage(1)
                 setActiveBtn("/product-info/updates")
                 navigate("/product-info")
               }}
@@ -123,7 +124,7 @@ const Header = ({
               <span className={styles.routeName}>{t("menubar.basket")}</span> 
             </Button>
           </Badge>
-          <MenuBurger logout={logOutFunc} />
+          <MenuBurger logout={logOutFunc} setActiveBtn={setActiveBtn} user={user}/>
         </div>
      </div>
   );

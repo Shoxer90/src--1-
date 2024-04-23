@@ -14,19 +14,19 @@ const HomeNavigation = ({
   setSearchValue,
   changeStatus,
   searchValue,
-  setMessage,
-  focusInput,
   dataGroup,
   setFrom,
-  t, 
+  setMessage,
+  t
 }) => {
   const {limitedUsing} = useContext(LimitContext);
-
+  
   const  handleSendQuery = async(str, index) => {
     setMessage("")
     await setCurrentPage(1)
     changeStatus(str,index)
   };
+
 
   return(
     <div onKeyDown={(e)=>{
@@ -53,7 +53,10 @@ const HomeNavigation = ({
       </Button>
         <Button 
           variant="contained" 
-          onClick={()=>handleSendQuery("GetNotAvailableProducts", 1)} 
+          onClick={()=>{
+            handleSendQuery("GetNotAvailableProducts",1)
+          
+          }} 
           style={{
             background:(dataGroup === "GetNotAvailableProducts"? "#FFA500" : "gray"),
             height:"33px",
@@ -84,7 +87,6 @@ const HomeNavigation = ({
         byBarCodeSearching={byBarCodeSearching}
         setFrom={setFrom}
         stringFrom="main"
-        ref={focusInput}
       />
       { !limitedUsing && <ExcelBurger t={t} setOpenNewProduct={setOpenNewProduct}/> }
     </div>

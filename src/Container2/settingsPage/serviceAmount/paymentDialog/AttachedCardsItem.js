@@ -16,7 +16,7 @@ const AttachedCardsItem = ({
   return (
     <div 
       className={styles.subscription_item}
-      style={activateBtn === index ? activeStyle :null}
+      style={payData?.cardId === card?.cardId ? activeStyle :null}
     >
       <label>
         <input
@@ -35,8 +35,8 @@ const AttachedCardsItem = ({
         />
         <span className={styles.inputLabel}  style={{textAlign:"center"}}>
           <span style={{marginRight:"5px"}}>
-            {card?.pan[0] == 4 && <img src="/visa1.png" alt="card_type" style={{width:"45px",height:"12px",}}/>}
-            {card?.pan[0] == 5 && <img src="/mastercard1.png" alt="card_type" style={{width:"45px",height:"15px"}}/>}
+            {card?.pan[0] == 4 && <img src="/visa1.png" alt="card_type" style={{width:"45px",height:"12px"}}/>}
+            {card?.pan[0] == 5 && <img src="/mastercard1.png" alt="card_type" style={{width:"32px", margin:"0px 2px"}}/>}
             {card?.pan[0] == 9 && <img src="/arca1.png" alt="card_type" style={{width:"45px",height:"15px"}}/>}
           </span>
           {" "} <span  style={{textAlign:"center", marginRight:"5px"}}>{card?.bankName} </span>

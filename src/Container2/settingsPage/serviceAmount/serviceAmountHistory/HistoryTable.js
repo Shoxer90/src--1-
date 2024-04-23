@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { DialogTitle, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
@@ -8,9 +8,8 @@ import Loader from '../../../loading/Loader';
 import HistoryTableItem from './HistoryTableItem';
 
 const HistoryTable = ({history, setOpenHistory}) => {
-  const [load, setLoad] = useState(false);
   const {t} = useTranslation();
-  const columns = [t("history.number"), t("history.date"), `${t("history.total")} (${t("units.amd")})`];
+  const columns = [t("cardService.service"), t("cardService.payDate"), `${t("cardService.paid")}`];
 
 
   return (
@@ -36,7 +35,7 @@ const HistoryTable = ({history, setOpenHistory}) => {
         <Table stickyHeader >
             <TableHead>
               <TableRow>
-                {columns && columns.map((item, index) => <TableCell key={index}> <strong>{t(item)}</strong> </TableCell> )}
+                {columns && columns.map((item, index) => <TableCell key={index}> <strong>{item}</strong> </TableCell> )}
               </TableRow>
             </TableHead>
             <TableBody style={{paddingTop: "102px"}}>
@@ -46,8 +45,6 @@ const HistoryTable = ({history, setOpenHistory}) => {
                   index={index} 
                   t={t} 
                   key={index}
-                  columns={columns} 
-                  setLoad={setLoad}
                 />
               ))}
             </TableBody>

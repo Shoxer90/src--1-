@@ -29,7 +29,7 @@ const UpdateCashiers = ({updateContent, t, setUpdateContent, updateDial, setUpda
 
   return (
     <Dialog
-      open={updateDial}
+      open={!!updateDial}
       onClose={()=>setUpdateDial(!updateDial)}
     
      >

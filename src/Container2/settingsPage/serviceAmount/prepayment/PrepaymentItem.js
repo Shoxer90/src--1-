@@ -1,23 +1,21 @@
 import React, { memo } from "react" ;
-import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
 
 import styles from "../paymentDialog/index.module.scss"
 import { t } from "i18next";
 
 const PrepaymentItem = ({
-  activeRow, 
   index, 
-  activeStyle, 
   activateRow, 
   months, 
   price, 
   setPaymentData, 
-  paymentData 
+  paymentData,
+  activeStyle
 }) => {
    
-  const handleClick = () => {
-    setPaymentData({
-      ...paymentData,
+  const handleClick = (e) => {
+     setPaymentData({
+     ...paymentData,
       daysEnum:months,
     })
     activateRow(index+1)
@@ -27,20 +25,25 @@ const PrepaymentItem = ({
     <div 
       className={styles.subscription_item} 
       onClick={handleClick}
-      style={activeRow === index+1 ? activeStyle: null}
+      style={paymentData?.daysEnum === months ? activeStyle :null}
     >
-      <span>
-        <FileDownloadDoneIcon sx={{color:"green", mr:2}} />
-        {months * 30} {t("cardService.dayCount2")} 
-      </span>
-
-      <span style={{width:"20%"}}>
-        
-      </span>
-
-      <span>
-        {price} {t("units.amd")}
-      </span>
+      <label style={{display:"flex",justifyContent:"space-between"}}>
+        <input
+          style={{marginRight:"17px"}}
+          type="radio"
+          value={months}
+          checked={paymentData?.daysEnum === months}
+          name="months"
+          onChange={(e)=> handleClick(e)}
+        />
+          <div style={{width:"80px"}}>
+            {months * 30} {t("cardService.dayCount2")} 
+          </div>
+          <div style={{margin: "2px 2px 2px 100px"}}>
+            {price} {t("units.amd")}
+          </div>
+      </label>
+      
   </div>
   )
 };

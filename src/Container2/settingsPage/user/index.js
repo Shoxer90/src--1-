@@ -10,7 +10,7 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import { changeEHDM } from "../../../services/user/userInfoQuery";
 import SnackErr from "../../dialogs/SnackErr";
 
-const SettingsUser = ({user,t, setUserData, whereIsMyUs}) => {
+const SettingsUser = ({user,t, whereIsMyUs}) => {
   const [confirmSwitch, setConfirmSwitch] = useState(false);
   const [openAddDialog, setOpenAddDialog] = useState(false)
   const [inputLabels, setInputLabels] = useState();
@@ -40,8 +40,7 @@ const SettingsUser = ({user,t, setUserData, whereIsMyUs}) => {
   return(
   <div className={styles.settings_user}>
     <ClientShopAvatar 
-      client={ user}
-      setClient={setUserData}
+      client={user}
     />
     <h4 className={styles.settings_user_name}>
       {user?.firstname} {user?.lastname}  
@@ -84,7 +83,7 @@ const SettingsUser = ({user,t, setUserData, whereIsMyUs}) => {
       />
        {message?.m && 
         <Dialog open={message?.m}>
-          <SnackErr type={message?.t} message={message?.m}/>
+          <SnackErr type={message?.t} message={message?.m} close={setMessage}/>
         </Dialog>
       }
       

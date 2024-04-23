@@ -8,12 +8,13 @@ import { t } from 'i18next';
     return (
     <span className={styles.creditCard} >
       <div className={styles.creditCard_bank} style={{marginTop:"20px"}} >
-        <span>
+        <span style={{fontSize:"80%"}} >
           {card?.bankName}      
-          {isMain && <span style={{color:"#78f51d",fontWeight:700, letterSpacing:"1.5px"}}> / {t("cardService.mainCard")} </span>}
+          {isMain && <span style={{color:"#78f51d",fontWeight:600}}> / {t("cardService.mainCard")} </span>}
         </span>
       </div>
-      <img src="/chip.png" alt="" className={styles.creditCard_chip} />
+      <div style={{minHeight:"20px"}}></div>
+      {/* <img src="/chip.png" alt="" className={styles.creditCard_chip} /> */}
       <p className={styles.creditCard_numbers}>
         {card?.pan.slice(0,4)} **** **** {card?.pan.slice(-4)}
       </p> 
@@ -33,11 +34,11 @@ import { t } from 'i18next';
           </span>
         </div>
         <div>
-          {card?.pan[0] == 4  && <img src="/visa1.png" alt="card_type"  style={{width:"60px",marginTop:"21px",height:"20px"}}/>}
-          {card?.pan[0] == 5  && <img src="/mastercard1.png" alt="card_type"  style={{width:"60px",marginTop:"18px",height:"27px"}}/>}
-          {card?.pan[0] == 9  && <img src="/arca1.png" alt="card_type"  style={{width:"60px",marginTop:"18px", height:"25px"}}/>}
+          {card?.pan[0] == 4  && <img src="/visa_white.png" alt="card_type"  style={{width:"60px",margin:"31px 8px 8px 8px"}}/>}
+          {card?.pan[0] == 5  && <img src="/master_silver.png" alt="card_type"  style={{width:"60px", margin:"8px",marginTop:"18px"}}/>}
+          {card?.pan[0] == 9  && <img src="/arca_silver.png" alt="card_type"  style={{width:"90px", height:"45px",marginTop:"22px"}}/>}
         </div>
-     </div>
+     </div> 
     </span>
   )
 }

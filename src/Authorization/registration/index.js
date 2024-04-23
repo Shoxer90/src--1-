@@ -55,12 +55,12 @@ const Registration = ({logOutFunc, t}) => {
     }else if (res === 405) {
       setRegisterMessage({
         m: t("authorize.dublicate"),
-        t:"success"
+        t:"error"
       })
     }else if(res === 400) {
       setRegisterMessage({
         m: t("authorize.dublicate"),
-        t:"success"
+        t:"error"
       })
     }
   }

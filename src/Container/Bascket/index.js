@@ -18,6 +18,8 @@ import AdvancePayment from "./payment/AdvancePayment";
 import PayButtons from "./operation/PayButtons";
 import ProductPayment from "./payment/ProductPayment";
 import SearchBarcode from "../../SearchBarcode";
+import { taxCounting } from "../../modules/modules.js";
+// import { fi } from "date-fns/locale";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -41,6 +43,8 @@ const  Bascket = ({
   byBarCodeSearching,
   setFrom,
   searchValue,setSearchValue,
+  user,
+  setMesFromHead
 }) => {
   const [screen, setScreen] = useState(window.innerWidth);
   const [saleData, setSaleData] = useState();
@@ -61,7 +65,7 @@ const  Bascket = ({
   const [avail,setAvail] = useState([]);
   const [blockTheButton, setBlockTheButton] = useState(true);
   const [taxCount, setTaxCount] = useState(0);
-  
+
   const [val,setVal] = useState(0);
 
   const [paymentInfo, setPaymentInfo] = useState({
@@ -132,6 +136,13 @@ const  Bascket = ({
   };
 
   const multiSaleProducts = async(saletype) => {
+    basketContent.map((item) => {
+      if(item.count * item?.price < 1){
+        setSingleClick({pointerEvents:"none"})
+        createMessage("error", t("basket.total_zero"))
+      }
+      return item
+    })
     if((!paymentInfo?.cashAmount && 
       !paymentInfo?.cardAmount && 
       !paymentInfo?.prePaymentAmount )
@@ -141,43 +152,14 @@ const  Bascket = ({
     }else if(paymentInfo?.cashAmount> 300000){
       createMessage("error", t("authorize.errors.cashLimit"))
       return
-    }
-    let isValid = null
-    if(paymentInfo?.sales?.length){
-      isValid = newSaleValidate()
+    }else if(paymentInfo?.sales?.length){
+      checkAvail(saletype)
     }else{
-      isValid = true
-    }
-    if(isValid){
+      // if it is Prepayment operation
       setLoader(true)
       sale(saletype)
-    }else{
-      createMessage("error", t("dialogs.havenot"))
     }
   };
-
-//  newSale with 2 roots-for prepayment ehdm(2) and for pay ehdm(1)
-const newSaleValidate = async() => {
-  const checkIn = await checkAvail();
-  if(paymentInfo.discount !==0 && !Boolean(paymentInfo.discount)){
-    createMessage("error", t("authorize.errors.discount"));
-    setPaymentInfo({
-      ...paymentInfo,
-      "discount": 0
-    });
-    return false
-  }else if(paymentInfo.discount > 99) {
-    setMessage(`${t("dialogs.sorry")}, ${t("authorize.errors.discount2")}`)
-    return false
-  }
-  if(((totalPrice - (totalPrice * (paymentInfo?.discount)) / 100).toFixed(2) >= 1) && !avail?.length){
-    return true
-  }else{
-    createMessage("error", t("basket.total_zero"))
-    return false
-  }
-};
-
 
   const sale = async(saletype) => {
     let saleResponse = "";
@@ -192,13 +174,16 @@ const newSaleValidate = async() => {
       saleResponse = await basketListUrl(paymentInfo)
     }
     responseTreatment(saleResponse, saletype)
+    const tax = await taxCounting(saleResponse?.res?.printResponseInfo?.items)
+      setTaxCount(tax)
   }
 
   const responseTreatment = async(result, saletype) => {
     setLoader(false)
+
     if(result === 401){
       logOutFunc()
-      return
+      return 
     }else if(result === 500 || result === 0){
       setType("error")
       setMessage(`${t("dialogs.sorry")}, ${t("dialogs.wrong")}`)
@@ -209,6 +194,8 @@ const newSaleValidate = async() => {
       checkAvail()
       createMessage("error", t("basket.total_zero"))
       return false
+    }else if(result?.status === 203){
+      return createMessage("error", t("authorize.errors.bank_agreement"))
     }else if(saletype === 1 && result?.res?.printResponseInfo ) {
       setSaleData(result)
       setLoader(false)
@@ -220,27 +207,40 @@ const newSaleValidate = async() => {
       setOpenQr(true)
     }
     else if(saletype === 3 && result?.status === 200) {
-      createMessage("success", t("basket.sent"))
-      
-      setTimeout(() => {
-        deleteBasketGoods()
-        closePhoneDialog()
-        loadBasket()
-        createMessage("")
-      }, 3000)
-    }else if(saletype === 4 && result?.message) {
-      setDataQr(result?.message);
+      loadBasket()
+      closePhoneDialog()
+      setMesFromHead({type:"success", message:t("basket.sent")})
+    }else if(saletype === 4 && result?.data?.message) {
+      setDataQr(result?.data?.message);
       setOpenLinkQr(true)
     }
   };
 
-  const checkAvail = async() => {
+  const handleOpenPhoneDialog = () => {
+    if(user?.merchantXExist) {
+      return setOpenPhonePay(true)
+    }else{
+      return createMessage("error", t("authorize.errors.bank_agreement"))
+    }
+  }
+
+  const checkAvail = async(saletype) => {
     setAvail([])
-    const available = await cheackProductCount(paymentInfo?.sales)
-    available.map((item) => {
-     return item?.status === false ?
-        setAvail([...avail,item?.id]) : null
-    })
+    cheackProductCount(paymentInfo?.sales).then((res) => {
+      const errProds = []
+       res.forEach((prod) => {
+         return prod?.status === false ? errProds.push(prod?.id) : prod
+      })
+        setAvail(errProds)
+      if(errProds?.length){
+        createMessage("error", t("authorize.errors.soldOut"))
+        return false
+      }else{
+        setLoader(true)
+        sale(saletype)
+      }
+      
+    }) 
   };
 
   const closeRecieptAndRefresh = async() => {
@@ -382,11 +382,11 @@ const newSaleValidate = async() => {
               setVal={setVal}
             />
             }
-            <Dialog open={message}>
+            <Dialog open={Boolean(message)}>
                 <SnackErr message={message} type={type} close={closeDialog} />
             </Dialog>
             { messageWithRefresh && 
-              <Dialog open={message}>
+              <Dialog open={Boolean(message)}>
                 <SnackErr message={message} type="success" close={closeQr} />
               </Dialog>
             }
@@ -399,6 +399,7 @@ const newSaleValidate = async() => {
                   setSingleClick={setSingleClick}
                   multiSaleProducts={multiSaleProducts}
                   blockTheButton={blockTheButton}
+                  handleOpenPhoneDialog={handleOpenPhoneDialog}
                   val={val}
                   totalPrice={totalPrice}
 
@@ -406,6 +407,7 @@ const newSaleValidate = async() => {
               </div>
           </Box>
           <Receipt
+            taxCount={taxCount}
             t={t}
             logOutFunc={logOutFunc}
             totalPrice={totalPrice}
@@ -414,7 +416,6 @@ const newSaleValidate = async() => {
             openHDM={openHDM} 
             setOpenHDM={closeRecieptAndRefresh}
             userName={userName}
-            taxCount={taxCount}
           />
           {trsf && <QRPay 
             t={t}
@@ -436,6 +437,9 @@ const newSaleValidate = async() => {
             price={(totalPrice - (totalPrice * (paymentInfo?.discount || 0)) / 100).toFixed(2)}
             setLoader={setLoader}
             responseTreatment={responseTreatment}
+            deleteBasketGoods={deleteBasketGoods}
+            loadBasket={loadBasket}
+            logOutFunc={logOutFunc}
           />
         {openLinkQR &&
           <PayQRLink 
@@ -450,8 +454,6 @@ const newSaleValidate = async() => {
         }
       </AppBar>}
     </Dialog>
-
-    
   );
 }
 

@@ -6,6 +6,7 @@ const PayButtons = ({
   paymentInfo, 
   setSingleClick,
   setOpenPhonePay, 
+  handleOpenPhoneDialog,
   multiSaleProducts, 
   blockTheButton,
   totalPrice,
@@ -45,7 +46,8 @@ const PayButtons = ({
         alt="sms link"
         onClick={()=>{
           setSingleClick({pointerEvents:"none"})
-          setOpenPhonePay(true)
+          handleOpenPhoneDialog()
+          // setOpenPhonePay(true)
         }}
         style={!paymentInfo?.cardAmount ? buttonBlock : null}
       />

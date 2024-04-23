@@ -90,7 +90,7 @@ const HistoryPage = ({logOutFunc, t}) => {
     historyContent ? 
     <div className={styles.history}>
       {isLoad && 
-        <Dialog open={isLoad}>
+        <Dialog open={!!isLoad}>
           <Loader />
         </Dialog>
       } 

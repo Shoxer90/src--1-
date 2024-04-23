@@ -104,7 +104,7 @@ export const getResponseAfterPay = (statusCall) => {
   }else if(statusCall === 400) {
     return {type:"error", message:t("dialogs.checkCardStatus400")}
   }else if(statusCall === 411) {
-    return {type:"error", message:t("dialogs.checkCardStatus411")}
+    return {type:"error", message:t("dialogs.checkCardStatus412")}
   }else {
     return {type:"error", message:t("dialogs.checkCardStatus400")}
   }

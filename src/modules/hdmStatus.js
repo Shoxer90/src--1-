@@ -1,6 +1,6 @@
 import React, { memo, useState } from "react";
 
-
+// 
 const HdmStatus = ({t,status,mode}) => {
     const [screen, setScreenWidth] = useState(window.innerWidth);
 

@@ -17,7 +17,6 @@ const ExcelRow = ({
 }) => {
   const [measureLangArr,setMeasureLangArr] = useState([]);
   const [isValidCurrentProd, setIsValidCurrentProd] = useState({});
-  const [isBarCodeNotRepeat,setIsBarCodeNotRepeat] = useState();
   const [ceilName, setCeilName] = useState("");
   const [errorName,setErrorName] = useState("");
   const ref = useRef();
@@ -276,7 +275,7 @@ const ExcelRow = ({
                 color: !allLanguageMeasures.includes(prod?.measure) && "white"
               }}
             >
-              {!allLanguageMeasures.includes(prod?.measure) && <option hidden selected>{t(`units.${prod?.measure}`)}</option>}
+              {allLanguageMeasures.includes(prod?.measure) && <option hidden selected>{t(`units.${prod?.measure}`)}</option>}
               {/* {allLanguageMeasures.includes(prod?.measure) && <option hidden selected>{t(`units.${prod?.measure}`)}</option>} */}
               {measureLangArr.map((measure) => {
                 return <option style={{color:"black"}} value={measure} key={measure}>{measure}</option>

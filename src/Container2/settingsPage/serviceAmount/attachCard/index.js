@@ -10,17 +10,13 @@ const CheckStatusArCa = ({logOutFunc}) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
   const [message,setMessage] = useState();
-  const [load, setLoad] = useState();
-  const [status, setStatus] = useState("");
   
   const search = useLocation().search;
   const queryParams = new URLSearchParams(search)
   const statusCall = queryParams.get("status");
   
-  console.log(statusCall,"statusCall")
   const removeURLPart = () => {
     queryParams.delete("status")
-    setStatus(queryParams.get("status"))
   }
   
   useEffect(() =>{
@@ -33,16 +29,17 @@ const CheckStatusArCa = ({logOutFunc}) => {
   };
 
     const getResponse = (statusCall) => {
-    setLoad(false)
     if(statusCall === "1") {
+      // VJARVAC E
       return setMessage({type:"success", message:t("dialogs.checkCardStatus200")})
     }else if(statusCall === "2") {
       return setMessage({type:"error", message:t("dialogs.checkCardStatus410")}) 
     }else if(statusCall === "4") {
       return setMessage({type:"error", message:t("dialogs.checkCardStatus400")}) 
     }else if(statusCall === "3") {
-      return setMessage({type:"error", message:t("dialogs.checkCardStatus411")}) 
+      return setMessage({type:"error", message:t("dialogs.checkCardStatus412")}) 
     }else if(statusCall === "5") {
+      // kCVAC E
       return setMessage({type:"success", message:t("dialogs.checkCardStatus201")}) 
     }else if(statusCall === 401) {
       logOutFunc()
@@ -53,7 +50,6 @@ const CheckStatusArCa = ({logOutFunc}) => {
 
   return (
     <div style={{marginTop: "300px"}}>
-      <button onClick={removeURLPart}>sdfg</button>
       {!statusCall ?
         <Loader t={t}/> :
         <Dialog open={Boolean(message?.message)}>

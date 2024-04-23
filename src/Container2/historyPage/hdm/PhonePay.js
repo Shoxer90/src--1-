@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogContent, Divider, InputAdornment, TextField } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { memo } from "react";
 import styles from "./index.module.scss";
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,50 +17,45 @@ const PhonePay = ({
   closePhoneDialog,
   price,
   setLoader,
-  responseTreatment
+  responseTreatment,
+  deleteBasketGoods,
+  loadBasket,
+  logOutFunc
 }) => {
-  const [response,setResponse] = useState();
+  const [response,setResponse] = useState({message:"",status:""});
+  const [flag,setFlag] = useState(false);
   const [isSent,setIsSent] = useState(false);
 
   const sendSms = async() => {
+      // setLoader(true)
+    setIsSent(true)
     if(!paymentInfo?.phone ||`${paymentInfo?.phone}`?.length !== 8){
+      // setLoader(false)
       setResponse({
-        "message": t("authorize.errors.wrongnumber"),
-        "status": "error"
+        message: t("authorize.errors.wrongnumber"),
+        status: "error"
       })
       return
-    }else{
-      setLoader(true)
-      await sendSmsForPay({
-        ...paymentInfo,
-        phone: `+374${paymentInfo.phone}`
-        }).then((res) => {
-          closePhoneDialog()
-         responseTreatment(res, 3)
-      //  if(res?.status === 200){
-      //    setResponse({
-      //      "message": t("basket.sent"),
-      //      "status": "success"
-      //    })
-      //    setTimeout(() => {
-      //      deleteBasketGoods()
-      //      closePhoneDialog()
-      //      loadBasket()
-      //      setResponse()
-      //    }, 2000)
-      //  }else if(res === 401){
-      //     logOutFunc()
-      //  }else if(res?.status === 203){
-      //     setResponse({
-      //       "message": t("authorize.errors.bank_agreement"),
-      //       "status": "error"
-      //     })
-      //   }
-    })
     }
+    await sendSmsForPay({
+      ...paymentInfo,
+      phone: `+374${paymentInfo.phone}`
+    }).then((res) => {
+      // setLoader(false)
+      if(res?.status === 203) {
+        setResponse({
+          message: t("authorize.errors.bank_agreement"),
+          status: "error"
+        })
+      }else{
+        closePhoneDialog()
+        responseTreatment(res, 3)
+      }
+    })
   };
   
   const handleChangeInput = (e) => {
+    setIsSent(false)
     setPaymentInfo({
       ...paymentInfo,
       [e.target.name]: e.target.value
@@ -68,8 +63,9 @@ const PhonePay = ({
   };
 
   return (
+    <>
     <Dialog
-      open={openPhonePay}
+      open={!!openPhonePay}
       maxWidth="sm"
     >
       <DialogContent style={{display:"flex",flexDirection:"column",justifyContent:"center"}}>
@@ -86,6 +82,7 @@ const PhonePay = ({
           <Box>
             <MobileScreenShareIcon fontSize="large" sx={{ color: 'action.active', m:1}}/>
             <TextField
+              autoComplete="off"
               type="number"
               label={t("authorize.phone")}
               placeholder="91123456"
@@ -116,10 +113,15 @@ const PhonePay = ({
           {t("buttons.send")}
         </Button>
       </DialogContent>
-      {response?.message &&
-        <SnackErr type={response?.status} message={response?.message} close={() =>setResponse({message:"",status:""})} />
-      }
+
+      <Dialog open={Boolean(response?.message)}>
+        <SnackErr type={response?.status} message={response?.message} close={() => setResponse({message:"", status:""})} />
+      </Dialog>
+
     </Dialog>
+
+   
+   </>
   )
 };
 

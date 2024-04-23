@@ -151,7 +151,7 @@ const Cashiers = ({t, logOutFunc, screen}) => {
       />
     }
     {newCashierSuccess &&
-      <Dialog open={newCashierSuccess}>
+      <Dialog open={!!newCashierSuccess}>
         <SnackErr message={t("")} type="success" close={setCashierSuccess(false)}/>
       </Dialog>
     }

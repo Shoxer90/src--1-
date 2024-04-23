@@ -179,7 +179,7 @@ const AddNewProduct = ({
   const handleClose = async() => {
     setTypeCode("")
     setOpenNewProduct(!openNewProd);
-  } 
+  };
 
   const saveData = async() => {
     await localStorage.setItem("newProduct", JSON.stringify(newProduct))
@@ -188,7 +188,7 @@ const AddNewProduct = ({
     setGlobalMessage(t("dialogs.done"))
     setGlobalType("success")
     setTimeout(()=>{
-      setGlobalType("")
+    setGlobalType("")
     setGlobalMessage("")
   },3000)
   }
@@ -218,7 +218,7 @@ const AddNewProduct = ({
 
   return (
     <Dialog
-      open={openNewProd}
+      open={!!openNewProd}
       TransitionComponent={Transition}
       keepMounted
       width="lg"
@@ -256,8 +256,6 @@ const AddNewProduct = ({
             newProduct={newProduct}
             handleChangeInput={handleChangeInput}
             selectContent={selectContent}
-            setSelectContent={setSelectContent}
-            setProduct={setProduct}
           />
           <TextField 
             error={emptyValidate && !newProduct?.name}
@@ -365,16 +363,21 @@ const AddNewProduct = ({
           />
           </div>
           <Box style={{display:"flex",width:"90%",justifyContent:"space-between"}}>
-            <ImageLoad func={setImage} content={newProduct?.photo} />
-              <BarcodeInput
-                emptyValidate={emptyValidate}
-                newProduct={newProduct}
-                handleChangeInput={handleChangeInput}
-                isUniqBarCode={isUniqBarCode}
-                setIsUniqBarcode={setIsUniqBarcode}
-                t={t}
-                setProduct={setProduct}
-              />
+            <ImageLoad 
+              func={setImage} 
+              newProduct={newProduct}
+              setProduct={setProduct} 
+              content={newProduct?.photo}
+             />
+            <BarcodeInput
+              emptyValidate={emptyValidate}
+              newProduct={newProduct}
+              handleChangeInput={handleChangeInput}
+              isUniqBarCode={isUniqBarCode}
+              setIsUniqBarcode={setIsUniqBarcode}
+              t={t}
+              setProduct={setProduct}
+            />
           </Box>
           {
             regime === "1" &&

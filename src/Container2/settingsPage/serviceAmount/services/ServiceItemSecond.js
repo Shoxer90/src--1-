@@ -14,7 +14,9 @@ const ServiceItemSecond = ({
   isDelete,
   payData, 
   setPayData,
-  serviceType
+  serviceType,
+  refresh,
+  setRefresh
 }) => {
   const [message, setMessage] = useState({message:"",type:""});
   const [openPay, setOpenPay] = useState(false);
@@ -22,15 +24,17 @@ const ServiceItemSecond = ({
   const disableStyle={opacity: 0.3};
 
   const closeMessage = () => {
+    setRefresh(!refresh)
     setOpenPay(false)
     setMessage({message:"", type:""})
+
   };
   
 
   const notAvailableService = () => {
     if(service?.isActive){
       setOpenPay(true)
-    }else{
+    }else if(!service?.isActive && service?.id === 3){
       setOpenAlert(true)
     }
   }
@@ -48,7 +52,7 @@ const ServiceItemSecond = ({
       <Card 
         sx={{ p:1.1,boxShadow:5,borderRadius:"5px"}} 
         className={styles.service_item}
-        style={!service?.isActive ? disableStyle: null}
+        style={!service?.isActive  && service?.id !== 1 ? disableStyle: null}
         onClick={notAvailableService}
       >
         <div style={{display:"flex",justifyContent:"space-between"}}>
@@ -57,7 +61,7 @@ const ServiceItemSecond = ({
             <Button 
               variant="contained" 
               onClick={notAvailableService}
-              sx={{width:"150px",height:"30px"}}
+              sx={{width:"150px",height:"30px",background:"#3FB68A"}}
             >
               {service?.isActive  ? t("basket.linkPayment") : ""} 
               {!service?.isActive && service?.id === 1 ? t("settings.free") : ""}
@@ -68,13 +72,13 @@ const ServiceItemSecond = ({
           <span>{t("cardService.currentCommitment")}</span>
           {service?.isActive  && <span>{service?.price} {t("units.amd")}</span>}
         </div>
-        <div className={styles.service_item_simpleRow}>
+        <div className={styles.service_item_simpleRow} style={{fontWeight:700, fontSize:"100%",color:"green"}}>
          <span>{t("cardService.amountDate")}</span>
          {service?.isActive &&
-            <span>
-              {(new Date(service?.nextPayment)).getDate()}/ 
-              {new Date(service?.nextPayment).getMonth()+1 < 10 ? ` 0${(new Date(service?.nextPayment)).getMonth()+1}`:new Date(service?.nextPayment).getMonth()+1}
-              / { new Date(service?.nextPayment).getFullYear()}
+            <span >
+              {(new Date(service?.nextPayment)).getDate()}. 
+              {new Date(service?.nextPayment).getMonth()+1 < 10 ? `0${(new Date(service?.nextPayment)).getMonth()+1}`:new Date(service?.nextPayment).getMonth()+1}
+              .{ new Date(service?.nextPayment).getFullYear()}
             </span>
           }
         </div>
@@ -100,6 +104,8 @@ const ServiceItemSecond = ({
         serviceType={serviceType}
         message={message}
         setMessage={setMessage}
+        setRefresh={setRefresh}
+        refresh={refresh}
       />
     </>
   );

@@ -1,9 +1,7 @@
 import React, { useState, memo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import AddCardIcon from '@mui/icons-material/AddCard';
-import {Button, Card, Dialog, Divider, useMediaQuery } from '@mui/material';
-
+import {Card, Dialog, Divider, useMediaQuery } from '@mui/material';
 import Services from './services';
 import CreditCard from './creditCard/CreditCard';
 import ServiceTitle from './ServiceTitle';
@@ -21,6 +19,8 @@ import Loader from '../../loading/Loader.js';
 import AutoPaymentSwitch from "./autoPayment"
 import CreditCardNewName from './creditCard/CreditCardNewName.js';
 
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
 
 const stylesCard = {
   m: window.innerWidth > 1000 ? 2 : .2,
@@ -31,12 +31,13 @@ const stylesCard = {
 };
 
 
-const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType}) => {
+const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate}) => {
   const ref = useRef();
   const [internalPayments, setInternalPayments] = useState(); 
   const [payData, setPayData] = useState({
     isBinding: internalPayments?.autopayment?.hasAutoPayment,
     serviceType: serviceType,
+    months: 1,
     web: true
   });
   const [responseUrl,setResponseUrl] = useState("");
@@ -53,7 +54,6 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType}) => {
   const [openRename, setRename] = useState(false);
 
   const [isOpenHistory, setOpenHistory] = useState(false);
-
 
   const successFetch = () => {
     setIsDelete(!isDelete)
@@ -93,6 +93,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType}) => {
     }else if(eNum === 2) {
       setRename(true)
       setCardName({name:name,id:id})
+      return
     }else{
       setOperationWithCard({
         function: () =>removeCard(id),
@@ -105,16 +106,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType}) => {
   const getInfo = async() => {
     await getPaymentCardServices().then((res) =>{
       setInternalPayments(res)
-      if(!res?.isInDate && res?.days){
-        setMessage({
-          type:"error",
-          message:
-           `${t("cardService.notInDateTrueDays")} 
-            ${res?.days} 
-            ${res?.days > 1 ? t("cardService.dayCount") : t("cardService.dayCount1")}
-            ${t("cardService.notInDateTrueDays2")}`
-        })
-      }else if(!res?.isInDate && !res?.days) {
+      if(!res?.isInDate && !res?.days) {
         setMessage({type:"error", message:t("cardService.notInDate")})
       }
       setPayData({
@@ -141,12 +133,16 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType}) => {
 
   return (
   <div className={styles.clientContainer} >
-    <h2> {t("cardService.btnTitle")}</h2>
     <Divider color="black" sx={{m:1}} />
     {isBlockedUser && <p style={{color:"red"}}>{t("cardService.notInDate")}</p>}
+    {internalPayments?.isInDate && internalPayments?.days ? 
+      <p style={{color:"red"}}>
+        {`${t("cardService.notInDateTrueDays")}  ${lastDate} ${t("cardService.notInDateTrueDays2")}`}
+      </p>: ""
+    }
     <Card sx={stylesCard}>
       <ServiceTitle title={t("landing.priceListSubTitle1")} />
-      <div style={{display:"flex", flexFlow:"row nowrap"}}>
+      <div style={{display:"flex", flexFlow:"row "}}>
         {internalPayments &&
           <Services 
             content={internalPayments}
@@ -155,37 +151,33 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType}) => {
             logOutFunc={logOutFunc}
             isDelete={isDelete}
             serviceType={serviceType}
+            refresh={refresh}
+            setRefresh={setRefresh}
           />
         }
+
       </div>
     </Card>
     <Card sx={stylesCard}>
-    <div>
-      <ServiceTitle title={t("cardService.attachedCards")} rightSide={
-        <>
-          <Button
-            startIcon={<AddCardIcon fontSize="medium" sx={{m:"0 auto"}} />}
-            onClick={addNewCreditCard}
-            variant='contained'
-            style={{background:"rgba(40,48,72,1)"}}
-
-          >
-            {t("cardService.attachCard")}
-          </Button>
-          <HistoryCard setOpenHistory={setOpenHistory} />
-            <AutoPaymentSwitch
-              setMessage={setMessage}
-              payData={payData}
-              setPayData={setPayData}
-              hasAutoPayment={internalPayments?.autopayment?.hasAutoPayment}
-              isDefaultExist={internalPayments?.autopayment?.defaultCard}
-
-            /> 
-        </>
-      }/>
+    <div style={{display:"flex",justifyContent:"flex-start"}}>
+      <ServiceTitle title={t("cardService.attachedCards")} />
+      <span style={{width:"30%"}}></span>
+      <AutoPaymentSwitch
+        setMessage={setMessage}
+        payData={payData}
+        setPayData={setPayData}
+        hasAutoPayment={internalPayments?.autopayment?.hasAutoPayment}
+        isDefaultExist={internalPayments?.autopayment?.defaultCard}
+      /> 
     </div>
       <div style={{display:"flex", flexFlow:"row wrap"}}>
-        <div style={{margin:"10px"}}>
+        <div style={{margin:"10px",display:"flex"}}>
+          <Card className={styles.creditCard}  onClick={addNewCreditCard} style={{borderRadius:"12px",margin:"10px",cursor:"pointer"}}>
+            <div style={{margin:"auto",color:"white",alignContent:"center"}}>
+             <AddCircleOutlineIcon  sx={{ fontSize:40 }} />
+             <span style={{marginLeft:"5px"}}>{t("cardService.attachCard")}</span>
+            </div>
+          </Card>
           {internalPayments?.autopayment?.defaultCard ?
             <CreditCardWrapper 
               isMain={true}
@@ -209,9 +201,13 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType}) => {
           </div>: null
         }) : <h1 style={{color:"lightgray",margin:"40px auto"}}>{t("cardService.noAttachedCards")}</h1>}
       </div>
+      
+      <div style={{alignItems:"start",display:"flex"}}>
+        <HistoryCard setOpenHistory={setOpenHistory} t={t} />
+      </div>
     </Card>
     <Card>
- 
+
 
     </Card>
      { responseUrl && <a ref={ref} href={responseUrl}>{""}</a> }
@@ -226,17 +222,17 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType}) => {
     />
    
     <Dialog 
-      open={isOpenHistory} 
+      open={!!isOpenHistory} 
       onClose={()=>setOpenHistory(false)}
       fullScreen={fullScreen}
     >
       <HistoryTable  history={internalPayments?.history} setOpenHistory={setOpenHistory} />
     </Dialog>
 
-    <Dialog open={message?.message}>
+   {message?.message && <Dialog open={message?.message}>
       <SnackErr message={message?.message} type={message?.type} close={setMessage} />
-    </Dialog>
-    <Dialog open={isLoad}>
+    </Dialog>}
+    <Dialog open={!!isLoad}>
       <Loader close={setIsLoad} />
     </Dialog>
     <CreditCardNewName 
@@ -245,7 +241,6 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType}) => {
       cardName={cardName}
       setCardName={setCardName}
       func={changeCardName}
-
     />
   </div>
   )

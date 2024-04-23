@@ -16,7 +16,9 @@ const PayComponent = ({
   content,
   serviceType,
   message,
-  setMessage
+  setMessage,
+  setRefresh,
+  refresh
 }) => {
   const [billsData, setBills] = useState({
     web: true,
@@ -38,6 +40,7 @@ const PayComponent = ({
       isBinding: content?.autopayment?.hasAutoPayment,
       serviceType: serviceType,
       cardId: content?.autopayment?.defaultCard?.cardId
+      // cardId: 0
     })
     setOpenPay(false)
   };
@@ -56,16 +59,16 @@ const PayComponent = ({
         }else if(res?.status === 400) {
           setMessage({type:"error", message:t("dialogs.checkCardStatus400")})
         }else if(res?.status === 411) {
-          setMessage({type:"error", message:t("dialogs.checkCardStatus411")})
+          setMessage({type:"error", message:t("dialogs.checkCardStatus412")})
         }else {
           setMessage({type:"error", message:t("dialogs.checkCardStatus400")})
         }
-           setOpenPay(false)
+        setOpenPay(false)
       })
       
     }else if (method === 2){
       payForServiceWithNewCard(billsData).then((res) => {
-    setLoader(false)
+      setLoader(false)
         setResponseUrl(res?.formUrl)
       })
     }
@@ -78,13 +81,14 @@ const PayComponent = ({
   return(
     <Dialog open={openPay}>
       <div style={{display:"flex", justifyContent:"space-between",margin:"3px 7px",alignItems:"center"}}>
-       <h5>{""}</h5>
+        <h5>{""}</h5>
         <IconButton onClick={closeDialog}> 
           <CloseIcon />
         </IconButton>
       </div>      
       <Divider color="black" />
-      <DialogContent style={{margin:"auto"}}>
+      <DialogContent style={{margin:"auto", paddingTop:"4px"}}>
+      <h6 style={{marginTop:"0px"}}>{t("cardService.dialogTitle")}</h6>
        
       <PrepaymentConfirmation 
         setBills={setBills}
@@ -120,8 +124,9 @@ const PayComponent = ({
       <Button
         variant="contained"
         onClick={servicePay}  
-        sx={{m:2}}
-        disabled={billsData?.attach === undefined && billsData?.cardId === undefined}
+        sx={{m:2,background:"#3FB68A"}}
+        // disabled={billsData?.attach === undefined && billsData?.cardId === undefined}
+        disabled={billsData?.attach === undefined && billsData?.cardId === undefined }
       >
         {t("basket.totalndiscount")} {billsData?.daysEnum * price} ֏ 
       </Button>

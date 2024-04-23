@@ -56,7 +56,7 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-const MenuBurger = ({logout}) => {
+const MenuBurger = ({logout,setActiveBtn, user}) => {
   const {limitedUsing} = useContext(LimitContext);
   const {t} = useTranslation();
   const navigate = useNavigate();
@@ -91,61 +91,54 @@ const MenuBurger = ({logout}) => {
         style={{minWidth:"300px"}}
       >
         {!limitedUsing && 
-        <>
-        <Box style={{display:'flex'}}>
-          <MiscellaneousServicesIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
-          <MenuItem fontSize="medium"
-            onClick={() => {
-              navigate("/setting/user")
-              setAnchorEl(null)
-            }}
-          >
-           <h5>{t("menuburger.setting")}</h5>
-          </MenuItem>
-        </Box>
+          <Box style={{display:'flex'}}>
+            <MiscellaneousServicesIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
+            <MenuItem fontSize="medium"
+              onClick={() => {
+                setActiveBtn("")
+                navigate("/setting/user")
+                setAnchorEl(null)
+              }}
+            >
+            <h5>{t("menuburger.setting")}</h5>
+            </MenuItem>
+          </Box>
+        }
+        {!limitedUsing && 
          <Box style={{display:'flex'}}>
         <AccountCircleIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
           <MenuItem fontSize="medium"
             onClick={() => {
+              setActiveBtn("")
               navigate("/setting/cashiers")
               setAnchorEl(null)
             }}
           >
            <h5>{t("settings.cashiers")}</h5>
           </MenuItem>
-        </Box>
-        <Box style={{display:'flex'}}>
-          <HomeRepairServiceIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
-          <MenuItem fontSize="medium"
-            onClick={() => {
-              navigate("/setting/services")
-              setAnchorEl(null)
-            }}
-          >
-           <h5>{t("cardService.btnTitle")}</h5>
-          </MenuItem>
-        </Box>
-        
-        </>
-          // <Box style={{display:'flex'}}>
-          //  <AccountCircleIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
-          //   <MenuItem 
-          //     fontSize="medium"
-          //     onClick={() => {
-          //       navigate("/setting")
-          //       setAnchorEl(null)
-          //     }}
-          //   >
-          //     <h5>{t("menuburger.setting")}</h5>
-          //   </MenuItem>
-          // </Box>
-        } 
+        </Box>}
+        {!limitedUsing && user?.showPaymentPage && 
+          <Box style={{display:'flex'}}>
+            <HomeRepairServiceIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
+            <MenuItem fontSize="medium"
+              onClick={() => {
+                setActiveBtn("")
+                navigate("/setting/services")
+                setAnchorEl(null)
+              }}
+            >
+            <h5>{t("cardService.btnTitle")}</h5>
+            </MenuItem>
+          </Box>
+        }
        
         <Box style={{display:'flex'}}>
           <QuestionAnswerIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
           <MenuItem fontSize="medium"
             onClick={() => {
               navigate("/feedback")
+              setActiveBtn("")
+
               setAnchorEl(null)
             }}
           >

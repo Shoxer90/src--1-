@@ -131,7 +131,7 @@ const ReverseContainer = ({
   return (
     <Dialog
       // sx={{ '& .MuiDialog-paper': { maxHeight: 435 } }}
-      open={openDialog}
+      open={!!openDialog}
       sx={{
         "& .MuiDialog-container": {
           "& .MuiPaper-root": {
@@ -213,7 +213,7 @@ const ReverseContainer = ({
         </Button>
       </DialogActions>
       
-      <Dialog open={load}> <Loader /> </Dialog>
+      <Dialog open={!!load}> <Loader /> </Dialog>
 
       {ownMessage && 
         <Dialog open={Boolean(ownMessage)} >

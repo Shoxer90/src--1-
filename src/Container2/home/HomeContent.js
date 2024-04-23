@@ -22,6 +22,7 @@ const HomeContent = ({
   setTypeCode,
   user
 }) => {
+  
   return (
     <Card className={styles.productContent}>
      
@@ -46,7 +47,9 @@ const HomeContent = ({
 
           />
         </div>
-      })}
+      })
+      // :<h1 style={{color:"lightgray",margin:"40px auto",height:"70dvh"}}>{t("productinputs.nonProduct")}</h1>
+      }
     </Card>
   )
 }

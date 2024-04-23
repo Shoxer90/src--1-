@@ -5,7 +5,7 @@ import Basket from "./Container/Bascket/index";
 import HistoryPage from "./Container2/historyPage";
 import Header from "./Container/Header/Header";
 import ProductChanges from "./Container2/analytics";
-import HomePage from "./Container2/home"
+import HomePage from "./Container2/home/index"
 import Confirmation from "./Authorization/Confirmation";
 import FeedBackPage from "./Container2/feedback";
 import CheckStatusArCa from "./Container2/settingsPage/serviceAmount/attachCard"
@@ -34,7 +34,6 @@ import PasteExcelToReact from "./Container2/home/excelLoader";
 
 import { Alert, Snackbar } from "@mui/material";
 import useDebonce from "./Container2/hooks/useDebonce";
-import { useRef } from "react";
 import Cashiers from "./Container2/settingsPage/cashiers/Cashiers";
 import SettingsUser from "./Container2/settingsPage/user"
 const App = () => {
@@ -51,7 +50,6 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [measure, setMeasure] = useState([]);
   const {t} = useTranslation();
-  const [userData, setUserData] = useState({});
   const [lang, setLang] = useState();
   const navigate = useNavigate();
   const [message,setMessage] = useState({message:"",type:""});
@@ -61,43 +59,45 @@ const App = () => {
   const dispatch = useDispatch();
   const {user} = useSelector(state => state.user);
   const [isBlockedUser,setBlockedUser] = useState(false);
-  const focusInput = useRef();
   const debounce = useDebonce(searchValue, 1000);
   const debounceBasket = useDebonce(barcodeScanValue, 20);
+  const [activeBtn, setActiveBtn] = useState("/");
+  const [lastDate,setLastDate] = useState("");
 
-  useEffect(() =>{
-    debounce && byBarCodeSearching(debounce)
-  },[debounce]);
-
-  useEffect(() =>{
-    debounceBasket && byBarCodeSearching(debounceBasket)
-  },[debounceBasket]);
 
   const whereIsMyUs = async() => {
-    await dispatch(fetchUser()).then((res) => {
+    await dispatch(fetchUser()).then(async(res) => {
+        const date = new Date(res?.payload?.nextPaymentDate);
+        setLastDate(
+          `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
+        )
+       await datePainter(res?.payload?.nextPaymentDate)
       localStorage.setItem("status", JSON.stringify(res?.payload?.isEhdmStatus)) 
       localStorage.setItem("reverse", JSON.stringify(res?.payload?.reverceStatus))
       localStorage.setItem("taxRegime", JSON.stringify(res?.payload?.taxRegime))
       checkUserStatus()
       if(res?.error?.message === "Rejected"){
         logOutFunc()
-      }else if(res?.payload?.isInDate === false && !res?.payload?.days){
+      }else if(res?.payload?.isInDate === false && !res?.payload?.days && res?.payload?.showPaymentPage){
         navigate("/setting/services")
         setBlockedUser(true)
       }
-      else if(res?.payload?.isInDate === false && res?.payload?.days){
-        // setMessage({
-        //   type:"error",
-        //   message:
-        //    `${t("cardService.notInDateTrueDays")} 
-        //     ${res?.payload?.days} 
-        //     ${res?.payload?.days > 1 ? t("cardService.dayCount") : t("cardService.dayCount1")}
-        //     ${t("cardService.notInDateTrueDays2")}`
-        // })
-      }else if(res?.payload?.isInDate === true){
+      else if(res?.payload?.isInDate === true && res?.payload?.days &&  res?.payload?.showPaymentPage){
+        setMessage({
+          type:"error",
+          message:`${t("cardService.notInDateTrueDays")} ${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}  ${t("cardService.notInDateTrueDays2")}`
+        })
+      }
+      else if(res?.payload?.isInDate === true){
         setBlockedUser(false)
       }
     })
+  };
+  const datePainter = (dateString) => {
+    const date = new Date(dateString);
+    setLastDate(
+      `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
+    )
   };
 
   const checkUserStatus = () => {
@@ -170,7 +170,7 @@ const App = () => {
         }else{
          return handleArr.push(prod)
         
-          }
+        }
       })  
     })
     localStorage.setItem("bascket1", JSON.stringify(handleArr))
@@ -252,17 +252,13 @@ const App = () => {
   
   const logOutFunc = () =>{
     const language = localStorage.getItem("lang");
-    setContent([]);
+    // setContent([]);
     localStorage.clear();
     localStorage.setItem("lang", language)
     setIsLogIn(false)
   };  
 
-  const queryFunction = async(name, page=1) => {
-    const data = await productQuery(dataGroup, page)
-    return data === 401 ? logOutFunc() : data
-  };
-
+  
   const getMeasure = async() => {
     const str = localStorage.getItem("lang")
     setLang(str || "am")
@@ -273,12 +269,12 @@ const App = () => {
         })
       break;
       case "am":
-       await measureTranslate(1).then((res) => {
-        setMeasure(res?.data)
-       })
-      break;
-      case "ru":
-        measureTranslate(3).then((res) => {
+        await measureTranslate(1).then((res) => {
+          setMeasure(res?.data)
+        })
+        break;
+        case "ru":
+          measureTranslate(3).then((res) => {
           setMeasure(res?.data)
          })
       break;
@@ -286,22 +282,25 @@ const App = () => {
         await measureTranslate(1).then((res) => {
           setMeasure(res?.data)
         })
-    }
+      }
   };
 
-  useEffect(() =>{
-    const ll = setInterval(() =>{
-      setMessage({
-        type:"error",
-        message:
-         `${t("cardService.notInDateTrueDays")} 
-          ${user?.days} 
-          ${user?.days > 1 ? t("cardService.dayCount") : t("cardService.dayCount1")}
-          ${t("cardService.notInDateTrueDays2")}`
-      })
-    },86400000 )
-    return ()=>clearInterval(ll)
-  }, []);
+  const queryFunction = async(name, page=1) => {
+    const data = await productQuery(name, page)
+    return data === 401 ? logOutFunc() : data
+  };
+    
+  const changeStatus = async(str) => {
+    setContent([])
+    setCurrentPage(1)
+    setDataGroup(str)
+    // await setIsFilter(false)
+    // setFetching(true)
+    const response = await queryFunction(str, 1)
+    setContent([ ...response?.data]);
+    setCurrentPage(2)
+   
+  };
 
   
   useEffect(() => { 
@@ -312,12 +311,24 @@ const App = () => {
     getMeasure()
     setDataGroup("GetAvailableProducts")
     setCurrentPage(1)
+    setContent([])
     loadBasket()
-  },[isLogin,flag])
+  },[isLogin, flag])
+
 
   useEffect(() => {
+    setContent([])
     whereIsMyUs() 
+    setDataGroup("GetAvailableProducts")
   },[]);
+
+  useEffect(() =>{
+    debounce && byBarCodeSearching(debounce)
+  },[debounce]);
+
+  useEffect(() => {
+    debounceBasket && byBarCodeSearching(debounceBasket)
+  },[debounceBasket]);
 
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>
@@ -376,12 +387,15 @@ const App = () => {
             setOpenBasket={setOpenBasket}
             basketGoodsqty={basketGoodsqty}
             logOutFunc={logOutFunc} 
-            setCurrentPage={setCurrentPage}
+            // setCurrentPage={setCurrentPage}
             setIsLogIn={setIsLogIn}
             user={user}
             logo={user?.logo}
             active={user?.isEhdmStatus}
-            setContent={setContent}
+            // setContent={setContent}
+            activeBtn={activeBtn}
+            setActiveBtn={setActiveBtn}
+
           />
           {!isBlockedUser ? <Routes>
             <Route
@@ -408,35 +422,20 @@ const App = () => {
                   setSearchValue={setSearchValue}
                   byBarCodeSearching={byBarCodeSearching}
                   setFrom={setFrom}
-                  focusInput={focusInput}
+                  changeStatus={changeStatus}
                 />
               }  
             />
-             <Route path="/excel" element={
-              <PasteExcelToReact 
-                logOutFunc={logOutFunc}
-                t={t} 
-                loadBasket={loadBasket}
-                setFlag={setFlag}
-                flag={flag}
-                setCurrentPage={setCurrentPage}
-                setDataGroup={setDataGroup}
-              />} />
-            <Route path="/feedback" element={
-              <FeedBackPage 
-                logOutFunc={logOutFunc}
-                t={t} 
-              />
-            } />
-            
+            <Route path="/excel" element={<PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} />} />
+            <Route path="/feedback" element={<FeedBackPage logOutFunc={logOutFunc} t={t} />} />
             <Route path="/setting/cashiers" element={<Cashiers t={t} screen={window.innerWidth} /> } />
-            <Route path="/setting/user" element={<SettingsUser user={user} t={t} setUserData={setUserData} whereIsMyUs={whereIsMyUs} />} />
+            <Route path="/setting/user" element={<SettingsUser user={user} t={t} x whereIsMyUs={whereIsMyUs} />} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} t={t}  measure={measure} />} />
             <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
             <Route path="/basket/*" element={<BasketList t={t} />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
             {user?.showPaymentPage &&<Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
-            {user?.showPaymentPage &&<Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType}/>} />}
+            {user?.showPaymentPage &&<Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
           </Routes> :
           <Routes>
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
@@ -465,6 +464,9 @@ const App = () => {
             setSearchValue={setBarcodeScanValue}
             byBarCodeSearching={byBarCodeSearching}
             setFrom={setFrom}
+            user={user}
+            setMesFromHead={setMessage}
+
           />}
          <Snackbar  
             sx={{ height: "100%" }}
@@ -472,7 +474,7 @@ const App = () => {
               vertical: "top",
               horizontal: "center"
             }} 
-            open={message?.message} 
+            open={!!message?.message} 
             autoHideDuration={6000} 
             onClose={()=>setMessage({type:"", message:""})}
           >

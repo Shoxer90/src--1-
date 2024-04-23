@@ -4,7 +4,7 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import styles from "./index.module.scss";
 import { updateLogo } from "../../../services/user/getUser";
 
-const ClientShopAvatar = ({client, setClient}) => {
+const ClientShopAvatar = ({client}) => {
 
   const handlePutPhoto = async(e) => {
     let reader = new FileReader();
@@ -12,10 +12,6 @@ const ClientShopAvatar = ({client, setClient}) => {
     reader.readAsDataURL(file)
     reader.onload = function(){
       updateLogo({"logo": reader.result})
-      setClient({
-        ...client,
-        logo: reader.result
-      })
     }
   };
 

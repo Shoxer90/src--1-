@@ -39,7 +39,7 @@ export default function HistoryDetails({
 
   return (
     <Dialog
-      open={openDetails}
+      open={!!openDetails}
       TransitionComponent={Transition}
       keepMounted
       maxWidth="sx"

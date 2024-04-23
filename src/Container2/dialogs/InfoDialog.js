@@ -19,7 +19,7 @@ const closeSuccess = () => {
 
   return(
     <Dialog 
-      open={userName}
+      open={!!userName}
       onClose={closeSuccess}
       style={{padding:"20px", borderRadius:"5px"}}
     >

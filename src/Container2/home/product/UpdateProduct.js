@@ -125,7 +125,8 @@ const UpdateProduct = ({
 
   const handleDelete = async() => {
     deleteAndRefresh(currentProduct.id).then(()=> {
-      changeStatus(dataGroup)
+      // changeStatus(dataGroup)
+      setFlag(!flag)
     })
     handleClose()
   };
@@ -208,7 +209,7 @@ const UpdateProduct = ({
 
   return (
     <Dialog
-      open={openUpdateProd}
+      open={!!openUpdateProd}
       TransitionComponent={Transition}
       maxWidth="lg"
       PaperProps={{
@@ -345,7 +346,7 @@ const UpdateProduct = ({
             }
           <div></div>
           {message?.message && 
-          <Dialog open={message.message}>
+          <Dialog open={!!message.message}>
             <SnackErr 
             message={message?.message} 
             type={message?.type} 
@@ -374,7 +375,12 @@ const UpdateProduct = ({
               {moment(currentProduct?.lastUpdate).format('DD MMM YYYY')}{" / "} 
               {moment(currentProduct?.lastUpdate).format('HH:mm:ss')}
             </div>
-            <ImageLoad func={updateImage} content={currentProduct?.photo} />
+            <ImageLoad 
+            setProduct={setCurrentProduct}
+            newProduct={currentProduct}
+            func={updateImage} 
+            content={currentProduct?.photo} 
+            />
           </Box>
         <Box className={styles.update_btns}>
           <Button 
