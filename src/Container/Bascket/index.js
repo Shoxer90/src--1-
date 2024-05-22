@@ -44,7 +44,9 @@ const  Bascket = ({
   setFrom,
   searchValue,setSearchValue,
   user,
-  setMesFromHead
+  setMesFromHead,
+  setFetching,
+  setCurrentPage
 }) => {
   const [screen, setScreen] = useState(window.innerWidth);
   const [saleData, setSaleData] = useState();
@@ -149,7 +151,7 @@ const  Bascket = ({
       || isEmpty
     ){
       return createMessage("error", t("basket.emptyPayInfo"))
-    }else if(paymentInfo?.cashAmount> 300000){
+    }else if(paymentInfo?.cashAmount > 300000){
       createMessage("error", t("authorize.errors.cashLimit"))
       return
     }else if(paymentInfo?.sales?.length){
@@ -175,7 +177,7 @@ const  Bascket = ({
     }
     responseTreatment(saleResponse, saletype)
     const tax = await taxCounting(saleResponse?.res?.printResponseInfo?.items)
-      setTaxCount(tax)
+    setTaxCount(tax)
   }
 
   const responseTreatment = async(result, saletype) => {
@@ -196,6 +198,7 @@ const  Bascket = ({
       return false
     }else if(result?.status === 203){
       return createMessage("error", t("authorize.errors.bank_agreement"))
+
     }else if(saletype === 1 && result?.res?.printResponseInfo ) {
       setSaleData(result)
       setLoader(false)
@@ -214,6 +217,7 @@ const  Bascket = ({
       setDataQr(result?.data?.message);
       setOpenLinkQr(true)
     }
+    setFetching(true)
   };
 
   const handleOpenPhoneDialog = () => {
@@ -242,15 +246,14 @@ const  Bascket = ({
       
     }) 
   };
-
+// checkAvail => sale => responseTreatment => 
   const closeRecieptAndRefresh = async() => {
     setOpenBasket(false)
-    await productQuery("GetAvailableProducts",1).then((res) => {
-      setContent(res?.data)
-    })
+    setContent([])
+    setCurrentPage(1)
+    setFetching(true)
     setOpenHDM(false)
     deleteBasketGoods()
-    setFlag(flag+1)
   };
 
   const closeDialog = () => {
@@ -282,7 +285,7 @@ const  Bascket = ({
   useEffect(()=> {
     createPaymentSales()
     setSearchValue("")
-  }, [basketContent,flag, openBasket]);
+  }, [basketContent, flag, openBasket]);
 
   return (
     <Dialog
@@ -318,6 +321,7 @@ const  Bascket = ({
               setPaymentInfo={setPaymentInfo}
               paymentInfo={paymentInfo}
               setSingleClick={setSingleClick}
+              setFetching={setFetching}
             />
             <Divider style={{margin:2, backgroundColor:"gray"}}/>
             <SearchBarcode
@@ -373,10 +377,8 @@ const  Bascket = ({
               setTotalPrice={setTotalPrice}
               setPaymentInfo={setPaymentInfo}
               flag={flag}
-              singleClick={singleClick}
               setSingleClick={setSingleClick}
               basketContent={basketContent}
-              blockTheButton={blockTheButton}
               setBlockTheButton={setBlockTheButton}
               val={val}
               setVal={setVal}

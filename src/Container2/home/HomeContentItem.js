@@ -27,6 +27,9 @@ const HomeContentItem = ({
   getSelectData,
   typeCode,
   setTypeCode,
+  setFetching,
+  setContent,
+  content
 
 }) => {
   const {limitedUsing} = useContext(LimitContext);
@@ -34,7 +37,6 @@ const HomeContentItem = ({
   const [quantity,setQuantity] = useState("");
   const [starSynth,setStarSynth] = useState();
   const [newPrice, setNewPrice] = useState(product?.price - (product?.price * product?.discount / 100));
-
   const handleStarChange = () => {
     setStarSynth(!starSynth)
     updateIsFavorite(product?.id, !product?.isFavorite)
@@ -74,6 +76,10 @@ const HomeContentItem = ({
   useEffect(() => {
     setStarSynth(product?.isFavorite)
   },[]);
+
+  useEffect(() => {
+
+  },[product?.discount]);
 
   return (
     <>
@@ -183,6 +189,10 @@ const HomeContentItem = ({
       getSelectData={getSelectData}
       typeCode={typeCode}
       setTypeCode={setTypeCode}
+      setFetching={setFetching}
+      setContent={setContent}
+      content={content}
+      setNewPrice={setNewPrice}
     />}
   </>
   )

@@ -11,18 +11,38 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import CashiersItem from "./CashiersItem";
 import SnackErr from "../../dialogs/SnackErr";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import { Troubleshoot } from "@mui/icons-material";
 
-const Cashiers = ({t, logOutFunc, screen}) => {
+const Cashiers = ({t, logOutFunc, cashierLimit}) => {
   const [cashiers, setCashiers] = useState([]);
   const [openCashierDial, setOpenCashierDail] = useState(false);
   const [newCashierSuccess, setCashierSuccess] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openLimitOver, setOpenLimitOver] = useState(false);
   const [register, setRegister] = useState(false);
   const [updateDial, setUpdateDial] = useState(false);
   const [updateContent, setUpdateContent] = useState({});
   const [data, setData] = useState();
 	const [userInfo, setUserInfo] = useState({});
 
+  const openAddNewCashier = () => {
+    // if(6 < cashiers?.length) {
+      if(cashierLimit > cashiers?.length) {
+      setOpenCashierDail(true)     
+      setUserInfo({})
+    }else{
+      limitOver()
+    }
+  };
+
+  const limitOver = () => {
+    setOpenLimitOver(true)
+  };
+
+  const closeAddDialog = () => {
+    setOpenCashierDail(false)
+    setOpenLimitOver(false)
+  }
 
   const handleUpdateCashier = async(data) => {
     await updateCashiersData(data).then((res) => {
@@ -111,8 +131,9 @@ const Cashiers = ({t, logOutFunc, screen}) => {
        <h1> {t("settings.cashiers")}</h1>
         <Avatar
           onClick={()=>{
-            setOpenCashierDail(true)
-            setUserInfo({})
+            openAddNewCashier()
+            // setOpenCashierDail(true)
+            // setUserInfo({})
           }}
           sx={{ 
             "&:hover": { bgcolor: '#1976d2' , color:"white"}, 
@@ -148,6 +169,7 @@ const Cashiers = ({t, logOutFunc, screen}) => {
         userInfo={userInfo} 
         setUserInfo={setUserInfo}
         logOutFunc={logOutFunc}
+        limitOver={limitOver}
       />
     }
     {newCashierSuccess &&
@@ -171,6 +193,14 @@ const Cashiers = ({t, logOutFunc, screen}) => {
       close={setOpenConfirm}
       func={()=>cashierStatus(data?.id, "2")}
       content={data?.name}
+    />
+    <ConfirmDialog
+      t={t} 
+      func={closeAddDialog} 
+      open={openLimitOver}
+      close={closeAddDialog}
+      question={<strong>{t("settings.cashiereLimit")}</strong>}
+      nobutton={true}
     />
   </div>
   )

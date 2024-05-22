@@ -21,6 +21,23 @@ export const getAdg = async(type) => {
     return err
   }
 }
+
+export const getAllAdgCode = async() => {
+  const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    }
+  }
+  try{
+    const data = await axios.get(baseUrl + `Adg/GetAllAdgs`, option)
+    return data.data
+  }catch(err) {
+    return err
+  }
+}
+
+
+
 // PRODUCT QUERY
 
 export const productQuery = async(type,page) =>{
@@ -113,7 +130,7 @@ export const createProduct = async(product) => {
     "price": +(product?.price),
     "discount": 0,
     "lastUpdate": new Date().toISOString(),
-    "dep": 0,
+    "dep": +product?.dep,
     "isFavorite": false,
     "coment": "",
     "category": 0,

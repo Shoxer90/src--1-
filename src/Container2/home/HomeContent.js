@@ -20,7 +20,10 @@ const HomeContent = ({
   getSelectData,
   typeCode,
   setTypeCode,
-  user
+  setFetching,
+  user,
+  setContent,
+  // content
 }) => {
   
   return (
@@ -44,6 +47,9 @@ const HomeContent = ({
             typeCode={typeCode}
             setTypeCode={setTypeCode}
             user={user}
+            setFetching={setFetching}
+            setContent={setContent}
+            content={content}
 
           />
         </div>

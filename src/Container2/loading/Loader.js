@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { memo } from "react";
 import { BeatLoader } from "react-spinners";
-import { useTranslation } from "react-i18next";
-import styles from "./index.module.scss";
 
 const Loader = ({close}) => {
 

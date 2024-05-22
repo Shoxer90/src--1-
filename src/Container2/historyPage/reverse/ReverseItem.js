@@ -91,7 +91,8 @@ const ReverseItem = ({
             if(saleInfo?.res?.printResponseInfo?.partialAmount > 0) return
             checkedProduct(index, e.target.name, e.target.checked)
           }}
-          checked={saleInfo?.res?.printResponseInfo?.partialAmount > 0 ? true: null}
+          // checked={saleInfo?.res?.printResponseInfo?.partialAmount > 0 ? true: null}
+          checked={reverseContainer[index]?.isChecked}
           readOnly={saleInfo?.res?.printResponseInfo?.partialAmount > 0 ? true : false}
         />
         <img 

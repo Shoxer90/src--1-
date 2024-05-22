@@ -2,7 +2,6 @@ import { enGB} from "moment/locale/en-gb.js";
 import hyAm from "moment/locale/hy-am.js";
 import moment from "moment";
 import ru from 'moment/locale/ru';
-import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 
 export const dateFormat = (dateString) => {
@@ -86,9 +85,10 @@ export const takeMeMeasureArr = (lang) => {
 };
 
 export const allLanguageMeasures = ["հատ", "կգ", "գրամ", "լիտր", "մետր", "ք/մ", "խ/մ", "այլ", "pcs", "kg", "gramm", "liter", "metre", "sq/m", "cub/m", "other","шт", "кг", "грамм", "литр", "метр", "кв/м", "куб/м","другой"]
+
 export const taxCounting = (arr) => {
   let tax = 0;
-  arr.forEach((item) => {
+  arr?.forEach((item) => {
     tax += item?.totalWithoutTaxes
   })
   return tax.toFixed(2)

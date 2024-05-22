@@ -12,6 +12,7 @@ const ExcelRow = ({
   checkRowStatus,
   row, 
   t,
+  allAdgs,
   setBarCodes,
   barCodes
 }) => {
@@ -30,7 +31,7 @@ const ExcelRow = ({
     const arr = [];
     inputValue.map((row) => {
       if(row?.__rowNum__=== prod?.__rowNum__){
-       return arr.push({
+        return arr.push({
           ...row,
           "__rowNum__": prod?.__rowNum__,
           [name] : value
@@ -47,7 +48,7 @@ const ExcelRow = ({
     setErrorName("")
     let catchSameCode = 0
     const arr = barCodes;
-    arr.map((item)=> {
+    arr.map((item) => {
       if(item?.code === prod?.barCode && item?.row !== row) {
         setErrorName("Կրկնվող բառկոդ/ ներքին կոդ")
         catchSameCode++
@@ -76,7 +77,7 @@ const ExcelRow = ({
     setErrorName("")
     let catchSameCode = 0
     const arr = barCodes;
-    arr.map((item)=> {
+    arr.map((item) => {
       if(item?.code === prod?.barCode && item?.row !== row) {
         setErrorName("Կրկնվող բառկոդ/ ներքին կոդ")
         return catchSameCode++
@@ -85,7 +86,7 @@ const ExcelRow = ({
       if(catchSameCode) {
         return false
       }else{
-          arr[`${row}`]={code:prod?.barCode,row:row}
+          arr[`${row}`] = {code:prod?.barCode,row:row}
           setBarCodes(arr)
       //  return barcodeValidation(prod?.barCode)
        return await barcodeValidation(prod?.barCode).then((res)=> {
@@ -102,14 +103,18 @@ const ExcelRow = ({
       }
     };
 
+    const adgSearchingForVAlidate = (strType) => {
+      return allAdgs.includes(strType) ? true : false
+    }
+
   const filterValidRow = async() => {
     setIsValidCurrentProd({
-      type: await adgValidation(prod?.type),
+      type: await adgSearchingForVAlidate(prod?.type),
       measure: await measureValidation(prod?.measure),
       name: await nameLimitValidation(prod?.name, prod?.name?.length),
       price: prod?.price < 1 ? false : await priceValidation(prod?.price),
       purchasePrice: await priceValidation(prod?.purchasePrice),
-      remainder: await priceValidationNum(prod?.remainder,3),
+      remainder: await priceValidationNum(prod?.remainder, 3),
       barCode: await uniqBarcodeInExcel(),
     });
   };
@@ -125,7 +130,7 @@ const ExcelRow = ({
     let response = null;
     switch (ceilName) {
       case "type":
-        response =  await adgValidation(prod?.type)
+        response =  await adgSearchingForVAlidate(prod?.type)
         setDataToUploading(response)
         break;
       case "measure":
@@ -148,7 +153,7 @@ const ExcelRow = ({
         response = await priceValidation(prod?.remainder)
         setDataToUploading(response)
         break;
-      case "barCode":
+      case "barCode": 
         response =  await barcodeCeilManagement()
         setDataToUploading(response)
       break;
@@ -199,6 +204,7 @@ const ExcelRow = ({
   useEffect(()=> {
   filterValidRow()
   },[]);
+   
   useEffect(()=>{
     if(prod?.measure=== "հատ" || prod?.measure === "pcs" || prod?.measure === "шт") {
       handleChange("remainder",Math.round(prod?.remainder))

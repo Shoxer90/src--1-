@@ -7,7 +7,7 @@ import styles from "../index.module.scss";
 import ConfirmDialog from "../../../Container2/dialogs/ConfirmDialog";
 import { useState } from "react";
 
-const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent, setSingleClick, paymentInfo}) => {
+const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent, setSingleClick, setFetching}) => {
 
   const [openDialog,setOpenDialog] = useState(false);
 
@@ -31,7 +31,9 @@ const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent, setSi
         </Button>: ""
       }
       <IconButton
-        onClick={()=>setOpenBasket(false)}
+        onClick={()=>{
+          setOpenBasket(false)
+        }}
         style={{color:"gray", left:2}}
       > 
         <CloseIcon />

@@ -4,17 +4,15 @@ import styles from "../index.module.scss"
   const AdvancePayment = ({
     t,
     paymentInfo, 
+    setTotalPrice ,
     setPaymentInfo, 
     flag, 
     setSingleClick,
-    blockTheButton,
     setBlockTheButton,
     val,
     setVal,
-    setTotalPrice
   }) => {
 
-  // const [val,setVal] = useState(0);
   
   const handleChangePrepayment = (event) => {
     const valid = /^\d+(\.\d{1,2})?$/;

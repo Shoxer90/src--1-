@@ -4,7 +4,7 @@ import { memo } from "react";
 import styles from "./index.module.scss";
 
 
-const ReceiptPartners = ({partner, userName, date}) => {
+const ReceiptPartners = ({partner, userName,taxCount, date}) => {
   return(
     <div className={styles.receiptPartner}>
       {partner?.printResponse?.commercial_name && <span>"{partner?.printResponse?.commercial_name} "</span>}
@@ -38,7 +38,9 @@ const ReceiptPartners = ({partner, userName, date}) => {
         { partner?.printResponseInfo?.items[0]?.dep === 1 &&
           <div>
             <div>/ԱԱՀ-ով հարկվող/ = {partner?.printResponse?.total.toFixed(2)} դրամ </div>
-            <div>Որից ԱԱՀ = {partner?.printResponseInfo?.items[0]?.vat} դրամ  </div>
+            {/* <div>Որից ԱԱՀ = {partner?.printResponseInfo?.items[0]?.vat} դրամ  </div> */}
+            {/* <div>Որից ԱԱՀ = {partner?.printResponseInfo?.items[0]?.totalWithoutTaxes} դրամ  </div> */}
+            <div>Որից ԱԱՀ = {(partner?.printResponse?.total - taxCount).toFixed(2)} դրամ  </div>
           </div>
         }
           { partner?.printResponseInfo?.items[0]?.dep === 2 &&

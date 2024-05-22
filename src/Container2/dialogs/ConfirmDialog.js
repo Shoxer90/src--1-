@@ -3,14 +3,14 @@ import React from "react";
 import { memo } from "react";
 
 const ConfirmDialog = ({
-  question,
+  t,
   func, 
-  title,
   open,
+  title,
   close,
   content,
-  t,
-  nobutton
+  nobutton,
+  question,
 }) => {
 
   return(

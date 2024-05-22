@@ -6,6 +6,7 @@ import { hdm_generate } from "../../../services/user/hdm_query";
 import HistoryDetails from "../details/HistoryDetails";
 import ReverseContainer from "../reverse";
 import Receipt from "../hdm/receipt/index";
+import { taxCounting } from "../../../modules/modules";
 
 const HistoryItems = ({
   item, 
@@ -25,6 +26,8 @@ const HistoryItems = ({
   const [openHDM, setOpenHDM] = useState(false);
   const [message, setMessage] = useState("");
   const [saleData, setSaleData] = useState({});
+  const [taxCount,setTaxCount] = useState();
+
   const reverseButton = true;
 
   const dialogManage = () => {
@@ -40,6 +43,8 @@ const HistoryItems = ({
       await hdm_generate(id).then((resp) => {
         setLoad(false)
         if(resp?.res?.printResponse){
+          const tax = taxCounting(resp?.res?.printResponseInfo?.items)
+          setTaxCount(tax)
           setSaleData(resp)
           setLoad(false)
           setOpenHDM(true)
@@ -100,7 +105,10 @@ const HistoryItems = ({
         </TableCell>
       }
       {filterBody.includes("recieptId") && <TableCell style={{padding:"0px 16px"}}>{item?.recieptId}</TableCell>}
-      {filterBody.includes("total") && <TableCell style={{padding:"0px 16px"}}>{item?.total} {t("units.amd")}</TableCell>}
+      {filterBody.includes("total") && <TableCell style={{padding:"0px"}}>{item?.total} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
+      {filterBody.includes("cashAmount") && <TableCell>{item?.cashAmount}  <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
+      {filterBody.includes("cardAmount") && <TableCell>{item?.cardAmount}  <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
+      {filterBody.includes("prepaymentAmount") && <TableCell>{item?.prePaymentAmount}  <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
       {filterBody.includes("additionalDiscount") && <TableCell style={{padding:"0px 16px"}}>{item?.additionalDiscount} </TableCell>}
       {filterBody.includes("saleType") && 
         <TableCell style={{padding:"0px 16px",fontSize:"85%"}}>
@@ -149,6 +157,7 @@ const HistoryItems = ({
    { openHDM && pageName?.status === "Paid" &&
      <Receipt
        setOpenHDM={setOpenHDM}
+      taxCount={taxCount}
        saleData={saleData}
        openHDM={openHDM}
        date={item?.date}

@@ -1,11 +1,11 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import * as XLSX from "xlsx";
 import ExcelRow from './ExcelRow';
 import styles from "./index.module.scss";
 import { Dialog, Divider } from '@mui/material';
 import AddMultipleProductsDialog from './AddMultipleProductsDialog';
-import { createProductList } from '../../../services/products/productsRequests';
+import { createProductList, getAllAdgCode } from '../../../services/products/productsRequests';
 import Loader from '../../loading/Loader';
 import SnackErr from '../../dialogs/SnackErr';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +18,8 @@ const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
   const [message,setMessage] = useState({m:"",t:""});
   const [rowStatus,setRowStatus] = useState({});
   const [barCodes,setBarCodes] = useState([]);
-
+  const [allAdgs, setAllAdgs] = useState([]);
+  
   const readExcel = (e) => {
    setIsLoad(true)
     const promise = new Promise((resolve,reject) => {
@@ -126,6 +127,12 @@ const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
     window.location.reload(false);
   };
 
+  useEffect(() => {
+    !allAdgs.length && getAllAdgCode().then((res) => {
+      setAllAdgs(res)
+    })
+  }, []);
+
   return (
     <div style={{marginTop:"100px"}}>
       <Dialog open={!!isLoad}>
@@ -181,8 +188,9 @@ const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
                 checkRowStatus={checkRowStatus}
                 row={index+1}
                 t={t}
-                setBarCodes={setBarCodes}y
+                setBarCodes={setBarCodes}
                 barCodes={barCodes}
+                allAdgs={allAdgs}
               />
             </tbody>
           })}

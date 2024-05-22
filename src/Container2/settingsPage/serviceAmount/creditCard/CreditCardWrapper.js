@@ -15,7 +15,8 @@ const CreditCardWrapper = ({
 }) => {
   
   return (
-  <div style={{margin: "10px 0px 10px 10px",position:"relative",width:"fit-content"}}>
+    <div>
+  <div style={{ position:"relative", width:"fit-content"}}>
     <div style={{position:"absolute",right:"10px",top:"5px",zIndex:"2"}}>
         {!isMain && 
           <span className={styles.creditCard_bank_icon} onClick={()=>handleOperation(1,cardId)}>
@@ -37,6 +38,7 @@ const CreditCardWrapper = ({
       </div>
       {element}
     </div>
+  </div>
   )
 }
 

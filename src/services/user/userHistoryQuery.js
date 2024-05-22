@@ -74,11 +74,9 @@ export async function sendSmsPDF(plchld, body) {
   }
 };
 
-export async function generateToExcel(date){
-  const queryDate = {
-    startDate: date?.startDate ? format(date?.startDate, 'MM-dd-yyyy') : format(new Date(), 'MM-dd-yyyy'),
-    endDate: date?.endDate ? format(date?.endDate, 'MM-dd-yyyy'): format(new Date(), 'MM-dd-yyyy')
-  };
+
+export async function generateToExcel(queryDate){
+
   const bb = {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -86,9 +84,10 @@ export async function generateToExcel(date){
     responseType: "blob"
   }
   try {
-    const  data = await axios.get(baseUrl + `History/GenerateExcel?startDate=${queryDate?.startDate}&endDate=${queryDate?.endDate}`, bb);
+    const  data = await axios.get(baseUrl + `History/GenerateExcel?startDate=${queryDate?.startDate}&endDate=${queryDate?.endDate}&products=${queryDate?.products}`, bb);
     return data.data
   }catch(err) {
     return err
   }
 };
+

@@ -16,13 +16,13 @@ const HomeNavigation = ({
   searchValue,
   dataGroup,
   setFrom,
-  setMessage,
-  t
+  t,
+  setContent
 }) => {
   const {limitedUsing} = useContext(LimitContext);
   
   const  handleSendQuery = async(str, index) => {
-    setMessage("")
+    setContent([])
     await setCurrentPage(1)
     changeStatus(str,index)
   };

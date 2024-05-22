@@ -15,7 +15,7 @@ const ReceiptFooter = ({totalPrice, receiptInfo}) => {
         <div> Վճարման ենթակա  {receiptInfo?.totalAmount.toFixed(2)} դրամ </div>
         <div> Առձեռն  {(receiptInfo?.cashAmount.toFixed(2))} դրամ </div>
         <div> Անկանխիկ  {(receiptInfo?.cardAmount.toFixed(2))} դրամ</div>
-        <div> Կանխավճար  {(receiptInfo?.prePayment.toFixed(2))} դրամ</div>
+        <div> Կանխավճարի օգտագործում  {(receiptInfo?.prePayment.toFixed(2))} դրամ</div>
         {/* <div> Փոխհատուցում  {(receiptInfo?.partialAmount.toFixed(2))} դրամ </div> */}
       </div> : 
       <div className={styles.receiptFooter}>

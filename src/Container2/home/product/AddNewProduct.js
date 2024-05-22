@@ -33,8 +33,9 @@ const AddNewProduct = ({
   setTypeCode,
   getSelectData,
   selectContent,
-  globalMessage,
-  setSelectContent,
+  setFetching,
+  setFlag,
+  flag,
   setGlobalMessage,
   setGlobalType
 }) => {
@@ -46,7 +47,7 @@ const AddNewProduct = ({
   const [openForSave, setOpenForSave] = useState(false);
   const [emptyValidate, setEmptyValidate] = useState(false);
   const [isUniqBarCode, setIsUniqBarcode] = useState(true);
-
+  
   const onlyNumberAndADot = (event,num) => {
     const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
     let text = event.target.value; 
@@ -95,17 +96,16 @@ const AddNewProduct = ({
       setType("error")
       setMessage(t("authorize.errors.emptyfield"))
       return
-    }else if(newProduct?.price<1){
+    }else if(newProduct?.price < 1){
       setType("error")
-        setMessage(t("dialogs.pricezero")) 
-        return
+      setMessage(t("dialogs.pricezero")) 
+      return
     }
-
     await uniqueBarCode(newProduct?.barCode).then((res) => {
       if(res){
-
         setIsUniqBarcode(true)
-         createProduct(newProduct).then((res)=> {
+        setFetching(true)
+        createProduct(newProduct).then((res)=> {
           setEmptyValidate(true)
           if(res === 400){
             setType("error")
@@ -118,6 +118,7 @@ const AddNewProduct = ({
             setMessage(t("dialogs.pricezero")) 
             return
           }else{
+            
             setEmptyValidate(false)
             setMessage(t("productinputs.productadded"))
             setType("success")
@@ -178,6 +179,7 @@ const AddNewProduct = ({
 
   const handleClose = async() => {
     setTypeCode("")
+    setFetching(true)
     setOpenNewProduct(!openNewProd);
   };
 
@@ -188,10 +190,11 @@ const AddNewProduct = ({
     setGlobalMessage(t("dialogs.done"))
     setGlobalType("success")
     setTimeout(()=>{
-    setGlobalType("")
-    setGlobalMessage("")
-  },3000)
-  }
+      setGlobalType("")
+      setGlobalMessage("")
+    },3000)
+  };
+  
   const closeSaver = () => {
     setOpenForSave(false)
     handleClose()

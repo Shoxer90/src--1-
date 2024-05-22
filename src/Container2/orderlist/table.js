@@ -37,7 +37,7 @@ const DenseTable = ({basketContent}) => {
           ))}
         </TableBody>
       </Table>:
-      <h4>1. {t("basket.useprepayment")} {basketContent?.total} {t("units.amd")}</h4>}
+      <h4> {t("basket.useprepayment")} {basketContent?.total} {t("units.amd")}</h4>}
     </TableContainer>
   );
 };

@@ -36,6 +36,8 @@ import { Alert, Snackbar } from "@mui/material";
 import useDebonce from "./Container2/hooks/useDebonce";
 import Cashiers from "./Container2/settingsPage/cashiers/Cashiers";
 import SettingsUser from "./Container2/settingsPage/user"
+import { getNewNotifications } from "./services/user/getUser";
+import Notification from "./Container2/dialogs/Notification";
 const App = () => {
 
   const [limitedUsing, setLimitedUsing] = useState();
@@ -63,9 +65,11 @@ const App = () => {
   const debounceBasket = useDebonce(barcodeScanValue, 20);
   const [activeBtn, setActiveBtn] = useState("/");
   const [lastDate,setLastDate] = useState("");
-
+  const [fetching, setFetching] = useState(true);
+  const [notification, setNotification] = useState([]);
 
   const whereIsMyUs = async() => {
+
     await dispatch(fetchUser()).then(async(res) => {
         const date = new Date(res?.payload?.nextPaymentDate);
         setLastDate(
@@ -90,9 +94,12 @@ const App = () => {
       }
       else if(res?.payload?.isInDate === true){
         setBlockedUser(false)
+        !res?.payload?.confirmation && checkForNewNotification()
       }
     })
+
   };
+
   const datePainter = (dateString) => {
     const date = new Date(dateString);
     setLastDate(
@@ -116,6 +123,7 @@ const App = () => {
         setMessage("")
       })
       setCurrentPage(2)
+
     }else{
       setMessage("")
       await byBarCode(barcode).then((res) => {
@@ -204,7 +212,7 @@ const App = () => {
         discountPrice: wishProduct?.discountType === 2? 
         wishProduct?.price - wishProduct.discount :
         wishProduct?.price - (wishProduct.price * wishProduct.discount/100) ,
-        count:+(quantity  ? quantity: 1)
+        count:+(quantity ? quantity: 1)
       })
     }
     localStorage.setItem("bascket1", JSON.stringify(basket))
@@ -252,7 +260,7 @@ const App = () => {
   
   const logOutFunc = () =>{
     const language = localStorage.getItem("lang");
-    // setContent([]);
+    setContent([]);
     localStorage.clear();
     localStorage.setItem("lang", language)
     setIsLogIn(false)
@@ -291,36 +299,44 @@ const App = () => {
   };
     
   const changeStatus = async(str) => {
-    setContent([])
     setCurrentPage(1)
     setDataGroup(str)
-    // await setIsFilter(false)
-    // setFetching(true)
     const response = await queryFunction(str, 1)
     setContent([ ...response?.data]);
     setCurrentPage(2)
-   
   };
 
+  const checkForNewNotification = () => {
+    !user?.confirmation && getNewNotifications().then((res) => {
+      console.log(user?.confirmation, "HEYY")
+      console.log(user, "user")
+      setNotification(res)
+    })
+  };
+  
+  console.log(user, "use252r")
   
   useEffect(() => { 
     getMeasure()
-  },[t])
+  },[t]);
 
   useEffect(() => {
     getMeasure()
     setDataGroup("GetAvailableProducts")
     setCurrentPage(1)
-    setContent([])
     loadBasket()
-  },[isLogin, flag])
-
+  },[isLogin]);
 
   useEffect(() => {
-    setContent([])
     whereIsMyUs() 
     setDataGroup("GetAvailableProducts")
+    console.log("21.05.24 version")
   },[]);
+
+  // useEffect(() => {
+  //   checkForNewNotification()
+  // }, [user]);
+
 
   useEffect(() =>{
     debounce && byBarCodeSearching(debounce)
@@ -423,12 +439,17 @@ const App = () => {
                   byBarCodeSearching={byBarCodeSearching}
                   setFrom={setFrom}
                   changeStatus={changeStatus}
+                  flag={flag}
+                  fetching={fetching}
+                  setFetching={setFetching}
+
+                  notification={notification}
                 />
               }  
             />
             <Route path="/excel" element={<PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} />} />
             <Route path="/feedback" element={<FeedBackPage logOutFunc={logOutFunc} t={t} />} />
-            <Route path="/setting/cashiers" element={<Cashiers t={t} screen={window.innerWidth} /> } />
+            <Route path="/setting/cashiers" element={<Cashiers t={t} cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
             <Route path="/setting/user" element={<SettingsUser user={user} t={t} x whereIsMyUs={whereIsMyUs} />} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} t={t}  measure={measure} />} />
             <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
@@ -466,8 +487,17 @@ const App = () => {
             setFrom={setFrom}
             user={user}
             setMesFromHead={setMessage}
-
+            fetching={fetching}
+            setFetching={setFetching}
+            setCurrentPage={setCurrentPage}
           />}
+          {notification.length ? <Notification 
+            t={t}
+            func={()=>setNotification([])}
+            data={notification}
+            setData={setNotification}
+            open={notification.length}
+          /> : ""}
          <Snackbar  
             sx={{ height: "100%" }}
             anchorOrigin={{   

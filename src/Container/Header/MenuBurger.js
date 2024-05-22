@@ -81,18 +81,19 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
       </Button>
       <StyledMenu
         anchorEl={anchorEl}
-        PaperProps={{  
-          style: {  
-            width: 270,  
-          },  
-       }} 
+      //   PaperProps={{  
+      //     style: {  
+      //       width: 320,  
+      //       // width: 270,  
+      //     },  
+      //  }} 
         open={open}
         onClose={() => setAnchorEl(null)}
-        style={{minWidth:"300px"}}
+        style={{minWidth:"350px"}}
       >
         {!limitedUsing && 
           <Box style={{display:'flex'}}>
-            <MiscellaneousServicesIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
+            <MiscellaneousServicesIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
             <MenuItem fontSize="medium"
               onClick={() => {
                 setActiveBtn("")
@@ -106,7 +107,7 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
         }
         {!limitedUsing && 
          <Box style={{display:'flex'}}>
-        <AccountCircleIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
+        <AccountCircleIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
           <MenuItem fontSize="medium"
             onClick={() => {
               setActiveBtn("")
@@ -119,7 +120,7 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
         </Box>}
         {!limitedUsing && user?.showPaymentPage && 
           <Box style={{display:'flex'}}>
-            <HomeRepairServiceIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
+            <HomeRepairServiceIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
             <MenuItem fontSize="medium"
               onClick={() => {
                 setActiveBtn("")
@@ -133,7 +134,7 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
         }
        
         <Box style={{display:'flex'}}>
-          <QuestionAnswerIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
+          <QuestionAnswerIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
           <MenuItem fontSize="medium"
             onClick={() => {
               navigate("/feedback")

@@ -91,6 +91,7 @@
     "save": "Save",
     "yes": "Yes",
     "no": "No",
+    "ok":"Ok",
     "sendResetLink": "Send Reset Link",
     "back" : "Back",
     "createMultiProds": "Import Catalog"
@@ -305,6 +306,7 @@
     "vat": "VAT",
     "transactionType":"Transaction Type",
     "prepaymentRedemption": "Prepayment",
+    "prepaymentRedemption1": "Prepayment redemption",
     "redacted": "Redacted",
     "cardCashSell": "Cash & Card payment",
     "partialPayment" : "Partial payment",
@@ -322,7 +324,9 @@
     "transaction":"Transaction",
     "reverseTotal": "Refund",
     "noProdExcel": "Excel without product list",
-    "prodExcel": "Excel with product list"
+    "prodExcel": "Excel with product list",
+    "selectAll": "Select All"
+
   }, 
   "updates": {
     "changes": "Changes",
@@ -340,6 +344,7 @@
   },
   "settings": {
     "switcher": "E-Cash",
+    "hdmstatus2": "POS terminal",
     "hdmstatus1": "active E-Cash",
     "hdmstatus0": "passive E-Cash",
     "switchReturnStatus": "Product / Coupon Return",
@@ -387,10 +392,12 @@
     "free": "Free",
     "ETRM": "ETRM",
     "StoreX": "StoreX",
-    "info":"Information"
+    "info":"Information",
+    "cashiereLimit": "Access to more than 2 cashiers, for each (one-time) 6000 dram․To activate the service, please contact 055 522225"
+
   },
   "cardService":{
-    "btnTitle" : "Services",
+    "btnTitle" : "Activation of services",
     "service": "Service Name",
     "payDate": "Pay Date",
     "activeDue":"Until",
@@ -405,7 +412,7 @@
     "noAttachedCards":"There are no registered cards",
     "amount" : "Monthly service",
     "amountDate": "Payment Due Date ",
-    "currentCommitment": "Service cost",
+    "currentCommitment": "Price",
     "createCard": "Add new card",
     "createCard2": "The card will be attached after the first payment is made",
     "remove": "Whant to remove your Credit Card?",
@@ -415,7 +422,7 @@
     "tax": "Provision of a tax account",
     "cardClone": "Card data exists.",
     "historySubTitle": "Payments",
-    "attanchAmount" : "In order to verify your card 10AMD will be charged. The amount will be returned after the confirmation. Do you want to continue?",
+    "attachAmount" : "Payment is possible only with VISA, MasterCard, ArCa cards issued by RA banks. To identify your card it will cost you 10 AMD which will be returned to you after transaction. Continue?",
     "newCard": "Add new card details",
     "payForService": "Pay for service  ",
     "payForSimilarServices": "Make similar transactions at the same time",
@@ -434,8 +441,8 @@
     "wrongCeil":  "There is a field with an incorrect format",
     "mainCard" : "Main Card",
     "editName": "Edit Credit Card Name",
-    "bankTransfer" : "Paid by bank transfer",
-    "bankMessage":"Account number for bank transfer: 151003026862300. Availability is provided within one business day after the payment is credited to the specified account",
+    "bankTransfer" : "Bank payment",
+    "bankMessage":"Payment can be done on bank account 1510030268626300. Access will be granted during 1 working day after the amount is credited on the mentioned account.",
     "inputs":{    
       "cardName":"Card Name",
       "cardNumber":"Card Number",

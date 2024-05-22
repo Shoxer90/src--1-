@@ -28,3 +28,20 @@ export  async function updateLogo(body) {
     }
 };
 
+export  async function getNewNotifications() {
+    try{
+        const  data = await axios.post(baseUrl + "User/GetConfirmationText",{}, option());
+        return data.data
+    }catch(err){
+        return err.response.status
+    }
+};
+
+export  async function cleanNotifications(bool) {
+    try{
+        const  data = await axios.post(baseUrl + `User/SaveConfirmation?Status=${bool}`, {}, option());
+        return data.data
+    }catch(err){
+        return err.response.status
+    }
+};

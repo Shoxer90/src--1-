@@ -29,7 +29,8 @@ const NewCashier = ({
   openCashierDial,
   userInfo,
   setUserInfo,
-  logOutFunc
+  logOutFunc,
+  limitOver
 }) => {
 
 	const [cashierUserName, setCashierUserName] = useState("");
@@ -68,6 +69,8 @@ const NewCashier = ({
           setMessage(t("dialogs.empty"))
         }else if(user?.response?.status === 401){
           logOutFunc()
+        }else if(user?.response?.status === 408){
+          limitOver()
         }else if(user?.status === 200){
           setCashierUserName(user.data)
           setRegister(!register)

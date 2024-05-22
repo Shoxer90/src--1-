@@ -17,6 +17,8 @@ const HistoryPage = ({logOutFunc, t}) => {
   const search = useLocation().search;
   const status = {status:new URLSearchParams(search).get("status")};
   const page = + (new URLSearchParams(search).get("page")) || 1 ;
+
+  
   const coordinator = {
     startDate: new URLSearchParams(search).get('startDate'),
     endDate: new URLSearchParams(search).get('endDate'),
@@ -127,7 +129,6 @@ const HistoryPage = ({logOutFunc, t}) => {
     </div>:
     <Dialog open={!historyContent}>
       <Loader />
-  
     </Dialog>
   )
 };

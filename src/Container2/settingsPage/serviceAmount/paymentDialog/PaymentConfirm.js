@@ -127,15 +127,6 @@ const PaymentConfirm = ({
         >""
         </a>
       }
-      <ConfirmDialog
-        question={t("cardService.attanchAmount")}
-        func = {getLinkForNewCard}
-        title = {t("cardService.newCard")}
-        open= {openDialog}
-        close = {setOpenDialog}
-        content={""}
-        t={t}
-      />
     </div>
   )
 }

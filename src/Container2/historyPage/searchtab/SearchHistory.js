@@ -8,27 +8,30 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { generateToExcel } from "../../../services/user/userHistoryQuery";
 import HistoryFilter from "../filter/index";
 import { format } from "date-fns";
+import HistoryExcelBurger from "../searchtab/burgerExcelLoader"
 
 import styles from "../index.module.scss";
 
 const SearchHistory = ({filterFunc, coordinator, t, initialFunc,status,columns,setColumns}) => {
+
   const [value, setValue] = useState({
     endDate: coordinator?.endDate ? coordinator?.endDate : new Date(),
     startDate: coordinator?.startDate ? coordinator?.startDate : new Date()
   });
+
   const handleFilter = () => {
     filterFunc({
       endDate:  format(value.endDate, 'MM-dd-yyyy'),
       startDate: format(value.startDate, 'MM-dd-yyyy')
     });
   };
-  const fileReader = async() => {
-    await generateToExcel(value).then((resp) => {
-      saveAs(new Blob([resp], {type: 'application/octet-stream'}), `StoreX.xlsx`)
-      // saveAs(new Blob([resp], {type: 'application/octet-stream'}), `StoreX${new Date()}.xlsx`)
 
+  const fileReader = async(argument) => {
+    await generateToExcel(argument).then((resp) => {
+      saveAs(new Blob([resp], {type: 'application/octet-stream'}), `StoreX.xlsx`)
     })
   };
+
 
   return (
     <div className={styles.history_searchBar}>
@@ -105,13 +108,12 @@ const SearchHistory = ({filterFunc, coordinator, t, initialFunc,status,columns,s
         </Button>
       </div>
       <div className={styles.history_searchBar_btn}>
-        <Button
-          size="small"
-          variant="contained"
-          onClick={fileReader}
-        >
-          {t("history.excel")}
-        </Button>
+      <HistoryExcelBurger 
+          t={t}
+          setValue={setValue}
+          value={value}
+          fileReader={fileReader}
+        />
       </div>
     </div>
   </div>

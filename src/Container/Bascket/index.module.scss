@@ -150,6 +150,7 @@
 
 .saleInfoInputs{
   font-size: 100%;
+
   
   & div{
     margin: 5px;
@@ -157,11 +158,12 @@
       border-radius: 5px;
       margin: 0px 10px;
       padding-left: 5px;
-      width: 80%;
+      // width: 80%;
       width:200px;
   }
     & >span{
-      min-width: 120px;
+      min-width: 230px;
+      // width: fit-content;
     }
     display: flex;
     justify-content: flex-start;
@@ -261,7 +263,8 @@
   }
   .saleInfoInputs{
     & div{
-      width:120px;
+    font-size: 80%;
+    width:fit-content;
       &> input{
         width: 80px;
       }
@@ -292,12 +295,13 @@ input[type=number] {
 
 @media screen and (max-width:1100px) {
   .saleInfoInputs{
-    font-size: 90%;
     & div{
+      font-size: 80%;
+      width: 100%;
       & >span{
-        min-width:120px;
+        min-width:165px;
       }
-      width:200px;
+      // width:200px;
       display: flex;
       justify-content: flex-start;
       flex-flow: nowrap;

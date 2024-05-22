@@ -1,9 +1,8 @@
 import React, { memo } from 'react';
 
 import styles from "../index.module.scss";
-import { t } from 'i18next';
 
-  const CreditCard = ({card,isMain}) => {
+  const CreditCard = ({card,isMain, t}) => {
 
     return (
     <span className={styles.creditCard} >

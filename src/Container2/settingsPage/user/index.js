@@ -2,8 +2,7 @@ import React, { memo, useEffect, useState } from "react";
 
 import styles from "./index.module.scss";
 import ClientShopAvatar from "./ClientShopAvatar";
-import { Button, Dialog, FormControlLabel } from "@mui/material";
-import IOSSwitch from "../../../modules/iosswitch";
+import { Button, Dialog } from "@mui/material";
 import ClientInfo from "./ClientInfo";
 import AddNewClientInfo from "../../dialogs/AddNewClientInfo";
 import ConfirmDialog from "../../dialogs/ConfirmDialog";
@@ -45,8 +44,32 @@ const SettingsUser = ({user,t, whereIsMyUs}) => {
     <h4 className={styles.settings_user_name}>
       {user?.firstname} {user?.lastname}  
     </h4>
+    <h6>
 
-    <FormControlLabel
+      <label>
+        <input 
+          type="radio"
+          name="sale type"
+          checked={user?.isEhdmStatus}
+          onClick={()=>setConfirmSwitch(true)}
+          style={{cursor:"pointer"}}
+        />
+        <span style={{marginLeft:"10px"}}>{t("settings.ETRM")}</span>
+      </label>
+      <label style={{marginLeft:"20px"}}>
+        <input 
+          type="radio"
+          name="sale type"
+          checked={!user?.isEhdmStatus}
+          
+          onClick={()=>setConfirmSwitch(true)}
+        />
+       <span style={{marginLeft:"10px"}}>{t("history.receiptNoHmd")}</span> 
+      </label>
+    </h6>
+
+
+    {/* <FormControlLabel
       control={<IOSSwitch 
         label={t("settings.switcher")}
         checked={ !!user?.isEhdmStatus}
@@ -55,7 +78,7 @@ const SettingsUser = ({user,t, whereIsMyUs}) => {
         }
         sx={{ m: 1 }} 
       />}
-    />
+    /> */}
     {user && <ClientInfo />}
   
     <Button onClick={()=>addClientInfo("password")}>
@@ -81,10 +104,10 @@ const SettingsUser = ({user,t, whereIsMyUs}) => {
         label={inputLabels} 
         setInputLabels={setInputLabels}
       />
-       {message?.m && 
+       {message?.m ?
         <Dialog open={message?.m}>
           <SnackErr type={message?.t} message={message?.m} close={setMessage}/>
-        </Dialog>
+        </Dialog> :""
       }
       
     </div>

@@ -8,7 +8,6 @@ const ProductPayment = ({
   checkDiscountVsProdPrice, 
   paymentInfo, 
   setPaymentInfo,
-  setSingleClick,
   trsf,
   setBlockTheButton,
 }) => {
@@ -52,7 +51,6 @@ const ProductPayment = ({
       })
       setFlag(e.target.value)
     }
-    setSingleClick({})
 };
 
   const cashChanges = () => {
@@ -136,7 +134,7 @@ const ProductPayment = ({
       </div>
       <div>
         <span>
-          {t("basket.useprepayment")}
+          {t("basket.prepaymentTitle")}
         </span>
         <input
           value={paymentInfo?.prePaymentAmount || ""}
@@ -150,13 +148,14 @@ const ProductPayment = ({
         />
       </div>
       <div>
-        <span>
+        <span >
           {t("basket.partner")}{" "}
         </span>
         <input
           value={paymentInfo?.partnerTin}
           autoComplete="off"
           name="partnerTin"
+          placeholder={`8 ${t('productinputs.symb')}`}
           onChange={(e)=> {
             if(`${e.target.value}`?.length <= 8){
               setPaymentInfo({

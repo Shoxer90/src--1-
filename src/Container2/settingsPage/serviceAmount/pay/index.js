@@ -8,6 +8,7 @@ import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import { payForServiceWithAttachedCard, payForServiceWithNewCard } from "../../../../services/internal/InternalPayments";
 import Loader from "../../../loading/Loader";
 import SnackErr from "../../../dialogs/SnackErr";
+import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 
 const PayComponent = ({
   openPay,
@@ -40,7 +41,6 @@ const PayComponent = ({
       isBinding: content?.autopayment?.hasAutoPayment,
       serviceType: serviceType,
       cardId: content?.autopayment?.defaultCard?.cardId
-      // cardId: 0
     })
     setOpenPay(false)
   };
@@ -67,12 +67,15 @@ const PayComponent = ({
       })
       
     }else if (method === 2){
-      payForServiceWithNewCard(billsData).then((res) => {
+      payUsingNewCard()
+    }
+  };
+  const payUsingNewCard = () => {
+    payForServiceWithNewCard(billsData).then((res) => {
       setLoader(false)
         setResponseUrl(res?.formUrl)
       })
-    }
-  };
+  }
 
   useEffect(() => {
     responseUrl && ref.current.click()
@@ -125,20 +128,25 @@ const PayComponent = ({
         variant="contained"
         onClick={servicePay}  
         sx={{m:2,background:"#3FB68A"}}
-        // disabled={billsData?.attach === undefined && billsData?.cardId === undefined}
         disabled={billsData?.attach === undefined && billsData?.cardId === undefined }
       >
         {t("basket.totalndiscount")} {billsData?.daysEnum * price} ֏ 
       </Button>
+     
       {loader && 
         <Dialog open={!!loader}>
           <Loader
            close={!loader} />
         </Dialog>
       }
-      <Dialog open={openBankInfo}>
-        <SnackErr type="success" message={t("cardService.bankMessage")}  close={setOpenBankInfo}/>
-      </Dialog>
+      <ConfirmDialog
+        t={t} 
+        func={()=>setOpenBankInfo(false)} 
+        open={openBankInfo}
+        close={setOpenBankInfo}
+        question={<strong>{t("cardService.bankMessage")}</strong>}
+        nobutton={true}
+      />
     </Dialog>
   )
 };

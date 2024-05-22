@@ -2,7 +2,12 @@ import React, { memo, useRef } from "react";
 import styles from "./index.module.scss";
 import { useEffect } from "react";
 
-const ReverceConditions2 = ({saleInfo , t, reverseTotal, conditionState, setCondition}) => {
+const ReverceConditions2 = ({
+  saleInfo,
+  t,
+  reverseTotal, 
+  conditionState, 
+  setCondition}) => {
 
 
   const handleChangeInput = (e) => {
@@ -94,7 +99,7 @@ const ReverceConditions2 = ({saleInfo , t, reverseTotal, conditionState, setCond
         }
 
         {saleInfo?.res?.printResponseInfo?.prePayment ?
-          <span> {t("basket.useprepayment")} {saleInfo?.res?.printResponseInfo?.prePayment} {t("units.amd")}</span> 
+          <span> {t("history.prepaymentRedemption1")} {saleInfo?.res?.printResponseInfo?.prePayment} {t("units.amd")}</span> 
           :""
         }
         <span style={{ fontSize:"120%",color:"green"}}>

@@ -5,7 +5,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';
 
 
-const SearchBarcode = ({searchValue, setSearchValue, byBarCodeSearching, setFrom,stringFrom}) => {
+const SearchBarcode = ({
+  searchValue, 
+  setSearchValue, 
+  byBarCodeSearching, 
+  setFrom,
+  stringFrom
+}) => {
 
   const handleChangeSearch = (e) => {
     setFrom(stringFrom)

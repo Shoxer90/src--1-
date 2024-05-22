@@ -13,7 +13,6 @@ import SnackErr from "../dialogs/SnackErr";
 
 const HomePage = ({
   t,
-  changeStatus,
   measure,
   dataGroup,
   setDataGroup,
@@ -29,17 +28,19 @@ const HomePage = ({
   searchValue, 
   setSearchValue, 
   byBarCodeSearching,
-  isLogin
+  isLogin,
+  flag,
+  setFetching,
+  fetching, notification
 }) => {
   
-  const [openNewProd,setOpenNewProduct] = useState(false);
-  const [fetching,setFetching] = useState(true);
+  const [openNewProd, setOpenNewProduct] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [message,setMessage] = useState("");
-  const [snackMessage,setSnackMessage] = useState("");
-	const [typeCode,setTypeCode] = useState();
-  const [selectContent,setSelectContent] = useState();
+  const [snackMessage, setSnackMessage] = useState("");
+	const [typeCode, setTypeCode] = useState();
+  const [selectContent, setSelectContent] = useState();
   const [type, setType] = useState();
+
   const [newProduct,setProduct] = useState({
     purchasePrice: "",
     price: "",
@@ -51,12 +52,40 @@ const HomePage = ({
     barCode: "",
     photo:"",
     measure:"",
-    pan: 0
+    pan: 0,
+    dep: 0
   }); 
 
+  const changeStatus = async(str) => {
+    await setCurrentPage(1)
+    setDataGroup(str)
+    setFetching(true)
+    setProduct({
+      measure: "",
+      purchasePrice: "",
+      price: "",
+      type: "",
+      brand: "",
+      name: "",
+      discount: 0,
+      remainder: "",
+      photo:"",
+      dep:0
+
+    })
+  };
+  
   const deleteAndRefresh = async(id) => {
-    await removeProduct(id)
-    deleteBasketItem(id)
+    await removeProduct(id).then((res) => {
+      if(res?.status === 200) {
+        // setFetching(true)
+        deleteBasketItem(id)
+        const newArr = content.filter(item => item?.id !== id)
+        setContent(newArr)
+        setSnackMessage(t("dialogs.done"))
+        setType("success")
+      }
+    })
   };
 
   const getSelectData = () => {
@@ -94,34 +123,31 @@ const HomePage = ({
     }
   };
 
+  useEffect(() => {
+    setFetching(true)
+  },[]);
 
   useEffect(() => {
-    fetching && 
-    queryFunction(dataGroup,currentPage).then((res) => { 
-    setFetching(false)
+    fetching && queryFunction(dataGroup, currentPage).then((res) => { 
+      setTotalCount(res?.headers["count"])
+      setFetching(false)
       if(res?.data?.length === 0){
-        return 
-      }else if(!content?.length) {
-        setContent([...res?.data])
-      }
-      else{
+       return 
+      }else{
         setContent([...content, ...res?.data])
       }
       setCurrentPage(currentPage + 1) 
-      setTotalCount(res?.headers["count"])
     })
-      .finally(() => {
-      setFetching(false)
-    });
 
-}, [fetching, dataGroup, isLogin]);
+    if(totalCount && totalCount > content?.length){
+      document.addEventListener("scroll", scrollHandler)
+      return function () {
+        document.removeEventListener("scroll", scrollHandler)
+      } 
+    }
+    
+  }, [fetching, dataGroup, isLogin, openNewProd, flag]);
 
-  useEffect(() => {
-    document.addEventListener("scroll", scrollHandler)
-    return function () {
-      document.removeEventListener("scroll", scrollHandler)
-    } 
-  }, []);
   return(
     <div className={styles.productPage}>
       <HomeNavigation 
@@ -135,12 +161,8 @@ const HomePage = ({
         openNewProd={openNewProd}
         dataGroup={dataGroup}
         setFrom={setFrom}
-        setMessage={setMessage}
+        setContent={setContent}
       />
-      {message ? 
-        <div style={{margin:"20% auto",color:"grey"}}>
-          <h1>{message}</h1>
-        </div> :
         <HomeContent
           t={t}
           measure={measure}
@@ -156,8 +178,9 @@ const HomePage = ({
           typeCode={typeCode}
           setTypeCode={setTypeCode}
           setDataGroup={setDataGroup} 
+          setFetching={setFetching} 
+          setContent={setContent}
         />
-      }
       {openNewProd && <AddNewProduct 
         t={t} 
         newProduct={newProduct}
@@ -174,7 +197,20 @@ const HomePage = ({
         globalMessage={snackMessage}
         setGlobalMessage={setSnackMessage}
         setGlobalType={setType}
+        setFetching={setFetching}
       />}
+      {/* <ConfirmDialog
+        t={t}
+        func={}
+        open={notification}
+        title={notification[0]}
+        close={}
+        content={}
+        nobutton={}
+        buttonTitle={}
+        question={}
+      /> */}
+     
       <Dialog open={Boolean(type)}>
         <SnackErr open={snackMessage} type={type} close={setType} message={snackMessage}/>
       </Dialog>

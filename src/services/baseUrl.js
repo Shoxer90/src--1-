@@ -31,8 +31,23 @@ export const columnNames = [{
   key: "total",
   checked:  true
 },{
-  title: "basket.discount",
+  title: "history.cash",
   id: 4,
+  key: "cashAmount",
+  checked:  true
+},{
+  title: "history.card",
+  id: 5,
+  key: "cardAmount",
+  checked:  true
+},{
+  title: "basket.useprepayment",
+  id: 6,
+  key: "prepaymentAmount",
+  checked:  true
+},{
+  title: "basket.discount",
+  id: 7,
   key: "additionalDiscount",
   checked:  true
 },{
@@ -40,54 +55,7 @@ export const columnNames = [{
   id: 17,
   key: "saleType",
   checked:  true
-},
-// {
-//   title: "history.vat",
-//   id: 5,
-//   key: "1",
-//   checked:  true
-// },{
-//   title: "history.cash",
-//   id: 6,
-//   key: "2",
-//   checked:  true
-// },{
-//   title: "history.card",
-//   id: 7,
-//   key: "3",
-//   checked:  true
-// },{
-//   title: "history.transactionType",
-//   id: 8,
-//   key: "4",
-//   checked:  true
-// },{
-//   title: "history.prepaymentRedemption",
-//   id: 9,
-//   key: "5",
-//   checked:  true
-// },{
-//   title: "history.partialPayment",
-//   id: 10,
-//   key: "6",
-//   checked:  true
-// },{
-//   title: "history.refundAmount",
-//   id: 11,
-//   key: "7",
-//   checked:  true
-// },{
-//   title: "history.refundAmount",
-//   id: 12,
-//   key: "8",
-//   checked:  true
-// },{
-//   title: "history.fiskalnum",
-//   id: 13,
-//   key: "9",
-//   checked:  true
-// },
-{
+},{
   title: "basket.partner",
   id: 14,
   key: "partnerTin",
@@ -98,11 +66,6 @@ export const columnNames = [{
   key: "cashier",
   checked:  true
 },
-// {
-//   title:  "history.cashregister",
-//   id: 16,
-//   key: "10",
-//   checked:  true
-// }
+
 ];
 

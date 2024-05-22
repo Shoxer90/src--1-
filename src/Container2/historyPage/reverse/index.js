@@ -12,7 +12,6 @@ import { reverseProductNew } from "../../../services/user/userHistoryQuery";
 import Loader from "../../loading/Loader";
 
 import ReverseItem from "./ReverseItem";
-// import ReverceConditions from "./ReverceConditions";
 import ReversePrepayment from "./ReversePrepayment";
 import ReverceConditions2 from "./ReverseConditions2"
 import ReverseContent from "./content/ReverseContent";
@@ -85,6 +84,17 @@ const ReverseContainer = ({
       })
     )
   };
+
+  const selectAllProducts = async(bool) => {
+    const newArr = await products.map((item, index) =>{
+        return {
+          ...item,
+          isChecked: bool,
+          quantity: reverseContainer[index].quantity
+        }
+      })
+      setReverseContainer(newArr)
+  };
   
   const reverse = async () => {
     const newArr = []
@@ -119,11 +129,12 @@ const ReverseContainer = ({
     await products && products.map((item) => arr.push({
       recieptId: item?.recieptId, 
       quantity: item?.count, 
-      isChecked: saleInfo?.res?.printResponseInfo?.partialAmount? true : false
+      isChecked: saleInfo?.res?.printResponseInfo?.partialAmount ? true : false
     }))
     setReverseContainer(arr)
   };
- 
+
+  
   useEffect(() => {
     fillReverseContainer()
   }, [openDialog]);
@@ -160,14 +171,15 @@ const ReverseContainer = ({
       <DialogContent  style={{padding:"10px"}} >
         <div style={{padding:"10px",paddingBottom:"12px"}}> 
           {products?.length ?
-          // {saleInfo?.res?.printResponseInfo?.saleType !== 5 ?
             <ReverseContent 
+              t={t}
               products={products} 
               setReverseContainer={setReverseContainer}
               reverseContainer={reverseContainer}
               checkedProduct={checkedProduct}
               setReverseTotal={setReverseTotal}
               saleInfo={saleInfo}
+              selectAllProducts={selectAllProducts}
             /> :
             <ReversePrepayment
               saleInfo={saleInfo} 
@@ -178,27 +190,14 @@ const ReverseContainer = ({
           }
         </div>
         <Divider color="black" />
-        {/* <ReverceConditions 
-          saleInfo={saleInfo} 
-          t={t} 
-          reverseTotal={reverseTotal} 
-          setReverseTotal={setReverseTotal}
-          conditionState={conditionState}
-          setCondition={setCondition} 
-          reversePrepayment={reversePrepayment}
-          setReversePrepayment={setReversePrepayment}
-        /> */}
         <ReverceConditions2
           saleInfo={saleInfo} 
           t={t} 
           reverseTotal={reverseTotal} 
-          setReverseTotal={setReverseTotal}
           conditionState={conditionState}
           setCondition={setCondition} 
-          reversePrepayment={reversePrepayment}
-          setReversePrepayment={setReversePrepayment}
         />
-      <Divider color="black" />
+        <Divider color="black" />
       </DialogContent>
       <DialogActions style={{position:"sticky",marginTop:"0px"}}>
         <Button autoFocus onClick={dialogManage}>
@@ -206,9 +205,8 @@ const ReverseContainer = ({
         </Button>
         <Button 
           onClick={reverse}
-
           disabled = {conditionState?.cashAmount > saleInfo?.res?.printResponseInfo?.cashAmount + saleInfo?.res?.printResponseInfo?.prePayment || conditionState?.cardAmount > saleInfo?.res?.printResponseInfo?.cardAmount}
-          >
+        >
           {t("buttons.submit")}
         </Button>
       </DialogActions>

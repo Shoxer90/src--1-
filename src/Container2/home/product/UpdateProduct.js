@@ -30,10 +30,12 @@ const UpdateProduct = ({
   setOpenUpdateProduct,
   product, 
   deleteAndRefresh, 
-  changeStatus, 
+  setNewPrice, 
   deleteBasketItem, 
   t,
-  dataGroup,
+  setFetching,
+  setContent,
+  content,
   getSelectData,
   typeCode,setTypeCode
 }) => {
@@ -100,9 +102,9 @@ const UpdateProduct = ({
       await getMeasureByNum(e.target.value).then((res) => {
         if(res === "հատ") {
          setCurrentProduct({
-           ...currentProduct,
-          [e.target.name]: res,
-          remainder: Math.round(currentProduct?.remainder)
+              ...currentProduct,
+            [e.target.name]: res,
+            remainder: Math.round(currentProduct?.remainder)
          })
         }else{
           setCurrentProduct({
@@ -118,7 +120,6 @@ const UpdateProduct = ({
       })
     }
 	};
-
   const handleClose = () => {
     setOpenUpdateProduct(!openUpdateProd);
   };
@@ -142,12 +143,25 @@ const UpdateProduct = ({
   };
 
   const handleUpdate = async() => {
+    // setContent([])
+     const newArr = await content.map((item) => {
+      if(item?.id === currentProduct?.id){
+           return currentProduct
+      }else{
+        return item
+      }
+    });
+    setContent(newArr)
+
     updateProduct(currentProduct).then((res) => {
-      if(res === 200) { 
-        setMessage({message:t("dialogs.welldone"),type:"success"})
+      setFetching(true)
+      if(res === 200) {
+        deleteBasketItem(currentProduct?.id)
+
+        setFlag(!flag)
+        setMessage({message:t("dialogs.welldone"),type:"success"});
         setTimeout(() => {
-          changeStatus("GetAvailableProducts")
-          deleteBasketItem(currentProduct?.id)
+          // changeStatus("GetAvailableProducts")
           handleClose()  
         },2000)
       }else if(res === 400) {
@@ -158,7 +172,7 @@ const UpdateProduct = ({
   };
 
   const priceValidate = async (price, discount, type) => {
-    if(price === "")return
+    if(price === "") return
     if(`${type}` === "1" || `${type}` === "0") {
       return price - discount / 100 * price < 1 ? (
         setValidPrice(false),
@@ -173,8 +187,8 @@ const UpdateProduct = ({
         setFixMessage(t("dialogs.discountlimit"))
       ):(
         setFixMessage(""),
-          setValidPrice(true)
-        )
+        setValidPrice(true)
+      )
     }
   };
 
@@ -185,14 +199,15 @@ const UpdateProduct = ({
   };
 
   const functionInit = async() => {
-   if(flag === 0 && currentProduct){
-     setTypeCode(currentProduct?.type)
-    await getSelectData()
-     setFlag(1)
-   }else{
-     getSelectData()
-   }
+    if(flag === 0 && currentProduct){
+      setTypeCode(currentProduct?.type)
+      await getSelectData()
+      setFlag(1)
+    }else{
+      getSelectData()
+    }
   };
+
   useEffect(() => {
     getMeasure()
     setCurrentProduct({
@@ -200,7 +215,9 @@ const UpdateProduct = ({
     })
     priceValidate(product?.price, product?.discount, product?.discountType)
     setTitleName(` ${product?.brand} ${product?.name} (${product?.type})`)
-  }, []);
+    setNewPrice(product?.price - (product?.price * product?.discount / 100))
+
+  }, [product?.discount, product?.price]);
 
 
   useEffect(() => {
