@@ -14,6 +14,7 @@ import { getMeasureByNum } from "../../../modules/modules";
 import styles from "../index.module.scss";
 import ImageLoad from "./ImageLoad";
 import ProductAdg from "./ProductAdg";
+import ProductAdg2 from "./ProductAdg2";
 import BarcodeInput from "./BarcodeInput";
 import ConfirmDialog from "../../dialogs/ConfirmDialog";
 
@@ -34,8 +35,8 @@ const AddNewProduct = ({
   getSelectData,
   selectContent,
   setFetching,
-  setFlag,
-  flag,
+  content,
+  setContent,
   setGlobalMessage,
   setGlobalType
 }) => {
@@ -101,10 +102,10 @@ const AddNewProduct = ({
       setMessage(t("dialogs.pricezero")) 
       return
     }
+    setFetching(true)
     await uniqueBarCode(newProduct?.barCode).then((res) => {
       if(res){
         setIsUniqBarcode(true)
-        setFetching(true)
         createProduct(newProduct).then((res)=> {
           setEmptyValidate(true)
           if(res === 400){
@@ -118,11 +119,17 @@ const AddNewProduct = ({
             setMessage(t("dialogs.pricezero")) 
             return
           }else{
-            
+            setContent([])
+           setFetching(true)
+
             setEmptyValidate(false)
             setMessage(t("productinputs.productadded"))
             setType("success")
             changeStatus("GetAvailableProducts")
+            // setContent([
+            //   newProduct,
+            //   ...content
+            // ])
             setTimeout(() => {
               handleClose()
               setType()
@@ -198,7 +205,20 @@ const AddNewProduct = ({
   const closeSaver = () => {
     setOpenForSave(false)
     handleClose()
-    setProduct({})
+    setProduct({
+      purchasePrice: "",
+      price: "",
+      type: "",
+      brand: "",
+      name: "",
+      discount: "",
+      remainder: "",
+      barCode: "",
+      photo:"",
+      measure:"",
+      pan: 0,
+      dep: 0
+    })
     localStorage.removeItem("newProduct")
   };
 
@@ -251,7 +271,8 @@ const AddNewProduct = ({
       >
         <Divider style={{backgroundColor:"gray"}} /> 
         <div className={styles.newProdForm}>
-          <ProductAdg
+          <ProductAdg2
+          // <ProductAdg
             t={t}
             emptyValidate={emptyValidate}
             typeCode={typeCode}

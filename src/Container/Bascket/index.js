@@ -404,6 +404,9 @@ const  Bascket = ({
                   handleOpenPhoneDialog={handleOpenPhoneDialog}
                   val={val}
                   totalPrice={totalPrice}
+                  setOpenBasket={setOpenBasket}
+
+
 
                 />
               </div>

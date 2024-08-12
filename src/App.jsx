@@ -6,7 +6,7 @@ import HistoryPage from "./Container2/historyPage";
 import Header from "./Container/Header/Header";
 import ProductChanges from "./Container2/analytics";
 import HomePage from "./Container2/home/index"
-import Confirmation from "./Authorization/Confirmation";
+// import Confirmation from "./Authorization/Confirmation";
 import FeedBackPage from "./Container2/feedback";
 import CheckStatusArCa from "./Container2/settingsPage/serviceAmount/attachCard"
 
@@ -22,10 +22,10 @@ import BasketList from "./Container2/orderlist"
 import ClientCardContainer from "./Container2/settingsPage/serviceAmount";
 import FormTitle from "./Authorization/FormTitle";
 import ClientInterface from "./Authorization/ClientInterface";
-import Login from "./Authorization/login";
-import Registration from "./Authorization/registration";
-import ForgotPassword from "./Authorization/forgot"
-import ResetPassword from "./Authorization/forgot/ResetPassword";
+// import Login from "./Authorization/login";
+// import Registration from "./Authorization/registration";
+// import ForgotPassword from "./Authorization/forgot"
+// import ResetPassword from "./Authorization/forgot/ResetPassword";
 import PrivacyPolicy from "./Privacy/index";
 
 import { fetchUser } from "./store/userSlice";
@@ -38,6 +38,13 @@ import Cashiers from "./Container2/settingsPage/cashiers/Cashiers";
 import SettingsUser from "./Container2/settingsPage/user"
 import { getNewNotifications } from "./services/user/getUser";
 import Notification from "./Container2/dialogs/Notification";
+import LoginAuthContainer from "./Authorization/loginAuth";
+import Login from "./Authorization/loginAuth/login";
+import Registration from "./Authorization/loginAuth/registration";
+import ForgotPassword from "./Authorization/loginAuth/forgotPass";
+import ResetPassword from "./Authorization/loginAuth/resetpass/ResetPassword";
+import Confirmation from "./Authorization/loginAuth/confirmation";
+
 const App = () => {
 
   const [limitedUsing, setLimitedUsing] = useState();
@@ -67,15 +74,16 @@ const App = () => {
   const [lastDate,setLastDate] = useState("");
   const [fetching, setFetching] = useState(true);
   const [notification, setNotification] = useState([]);
+  const [count, setCount] = useState(0);
 
   const whereIsMyUs = async() => {
-
+    console.log("25.06.24 reverse link view")
     await dispatch(fetchUser()).then(async(res) => {
-        const date = new Date(res?.payload?.nextPaymentDate);
-        setLastDate(
-          `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
-        )
-       await datePainter(res?.payload?.nextPaymentDate)
+      const date = new Date(res?.payload?.nextPaymentDate);
+      setLastDate(
+        `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
+      )
+      await datePainter(res?.payload?.nextPaymentDate)
       localStorage.setItem("status", JSON.stringify(res?.payload?.isEhdmStatus)) 
       localStorage.setItem("reverse", JSON.stringify(res?.payload?.reverceStatus))
       localStorage.setItem("taxRegime", JSON.stringify(res?.payload?.taxRegime))
@@ -94,7 +102,8 @@ const App = () => {
       }
       else if(res?.payload?.isInDate === true){
         setBlockedUser(false)
-        !res?.payload?.confirmation && checkForNewNotification()
+        !res?.payload?.confirmation && res?.payload?.showPaymentPage && !count && checkForNewNotification()
+        setCount(true)
       }
     })
 
@@ -117,6 +126,7 @@ const App = () => {
   };
 
   const byBarCodeSearching = async(barcode) => {
+    console.log(barcode,"BARCODe")
     if(barcode === "" || barcode === " "){
       await queryFunction(dataGroup, 1).then((res) => {
         setContent(res?.data)
@@ -216,9 +226,7 @@ const App = () => {
       })
     }
     localStorage.setItem("bascket1", JSON.stringify(basket))
-    // setFlag(flag+1)
     return loadBasket()
-
   };
 
   const setToBasketFromSearchInput = (wishProduct, quantity) => {
@@ -261,6 +269,7 @@ const App = () => {
   const logOutFunc = () =>{
     const language = localStorage.getItem("lang");
     setContent([]);
+    setCount(false)
     localStorage.clear();
     localStorage.setItem("lang", language)
     setIsLogIn(false)
@@ -307,14 +316,12 @@ const App = () => {
   };
 
   const checkForNewNotification = () => {
-    !user?.confirmation && getNewNotifications().then((res) => {
-      console.log(user?.confirmation, "HEYY")
-      console.log(user, "user")
+
+    getNewNotifications().then((res) => {
       setNotification(res)
     })
   };
   
-  console.log(user, "use252r")
   
   useEffect(() => { 
     getMeasure()
@@ -328,16 +335,22 @@ const App = () => {
   },[isLogin]);
 
   useEffect(() => {
+    setCount(false)
     whereIsMyUs() 
     setDataGroup("GetAvailableProducts")
-    console.log("21.05.24 version")
   },[]);
 
+
+
   // useEffect(() => {
-  //   checkForNewNotification()
-  // }, [user]);
-
-
+  //   setCount(0)
+  //   whereIsMyUs()     
+  //   getMeasure()
+  //   setDataGroup("GetAvailableProducts")
+  //   setCurrentPage(1)
+  //   loadBasket()
+  // },[isLogin]);
+  
   useEffect(() =>{
     debounce && byBarCodeSearching(debounce)
   },[debounce]);
@@ -351,16 +364,15 @@ const App = () => {
     <div className="App"  autoComplete="off">
       {!isLogin ?
         <Routes>
-          <Route path="*" element={ 
-             <ClientInterface 
-             title={<FormTitle operation={t("authorize.login")} />}
-             element={<Login t={t} setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />}
-             t={t}
-             lang={lang}
-             setLang={setLang}
-           />}
-          />
-          <Route path="/login" element={
+          <Route path="*" element={<LoginAuthContainer children={<Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />} />
+          <Route path="/login" element={<LoginAuthContainer children={<Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />} />
+          <Route path="/registration" element={<LoginAuthContainer children={<Registration logOutFunc={logOutFunc} />} />} />
+          <Route path="/forgot-password" element={<LoginAuthContainer children={<ForgotPassword />} />} />
+          <Route path="/reset-password/*" element={<LoginAuthContainer children={<ResetPassword />} />} />
+          <Route path="/confirmation/*" element={<LoginAuthContainer children={<Confirmation />} />} />
+           
+          <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+          {/* <Route path="/login" element={
             <ClientInterface 
               title={<FormTitle operation={t("authorize.login")} />}
               element={<Login t={t} setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />}
@@ -368,8 +380,8 @@ const App = () => {
               lang={lang}
               setLang={setLang}
             />}
-          />
-          <Route path="/registration" element={
+          /> */}
+          {/* <Route path="/registration" element={
             <ClientInterface 
               title={<FormTitle operation={t("authorize.registration")} />}
               element={<Registration t={t} logOutFunc={logOutFunc} />}
@@ -377,24 +389,23 @@ const App = () => {
               lang={lang}
               setLang={setLang}
             />}
-          />
-          <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-          <Route path="/forgot-password" element={
+          /> */}
+          {/* <Route path="/forgot-password" element={
             <ClientInterface 
               title={<FormTitle operation={t("authorize.reset")} />}
               element={<ForgotPassword t={t} />}
               t={t}
             />}
-          />
-          <Route path="/reset-password/*" element={ 
+          /> */}
+          {/* <Route path="/reset-password/*" element={ 
             <ClientInterface 
               title={<FormTitle operation={t("authorize.reset2")} />}
               element={<ResetPassword t={t} />}
               t={t}
            />}
-          />
+          /> */}
           <Route path="/basket/*" element={<BasketList t={t} />} />
-          <Route path="/confirmation/*" element={<Confirmation t={t} />} />
+          {/* <Route path="/confirmation/*" element={<Confirmation t={t} />} /> */}
 
         </Routes> :
         <>
@@ -403,16 +414,14 @@ const App = () => {
             setOpenBasket={setOpenBasket}
             basketGoodsqty={basketGoodsqty}
             logOutFunc={logOutFunc} 
-            // setCurrentPage={setCurrentPage}
             setIsLogIn={setIsLogIn}
             user={user}
             logo={user?.logo}
             active={user?.isEhdmStatus}
-            // setContent={setContent}
             activeBtn={activeBtn}
             setActiveBtn={setActiveBtn}
-
           />
+          {/* <button style={{marginTop:"175px"}} onClick={hardReloadWithBypassCache}>Полная перезагрузка с обходом кеша</button> */}
           {!isBlockedUser ? <Routes>
             <Route
               path="/"
@@ -442,15 +451,13 @@ const App = () => {
                   flag={flag}
                   fetching={fetching}
                   setFetching={setFetching}
-
-                  notification={notification}
                 />
               }  
             />
             <Route path="/excel" element={<PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} />} />
             <Route path="/feedback" element={<FeedBackPage logOutFunc={logOutFunc} t={t} />} />
             <Route path="/setting/cashiers" element={<Cashiers t={t} cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
-            <Route path="/setting/user" element={<SettingsUser user={user} t={t} x whereIsMyUs={whereIsMyUs} />} />
+            <Route path="/setting/user" element={<SettingsUser user={user} t={t} whereIsMyUs={whereIsMyUs} />} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} t={t}  measure={measure} />} />
             <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
             <Route path="/basket/*" element={<BasketList t={t} />} />

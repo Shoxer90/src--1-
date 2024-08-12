@@ -56,8 +56,8 @@ const ServiceItemSecond = ({
         onClick={notAvailableService}
       >
         <div style={{display:"flex",justifyContent:"space-between"}}>
-          <h6>{t(`settings.${service?.name}`)}</h6>
-          {!service?.isActive && service?.id === 3 ? "":
+          <h6 style={{margin:"4px"}}>{t(`settings.${service?.name}`)}</h6>
+          {/* {!service?.isActive && service?.id === 3 ? "":
             <Button 
               variant="contained" 
               onClick={notAvailableService}
@@ -66,11 +66,34 @@ const ServiceItemSecond = ({
               {service?.isActive  ? t("basket.linkPayment") : ""} 
               {!service?.isActive && service?.id === 1 ? t("settings.free") : ""}
             </Button>
+          } */}
+
+          {/* {!service?.isActive && service?.id === 3 ? "":
+            <Button 
+              variant="contained" 
+              onClick={notAvailableService}
+              sx={{width:"150px",height:"30px",background:"#3FB68A"}}
+            >
+              {service?.isActive  ? t("basket.linkPayment") : ""} 
+              {!service?.isActive && service?.id === 1 ? t("settings.free") : ""}
+            </Button>
+          } */}
+          {service?.isActive && 
+            <Button 
+              variant="contained" 
+              onClick={notAvailableService}
+              sx={{width:"150px",height:"30px",background:"#3FB68A"}}
+            >
+              {t("basket.linkPayment")} 
+            </Button>
           }
+          { !service?.isActive && service?.id === 3 && ""}
+          { !service?.isActive && service?.id === 1 &&  <h6 style={{margin:"4px",color:"green"}}>{t("settings.free")}</h6>}
+
         </div>
         <div className={styles.service_item_simpleRow}>
-          <span>{t("cardService.currentCommitment")}</span>
-          {service?.isActive  && <span>{service?.price} {t("units.amd")}</span>}
+        <h6 style={{margin:"4px 0px"}}>{t("cardService.currentCommitment")}</h6>
+          {service?.isActive  &&  <h6 style={{margin:"4px 0px"}}>{service?.price} {t("units.amd")}</h6>}
         </div>
         <div className={styles.service_item_simpleRow} style={{fontWeight:700, fontSize:"100%",color:"green"}}>
          <span>{t("cardService.amountDate")}</span>

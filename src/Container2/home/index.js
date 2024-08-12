@@ -31,7 +31,7 @@ const HomePage = ({
   isLogin,
   flag,
   setFetching,
-  fetching, notification
+  fetching
 }) => {
   
   const [openNewProd, setOpenNewProduct] = useState(false);
@@ -71,7 +71,6 @@ const HomePage = ({
       remainder: "",
       photo:"",
       dep:0
-
     })
   };
   
@@ -92,21 +91,25 @@ const HomePage = ({
     getAdg(typeCode).then((res) => {
       if(res?.length > 1){
         setSelectContent(res)
-        if(res[0]?.code === typeCode) {
+        res?.forEach((item) => (
+          item?.code === typeCode ?
           setProduct({
             ...newProduct,
-            type:res[0].code
-          })
-        }
-      }  
-      else if(res?.length === 1){
+            type: item?.code
+          }) : null
+        ))
+      }else if(res?.length === 1){
         setSelectContent(res)
         setProduct({
           ...newProduct,
           type:res[0].code
         })
       }else{
-        setSelectContent([{id:"", title:[], code:""}])
+        setProduct({
+          ...newProduct,
+          type:""
+        })
+        setSelectContent([])
       }
     })
   };
@@ -146,7 +149,7 @@ const HomePage = ({
       } 
     }
     
-  }, [fetching, dataGroup, isLogin, openNewProd, flag]);
+  }, [fetching, dataGroup, isLogin, openNewProd, content,flag]);
 
   return(
     <div className={styles.productPage}>
@@ -198,6 +201,8 @@ const HomePage = ({
         setGlobalMessage={setSnackMessage}
         setGlobalType={setType}
         setFetching={setFetching}
+        setContent={setContent}
+        content={content}
       />}
       {/* <ConfirmDialog
         t={t}

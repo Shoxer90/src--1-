@@ -7,7 +7,6 @@ import PaymentConfirm from "../paymentDialog/PaymentConfirm";
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import { payForServiceWithAttachedCard, payForServiceWithNewCard } from "../../../../services/internal/InternalPayments";
 import Loader from "../../../loading/Loader";
-import SnackErr from "../../../dialogs/SnackErr";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 
 const PayComponent = ({
@@ -16,10 +15,7 @@ const PayComponent = ({
   price,
   content,
   serviceType,
-  message,
   setMessage,
-  setRefresh,
-  refresh
 }) => {
   const [billsData, setBills] = useState({
     web: true,

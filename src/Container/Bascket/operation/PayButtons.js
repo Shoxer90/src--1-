@@ -5,7 +5,7 @@ import { Button, IconButton } from "@mui/material";
 
 const PayButtons = ({
   paymentInfo, 
-  setSingleClick,
+  setOpenBasket,
   setOpenPhonePay, 
   handleOpenPhoneDialog,
   multiSaleProducts, 
@@ -35,6 +35,7 @@ const PayButtons = ({
         alt="cash pay"
         onClick={()=>{
         if(!alreadyClicked) {
+          // setOpenBasket(false)
           setAlreadyClick(true)
           multiSaleProducts(1)
 

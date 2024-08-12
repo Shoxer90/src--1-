@@ -1,4 +1,4 @@
-import { Avatar, Dialog, Divider } from "@mui/material";
+import { Avatar, Dialog } from "@mui/material";
 import  React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -11,7 +11,6 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import CashiersItem from "./CashiersItem";
 import SnackErr from "../../dialogs/SnackErr";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import { Troubleshoot } from "@mui/icons-material";
 
 const Cashiers = ({t, logOutFunc, cashierLimit}) => {
   const [cashiers, setCashiers] = useState([]);
@@ -23,13 +22,10 @@ const Cashiers = ({t, logOutFunc, cashierLimit}) => {
   const [updateDial, setUpdateDial] = useState(false);
   const [updateContent, setUpdateContent] = useState({});
   const [data, setData] = useState();
-	const [userInfo, setUserInfo] = useState({});
-
+	
   const openAddNewCashier = () => {
-    // if(6 < cashiers?.length) {
       if(cashierLimit > cashiers?.length) {
       setOpenCashierDail(true)     
-      setUserInfo({})
     }else{
       limitOver()
     }
@@ -44,12 +40,16 @@ const Cashiers = ({t, logOutFunc, cashierLimit}) => {
     setOpenLimitOver(false)
   }
 
-  const handleUpdateCashier = async(data) => {
-    await updateCashiersData(data).then((res) => {
-      setRegister(!register)
-    })
-    setUpdateDial(false)
-  };
+  // const handleUpdateCashier = async(data) => {
+  //   await updateCashiersData(data).then((res) => {
+  //     if(res?.status === 200) {
+  //       setRegister(!register)
+  //     }else if(res?.status === 405) {
+
+  //     }
+  //   })
+  //   setUpdateDial(false)
+  // };
 
   const isCashierReverse = async(id,bool) => {
     await setCashierReverseStatus(id, bool);
@@ -132,8 +132,6 @@ const Cashiers = ({t, logOutFunc, cashierLimit}) => {
         <Avatar
           onClick={()=>{
             openAddNewCashier()
-            // setOpenCashierDail(true)
-            // setUserInfo({})
           }}
           sx={{ 
             "&:hover": { bgcolor: '#1976d2' , color:"white"}, 
@@ -166,8 +164,6 @@ const Cashiers = ({t, logOutFunc, cashierLimit}) => {
         setRegister={setRegister}
         setOpenCashierDail={setOpenCashierDail}
         openCashierDial={openCashierDial}
-        userInfo={userInfo} 
-        setUserInfo={setUserInfo}
         logOutFunc={logOutFunc}
         limitOver={limitOver}
       />
@@ -183,7 +179,9 @@ const Cashiers = ({t, logOutFunc, cashierLimit}) => {
       setUpdateDial={setUpdateDial}
       updateContent={updateContent}
       setUpdateContent={setUpdateContent}
-      handleUpdateCashier={handleUpdateCashier}
+      setRegister={setRegister}
+      register={register}
+      logOutFunc={logOutFunc}
     />
     <ConfirmDialog
       t={t}

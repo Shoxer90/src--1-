@@ -50,7 +50,6 @@ const HomeContent = ({
             setFetching={setFetching}
             setContent={setContent}
             content={content}
-
           />
         </div>
       })

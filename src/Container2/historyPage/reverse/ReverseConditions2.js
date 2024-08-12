@@ -11,6 +11,7 @@ const ReverceConditions2 = ({
 
 
   const handleChangeInput = (e) => {
+
     const valid =/^\d+(\.\d{1,2})?$/;
     const text = e.target.value; 
     const isValid = valid.test(text);
@@ -56,11 +57,13 @@ const ReverceConditions2 = ({
 
     }else{
       setCondition({
-        cashAmount: reverseTotal ? reverseTotal?.toFixed(2) : 0,
+        cashAmount: reverseTotal ? (+reverseTotal)?.toFixed(2) : 0,
         cardAmount: 0,
       })
     }
     }, [reverseTotal]);
+
+
 
   useEffect(() => {
     setCondition({
@@ -103,7 +106,7 @@ const ReverceConditions2 = ({
           :""
         }
         <span style={{ fontSize:"120%",color:"green"}}>
-          <strong>{t("history.forReverse")} {(reverseTotal).toFixed(2) || 0} {t("units.amd")}</strong>
+          <strong>{t("history.forReverse")} {(+reverseTotal).toFixed(2) || 0} {t("units.amd")}</strong>
         </span>
       </div>
       <div>

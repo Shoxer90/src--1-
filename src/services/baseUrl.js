@@ -61,7 +61,7 @@ export const columnNames = [{
   key: "partnerTin",
   checked:  true
 },{
-  title: "history.performer",
+  title: "settings.cashier",
   id: 15,
   key: "cashier",
   checked:  true

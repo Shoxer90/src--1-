@@ -17,7 +17,8 @@ const HistoryItems = ({
   logOutFunc,
   initialFunc,
   date,
-  messageAfterReverse
+  messageAfterReverse,
+  setReverdLink
 }) => {
 
   const [openDetails, setOpenDetails] = useState(false);
@@ -27,7 +28,6 @@ const HistoryItems = ({
   const [message, setMessage] = useState("");
   const [saleData, setSaleData] = useState({});
   const [taxCount,setTaxCount] = useState();
-
   const reverseButton = true;
 
   const dialogManage = () => {
@@ -36,8 +36,11 @@ const HistoryItems = ({
 
   const openCloseHDM = async(id) => {
     setLoad(true)
-    if(pageName?.status !== "Paid" || item?.hdmMode) {
+    if(pageName?.status !== "Paid" ) {
       setOpenDetails(true)
+      if(pageName?.status === "Canceled"){
+        setReverdLink(item?.link)
+      }
     }
        else if(!openHDM ){
       await hdm_generate(id).then((resp) => {
@@ -74,6 +77,8 @@ const HistoryItems = ({
 
   return (
     <>
+    
+
     <TableRow
       key={item?.id}
       onClick={()=> openCloseHDM(item?.id)}
@@ -136,7 +141,8 @@ const HistoryItems = ({
       {filterBody.includes("cashier") && <TableCell style={{padding:"0px 16px"}}>{item?.cashier.fullName}</TableCell>}
       {filterBody.includes("10") && <TableCell style={{padding:"0px 16px"}}>{"fiskal num"}</TableCell>}
     </TableRow>
-    { openDetails && (pageName !=="Paid" || item?.hdmMode === 2) &&
+    {/* { openDetails && (pageName !=="Paid" || item?.hdmMode === 2) && */}
+      { openDetails && pageName?.status ==="Unpaid"  &&
       <HistoryDetails
         t={t}
         openDetails={openDetails}
@@ -154,6 +160,12 @@ const HistoryItems = ({
         item={item}
       />
     }
+    {/* {openDetails && pageName?.status === "Canceled"  &&
+    <Dialog open={openDetails && pageName.status === "Canceled"}>
+      <DialogContent> */}
+
+      {/* </DialogContent> */}
+    {/* </Dialog>} */}
    { openHDM && pageName?.status === "Paid" &&
      <Receipt
        setOpenHDM={setOpenHDM}

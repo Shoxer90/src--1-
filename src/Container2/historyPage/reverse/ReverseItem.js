@@ -114,7 +114,6 @@ const ReverseItem = ({
         <span style={{minWidth:"40px"}}>
           {t(`units.${product?.unit}`)}
         </span> 
-      
       </label>
     </label> 
   )

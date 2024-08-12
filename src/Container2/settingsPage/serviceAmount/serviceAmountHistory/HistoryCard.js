@@ -10,9 +10,7 @@ const HistoryCard = ({setOpenHistory,t}) =>  {
       variant="contained"
       style={{
         background:"rgba(40,48,72,1)",
-        // margin:"60px",
         margin:"21px",
-        // background:"#3FB68A",
         alignSelf:"start"
       }}
       onClick={()=>setOpenHistory(true)}

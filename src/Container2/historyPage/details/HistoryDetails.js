@@ -54,7 +54,7 @@ export default function HistoryDetails({
         <div>{hdmMode ===2 && "Fizikakan"}</div>
         <div style={{margin:"0 10px"}}>
           <div>{date.slice(0,10)} {date.slice(11,19)} </div>
-          <div>{t("history.performer")}: {cashier}</div>
+          <div>{t("settings.cashier")}: {cashier}</div>
         </div>
         <Divider sx={{bgColor:"black"}}/>
         <DialogContent sx={{p:1}}>

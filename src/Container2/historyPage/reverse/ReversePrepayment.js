@@ -28,7 +28,7 @@ const ReversePrepayment = ({
       ) {
         return setValueForReverse(value)
       }
-      return setValueForReverse(+value)
+        return setValueForReverse(+value)
     } 
   };
 

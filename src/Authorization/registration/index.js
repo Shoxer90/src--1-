@@ -5,12 +5,14 @@ import SnackErr from "../../Container2/dialogs/SnackErr";
 import { Dialog } from "@mui/material";
 import Loader from "../../Container2/loading/Loader";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useTranslation } from "react-i18next";
 
 
 
-const Registration = ({logOutFunc, t}) => {
+const Registration = ({logOutFunc}) => {
   const [registerMessage,setRegisterMessage] = useState({m:"",t:""});
   const [isLoad,setIsLoad] = useState(false);
+  const {t} = useTranslation();
 
   const [newUser, setNewUser] = useState({
     "legalName": "",
@@ -80,11 +82,11 @@ const Registration = ({logOutFunc, t}) => {
         setIsLoad={setIsLoad}
         successSubmit={successSubmit}
       />
-
+{/* 
       <a href={"/login"} style={{display:"block", margin:"auto"}}>
         <ArrowBackIcon  fontSize="small"/> 
         {t("buttons.back")} 
-      </a>
+      </a> */}
 
       <Dialog open={Boolean(registerMessage.m)} onClose={()=>setRegisterMessage({m:"",t:""})}>
         <SnackErr 

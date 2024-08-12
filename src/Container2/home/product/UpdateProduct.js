@@ -120,6 +120,7 @@ const UpdateProduct = ({
       })
     }
 	};
+  
   const handleClose = () => {
     setOpenUpdateProduct(!openUpdateProd);
   };

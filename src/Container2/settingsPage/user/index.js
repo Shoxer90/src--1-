@@ -67,20 +67,7 @@ const SettingsUser = ({user,t, whereIsMyUs}) => {
        <span style={{marginLeft:"10px"}}>{t("history.receiptNoHmd")}</span> 
       </label>
     </h6>
-
-
-    {/* <FormControlLabel
-      control={<IOSSwitch 
-        label={t("settings.switcher")}
-        checked={ !!user?.isEhdmStatus}
-        onChange={() => {
-            setConfirmSwitch(true)}
-        }
-        sx={{ m: 1 }} 
-      />}
-    /> */}
     {user && <ClientInfo />}
-  
     <Button onClick={()=>addClientInfo("password")}>
       {t("settings.changepassword")} 
     </Button>
@@ -95,7 +82,7 @@ const SettingsUser = ({user,t, whereIsMyUs}) => {
       close={setConfirmSwitch}
       t={t}
     />
-     <AddNewClientInfo 
+      <AddNewClientInfo 
         t={t}
         message={message}
         setMessage={setMessage}
@@ -104,7 +91,7 @@ const SettingsUser = ({user,t, whereIsMyUs}) => {
         label={inputLabels} 
         setInputLabels={setInputLabels}
       />
-       {message?.m ?
+      {message?.m ?
         <Dialog open={message?.m}>
           <SnackErr type={message?.t} message={message?.m} close={setMessage}/>
         </Dialog> :""

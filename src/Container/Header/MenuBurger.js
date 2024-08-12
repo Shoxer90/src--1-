@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { LimitContext } from '../../context/Context';
 import styles from "./index.module.scss";
 import Flags from '../../Container2/language/Flags';
+import ConfirmDialog from "../../Container2/dialogs/ConfirmDialog"
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -62,6 +63,8 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [logoutConfirm, setOpenLogoutConfirm] = useState(false);
+
 
   return (
     <div>
@@ -81,12 +84,6 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
       </Button>
       <StyledMenu
         anchorEl={anchorEl}
-      //   PaperProps={{  
-      //     style: {  
-      //       width: 320,  
-      //       // width: 270,  
-      //     },  
-      //  }} 
         open={open}
         onClose={() => setAnchorEl(null)}
         style={{minWidth:"350px"}}
@@ -139,22 +136,26 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
             onClick={() => {
               navigate("/feedback")
               setActiveBtn("")
-
               setAnchorEl(null)
             }}
           >
            <h5>{t("menuburger.feedback")}</h5>
           </MenuItem>
         </Box>
-        <Flags />
+        <Flags/>
         <Divider flexItem  style={{margin:1, backgroundColor:"gray"}}/>
-        <Box style={{display:"flex",justifyContent:"center"}}>
-          <LogoutIcon style={{marginTop: "6px"}} />
-          <MenuItem style={{}} onClick={logout} disableRipple>
+        <Box onClick={()=>setOpenLogoutConfirm(true)} style={{display:"flex",justifyContent:"center",margin:"5px", cursor:"pointer"}}>
+          <LogoutIcon style={{margin: "0px 10px"}} />
             <h5>{t("menuburger.logout")}</h5> 
-          </MenuItem>
         </Box>
       </StyledMenu>
+      <ConfirmDialog
+        t={t}
+        open={logoutConfirm}
+        close={setOpenLogoutConfirm}
+        func={logout}
+        content={t("dialogs.logoutQuestion")}
+      />
     </div>
   );
 }

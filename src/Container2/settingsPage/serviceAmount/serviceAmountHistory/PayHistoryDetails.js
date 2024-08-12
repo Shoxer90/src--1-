@@ -9,7 +9,6 @@ const PayHistoryDetails = ({
   open, 
   close,
   service,
-  dateFormat,
   nextDateFormat,
   price,
   days,
@@ -43,18 +42,6 @@ const PayHistoryDetails = ({
             <span>{t("cardService.service")}</span>
             <span>{t(`settings.${service}`)}</span>
           </div>
-          {/* <div className={styles.history_item}>
-          <span>{t("cardService.payDate")}</span>
-            <span>
-              <div>
-                {dateFormat?.getUTCDate()>9 ? dateFormat?.getUTCDate() : `0${ dateFormat?.getUTCDate()}`}.
-                {dateFormat.getMonth()>8 ? dateFormat.getMonth()+1: `0${dateFormat.getMonth()+1}`}.
-                {dateFormat.getFullYear()} {" "}
-               
-              </div> 
-            </span>
-          </div> */}
-         
           <div className={styles.history_item}>
             <span>{t("cardService.paid")}</span>
             <span>{price.toFixed(1)} {t("units.amd")}</span>

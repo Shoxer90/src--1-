@@ -38,9 +38,11 @@ export  async function getNewNotifications() {
 };
 
 export  async function cleanNotifications(bool) {
+
     try{
         const  data = await axios.post(baseUrl + `User/SaveConfirmation?Status=${bool}`, {}, option());
         return data.data
+        // return 
     }catch(err){
         return err.response.status
     }

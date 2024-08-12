@@ -28,27 +28,14 @@ export const payForServiceWithAttachedCard = async(body) => {
     return data
 
   }catch(err){
-    return err?.response?.status
+    return err?.response
   }
 };
-
-export const prepaymentPay = async(body) => {
-  
-  try{
-    const data = await axios.post( baseUrl + `InternalPayments/PrePaymentPay`, body, option());
-    return data?.data
-
-  }catch(err){
-    return err?.response?.status
-  }
-};
-
 
 export const setActiveCard = async(id) => {
   try{
     const data = await axios.post( baseUrl + `InternalPayments/SetDefaultCard?CardId=${id}`, {}, option());
     return data?.data
-
   }catch(err){
     return err
   }
@@ -72,7 +59,6 @@ export const autoPaymentSwitch = async(bool) => {
     return err
   }
 };
-
 
 export const changeCreditCardName = async(str) => {
   try {

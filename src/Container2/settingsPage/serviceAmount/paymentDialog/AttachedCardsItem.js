@@ -9,7 +9,6 @@ const AttachedCardsItem = ({
   setPayData,
   setMethod,
   index,
-  activateBtn,
   activeStyle
 }) => {
 

@@ -71,6 +71,7 @@ const Notification = ({
           onClick={()=>{
             cleanNotifications(openButtonSubmit)
             setData([])
+            window.location.reload(true);
           }}
           variant="contained" 
           sx={{background:"#3FB68A",margin:"10px auto",width:"60%"}}

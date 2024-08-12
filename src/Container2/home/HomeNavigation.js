@@ -17,7 +17,8 @@ const HomeNavigation = ({
   dataGroup,
   setFrom,
   t,
-  setContent
+  setContent,
+  content
 }) => {
   const {limitedUsing} = useContext(LimitContext);
   

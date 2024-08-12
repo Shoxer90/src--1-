@@ -47,7 +47,9 @@
     "priceListRow6":"Service (Monthly)",
     "priceListRow7":"REceipt providing via SMS message (for each)",
     "priceListRow8":"Sending Link payment requests via SMS message",
-    "priceListRow9":"QR and Link Payment Acceptance"
+    "priceListRow9":"QR and Link Payment Acceptance",
+    "copyMail": "E-mail is copied",
+    "copyTel":"Phone number is copied"
   },
   "units": {
     "min": "minimal",
@@ -109,9 +111,11 @@
     "confirmationCode": "Enrollment confirmation",
     "reset":"Reset Password",
     "reset2":"Create New Password",
-    "resetInfo": "You’ll receive a link to reset your password.",
+    "resetInfo": "To reset your password, follow the link sent to your registered email address",
     "forgot": "Forgot password?",
-    "username": "Username",
+    "username": "User",
+    "usernamePassword": "/ username and password",
+    "newpassword": "New password",
     "password": "Password",
     "create": "Create an account",
     "company": "Company name",
@@ -132,6 +136,7 @@
     "build": "Building",
     "block": "Block",
     "register": "Register",
+    "director": "Director",
     "empty": "The field is required",
     "fillfields": "Please, fill in all fields",
     "login_issue": "Enter your username and password to log in",
@@ -270,7 +275,8 @@
     "removeallprod": "Clean basket ?",
     "removeoneprod": "Remove current product from basket ?",
     "useprepayment":"Prepayment",
-    "prepaymentTitle": "Receive prepayment",
+    "prepaymentTitle": "Using prepayment",
+    "prepaymentGenerate":"Leave a prepayment",
     "nullishQuant": "There is a quantity mismatch in the basket",
     "emptyPayInfo": "There are empty or incorrect fields"
   },
@@ -281,7 +287,7 @@
     "excel": "Download Excel",
     "paid": "Paid",
     "no_paid": "Unpaid",
-    "canceled": "Cancelled",
+    "canceled": "Returned",
     "date": "Date",
     "number": "Number",
     "performer": "Performer",
@@ -456,6 +462,9 @@
   "dialogs": {
     "done": "Operation is success completed!",
     "mismatch": "The passwords do not match!",
+    "novalidatepass": "Is Not Strong Password",
+    "validatepass": "Is Strong Password",
+    "passSuccess":"The password must contain at least 8 characters and consist of Latin letters, including at least one uppercase letter, one number, and one special character.",
     "empty": "An empty field exists",
     "welldone": "Well done",
     "sorry": "Sorry...",
@@ -487,6 +496,8 @@
     "limitCash": "The amount of cash back cannot exceed ",
     "limitCard": "The amount of non-cash refund cannot exceed  ",
     "autoPayAgreement": "By enabling the automatic payment function, you agree to automatically charge the monthly service fee to the active card.",
-    "chooseCard": "Make the card the main one ?"
+    "chooseCard": "Make the card the main one ?",
+    "logoutQuestion": "Sign out?"
+
   }
 }

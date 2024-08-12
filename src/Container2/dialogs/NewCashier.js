@@ -27,8 +27,6 @@ const NewCashier = ({
   setRegister,
   setOpenCashierDail,
   openCashierDial,
-  userInfo,
-  setUserInfo,
   logOutFunc,
   limitOver
 }) => {
@@ -37,7 +35,13 @@ const NewCashier = ({
   const [load, setLoad] = useState(false);
   const [message, setMessage] = useState();
   const [errorMail, setErrorMail] = useState();
-  const inputArr = [t("authorize.first"), t("authorize.last"), t("authorize.email"), t("authorize.password")];
+  const [userInfo, setUserInfo] = useState({
+    lastName:"",
+    firstName:"",
+    email:"",
+    password:""
+  });
+
 
   const mailValidate = (e) => {
     if(validator.isEmail(e)) {
@@ -48,21 +52,13 @@ const NewCashier = ({
   };
 
   const create = async() => {
-    const mailvalid = mailValidate(userInfo[t("authorize.email")] || "")
-    if(!mailvalid || !userInfo[t("authorize.email")]) {
+    const mailvalid = mailValidate(userInfo?.email || "")
+    if(!mailvalid || !userInfo?.email) {
       return setErrorMail(t("authorize.errors.notMail"))
-    }else if(Object.values(userInfo)?.length < 4){
-      setMessage(t("authorize.errors.emptyfield"))
-    }else{
-    setLoad(true)
-      await createNewCashier(
-      {
-        firstName:userInfo[t("authorize.first")], 
-        lastName:userInfo[t("authorize.last")], 
-        email:userInfo[t("authorize.email")], 
-        password:userInfo[t("authorize.password")]
-      }).then((user)=>{
-        // setLoad(false)
+    }else if(userInfo?.firstName && userInfo?.email && userInfo?.password){
+      setLoad(true)
+      await createNewCashier(userInfo).then((user)=>{
+        setLoad(false)
         if(user?.response?.status === 405) {
           setMessage(t("settings.dublicatemail"))
         }else if(user?.response?.status === 400) {
@@ -76,6 +72,8 @@ const NewCashier = ({
           setRegister(!register)
         }
       })
+    }else{
+      setMessage(t("authorize.errors.emptyfield"))
     }
     setLoad(false)
   };
@@ -85,7 +83,7 @@ const NewCashier = ({
     setMessage()
 		setUserInfo({
 			...userInfo,
-			[e.target.name]:( e.target.value).trim(),
+			[e.target.name]:(e.target.value).trim(),
 		})
 	};
   
@@ -129,9 +127,9 @@ const NewCashier = ({
                 style={{
                   width: "80%", 
                 }}
-                name={inputArr[0]} 
-                value={userInfo?.field}
-                label={inputArr[0]}
+                name="firstName" 
+                value={userInfo?.firstName}
+                label={t("authorize.first")}
                 onChange={(e)=>handleChangeInput(e)} 
               />
               <TextField
@@ -139,9 +137,9 @@ const NewCashier = ({
                 style={{
                   width: "80%", 
                 }}
-                name={inputArr[1]} 
-                value={userInfo?.field}
-                label={inputArr[1]}
+                name="lastName" 
+                value={userInfo?.lastName}
+                label={t("authorize.last")}
                 onChange={(e)=>handleChangeInput(e)} 
               />
               <div style={{
@@ -158,9 +156,9 @@ const NewCashier = ({
                   }}
                   error={errorMail}
                   variant="outlined"
-                  name={inputArr[2]} 
-                  value={userInfo?.field}
-                  label={inputArr[2]}
+                  name="email"
+                  value={userInfo?.email}
+                  label={t("authorize.email")}
                   onChange={(e)=>{ 
                     handleChangeInput(e)
                   } }
@@ -173,9 +171,9 @@ const NewCashier = ({
                 width: "80%", 
                 justifySelf: "center"
               }}
-              name={inputArr[3]} 
-              value={userInfo?.field}
-              label={inputArr[3]}
+              name="password"
+              value={userInfo?.password}
+              label={t("authorize.password")}
               onChange={(e)=>handleChangeInput(e)} 
             />
           

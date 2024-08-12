@@ -88,7 +88,7 @@ import styles from "../index.module.scss"
   return(
     <div className={styles.saleInfoInputs}>
       <h5>
-        {t("basket.prepaymentTitle")}
+        {t("basket.prepaymentGenerate")}
       </h5>
       <div>
       <span>{t("basket.useprepayment")}</span>

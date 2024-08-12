@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from "react" ;
+import React, { memo, useEffect } from "react" ;
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@mui/material";
@@ -6,15 +6,15 @@ import IOSSwitch from "../../../../modules/iosswitch";
 
 import { autoPaymentSwitch } from "../../../../services/internal/InternalPayments";
 
-const  AutoPaymentSwitch = ({
+const AutoPaymentSwitch = ({
   payData, 
   setPayData, 
   hasAutoPayment, 
   setMessage,
   isDefaultExist
 }) => {
-  const {t} = useTranslation();
   
+  const {t} = useTranslation();
 
   const switchSetBinding = async(bool) => {
     if(isDefaultExist){
@@ -36,6 +36,7 @@ const  AutoPaymentSwitch = ({
   useEffect(() => {
     hasAutoPayment && switchSetBinding(hasAutoPayment)
   },[]);
+
   return (
     <Button 
       size="small"
