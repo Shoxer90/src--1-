@@ -116,3 +116,18 @@ export const saleProductFromBasket = async(content) => {
     return err.response.status
   }
 }
+
+export const leftPrepaymentForProducts = async(content) => {
+  const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+  };
+  try{
+    const data = await axios.post(baseUrl + `PrePayment/SalePrepayment`, content, option)
+    return data.data
+  }catch(err){
+    return err.response.status
+  }
+}
+

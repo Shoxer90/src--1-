@@ -16,6 +16,7 @@ const PayStatusSelect = ({t,initialFunc,status}) => {
         <MenuItem value="Paid"> {t("history.paid")} </MenuItem>
         <MenuItem value="Canceled"> {t("history.canceled")} </MenuItem>
         <MenuItem value="Unpaid"> {t("history.no_paid")} </MenuItem>
+        <MenuItem value="PrePayment"> {t("basket.useprepayment")} </MenuItem>
       </Select>
     </FormControl>
   )

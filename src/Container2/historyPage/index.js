@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { filterByDate, getSaleProducts } from "../../services/user/userHistoryQuery";
+import { filterByDate, getPrepaymentHistory, getSaleProducts } from "../../services/user/userHistoryQuery";
 import styles from "./index.module.scss";
 import SearchHistory from "./searchtab/SearchHistory";
 import { useLocation, useSearchParams } from "react-router-dom";
@@ -61,7 +61,9 @@ const HistoryPage = ({logOutFunc, t}) => {
         response = await getSaleProducts("GetNotPaidSaleProductsByPage", {page: page, count: perPage})
       }else if(data === "Canceled"){
        response = await getSaleProducts("GetReveredHistoryByPage", {page: page, count: perPage})
-      }
+      }else if(data === "PrePayment"){
+        response = await getPrepaymentHistory({page: page, count: perPage, searchString:""})
+       }
       if(response === 401){
         logOutFunc()
       }else{

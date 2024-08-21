@@ -1,4 +1,4 @@
-import React, { useEffect , useContext, memo} from "react";
+import React, { useEffect , useContext, memo, useState} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 
 import Logo from "./Logo";
@@ -30,11 +30,22 @@ const Header = ({
   const location = useLocation();
   const navigate = useNavigate();
   const {limitedUsing} = useContext(LimitContext);
-  // const [activeBtn, setActiveBtn] = useState();
+  const [isEmptyBasket, setIsEmptyBasket] = useState(localStorage.getItem("bascket1"));
 
   useEffect(() => {
     setActiveBtn(location.pathname)
   },[]);
+  
+  useEffect(() => {
+    if(localStorage.getItem("bascket1")){
+      setIsEmptyBasket(localStorage.getItem("bascket1"))
+
+    }else{
+      setOpenBasket(false)
+      setIsEmptyBasket(localStorage.getItem("bascket1"))
+
+    }
+  },[localStorage.getItem("bascket1")]);
 
   return (
       <div className={styles.containerXX}> 
@@ -118,7 +129,12 @@ const Header = ({
               className={styles.basketBTN}
               variant="contained"
               style={{background:"#28A745",borderRadius:"8px"}}
-              onClick={()=>setOpenBasket(true)}
+              onClick={()=>{
+                // if(isEmptyBasket.length){
+                  setOpenBasket(true)
+
+                // }
+              }}
             >
               <ShoppingCartIcon/>
               <span className={styles.routeName}>{t("menubar.basket")}</span> 

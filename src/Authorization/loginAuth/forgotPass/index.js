@@ -1,6 +1,5 @@
 import { Dialog } from "@mui/material";
 import React, { useState , memo } from "react";
-import { useNavigate } from "react-router-dom";
 
 import SnackErr from "../../../Container2/dialogs/SnackErr";
 import { mailValidate } from "../../../modules/mailValidate";
@@ -8,69 +7,71 @@ import { forgotPassword } from "../../../services/auth/auth";
 import { useTranslation } from "react-i18next";
 import LangSelect from "../../../Container2/langSelect";
 import BackAndOkBtnGrp from "../buttonGroup/backAndOk"
+import Loader from "../../../Container2/loading/Loader";
 
 const ForgotPassword = () => {
-  const navigate = useNavigate();
   const [userMail, setUserMail] = useState({});
-  const [openConfirmDial, setOpenConfDial] = useState(false);
   const [info, setInfo] = useState({});
+  const [load, setLoad] = useState(false);
   const {t} = useTranslation();
 
   const reset = async() => {
+    if(!userMail?.email) {
+      setInfo({type:"error",message:t("authorize.errors.emptyfield")})
+      return
+    }
     const isValid = await mailValidate(userMail.email)
     if(isValid) {
+      setLoad(true)
       setUserMail("") 
       forgotPassword(userMail).then((res) => {
-        if(res.status === 400){
-          setInfo({type:"error",message:t("authorize.errors.emailNotFound")})
+      setLoad(false)
+      if(res?.status === 200) {
+        return  setInfo({type:"success",message:t("dialogs.checkEmail")})
         }else{
-          setInfo({type:"info",message:t("dialogs.checkEmail")})
-          setOpenConfDial(true)
-          setTimeout(() => {
-            setInfo({})
-          setOpenConfDial(true)
-          navigate("/")
-          },5000)
+        return setInfo({type:"error",message:t("authorize.errors.emailNotFound")})
         }
       })
-    }else{
-      setInfo({type:"error",message:t("authorize.errors.notMail")})
-      setTimeout(() => {
-        setInfo({})
-      setOpenConfDial(true)
-      },5000)
+    }else{  
+      setLoad(false)
+     return setInfo({type:"error",message:t("authorize.errors.notMail")})
     } 
+  };
+
+  const closeDialog = () => {
+    setInfo({})
   }
 
   return(
-    <div style={{width :"80%",margin:"auto"}}>
+    <div style={{width : "50dvw", padding:"10px 20px"}}>
       <div style={{display:"flex", justifyContent:"space-between",alignItems:"center",marginBottom:"10px"}}>
         <span style={{color:"orange",fontSize:"130%",fontWeight:600, textAlign:"start"}}>{t("authorize.reset")}</span>
         <LangSelect size={"22px"} />
       </div>
       <input 
-        style={{width:"100%",border:"solid darkgrey 2px",padding:"3px",alignSelf:"flex-start"}}
+        style={{width:"60%",border:"solid darkgrey 2px",padding:"3px", margin:"10px"}}
         type="text"
         placeholder="e-mail@email"
-        // placeholder={t("authorize.email")}
         name="email"
         onChange={(e) => {
           setInfo({})
           setUserMail({[e.target.name]:e.target.value})
         }} 
       />
-        <span style={{fontWeight:600,color:"black",fontSize:"110%",alignSelf:"start"}}>{t("authorize.resetInfo")}</span>
+        <div style={{fontWeight:600,color:"black",fontSize:"110%",alignSelf:"start"}}>{t("authorize.resetInfo")}</div>
       <div style={{color:"red",height:"40px",padding:"5px",fontSize:"80%"}}>
        {info.type === "error" && <p>{info?.message}</p>} 
       </div>      
       <BackAndOkBtnGrp func={reset} btnName={t("buttons.send")} link={"/"}/>
       
-      {info.type === "info" &&
-      <Dialog open={true}>
-        <SnackErr type={info?.type} message={t("dialogs.checkEmail")} />
-      </Dialog>
+      {info?.message &&
+        <Dialog open={true}>
+          <SnackErr type={info?.type}  message={info?.message} close={closeDialog}/>
+        </Dialog>
       }
-
+      <Dialog open={Boolean(load)} >
+        <Loader />
+      </Dialog>
     </div>
   )
 };

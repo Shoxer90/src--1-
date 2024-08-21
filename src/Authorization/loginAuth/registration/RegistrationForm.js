@@ -8,17 +8,16 @@ import { mailValidate } from "../../../modules/mailValidate";
 import TermsConditionsLink from "../../registration/preRegistrate/TermsConditionsLink";
 import PreRegistrateAgreement from "../../registration/preRegistrate/PreRegistrateAgreement"
 import BackAndOk from "../buttonGroup/backAndOk";
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import validator from "validator";
 import SnackErr from "../../../Container2/dialogs/SnackErr";
 
-const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) => { 
+const RegistrationForm = ({newUser, setNewUser, t, successSubmit, setRegisterMessage,  setIsLoad}) => { 
 
   const [message,setMessage] = useState({message:"", type:""});
   const [errorMessage, setErrorMessage] = useState({ok:false,message:""})
   const [confirmPass,setConfirmPass]= useState("");
   const [isIdentity,setIsIdentity] = useState(true);
-  const [unique,setUnique] = useState(true);
+  const [unique,setUnique] = useState(false);
   const [submitClick, setSubmitClick] = useState(false);
   const [validMail, setValidMail] = useState(false);
   const [agree,setAgree] = useState(false);
@@ -33,17 +32,15 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
     setMessage({message:"", type:""})
     setNewUser({
       ...newUser,
-      [e.target.name]:e.target.value
+      [e.target?.name]:e.target?.value
     })
   };
 
   const isunique = (e) => {
-    setUnique(true)
-    handleChange(e) 
     isUniqueNik(e.target.value).then((res) => {
-     if(!res?.isUnic) {
+    //  if(!res?.isUnic) {
       setUnique(res?.isUnic) 
-     }
+    //  }
     })
   };
 
@@ -61,6 +58,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
   const limitChar = (e,val) => {
     if (e.target.value.toString()?.length <= val) {
       handleChange(e);
+
     }
   };
 
@@ -73,14 +71,21 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
    }
 
   const registrateUser = () => {
-    console.log(confirmPass,"conf")
-    console.log(newUser?.password, 'Pass')
     setSubmitClick(true)
     for(let [key, value] of Object.entries(newUser)){
       if(
         key !== "tradeName" &&
         key !== "businessAddress" &&
         key !== "zipCode" && 
+
+        key !== "businessCity" &&
+        key !== "businessZipCode" &&
+        key !== "directiorAddress" &&
+        key !== "directiorCity" &&
+        key !== "directorZipCode" &&
+        key !== "country" &&
+        key !== "city" &&
+
         value === ""
       ){
         return  setMessage({message: t("authorize.errors.allInputEmpty"),type:"error"})
@@ -127,13 +132,18 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
       type: "success"
     })
   };
+  const setAgreeFunc =(bool) =>{
+    setMessage({message:"",type:""})
+    setAgree(bool)
+  }
 
   useEffect(() => {
+    // newUser?.tin && isunique(newUser?.tin)
     setNewUser({
       ...newUser,
-      "userName": "+374" + newUser?.phoneNumber
+      "userName":  newUser?.tin
     })
-  }, [newUser?.phoneNumber]);
+  }, [newUser?.tin]);
 
   useEffect(() => {
     passValidator(newUser?.password)
@@ -158,6 +168,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
         onChange={(e)=>handleChange(e)}
       />
       <TextField sx={{m:.6}} 
+        autoComplete="off"
         inputProps={{
           style: {
             height: "26px",
@@ -171,6 +182,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
         onChange={(e)=>handleChange(e)}
       />
       <TextField sx={{m:.6}} 
+        autoComplete="off"
         inputProps={{
           style: {
             height: "26px",
@@ -183,11 +195,15 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
         value={newUser?.tin}
         placeholder={`${t("authorize.tin")} (8 ${t("productinputs.symb")}) *`} 
         // inputProps={{ maxLength: 8, minLength: 8 }}
-        onChange={(e)=>limitChar(e,8)}     
+        onChange={(e)=>{
+          isunique(e)
+          limitChar(e,8)
+        }}     
       />
 
       {/* </div> */}
       <TextField sx={{m:.6}} 
+        autoComplete="off"
         inputProps={{
           style: {
             height: "26px",
@@ -200,6 +216,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
         onChange={(e)=>handleChange(e)}
       />
       <TextField sx={{m:.6}} 
+        autoComplete="off"
         inputProps={{
           style: {
             height: "26px",
@@ -214,6 +231,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
       {/* NEW FIELD */}
       <div className={styles.reg_form_div}>
         <TextField sx={{m:.6}} 
+          autoComplete="off"
           inputProps={{
             style: {
               height: "26px",
@@ -222,8 +240,8 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           }}
           // error={!newUser?.city && submitClick}
           placeholder={`${t("authorize.city")} `}
-          name="city"
-          value={newUser?.city}
+          name="businessCity"
+          value={newUser?.businessCity}
           onChange={(e)=>handleChange(e)}
         />
        
@@ -233,6 +251,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
 
       <div className={styles.reg_form_div}>
         <TextField sx={{m:.6}} 
+          autoComplete="off"
           inputProps={{
             style: {
               height: "26px",
@@ -246,6 +265,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           onChange={(e)=>handleChange(e)}
         />
         <TextField sx={{m:.6}} 
+          autoComplete="off"
           inputProps={{
             style: {
               height: "26px",
@@ -259,6 +279,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           onChange={(e)=>handleChange(e)}
         />
       <TextField  sx={{m:.6}} 
+        autoComplete="off"
         inputProps={{
           style: {
             height: "26px",
@@ -284,7 +305,8 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
         </div>
         {/* NEW FIELD */}
         <TextField sx={{m:.6}} 
-           inputProps={{
+            autoComplete="off"
+            inputProps={{
             style: {
               height: "26px",
               padding:"1px 10px"
@@ -292,11 +314,14 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           }}
           // error={!newUser?.legalAddress && submitClick }
           placeholder={`${t("authorize.address")}`} 
-          // onChange={(e)=>handleChange(e)}
+          name="directiorAddress"
+          value={newUser?.directiorAddress}
+          onChange={(e)=>handleChange(e)}
         />
         <div className={styles.reg_form_div}>
 
         <TextField sx={{m:.6}} 
+          autoComplete="off"
           inputProps={{
             style: {
               height: "26px",
@@ -306,23 +331,27 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           // error={!newUser?.country && submitClick}
           name="country"
           value={newUser?.country}
+          // placeholder={`${t("authorize.country")}* `}
           placeholder={`${t("authorize.country")} `}
           onChange={(e)=>handleChange(e)}
         />
         <TextField sx={{m:.6}} 
-          inputProps={{
+          autoComplete="off"
+          inputProps={{ 
             style: {
               height: "26px",
               padding:"1px 10px"
             }
           }}
-          // error={!newUser?.city && submitClick}
+          // error={!newUser?.city && submitClick} 
+          // placeholder={`${t("authorize.city")} *`}
           placeholder={`${t("authorize.city")} `}
           name="city"
           value={newUser?.city}
           onChange={(e)=>handleChange(e)}
         />
         <TextField sx={{m:.6}} 
+          autoComplete="off"
           inputProps={{
             style: {
               height: "26px",
@@ -332,12 +361,13 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           type="number"
           name="zipCode"
           value={newUser?.zipCode}
-          placeholder={`${t("authorize.zipCode")}`}
+          placeholder={`${t("authorize.zipCode")} `}
           onChange={(e)=>handleChange(e)}
         />
       </div>
 
       <TextField sx={{m:.6}} 
+        autoComplete="off"
          inputProps={{
           style: {
             height: "26px",
@@ -356,6 +386,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
       <div className={styles.reg_form_div}>
         <FormControl style={{margin:"0px"}}>
           <TextField sx={{m:.6}} 
+            autoComplete="off"
             inputProps={{
               autoComplete: 'off',
               style: {
@@ -409,7 +440,6 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           }}
           error={(!confirmPass && submitClick) || !isIdentity}
           autoComplete="new-password"
-
           name=""
           type="password"
           value={confirmPass}
@@ -423,7 +453,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           <span className={styles.errorMessage} style={{height:"15px"}}>
              {message?.message &&  message?.message}
           </span>
-        <PreRegistrateAgreement agree={agree} setAgree={setAgree} t={t} title={<TermsConditionsLink t={t} />}/>
+        <PreRegistrateAgreement agree={agree} setAgree={setAgreeFunc} t={t} title={<TermsConditionsLink t={t} />}/>
       </div>
       
       <BackAndOk func={reg} btnName={t("authorize.register")} link={"/login"} />

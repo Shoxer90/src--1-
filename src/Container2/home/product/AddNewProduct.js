@@ -119,8 +119,9 @@ const AddNewProduct = ({
             setMessage(t("dialogs.pricezero")) 
             return
           }else{
+            setTypeCode("")
             setContent([])
-           setFetching(true)
+            setFetching(true)
 
             setEmptyValidate(false)
             setMessage(t("productinputs.productadded"))

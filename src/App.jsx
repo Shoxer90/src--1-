@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import Basket from "./Container/Bascket/index";
+// import Basket from "./Container/Bascket/index";
 
 import HistoryPage from "./Container2/historyPage";
 import Header from "./Container/Header/Header";
@@ -44,6 +44,8 @@ import Registration from "./Authorization/loginAuth/registration";
 import ForgotPassword from "./Authorization/loginAuth/forgotPass";
 import ResetPassword from "./Authorization/loginAuth/resetpass/ResetPassword";
 import Confirmation from "./Authorization/loginAuth/confirmation";
+// import Basket from "./Container/basket";
+import Basket from "./Container/Bascket";
 
 const App = () => {
 
@@ -77,7 +79,7 @@ const App = () => {
   const [count, setCount] = useState(0);
 
   const whereIsMyUs = async() => {
-    console.log("25.06.24 reverse link view")
+    console.log("20.08.24")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -126,7 +128,6 @@ const App = () => {
   };
 
   const byBarCodeSearching = async(barcode) => {
-    console.log(barcode,"BARCODe")
     if(barcode === "" || barcode === " "){
       await queryFunction(dataGroup, 1).then((res) => {
         setContent(res?.data)
@@ -421,7 +422,6 @@ const App = () => {
             activeBtn={activeBtn}
             setActiveBtn={setActiveBtn}
           />
-          {/* <button style={{marginTop:"175px"}} onClick={hardReloadWithBypassCache}>Полная перезагрузка с обходом кеша</button> */}
           {!isBlockedUser ? <Routes>
             <Route
               path="/"
@@ -472,7 +472,8 @@ const App = () => {
             <Route path="*" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser} serviceType={user?.activeServiceType} />} />
           </Routes>
         }
-         {!isBlockedUser && <Basket 
+         {/* {!isBlockedUser && basketContent?.length && <Basket  */}
+          { !isBlockedUser && <Basket 
             t={t}
             userName={user?.firstname + " " + user?.lastname}
             logOutFunc={logOutFunc}

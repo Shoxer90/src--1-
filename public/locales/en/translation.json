@@ -99,7 +99,7 @@
     "createMultiProds": "Import Catalog"
   },
   "intro": {
-    "privacyPolicy": "Privacy And Policy",
+    "privacyPolicy": "Privacy Policy",
     "visitLink":"For more information, visit ",
     "soonAvailable": "Will be available soon",
     "welcome": "Welcome !",
@@ -156,6 +156,9 @@
     "beforeRegister": "Аccept the ",
     "beforeRegisterTerms": "terms of the service",
     "beforeRegisterDialog": "Please accept the  ",
+    "loginIntro1": "The Storex Online Trading Platform is designed to simplify your trading experience.", 
+    "loginIntro2": "For additional details, please visit our website  ", 
+    "loginIntro3": "Enhance your shopping management on the go by downloading the StoreX app on your mobile device.",
     "errors": {
       "cashLimit": "Cash transaction cannot exceed 300,000 AMD",
       "bank_agreement":"To accept payments through QR or Link, it is necessary to sign a service contract with a partner bank.",
@@ -275,8 +278,12 @@
     "removeallprod": "Clean basket ?",
     "removeoneprod": "Remove current product from basket ?",
     "useprepayment":"Prepayment",
+    "remainder":"Remainder",
+    "usepayment":"Sale",
     "prepaymentTitle": "Using prepayment",
     "prepaymentGenerate":"Leave a prepayment",
+    "completed": "Completed",
+    "notCompleted": "Not completed",
     "nullishQuant": "There is a quantity mismatch in the basket",
     "emptyPayInfo": "There are empty or incorrect fields"
   },
@@ -482,7 +489,7 @@
     "unicBarCode": "A product with a similar barcode already exists.",
     "activateEhdm":"Do you really want to activate E-cash register?",
     "deactivateEhdm":"Do you really want to deactivate E-cash register ??",
-    "deprecated": "The data is deprecated․ Please, confirm registration again",
+    "deprecated": "Outdated data. Please go through the registration process again",
     "saveData": "Do you want to save the collected data?",
     "excelAddProds": "Would you like to download the product(s) to your store ?",
     "excelCancelList": "Do you want to cancel changes ?",

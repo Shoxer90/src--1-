@@ -1,6 +1,6 @@
 .reg_form{
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: column wrap;
   align-content: center;
   & input {
     user-select: none;

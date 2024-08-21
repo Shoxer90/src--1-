@@ -9,9 +9,11 @@ const Footer = ({color}) => {
 
 
   return (
-    <div>
-      <div style={{height:"2px", backgroundColor:"#3FB68A", margin:"10px 0px"}}></div>
+    <div style={{zIndex:100,background:"white",width:"100%",position:"absolute",bottom: -100,left: 0}}>
+      <div style={{display:"flex",justifyContent:"space-between"}}>
       
+    <div  style={{minWidth:"50dvw"}}>
+      <div style={{height:"2px", backgroundColor:"#3FB68A", margin:"10px 0px"}}></div>
       <div className={styles.payxInfo}> 
         <p style={{color:{color}}}>PayX LLC</p>
         <>
@@ -54,8 +56,12 @@ const Footer = ({color}) => {
       <div style={{margin:"0px",fontSize:"80%",padding:"0px"}}>
         © 2023, PayX LLC. All Rights Reserved.
       </div>
+      </div>
+       <div></div>
+      </div>
     </div>
   )
 };
 
 export default Footer;
+ 

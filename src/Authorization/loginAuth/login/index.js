@@ -20,7 +20,7 @@ const Login = ({whereIsMyUs,setIsLogIn}) => {
   }, []);
 
   return(
-    <div>
+    <div style={{minWidth:"50dvw", padding:"10px 20px"}}>
       <div style={{display:"flex", justifyContent:"space-between",alignItems:"center"}}>
         <span style={{color:"#3FB68A",fontSize:"110%",fontWeight:600, textAlign:"start"}}>Storex On - line</span>
         <LangSelect size={"22px"} />
@@ -35,13 +35,13 @@ const Login = ({whereIsMyUs,setIsLogIn}) => {
           />
           <PrivacyForgotLinks />
           <span style={{fontWeight:600,textAlign:"start",width:"80%",padding:"0px 10px"}}>
-            <div>Storex on-line առևտրային ծրագիրը նախատեսված է առևտուրը պարզ և հեշտ կատարելու համար:</div>
-            <div>Մանրամասն տեղեկությունների համար այցելեք <a href="www.storex.am" style={{color:"#3FB68A"}}>www.storex.am</a> :</div>
+            <div>{t("authorize.loginIntro1")}</div>
+            <div>{t("authorize.loginIntro2")}<a href="https://storex.am/" target="_blank" rel="noreferrer" style={{color:"#3FB68A"}}>www.storex.am</a> :</div>
           </span>
           <div style={{display:"flex",flexFlow:"column",alignItems:"center"}}>
             <SocialMediaGroup w={170}/>
           </div>
-          <p style={{fontWeight:600,textAlign:"start",width:"80%"}}>Ներբեռնեք նաև StoreX հավելվածը՝ առևտուրը հեռախոսի միջոցով կազմակերպելու համար։</p>
+          <p style={{fontWeight:600,textAlign:"start",width:"80%"}}>{t("authorize.loginIntro3")}</p>
           <span id="apple">
           <img src="/11223.png" alt="" style={{ width:"110px"}}/>
           </span>

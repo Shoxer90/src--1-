@@ -27,10 +27,16 @@ const Registration = ({logOutFunc}) => {
     "phoneNumber": "",
     "zipCode": "",
     "userName": "+374",
-    "password": ""
+    "password": "",
+
+    "businessCity": "",
+    "businessZipCode": "",
+    "directiorAddress": "",
+    "directiorCity": "",
+    "directorZipCode": "",
   });
 
-  const successSubmit = (res) => {
+  const successSubmit = (res,isUnic) => {
     setIsLoad(false)
     if (res === 200) {
       setRegisterMessage({
@@ -51,16 +57,22 @@ const Registration = ({logOutFunc}) => {
         "phoneNumber": "",
         "zipCode": "",
         "userName": "+374",
-        "password": ""
+        "password": "",
+    
+        "businessCity": "",
+        "businessZipCode": "",
+        "directiorAddress": "",
+        "directiorCity": "",
+        "directorZipCode": "",
       })
     }else if (res === 405) {
       setRegisterMessage({
         m: t("authorize.dublicate"),
         t:"error"
       })
-    }else if(res === 400) {
+    }else if(res === 400 && !isUnic) {
       setRegisterMessage({
-        m: t("authorize.dublicate"),
+        m: t("authorize.exist"),
         t:"error"
       })
     }
@@ -72,7 +84,7 @@ const Registration = ({logOutFunc}) => {
   },[]);
 
   return(
-    <div>
+    <div  style={{minWidth:"50dvw", padding:"10px 20px"}}>
       <div style={{display:"flex", justifyContent:"space-between",alignItems:"center", margin:"5px"}}>
         <h4 style={{color:"orange",fontSize:"110%",fontWeight: 600, textAlign:"start"}}>{t("authorize.registration")}</h4>
         <LangSelect size={"22px"} />
@@ -83,6 +95,7 @@ const Registration = ({logOutFunc}) => {
         t={t}
         setIsLoad={setIsLoad}
         successSubmit={successSubmit}
+        setRegisterMessage={setRegisterMessage}
       />
 
       <Dialog open={Boolean(registerMessage.m)} onClose={()=>setRegisterMessage({m:"",t:""})}>

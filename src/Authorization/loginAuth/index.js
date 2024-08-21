@@ -9,18 +9,17 @@ const LoginAuthContainer =({children}) => {
 const {t} = useTranslation();
 
   return (
-    <div style={{display:"flex",justifyContent:"space-between",flexFlow:"column", color:"#3FB68A", padding:"0px 10px"}}>
-      <Logo />
-      <div className={styles.regContent}>
-        <div className={styles.regContent_content} > 
-          <div style={{height:"2px", backgroundColor:"#3FB68A", margin:"5px 1px"}}></div>
-          {children}
+    <div style={{position:"relative"}}>
+      <div style={{display:"flex",justifyContent:"space-between",flexFlow:"column", color:"#3FB68A", padding:"0px 10px"}}>
+        <Logo />
+        <div className={styles.regContent}>
+          <div className={styles.regContent_content} > 
+            <div style={{height:"2px", backgroundColor:"#3FB68A", margin:"5px 1px"}}></div>
+            {children}
+          </div>
+          <NotificationComponent t={t} />
         </div>
-        <NotificationComponent t={t} />
-      </div>
-      <div className={styles.regContent}>
         <Footer color="#3FB68A" />
-        <div></div>
       </div>
     </div>
   )

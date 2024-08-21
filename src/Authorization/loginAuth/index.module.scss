@@ -11,15 +11,8 @@
   width: 48dvw;
   font-weight: 600;
   align-self: center;
+  padding: 0px 10px;
 
-  // > p,a{
-  //   align-items: center;
-  //   margin: 0px;
-  //   padding: 0px;
-  //   display: flex;
-  //   justify-content: center;
-    
-  // }
 }
 
 .notifications {
@@ -35,9 +28,9 @@
   width: 98dvw;
   justify-content: space-between;
    &_content{
-    height:79dvh;
+    // height:79dvh;
+    min-height: 78dvh;
    }
-  // padding: 0px 20px;
 } 
 
 @media screen and (max-width: 770px) {

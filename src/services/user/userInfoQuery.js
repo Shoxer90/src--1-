@@ -132,7 +132,7 @@ export async function addUserEmail(inputs) {
 export async function updateUserPassword(inputs) {
   try{
     const  data = await axios.post(baseUrl + `Login/UpdatePassword`, inputs, option());
-    return data.data.message
+    return data
   }catch(err){
     return err
   }

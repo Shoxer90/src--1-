@@ -43,7 +43,7 @@ const HomeContentItem = ({
   };
  
   const clickToBascket = () => {
-    setToBasket(product,quantity)
+    setToBasket(product, quantity)
     setQuantity("")
   };
 

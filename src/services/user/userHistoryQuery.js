@@ -90,4 +90,21 @@ export async function generateToExcel(queryDate){
     return err
   }
 };
+ 
+export async function getPrepaymentHistory(body){
+  // const response = {
+  //   count: "",
+  //   data: ""
+  // }
+  try {
+    const  data = await axios.post(baseUrl + `PrePayment/GetPrepaymentsHistory`,body, option())
+    return data
+    // response.count = data.headers.count
+    // response.data = data.data
+    // return response
+  }catch(err) {
+    return err
+  }
+};
+
 

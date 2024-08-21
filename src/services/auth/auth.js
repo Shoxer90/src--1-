@@ -28,7 +28,7 @@ export async function forgotPassword (mail){
     const res = await axios.post(baseUrl + "Login/ResetPassword", mail, option);
       return res;
   } catch(err) {
-    return err?.response;
+    return err
   }
 };
 
@@ -63,8 +63,15 @@ export async function registrationNew(user) {
     "email":  user?.email,
     "phoneNumber": `0${user?.phoneNumber}`,
     "zipCode":  user?.zipCode,
-    "userName":  user?.userName,
-    "password":  user?.password
+    "userName": user?.tin,
+    "password":  user?.password,
+    
+    "businessCity": user?.businessCity ,
+    "businessZipCode": user?.businessZipCode ,
+    "directiorAddress": user?.directiorAddress ,
+    "directiorCity": user?.directiorCity,
+    "directorZipCode": user?.directorZipCode ,
+
   }
   try{
     const  data = await axios.post(baseUrl + `Registration/RegistrationNew`,newUser, option);
@@ -124,10 +131,9 @@ export async function createNewCashier(inputs) {
 };
 
 
-export const getNews = async() => {
+export const getNews = async(lang) => {
   try{
-    const  data = await axios.get(baseUrl + `Login/GetNews`, {});
-    console.log(data,"data")
+    const  data = await axios.get(baseUrl + `Login/GetNews?language=${lang}`, {});
     return data.data
   }catch(err){
     return err

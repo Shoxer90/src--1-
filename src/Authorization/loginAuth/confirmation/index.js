@@ -57,18 +57,18 @@ const {t} = useTranslation();
   },[])
 
   return (
-    <div>
-      <div style={{width :"80%",margin:"auto"}}>
-        <div style={{display:"flex", justifyContent:"space-between",alignItems:"center",marginBottom:"10px"}}>
-          <span style={{color:"orange",fontSize:"130%",fontWeight:600, textAlign:"start"}}>{t("authorize.confirmationCode")}</span>
-          <LangSelect size={"22px"} />
-        </div>
+    <div style={{minWidth:"50dvw",padding:"10px 20px"}}>
+      <div style={{display:"flex", justifyContent:"space-between",alignItems:"center"}}>
+        <span style={{color:"orange",fontSize:"130%",fontWeight:600, textAlign:"start"}}>{t("authorize.confirmationCode")}</span>
+        <LangSelect size={"22px"} />
+      </div>
+      <div >
         <h5>{t("authorize.confirmation")}</h5>
         <input
           style={{
-            width:"100%",
             fontSize:"130%",
             marginBottom:"10px",
+            margin:"20px",
             alignSelf:"center",
             padding:"0px 10px"
           }}
@@ -103,10 +103,10 @@ const {t} = useTranslation();
         <div onClick={resendCodeToPhone} style={{cursor:"pointer", margin:"5px", textDecoration:"underline"}}>
           {t("authorize.resend")}
         </div>
+        <Dialog open={Boolean(load)} >
+          <Loader />
+        </Dialog>
       </div>
-      <Dialog open={Boolean(load)} >
-        <Loader />
-      </Dialog>
     </div>
   )
 };
