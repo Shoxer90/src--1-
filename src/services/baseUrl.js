@@ -66,6 +66,12 @@ export const columnNames = [{
   key: "cashier",
   checked:  true
 },
+// {
+//   title: "settings.operation",
+//   id: 15,
+//   key: "operation",
+//   checked:  true
+// },
 
 ];
 

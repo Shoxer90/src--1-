@@ -279,5 +279,22 @@ export const getProductsSaleByDays = async(date) => {
     }catch(err){
         return err
     }
-}
+};
+
+
+
+export const getPrepayment = async(body) => {
+  const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+  }
+  try{
+    const data =  await axios.post(baseUrl + `PrePayment/GetPrepaymentsHistory`, body, option)
+    let newData = {data:data?.data, count: +data?.headers?.count}
+    return newData
+  }catch(err){
+    return err?.response?.status
+  }
+};
 

@@ -29,14 +29,15 @@ const HistoryContent = ({
   const messageAfterReverse = () => {
     setMessage({m:t("dialogs.welldone"),t:"success"})
     initialFunc("Paid")
-  }
-useEffect(() => {
-  filterBodyFill()
-}, [columns]);
+  };
 
-useEffect(() =>{
-  reveredLink && ref.current.click()
-}, [reveredLink]);
+  useEffect(() => {
+    filterBodyFill()
+  }, [columns]);
+
+  useEffect(() =>{
+    reveredLink && ref.current.click()
+  }, [reveredLink]);
 
   return (
     <div>
@@ -45,9 +46,9 @@ useEffect(() =>{
         <TableContainer style={{fontSize:"120%"}}component={Paper}>
           <Table aria-label="simple table">
             <TableHead>
-                <TableRow>
-                  {columns && columns.map((item, index) => item?.checked ? <TableCell key={index}> <strong>{t(item?.title)}</strong> </TableCell> : null)}
-                </TableRow>
+              <TableRow>
+                {columns && columns.map((item, index) => item?.checked ? <TableCell key={index}> <strong>{t(item?.title)}</strong> </TableCell> : null)}
+              </TableRow>
             </TableHead>
             <TableBody style={{fontSize:"60%"}}>
               {content &&  content.map((item, index) => (

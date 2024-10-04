@@ -1,0 +1,74 @@
+.reverseContainer{
+  padding: 20px;
+  &_header{
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+    align-items: center;
+  }
+  &_content{
+
+  }
+  &_footer{
+
+  }
+}
+.radioDialog {
+  display:flex;
+  font-size: large;
+  align-items: center;
+  text-align: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 5px;
+  &:hover{
+    background-color: lightgrey;
+  }
+  p {
+    margin: 5px 8px;
+  }
+ & input[type=checkbox] {
+    cursor: pointer;
+    width:60px;
+    height: 1.1em;
+  }
+  & img {
+    width: 40px;
+    height: 30px;
+    border: solid grey 1px;
+    border-radius: 2px;
+    align-self:center;
+    margin: 2px;
+  }
+  }
+  .reverse_quantity{
+    display:flex;
+    justify-content: space-around;
+    &_input{
+      border:solid grey 2px;
+      border-radius: 4px;
+      cursor: pointer;
+      width:60px;
+    }
+  }
+
+  .conditions{
+    margin-bottom: 10px;
+    font-size: 90%;
+    font-weight: 600;
+    padding: 10px ;
+    display: flex;
+    justify-content: space-between;
+    & input{
+      width: 60px;
+      border-radius: 5px;
+      border: solid grey 2px;
+      padding: 4px;
+      margin: 2px 5px;
+    }
+    & >div{
+      width: 50%;
+    }
+    
+  }

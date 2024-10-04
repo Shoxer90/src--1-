@@ -10,7 +10,7 @@ import SnackErr from "../../Container2/dialogs/SnackErr";
 import moment from "moment";
 
 import PayQRLink from "../../Container2/historyPage/hdm/PayQRLink";
-import { cheackProductCount, productQuery } from "../../services/products/productsRequests";
+import { cheackProductCount } from "../../services/products/productsRequests";
 import Receipt from "../../Container2/historyPage/hdm/receipt";
 import BasketHeader from "./header/BasketHeader";
 import BasketContent from "./content/BasketContent";
@@ -19,7 +19,6 @@ import PayButtons from "./operation/PayButtons";
 import ProductPayment from "./payment/ProductPayment";
 import SearchBarcode from "../../SearchBarcode";
 import { taxCounting } from "../../modules/modules.js";
-// import { fi } from "date-fns/locale";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -96,7 +95,7 @@ const  Bascket = ({
   const checkDiscountVsProdPrice = (disc) => {
     basketContent.map((item) => {
       if((item.count * item?.price - (item.count * item?.price * disc/100)) < 1){
-        setSingleClick({pointerEvents:"none"})
+        setSingleClick({pointerEvents: "none"})
         createMessage("error", t("basket.total_zero"))
       }
       return item
@@ -229,6 +228,7 @@ const  Bascket = ({
   }
 
   const checkAvail = async(saletype) => {
+
     setAvail([])
     cheackProductCount(paymentInfo?.sales).then((res) => {
       const errProds = []
@@ -405,9 +405,6 @@ const  Bascket = ({
                   val={val}
                   totalPrice={totalPrice}
                   setOpenBasket={setOpenBasket}
-
-
-
                 />
               </div>
           </Box>

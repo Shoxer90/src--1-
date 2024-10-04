@@ -20,38 +20,37 @@ const PhonePay = ({
   responseTreatment,
   deleteBasketGoods,
   loadBasket,
-  logOutFunc
+  logOutFunc,
+  multiSaleProducts
 }) => {
   const [response,setResponse] = useState({message:"",status:""});
-  const [flag,setFlag] = useState(false);
   const [isSent,setIsSent] = useState(false);
 
   const sendSms = async() => {
-      // setLoader(true)
     setIsSent(true)
     if(!paymentInfo?.phone ||`${paymentInfo?.phone}`?.length !== 8){
-      // setLoader(false)
       setResponse({
         message: t("authorize.errors.wrongnumber"),
         status: "error"
       })
       return
     }
-    await sendSmsForPay({
-      ...paymentInfo,
-      phone: `+374${paymentInfo.phone}`
-    }).then((res) => {
-      // setLoader(false)
-      if(res?.status === 203) {
-        setResponse({
-          message: t("authorize.errors.bank_agreement"),
-          status: "error"
-        })
-      }else{
-        closePhoneDialog()
-        responseTreatment(res, 3)
-      }
-    })
+    multiSaleProducts(3)
+    // await sendSmsForPay({
+    //   ...paymentInfo,
+    //   phone: `+374${paymentInfo.phone}`
+    // }).then((res) => {
+    //   if(res?.status === 203) {
+    //     setResponse({
+    //       message: t("authorize.errors.bank_agreement"),
+    //       status: "error"
+    //     })
+    //   }else{
+        
+    //     closePhoneDialog()
+    //     responseTreatment(res, 3)
+    //   }
+    // })
   };
   
   const handleChangeInput = (e) => {

@@ -11,6 +11,8 @@ import Loader from "../loading/Loader";
 import { loadResources } from "i18next";
 import HistoryContent from "./content/HistoryContent";
 import { columnNames } from "../../services/baseUrl";
+import { getPrepayment } from "../../services/products/productsRequests";
+
 
 const HistoryPage = ({logOutFunc, t}) => {
   const perPage = 10;
@@ -61,7 +63,9 @@ const HistoryPage = ({logOutFunc, t}) => {
         response = await getSaleProducts("GetNotPaidSaleProductsByPage", {page: page, count: perPage})
       }else if(data === "Canceled"){
        response = await getSaleProducts("GetReveredHistoryByPage", {page: page, count: perPage})
-      }
+      }else if(data === "Prepayment"){
+        response = await getPrepayment({page: page, count: perPage, searchString:""})
+       }
       if(response === 401){
         logOutFunc()
       }else{

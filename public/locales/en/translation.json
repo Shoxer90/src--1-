@@ -96,9 +96,10 @@
     "ok":"Ok",
     "sendResetLink": "Send Reset Link",
     "back" : "Back",
-    "createMultiProds": "Import Catalog"
+    "createMultiProds": "Import Catalog",
+    "view": "View"
   },
-  "intro": {
+    "intro": {
     "privacyPolicy": "Privacy And Policy",
     "visitLink":"For more information, visit ",
     "soonAvailable": "Will be available soon",
@@ -256,6 +257,7 @@
   "basket": {
     "title": "Basket",
     "total_zero": "You can`t make a sale if the total cost of your purchases or the cost of a unit product (as a result of the discount) is less than 1 AMD.",
+    "no_new_count_prod": "It is not possible to increase the quantity and assortment of the product. It is necessary to complete the transaction.",
     "empty": "The basket is empty",
     "total": "Total without discount  ",
     "partner": "Partner Tin",
@@ -275,10 +277,18 @@
     "removeallprod": "Clean basket ?",
     "removeoneprod": "Remove current product from basket ?",
     "useprepayment":"Prepayment",
+    "usepayment":"Payment",
     "prepaymentTitle": "Using prepayment",
     "prepaymentGenerate":"Leave a prepayment",
     "nullishQuant": "There is a quantity mismatch in the basket",
-    "emptyPayInfo": "There are empty or incorrect fields"
+    "emptyPayInfo": "There are empty or incorrect fields",
+    "remainder":"Remainder",
+    "customer": "Customer",
+    "seeReciept": "Receipt view",
+    "completeSale": "Complete the transaction",
+    "prepLimit": "If you want to make a full payment, go to the Payment section"
+
+
   },
   "history": {
     "start_date": "Start date",
@@ -292,11 +302,11 @@
     "number": "Number",
     "performer": "Performer",
     "notspecified": "Not specified",
-    "check_details": "Details of Transaction",
+    "check_details": "details of Transaction",
     "hdm": "Reciept",
     "reverse": "Reverse",
     "reverse_products": "Reverse products",
-    "total": "Total",
+    "total": "Amount",
     "type": "Pay type",
     "cash": "Cash",
     "card": "Cash-less",
@@ -313,6 +323,8 @@
     "transactionType":"Transaction Type",
     "prepaymentRedemption": "Prepayment",
     "prepaymentRedemption1": "Prepayment redemption",
+    "prepaymentReverse": "Prepayment Reverse",
+    "restAmountReverse": "Balance to be paid",
     "redacted": "Redacted",
     "cardCashSell": "Cash & Card payment",
     "partialPayment" : "Partial payment",
@@ -324,6 +336,8 @@
     "whichCashless": "From which cashless",
     "whichPrepayment": "From which prepayment",
     "forReverse": "Refundable amount",
+    "takebackFromPrepayment":"Take back From Prepayment ",
+    "backProdsbyDram":"Value of returned products ",
     "getCard": "Refund cashless",
     "getCash": "Refund cash",
     "receiptPrice2": "Receipt price",
@@ -331,7 +345,11 @@
     "reverseTotal": "Refund",
     "noProdExcel": "Excel without product list",
     "prodExcel": "Excel with product list",
-    "selectAll": "Select All"
+    "selectAll": "Select All",
+    "transactions" : "Transactions",
+    "pretransactions" : "Incomplete Transactions",
+    "cleanBasket" : "",
+    "noPrepaymentReciepts":"No prepayment transactions"
 
   }, 
   "updates": {
@@ -371,9 +389,9 @@
     "active": "Active",
     "blocked": "Blocked",
     "update": "Update cashier data",
-    "ehdmAuth": "Permission to Print on E-CCR",
-    "hdmAuth": "Permission to Print on CCR",
-    "reverseAuth": "E-CCR Return Permission",
+    "ehdmAuth": "Permission to Print on ETRM",
+    "hdmAuth": "Permission to Print on TRM",
+    "reverseAuth": "ETRM Return Permission",
     "notAvailableInWeb": "Not Available on Web Site",
     "create": "New cashier",
     "remove": "Remove",
@@ -399,8 +417,8 @@
     "ETRM": "ETRM",
     "StoreX": "StoreX",
     "info":"Information",
-    "cashiereLimit": "Access to more than 2 cashiers, for each (one-time) 6000 dram․To activate the service, please contact 055 522225"
-
+    "cashiereLimit": "Access to more than 2 cashiers, for each (one-time) 6000 dram․To activate the service, please contact 055 522225",
+    "operation": "Operation"
   },
   "cardService":{
     "btnTitle" : "Activation of services",
@@ -497,7 +515,8 @@
     "limitCard": "The amount of non-cash refund cannot exceed  ",
     "autoPayAgreement": "By enabling the automatic payment function, you agree to automatically charge the monthly service fee to the active card.",
     "chooseCard": "Make the card the main one ?",
-    "logoutQuestion": "Sign out?"
+    "logoutQuestion": "Sign out?",
+    "returnPrepayment": "Would you like to cancel this transaction?"
 
   }
 }

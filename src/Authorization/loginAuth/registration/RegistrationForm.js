@@ -39,8 +39,12 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
 
   const isunique = (e) => {
     setUnique(true)
-    handleChange(e) 
-    isUniqueNik(e.target.value).then((res) => {
+    // handleChange(e) 
+    setNewUser({
+      ...newUser,
+      "userName": newUser?.tin
+    })
+    isUniqueNik(e).then((res) => {
      if(!res?.isUnic) {
       setUnique(res?.isUnic) 
      }
@@ -73,8 +77,6 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
    }
 
   const registrateUser = () => {
-    console.log(confirmPass,"conf")
-    console.log(newUser?.password, 'Pass')
     setSubmitClick(true)
     for(let [key, value] of Object.entries(newUser)){
       if(
@@ -129,11 +131,12 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
   };
 
   useEffect(() => {
-    setNewUser({
-      ...newUser,
-      "userName": "+374" + newUser?.phoneNumber
-    })
-  }, [newUser?.phoneNumber]);
+    // setNewUser({
+    //   ...newUser,
+    //   "userName": newUser?.tin
+    // })
+    isunique(newUser?.tin)
+  }, [newUser?.tin]);
 
   useEffect(() => {
     passValidator(newUser?.password)
@@ -182,11 +185,8 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
         name="tin"
         value={newUser?.tin}
         placeholder={`${t("authorize.tin")} (8 ${t("productinputs.symb")}) *`} 
-        // inputProps={{ maxLength: 8, minLength: 8 }}
         onChange={(e)=>limitChar(e,8)}     
       />
-
-      {/* </div> */}
       <TextField sx={{m:.6}} 
         inputProps={{
           style: {
@@ -220,7 +220,6 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
               padding:"1px 10px"
             }
           }}
-          // error={!newUser?.city && submitClick}
           placeholder={`${t("authorize.city")} `}
           name="city"
           value={newUser?.city}
@@ -229,8 +228,6 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
        
       </div>
       <span style={{margin:"3px 10px",textAlign:"start", color:"orange",fontWeight:600}}> {t("authorize.director")}</span>
-
-
       <div className={styles.reg_form_div}>
         <TextField sx={{m:.6}} 
           inputProps={{
@@ -268,17 +265,14 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           error={(!newUser?.phoneNumber && submitClick) ||(newUser?.phoneNumber && newUser?.phoneNumber?.length !==8)}
           name="phoneNumber"
           type="number"
-          // inputProps={{ maxLength: 8 }}
           value={newUser?.phoneNumber}
           label={`${t("authorize.phone")} *`}
           onChange={(e)=>{
             limitChar(e,8)
-
           }
           }
           InputProps={{
             startAdornment: <InputAdornment position="start">+374</InputAdornment>,
-            // startAdornment: <InputAdornment position="start"> <span><LocalPhoneIcon fontSize="small" sx={{p:0}}/>+374</span></InputAdornment>,
           }}
         />
         </div>
@@ -290,9 +284,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
               padding:"1px 10px"
             }
           }}
-          // error={!newUser?.legalAddress && submitClick }
           placeholder={`${t("authorize.address")}`} 
-          // onChange={(e)=>handleChange(e)}
         />
         <div className={styles.reg_form_div}>
 
@@ -303,7 +295,6 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
               padding:"1px 10px"
             }
           }}
-          // error={!newUser?.country && submitClick}
           name="country"
           value={newUser?.country}
           placeholder={`${t("authorize.country")} `}
@@ -316,7 +307,6 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
               padding:"1px 10px"
             }
           }}
-          // error={!newUser?.city && submitClick}
           placeholder={`${t("authorize.city")} `}
           name="city"
           value={newUser?.city}
@@ -355,29 +345,44 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
       <span style={{margin:"3px 10px",textAlign:"start",color:"orange",fontWeight:600}}> {t("authorize.username")} {t("authorize.usernamePassword")}</span>
       <div className={styles.reg_form_div}>
         <FormControl style={{margin:"0px"}}>
-          <TextField sx={{m:.6}} 
-            inputProps={{
-              autoComplete: 'off',
-              style: {
-                height: "26px",
-                padding:"1px 10px"
-              }
-            }}
-            error={!newUser?.userName && submitClick}
-            name="userName"
-            value={`${newUser?.userName}`}
-            // value={newUser?.userName}
-            placeholder={`${t("authorize.username")}*`}
-            // onChange={(e)=>isunique(e)}
-            aria-readonly
-          />
+                  {/* <TextField sx={{m:.6}} 
+                      inputProps={{
+                        autoComplete: 'off',
+                        style: {
+                          height: "26px",
+                          padding:"1px 10px",
+                          color:"orange",
+                          fontWeight:700
+                        }
+                      }}
+                      error={!newUser?.userName && submitClick}
+                      name="userName"
+                      value={`Login (${t("authorize.tin")}): ${newUser?.userName} `}News
+                      placeholder={`${t("authorize.username")}* `}
+                      color="warning"
+                      variant="standard"
+                      focused
+                      aria-readonly
+                      /> */}
+            <span style={{
+              height: "26px",
+              padding:"5px 10px",
+              margin:"5px 0px",
+              color:"orange",
+              fontWeight:700,
+              textDecoration:"underline",
+              textAlign:"start"
+            }}>
+            {`Login (${t("authorize.tin")}): ${newUser?.userName} `}
+          </span>
           <FormHelperText >
-          <span className={!unique? styles.errorMessage: styles.successMessage} style={{height:"12px"}}>
+          <span className={!unique? styles.errorMessage: styles.successMessage}>
             {newUser?.userName && !unique && t("authorize.exist")}
             {newUser?.userName && newUser?.userName.length>4 && unique && t("authorize.exist1")}
           </span>
          </FormHelperText>
         </FormControl>
+
         <TextField sx={{m:.6}}
           inputProps={{
             style: {
@@ -409,7 +414,6 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           }}
           error={(!confirmPass && submitClick) || !isIdentity}
           autoComplete="new-password"
-
           name=""
           type="password"
           value={confirmPass}

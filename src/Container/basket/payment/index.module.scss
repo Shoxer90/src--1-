@@ -1,0 +1,12 @@
+.buttonGroup{
+    width: 80%;
+    display: flex;
+    justify-content: space-around;
+    margin: 10px auto;
+    &_2{
+    display: flex;
+    &>h5{
+        margin-left: 15px;
+    }
+    }
+}

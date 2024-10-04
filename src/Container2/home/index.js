@@ -131,6 +131,7 @@ const HomePage = ({
   },[]);
 
   useEffect(() => {
+    if(searchValue)return
     fetching && queryFunction(dataGroup, currentPage).then((res) => { 
       setTotalCount(res?.headers["count"])
       setFetching(false)
@@ -163,6 +164,7 @@ const HomePage = ({
         searchValue={searchValue}
         openNewProd={openNewProd}
         dataGroup={dataGroup}
+        setDataGroup={setDataGroup}
         setFrom={setFrom}
         setContent={setContent}
       />

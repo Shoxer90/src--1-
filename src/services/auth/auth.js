@@ -127,7 +127,6 @@ export async function createNewCashier(inputs) {
 export const getNews = async() => {
   try{
     const  data = await axios.get(baseUrl + `Login/GetNews`, {});
-    console.log(data,"data")
     return data.data
   }catch(err){
     return err

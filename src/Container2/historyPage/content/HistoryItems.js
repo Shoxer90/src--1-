@@ -1,4 +1,4 @@
-import { TableCell, TableRow } from "@mui/material";
+import { Button, TableCell, TableRow } from "@mui/material";
 import { memo, useState } from "react";
 import HdmStatus from "../../../modules/hdmStatus";
 import { useEffect } from "react";
@@ -7,7 +7,8 @@ import HistoryDetails from "../details/HistoryDetails";
 import ReverseContainer from "../reverse";
 import Receipt from "../hdm/receipt/index";
 import { taxCounting } from "../../../modules/modules";
-
+// import ReverseBtn from "../hdm/receipt/ReverseBtn";
+import ReverseDialog from "../editsales/index";
 const HistoryItems = ({
   item, 
   t, 
@@ -28,6 +29,8 @@ const HistoryItems = ({
   const [message, setMessage] = useState("");
   const [saleData, setSaleData] = useState({});
   const [taxCount,setTaxCount] = useState();
+  const [amountForPrePayment, setAmountForPrePayment] = useState({});
+
   const reverseButton = true;
 
   const dialogManage = () => {
@@ -41,8 +44,7 @@ const HistoryItems = ({
       if(pageName?.status === "Canceled"){
         setReverdLink(item?.link)
       }
-    }
-       else if(!openHDM ){
+    }else if(!openHDM ){
       await hdm_generate(id).then((resp) => {
         setLoad(false)
         if(resp?.res?.printResponse){
@@ -77,11 +79,9 @@ const HistoryItems = ({
 
   return (
     <>
-    
-
     <TableRow
       key={item?.id}
-      onClick={()=> openCloseHDM(item?.id)}
+      // onClick={()=> openCloseHDM(item?.id)}
       sx={{'&:hover':{backgroundColor: 'rgb(243, 243, 239)'}}}
     >
       {filterBody.includes("id") && 
@@ -110,19 +110,20 @@ const HistoryItems = ({
         </TableCell>
       }
       {filterBody.includes("recieptId") && 
-        <TableCell style={{padding:"0px 16px"}}>
-          <>
-          {item?.recieptId}
-          {/* {pageName?.status === "PrePayment" && <div>{item?.saleId === 0 ? 
-            <div style={{color:"red", fontWeight:600}}>{t("basket.notCompleted")}</div>:
-            <div style={{color:"green", fontWeight:600}}> {t("basket.completed")}</div>}</div>} */}
-          </>
+        <TableCell style={{padding:"0px", textAlign:"center"}}>
+          <span style={{fontWeight:700}}>
+            {item?.recieptId}
+          </span>
+          <div>
+            <Button sx={{mr:1,fontSize:"70%", background:'orange'}} size="small" onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>
+            {pageName?.status  === "Paid" || pageName?.status  === "Prepayment" ? <Button size="small"  sx={{mr:1, fontSize:"70%", background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}
+          </div>
         </TableCell>
       }
-      {filterBody.includes("total") && <TableCell style={{padding:"0px"}}>{item?.total} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
-      {filterBody.includes("cashAmount") && <TableCell>{item?.cashAmount}  <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
-      {filterBody.includes("cardAmount") && <TableCell>{item?.cardAmount}  <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
-      {filterBody.includes("prepaymentAmount") && <TableCell>{item?.prePaymentAmount}  <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
+      {pageName?.status !=="Prepayment" ? filterBody.includes("total") && <TableCell style={{padding:"0px"}}>{item?.total} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>:<TableCell> - </TableCell>}
+      {filterBody.includes("cashAmount") && <TableCell>{item?.cashAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
+      {filterBody.includes("cardAmount") && <TableCell>{item?.cardAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
+      {filterBody.includes("prepaymentAmount") && <TableCell>{item?.saleType === 5 ? item?.total: item?.prePaymentAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
       {filterBody.includes("additionalDiscount") && <TableCell style={{padding:"0px 16px"}}>{item?.additionalDiscount} </TableCell>}
       {filterBody.includes("saleType") && 
         <TableCell style={{padding:"0px 16px",fontSize:"85%"}}>
@@ -133,33 +134,23 @@ const HistoryItems = ({
           {item?.saleType === 4 && t("history.link")}
           {item?.saleType === 5 && t("history.prepaymentRedemption")}
           {item?.saleType === 7 && t("history.combo")}
-          {/* {item?.saleType === 7 && t("history.redacted")} */}
           {item?.saleType === 8 && t("history.cardCashSell")}
         </TableCell>
       }
-      {filterBody.includes("1") && <TableCell>{"not found "}</TableCell>}
-      {filterBody.includes("2") && <TableCell>{"Cash not found"}</TableCell>}
-      {filterBody.includes("3") && <TableCell>{"Casheless not found"}</TableCell>}
-      {filterBody.includes("4") && <TableCell>{"Type not found"}</TableCell>}
-      {filterBody.includes("5") && <TableCell>{"Prepayment redemption"}</TableCell>}
-      {filterBody.includes("6") && <TableCell>{"reverse Part"}</TableCell>}
-      {filterBody.includes("7") && <TableCell>{"reverse amount"}</TableCell>}
-      {filterBody.includes("8") && <TableCell>{"reverse rec number"}</TableCell>}
-      {filterBody.includes("9") && <TableCell>{"fiskal num"}</TableCell>}
       {filterBody.includes("partnerTin") && <TableCell style={{padding:"0px 16px"}}>{item?.partnerTin || t("history.notspecified")}</TableCell>}
       {filterBody.includes("cashier") && <TableCell style={{padding:"0px 16px"}}>{item?.cashier.fullName}</TableCell>}
-      {filterBody.includes("10") && <TableCell style={{padding:"0px 16px"}}>{"fiskal num"}</TableCell>}
+      {/* 12.09 */}
+      {/* <TableCell>
+        <Button sx={{mr:1, background:'orange'}} onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>
+        {pageName?.status  === "Paid" || pageName?.status  === "Prepayment" ? <Button sx={{mr:1, background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}
+      </TableCell> */}
     </TableRow>
-    {/* { openDetails && (pageName !=="Paid" || item?.hdmMode === 2) && */}
-      { openDetails && pageName?.status ==="Unpaid"  &&
+    { openDetails && (pageName?.status ==="Unpaid" || pageName?.status ==="Prepayment") &&
       <HistoryDetails
-        t={t}
         openDetails={openDetails}
         id={item?.id} 
         products={item?.products}
         setOpenDetails={setOpenDetails}
-        additionalDiscount={item?.additionalDiscount}
-        total={item?.total}
         cashier={item?.cashier.id}
         originTotal={originTotal}
         date={item?.date}
@@ -167,31 +158,29 @@ const HistoryItems = ({
         setMessage={setMessage}
         hdmMode={item?.hdmMode}
         item={item}
+        recieptId={item?.recieptId}
+        amountForPrePayment={amountForPrePayment} 
+        setAmountForPrePayment={setAmountForPrePayment}
       />
     }
-    {/* {openDetails && pageName?.status === "Canceled"  &&
-    <Dialog open={openDetails && pageName.status === "Canceled"}>
-      <DialogContent> */}
-
-      {/* </DialogContent> */}
-    {/* </Dialog>} */}
+ 
    { openHDM && pageName?.status === "Paid" &&
      <Receipt
-       setOpenHDM={setOpenHDM}
+      setOpenHDM={setOpenHDM}
       taxCount={taxCount}
-       saleData={saleData}
-       openHDM={openHDM}
-       date={item?.date}
-       totalPrice={originTotal}
-       t={t}
-       id={item?.id}
-       reverseButton={reverseButton}
-       dialogManage={dialogManage}
-       userName={item?.cashier?.fullName}
-     />
+      saleData={saleData}
+      openHDM={openHDM}
+      date={item?.date}
+      totalPrice={originTotal}
+      t={t}
+      id={item?.id}
+      reverseButton={reverseButton}
+      dialogManage={dialogManage}
+      userName={item?.cashier?.fullName}
+    />
    } 
-   {openDialog &&
-     <ReverseContainer
+    {/* {openDialog &&
+      <ReverseContainer
         products={item?.products}
         dialogManage={dialogManage}
         openDialog={openDialog}
@@ -201,8 +190,20 @@ const HistoryItems = ({
         setOpenHDM={setOpenHDM}
         messageAfterReverse={messageAfterReverse}
         saleInfo={saleData}
+        amountForPrePayment={amountForPrePayment} 
+        setAmountForPrePayment={setAmountForPrePayment}
+        detailsData={item}
       />
-   }
+    } */}
+    { openDialog && <ReverseDialog
+      openDialog={openDialog}
+      setOpendDialog={setOpenDialog}
+      products={item?.products}
+      item={item}
+      messageAfterReverse={messageAfterReverse}
+      
+
+    /> }
     </>
   )
 };

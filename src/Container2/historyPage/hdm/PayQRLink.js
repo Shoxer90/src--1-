@@ -11,10 +11,12 @@ const PayQRLink = ({
   totalPrice,
   qrData,
   closeLinkQrAndRefresh,
+  seeBtn
+
 }) => {
 
   useEffect(() => {
-    navigator.clipboard.writeText(qrData)
+    qrData && navigator.clipboard.writeText(qrData)
   }, []);
 
   return(
@@ -38,12 +40,14 @@ const PayQRLink = ({
       <div style={{display:"flex",justifyContent:"center"}}>
         <QRCodeSVG value={qrData} size={250}/>
       </div>
+      { seeBtn &&
       <Button
         variant="disable"
         sx={{margin:3, color:"green"}}
       >
        {t("dialogs.linkcopy")}
       </Button>
+      } 
       <p style={{justifyContent:"center",marginTop:"10px"}}>
         {t("basket.orderPayment")}: {cardAmount} {t("units.amd")}
       </p>

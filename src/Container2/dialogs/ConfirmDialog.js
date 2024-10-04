@@ -12,6 +12,7 @@ const ConfirmDialog = ({
   nobutton,
   question,
 }) => {
+  
 
   return(
     <Dialog
@@ -25,7 +26,7 @@ const ConfirmDialog = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={()=>close(false)}>
-          {nobutton || t("buttons.cancel")}
+          {nobutton || t("buttons.close")}
         </Button>
         <Button onClick={func}>{t("buttons.yes")}</Button>
       </DialogActions>

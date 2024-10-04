@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, memo } from "react";
-import { Card, Divider } from "@mui/material";
+import { Card, Dialog, Divider } from "@mui/material";
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
@@ -11,6 +11,7 @@ import UpdateProduct from "./product/UpdateProduct";
 import {LimitContext} from "../../context/Context";
 
 import styles from "./index.module.scss";
+import SnackErr from "../dialogs/SnackErr";
 
 const HomeContentItem = ({
   t,
@@ -29,13 +30,15 @@ const HomeContentItem = ({
   setTypeCode,
   setFetching,
   setContent,
-  content
+  content,
+
 
 }) => {
   const {limitedUsing} = useContext(LimitContext);
   const [openUpdateProd, setOpenUpdateProduct] = useState(false);
   const [quantity,setQuantity] = useState("");
   const [starSynth,setStarSynth] = useState();
+  const [message,setMessage] = useState();
   const [newPrice, setNewPrice] = useState(product?.price - (product?.price * product?.discount / 100));
   const handleStarChange = () => {
     setStarSynth(!starSynth)
@@ -43,7 +46,11 @@ const HomeContentItem = ({
   };
  
   const clickToBascket = () => {
-    setToBasket(product,quantity)
+    if(localStorage.getItem("endPrePayment")) {
+      setMessage(t("basket.no_new_count_prod"))
+      return
+    }
+    setToBasket(product, quantity, false)
     setQuantity("")
   };
 
@@ -77,9 +84,8 @@ const HomeContentItem = ({
     setStarSynth(product?.isFavorite)
   },[]);
 
-  useEffect(() => {
-
-  },[product?.discount]);
+  // useEffect(() => {
+  // },[product?.discount]);
 
   return (
     <>
@@ -194,6 +200,11 @@ const HomeContentItem = ({
       content={content}
       setNewPrice={setNewPrice}
     />}
+    {message ? 
+      <Dialog open={Boolean(message)}>
+        <SnackErr message={message} type="info" close={setMessage} />
+      </Dialog>
+    :""}
   </>
   )
 };

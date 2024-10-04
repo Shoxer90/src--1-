@@ -44,7 +44,7 @@ const SearchBarcode = ({
         style={{width:"80%"}}
       />
       <IconButton type="button" sx={{p: '10px'}} onClick={()=>byBarCodeSearching(searchValue)}>
-      <SearchIcon fontSize="medium" />
+       <SearchIcon fontSize="medium" />
       </IconButton>
    </Paper> 
   )

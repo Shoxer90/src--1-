@@ -30,7 +30,7 @@ const PayHistoryDetails = ({
           padding:0
         }}
       >
-      <div>{t("history.check_details")}</div>
+      <div>{(t("history.check_details")).toUpperCase()}</div>
       <CloseIcon 
         sx={{":hover":{background:"#d6d3d3",borderRadius:"5px"}}}
         onClick={()=>close(false)}

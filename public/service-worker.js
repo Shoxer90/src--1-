@@ -6,7 +6,6 @@
 // });
 
 // self.addEventListener('install', (event) => {
-//     console.log('Resource was fetched from server1');
 //     self.skipWaiting();
 // });
 
@@ -15,9 +14,7 @@
 //         caches.keys().then((cacheNames) => {
 //             return Promise.all(
 //                 cacheNames.map((cacheName) => {
-//                     console.log(cacheName,"cacheName");
 //                     if (cacheName !== CACHE_NAME) {
-//                         console.log('Resource was fetched from server2');
 //                         return caches.delete(cacheName); 
 //                     }
 //                 })
@@ -31,7 +28,6 @@
 // self.addEventListener('fetch', (event) => {
 //     event.respondWith(
 //         caches.match(event.request).then((response) => {
-//             console.log('Resource was fetched from server3');
 //             return response || fetch(event.request);
 //         })
 //     );
@@ -39,7 +35,6 @@
 
 // self.addEventListener('message', (event) => {
 //     if (event.data.action === 'skipWaiting') {
-//         console.log('Resource was fetched from server4');
 //         self.skipWaiting();
 //     }
 // });

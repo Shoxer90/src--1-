@@ -11,10 +11,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import { reverseProductNew } from "../../../services/user/userHistoryQuery";
 import Loader from "../../loading/Loader";
 
-import ReverseItem from "./ReverseItem";
 import ReversePrepayment from "./ReversePrepayment";
 import ReverceConditions2 from "./ReverseConditions2"
 import ReverseContent from "./content/ReverseContent";
+import ReverceConditionsPrepayment from "./ReverceConditionsPrepayment";
 
 const ReverseContainer = ({
   products, 
@@ -25,27 +25,29 @@ const ReverseContainer = ({
   t,
   setOpenHDM, 
   messageAfterReverse,
-  saleInfo
+  saleInfo,
+  amountForPrePayment,
+  setAmountForPrePayment,
+  detailsData
+
 }) => {
   const [ownMessage,setOwnMessage]=useState();
   const [type,setType] = useState();
   const [load,setLoad] = useState(false);
   const [reverseContainer,setReverseContainer] = useState([]);
   const [reverseTotal, setReverseTotal] = useState(0);
-
   const [reversePrepayment, setReversePrepayment] = useState(false);
 
   const [conditionState,setCondition] = useState({
-  cashAmount: 0,
-  cardAmount: 0,
-});
+    cashAmount: 0,
+    cardAmount: 0,
+  });
 
   const cancelDialog = () => {
     setOwnMessage({m:"", t:""})
     dialogManage();
     initialFunc("Paid");
   };
-
 
   const handleOk = async(body) => {
     setLoad(true)
@@ -67,8 +69,6 @@ const ReverseContainer = ({
       }
     })
   };  
-
-
   
   const checkedProduct = (i,name, value) => {
     setReverseContainer(
@@ -133,7 +133,6 @@ const ReverseContainer = ({
     }))
     setReverseContainer(arr)
   };
-
   
   useEffect(() => {
     fillReverseContainer()
@@ -167,7 +166,7 @@ const ReverseContainer = ({
       >
         <CloseIcon />
       </IconButton>
-      <Divider color="black"/>
+      <Divider color="black" />
       <DialogContent  style={{padding:"10px"}} >
         <div style={{padding:"10px",paddingBottom:"12px"}}> 
           {products?.length ?
@@ -186,17 +185,30 @@ const ReverseContainer = ({
               setReverseTotal={setReverseTotal}
               reversePrepayment={reversePrepayment}
               setReversePrepayment={setReversePrepayment}
+             
             />
           }
         </div>
         <Divider color="black" />
-        <ReverceConditions2
-          saleInfo={saleInfo} 
-          t={t} 
-          reverseTotal={reverseTotal} 
-          conditionState={conditionState}
-          setCondition={setCondition} 
-        />
+        {detailsData?.saleType !== 5 ?
+          <ReverceConditions2
+            saleInfo={saleInfo} 
+            t={t} 
+            // reverseTotal={reverseTotal} 
+            conditionState={conditionState}
+            setCondition={setCondition} 
+          />:
+          <ReverceConditionsPrepayment
+            saleInfo={saleInfo} 
+            t={t} 
+            // reverseTotal={reverseTotal} 
+            conditionState={conditionState}
+            setCondition={setCondition}
+            amountForPrePayment={amountForPrePayment} 
+            setAmountForPrePayment={setAmountForPrePayment}
+            detailsData={detailsData}
+          />
+        }
         <Divider color="black" />
       </DialogContent>
       <DialogActions style={{position:"sticky",marginTop:"0px"}}>

@@ -86,7 +86,7 @@ const Reciept = ({
           </div>
         }
         <Divider style={{margin:1,backgroundColor:"gray"}}/>
-        <ReceiptFooter  receiptInfo={saleData?.res?.printResponseInfo} totalPrice={totalPrice}/>
+        <ReceiptFooter  receiptInfo={saleData?.res?.printResponseInfo} />
         <ReceiptFiscal data={saleData?.res} />
         <SharePage
           t={t}

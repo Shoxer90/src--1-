@@ -181,18 +181,18 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit, setIsLoad}) =>
         <h6 style={{marginBottom:"1px"}}> {t("authorize.username")}</h6>
       <div className={styles.reg_form_div}>
         <FormControl style={{margin:"0px"}}>
-          <TextField  size="small" sx={{m:.4}} 
-            inputProps={{
-              autoComplete: 'off'
-          }}
-            error={!newUser?.userName && submitClick}
-            name="userName"
-            value={newUser?.userName}
-            label={`${t("authorize.username")}*`}
-            onChange={(e)=>isunique(e)}
-          />
-          <FormHelperText >
-          <span className={!unique? styles.errorMessage: styles.successMessage} style={{height:"12px"}}>
+          <p  size="small" sx={{m:.4}} 
+            // inputProps={{
+            //   autoComplete: 'off'
+            // }}
+            // error={!newUser?.userName && submitClick}
+            // name="userName"
+            // value={newUser?.userName}
+            label={`${t("authorize.username")}* (${t("authorize.tin")})`}
+            // onChange={(e)=>isunique(e)}
+          >{}</p>
+          <FormHelperText>
+          <span className={!unique? styles.errorMessage: styles.successMessage}>
             {newUser?.userName && !unique && t("authorize.exist")}
             {newUser?.userName && unique && t("authorize.exist1")}
           </span>

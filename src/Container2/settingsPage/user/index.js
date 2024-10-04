@@ -8,12 +8,13 @@ import AddNewClientInfo from "../../dialogs/AddNewClientInfo";
 import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import { changeEHDM } from "../../../services/user/userInfoQuery";
 import SnackErr from "../../dialogs/SnackErr";
+import Loader from "../../loading/Loader";
 
-const SettingsUser = ({user,t, whereIsMyUs}) => {
+const SettingsUser = ({user,t, whereIsMyUs, logOutFunc}) => {
   const [confirmSwitch, setConfirmSwitch] = useState(false);
   const [openAddDialog, setOpenAddDialog] = useState(false)
   const [inputLabels, setInputLabels] = useState();
-  const [synth, setSynth] = useState(false);
+  const [isLoad, setIsLoad] = useState(false);
   const [message,setMessage] = useState({m:"", t:""});
 
   const addClientInfo = async(name) => {
@@ -22,9 +23,10 @@ const SettingsUser = ({user,t, whereIsMyUs}) => {
   };
   
   const switchStatus = async(newStatus) => {
+    setIsLoad(true)
     if( user?.isRegisteredInEhdm){
-      changeEHDM(newStatus).then(()=>{
-        return  setSynth(!synth)
+      changeEHDM(newStatus).then((res)=>{
+        setIsLoad(false)
       })
     }else {
       setMessage({m:t("settings.isregistrehdm"), t:"error"})
@@ -34,7 +36,11 @@ const SettingsUser = ({user,t, whereIsMyUs}) => {
 
   useEffect(() => {
     whereIsMyUs()
-  }, [synth, message]);
+  }, [isLoad]);
+
+  // useEffect(() => {
+  //   whereIsMyUs()
+  // }, [synth, message]);
 
   return(
   <div className={styles.settings_user}>
@@ -84,19 +90,17 @@ const SettingsUser = ({user,t, whereIsMyUs}) => {
     />
       <AddNewClientInfo 
         t={t}
-        message={message}
         setMessage={setMessage}
         openAddDialog={openAddDialog}
         setOpenAddDialog={setOpenAddDialog}
-        label={inputLabels} 
-        setInputLabels={setInputLabels}
+        logOutFunc={logOutFunc}
       />
       {message?.m ?
         <Dialog open={message?.m}>
           <SnackErr type={message?.t} message={message?.m} close={setMessage}/>
         </Dialog> :""
       }
-      
+       {isLoad && <Dialog open={isLoad}> <Loader /> </Dialog>}
     </div>
   )
 };
