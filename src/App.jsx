@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import Basket from "./Container/Bascket/index";
-
+// import Basket from "./Container/Bascket/index";
+import Basket from "./Container/basket";
 import HistoryPage from "./Container2/historyPage";
 import Header from "./Container/Header/Header";
 import ProductChanges from "./Container2/analytics";
@@ -20,12 +20,7 @@ import { measureTranslate } from "./services/language/lang";
 import "./App.css";
 import BasketList from "./Container2/orderlist"
 import ClientCardContainer from "./Container2/settingsPage/serviceAmount";
-import FormTitle from "./Authorization/FormTitle";
-import ClientInterface from "./Authorization/ClientInterface";
-// import Login from "./Authorization/login";
-// import Registration from "./Authorization/registration";
-// import ForgotPassword from "./Authorization/forgot"
-// import ResetPassword from "./Authorization/forgot/ResetPassword";
+
 import PrivacyPolicy from "./Privacy/index";
 
 import { fetchUser } from "./store/userSlice";
@@ -44,6 +39,8 @@ import Registration from "./Authorization/loginAuth/registration";
 import ForgotPassword from "./Authorization/loginAuth/forgotPass";
 import ResetPassword from "./Authorization/loginAuth/resetpass/ResetPassword";
 import Confirmation from "./Authorization/loginAuth/confirmation";
+import PrePaymentList from "./Container2/prepayment/";
+import { untrackedProds } from "./Container/basket/untrackedProds";
 
 const App = () => {
 
@@ -59,7 +56,6 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [measure, setMeasure] = useState([]);
   const {t} = useTranslation();
-  const [lang, setLang] = useState();
   const navigate = useNavigate();
   const [message,setMessage] = useState({message:"",type:""});
   const [searchValue,setSearchValue] = useState("");
@@ -75,9 +71,32 @@ const App = () => {
   const [fetching, setFetching] = useState(true);
   const [notification, setNotification] = useState([]);
   const [count, setCount] = useState(0);
+  const [openWindow,setOpenWindow] = useState({
+    prepayment: false ,
+    payment: false,
+    isOpen: false,
+    prePaymentAmount: JSON.parse(localStorage.getItem("endPrePayment"))?.prepayment || 0,
+    isPrepayment: localStorage.getItem("endPrePayment") ? true : false
+  });
 
+  const [paymentInfo, setPaymentInfo] = useState({
+    discount: 0,
+    discountType: 0,
+    cashAmount: 0,
+    cardAmount: 0,
+    prePaymentAmount: openWindow?.prePaymentAmount || 0,
+    partialAmount: 0,
+    partnerTin: "",
+    sales: [],
+    prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id,
+    isPrepayment: openWindow?.prepayment,
+    customer_Name: "",
+    customer_Phone: ""
+  });
+
+ 
   const whereIsMyUs = async() => {
-    console.log("25.06.24 reverse link view")
+    console.log("04.10.24 prepayment,reverse prepayment")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -126,14 +145,13 @@ const App = () => {
   };
 
   const byBarCodeSearching = async(barcode) => {
-    console.log(barcode,"BARCODe")
     if(barcode === "" || barcode === " "){
       await queryFunction(dataGroup, 1).then((res) => {
         setContent(res?.data)
         setMessage("")
       })
       setCurrentPage(2)
-
+      return
     }else{
       setMessage("")
       await byBarCode(barcode).then((res) => {
@@ -155,29 +173,27 @@ const App = () => {
     }
   };
 
-  const loadBasket = async() => {
+  const loadBasket = () => {
     let existArr = []
     let arrForSale = []
-    await getBasketContent().then((res) => {
-      return res ? (
-      setBasketContent(res),
-      setBasketGoodsqty(res?.length),
-      res.forEach((item) => {
-      existArr.push(item?.id)
-      arrForSale.push({id:item?.id, count:+item?.count})
-    }),
-      localStorage.setItem("basketExistId", JSON.stringify(existArr)),
-      localStorage.setItem("basketIdCount", JSON.stringify(arrForSale)),
-      setBasketExist(localStorage.getItem("basketExistId"))
-      ) : (
-      localStorage.setItem("basketExistId", JSON.stringify(existArr)),
-      localStorage.setItem("basketIdCount", JSON.stringify(arrForSale)),
-      setBasketExist(localStorage.getItem("basketExistId")),
-      setBasketGoodsqty(0),
-      setBasketContent([])
-      ) 
+    getBasketContent().then((res) => {
+      if(res) {
+        setBasketContent(res)
+        setBasketGoodsqty(res?.length)
+        res.forEach((item) => {
+          existArr.push(item?.productId || item?.id)
+          arrForSale.push({id:item?.productId || item?.id, count: +item?.count})
+        })
+      }else {
+        setBasketGoodsqty(0)
+        setBasketContent([])
+      }
+      localStorage.setItem("basketExistId", JSON.stringify(existArr))
+      localStorage.setItem("basketIdCount", JSON.stringify(arrForSale))
+      return setBasketExist(JSON.parse(localStorage.getItem("basketExistId")))
     })
   };
+
 
   const changeCountOfBasketItem = async(id,value) => {
     let handleArr = [] 
@@ -187,7 +203,6 @@ const App = () => {
           return handleArr.push({...prod, count: value})
         }else{
          return handleArr.push(prod)
-        
         }
       })  
     })
@@ -197,6 +212,15 @@ const App = () => {
 
   const deleteBasketItem = async(id) => {
     let handleArr = await basketContent.filter(prod => prod.id !== id)
+    if(!handleArr?.length) {
+      localStorage.removeItem("endPrePayment")
+      setOpenWindow({
+        prepayment: false ,
+        payment: false,
+        isOpen: false,
+        prePaymentAmount:0
+      })
+    }
     await localStorage.setItem("bascket1", JSON.stringify(handleArr))
     await setFlag(flag+1)
     await loadBasket()
@@ -204,19 +228,30 @@ const App = () => {
   
   const deleteBasketGoods = async() => {
     setFlag(flag+1)
+    localStorage.removeItem("endPrePayment")
+    setOpenWindow({
+      prepayment: false,
+      payment: false,
+      isOpen: false,
+      prePaymentAmount: 0
+    })
     await localStorage.removeItem('bascket1')
     loadBasket()
   };
   
-  const setToBasket = (wishProduct, quantity) => {
+  const setToBasket = (wishProduct, quantity, isFromPrepaymentPage) => {
+
     const basket = basketContent
-      if(quantity && quantity > wishProduct?.remainder){
+    if(quantity && quantity > wishProduct?.remainder){
       setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
       return
     }else if(basketExist.includes(wishProduct?.id)){
         setMessage({message: t("productcard.secondclick"), type:"success"})
         return
     }else{
+      if(!isFromPrepaymentPage) {
+        untrackedProds(wishProduct, quantity || 1)
+      }
       basket.unshift({
         ...wishProduct,
         discountPrice: wishProduct?.discountType === 2? 
@@ -242,7 +277,7 @@ const App = () => {
             count:prod?.count + 1,
             discountPrice: wishProduct?.discountType === 2? 
             wishProduct?.price - wishProduct?.discount :
-            wishProduct?.price - (wishProduct?.price * wishProduct?.discount/100) ,
+            wishProduct?.price - (wishProduct?.price * wishProduct?.discount/100),
           }
         }else{
           return prod
@@ -278,7 +313,6 @@ const App = () => {
   
   const getMeasure = async() => {
     const str = localStorage.getItem("lang")
-    setLang(str || "am")
     switch(str){
       case "en":
         await measureTranslate(2).then((res) => {
@@ -340,23 +374,20 @@ const App = () => {
     setDataGroup("GetAvailableProducts")
   },[]);
 
+ useEffect(() => {
+   setPaymentInfo({
+    ...paymentInfo,
+    isPrepayment: openWindow?.prepayment
+   })
+  },[openWindow]);
 
-
-  // useEffect(() => {
-  //   setCount(0)
-  //   whereIsMyUs()     
-  //   getMeasure()
-  //   setDataGroup("GetAvailableProducts")
-  //   setCurrentPage(1)
-  //   loadBasket()
-  // },[isLogin]);
   
   useEffect(() =>{
     debounce && byBarCodeSearching(debounce)
   },[debounce]);
 
   useEffect(() => {
-    debounceBasket && byBarCodeSearching(debounceBasket)
+    barcodeScanValue &&  debounceBasket && byBarCodeSearching(debounceBasket)
   },[debounceBasket]);
 
   return (
@@ -370,43 +401,8 @@ const App = () => {
           <Route path="/forgot-password" element={<LoginAuthContainer children={<ForgotPassword />} />} />
           <Route path="/reset-password/*" element={<LoginAuthContainer children={<ResetPassword />} />} />
           <Route path="/confirmation/*" element={<LoginAuthContainer children={<Confirmation />} />} />
-           
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-          {/* <Route path="/login" element={
-            <ClientInterface 
-              title={<FormTitle operation={t("authorize.login")} />}
-              element={<Login t={t} setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />}
-              t={t}
-              lang={lang}
-              setLang={setLang}
-            />}
-          /> */}
-          {/* <Route path="/registration" element={
-            <ClientInterface 
-              title={<FormTitle operation={t("authorize.registration")} />}
-              element={<Registration t={t} logOutFunc={logOutFunc} />}
-              t={t}
-              lang={lang}
-              setLang={setLang}
-            />}
-          /> */}
-          {/* <Route path="/forgot-password" element={
-            <ClientInterface 
-              title={<FormTitle operation={t("authorize.reset")} />}
-              element={<ForgotPassword t={t} />}
-              t={t}
-            />}
-          /> */}
-          {/* <Route path="/reset-password/*" element={ 
-            <ClientInterface 
-              title={<FormTitle operation={t("authorize.reset2")} />}
-              element={<ResetPassword t={t} />}
-              t={t}
-           />}
-          /> */}
           <Route path="/basket/*" element={<BasketList t={t} />} />
-          {/* <Route path="/confirmation/*" element={<Confirmation t={t} />} /> */}
-
         </Routes> :
         <>
           <Header
@@ -451,16 +447,29 @@ const App = () => {
                   flag={flag}
                   fetching={fetching}
                   setFetching={setFetching}
+                  openWindow={openWindow}
+
                 />
               }  
             />
             <Route path="/excel" element={<PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} />} />
             <Route path="/feedback" element={<FeedBackPage logOutFunc={logOutFunc} t={t} />} />
             <Route path="/setting/cashiers" element={<Cashiers t={t} cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
-            <Route path="/setting/user" element={<SettingsUser user={user} t={t} whereIsMyUs={whereIsMyUs} />} />
+            <Route path="/setting/user" element={<SettingsUser user={user} t={t} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc}/>} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} t={t}  measure={measure} />} />
             <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
             <Route path="/basket/*" element={<BasketList t={t} />} />
+            <Route path="/prepayment" element={<PrePaymentList 
+              setOpenBasket={setOpenBasket} 
+              setToBasket={setToBasket}
+              setOpenWindow={setOpenWindow}
+              deleteBasketGoods={deleteBasketGoods}
+              setPaymentInfo={setPaymentInfo}
+              paymentInfo={paymentInfo}
+              loadBasket={loadBasket}
+              basketExist={basketExist}
+              flag={flag}
+            />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
             {user?.showPaymentPage &&<Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
             {user?.showPaymentPage &&<Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
@@ -497,6 +506,10 @@ const App = () => {
             fetching={fetching}
             setFetching={setFetching}
             setCurrentPage={setCurrentPage}
+            openWindow={openWindow}
+            setOpenWindow={setOpenWindow}
+            paymentInfo={paymentInfo}
+            setPaymentInfo={setPaymentInfo}
           />}
           {notification.length ? <Notification 
             t={t}

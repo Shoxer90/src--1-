@@ -109,7 +109,16 @@ const HistoryItems = ({
           </div>
         </TableCell>
       }
-      {filterBody.includes("recieptId") && <TableCell style={{padding:"0px 16px"}}>{item?.recieptId}</TableCell>}
+      {filterBody.includes("recieptId") && 
+        <TableCell style={{padding:"0px 16px"}}>
+          <>
+          {item?.recieptId}
+          {/* {pageName?.status === "PrePayment" && <div>{item?.saleId === 0 ? 
+            <div style={{color:"red", fontWeight:600}}>{t("basket.notCompleted")}</div>:
+            <div style={{color:"green", fontWeight:600}}> {t("basket.completed")}</div>}</div>} */}
+          </>
+        </TableCell>
+      }
       {filterBody.includes("total") && <TableCell style={{padding:"0px"}}>{item?.total} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
       {filterBody.includes("cashAmount") && <TableCell>{item?.cashAmount}  <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
       {filterBody.includes("cardAmount") && <TableCell>{item?.cardAmount}  <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
