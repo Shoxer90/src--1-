@@ -21,6 +21,23 @@ export const getAdg = async(type) => {
     return err
   }
 }
+
+export const getAllAdgCode = async() => {
+  const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    }
+  }
+  try{
+    const data = await axios.get(baseUrl + `Adg/GetAllAdgs`, option)
+    return data.data
+  }catch(err) {
+    return err
+  }
+}
+
+
+
 // PRODUCT QUERY
 
 export const productQuery = async(type,page) =>{
@@ -41,14 +58,24 @@ export const productQuery = async(type,page) =>{
   }
 };
 // Search Products by date and barcode
-export const byBarCode = async(barcode) =>{
+export const byBarCode = async(status, barcode) =>{
+  let statusCount = 0;
+  if (status === "GetAvailableProducts") {
+    statusCount = 0
+  }else if(status === "GetNotAvailableProducts") {
+    statusCount = 1
+  }else if(status === "GetFavoriteProducts") {
+    statusCount = 2
+  }else {
+    return
+  }
   const option = {
     headers: {
       Authorization: localStorage.getItem("token"),
     },
   };
   try{
-    const query = await axios.get(baseUrl + `Products/SearchByBarCode?q=${barcode}`, option);
+    const query = await axios.get(baseUrl + `Products/SearchByBarCode?q=${barcode}&productType=${statusCount}`, option);
     return query.data
   }catch(err) {
     return err.response.status
@@ -113,7 +140,7 @@ export const createProduct = async(product) => {
     "price": +(product?.price),
     "discount": 0,
     "lastUpdate": new Date().toISOString(),
-    "dep": 0,
+    "dep": +product?.dep,
     "isFavorite": false,
     "coment": "",
     "category": 0,
@@ -227,7 +254,6 @@ export const getFavProds = (option) => axios.get(baseUrl + "Products/GetFavorite
 
 export const SearchByProductName = (option) => axios.get(baseUrl + "Products/SearchByProductName", option)
 
-export const SearchByBarCode = (option) => axios.get(baseUrl + "Products/SearchByBarCode", option)
 
 export const checkStatus = (option) => axios.get(baseUrl + "History/CheckStatus", option)
 
@@ -262,5 +288,22 @@ export const getProductsSaleByDays = async(date) => {
     }catch(err){
         return err
     }
-}
+};
+
+
+
+export const getPrepayment = async(body) => {
+  const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+  }
+  try{
+    const data =  await axios.post(baseUrl + `PrePayment/GetPrepaymentsHistory`, body, option)
+    let newData = {data:data?.data, count: +data?.headers?.count}
+    return newData
+  }catch(err){
+    return err?.response?.status
+  }
+};
 

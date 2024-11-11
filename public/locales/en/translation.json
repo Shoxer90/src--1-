@@ -47,8 +47,9 @@
     "priceListRow6":"Service (Monthly)",
     "priceListRow7":"REceipt providing via SMS message (for each)",
     "priceListRow8":"Sending Link payment requests via SMS message",
-    "priceListRow9":"QR and Link Payment Acceptance"
-
+    "priceListRow9":"QR and Link Payment Acceptance",
+    "copyMail": "E-mail is copied",
+    "copyTel":"Phone number is copied"
   },
   "units": {
     "min": "minimal",
@@ -92,11 +93,13 @@
     "save": "Save",
     "yes": "Yes",
     "no": "No",
+    "ok":"Ok",
     "sendResetLink": "Send Reset Link",
     "back" : "Back",
-    "createMultiProds": "Import Catalog"
+    "createMultiProds": "Import Catalog",
+    "view": "View"
   },
-  "intro": {
+    "intro": {
     "privacyPolicy": "Privacy And Policy",
     "visitLink":"For more information, visit ",
     "soonAvailable": "Will be available soon",
@@ -109,14 +112,17 @@
     "confirmationCode": "Enrollment confirmation",
     "reset":"Reset Password",
     "reset2":"Create New Password",
-    "resetInfo": "You’ll receive a link to reset your password.",
+    "resetInfo": "To reset your password, follow the link sent to your registered email address",
     "forgot": "Forgot password?",
-    "username": "Username",
+    "username": "User",
+    "usernamePassword": "/ username and password",
+    "newpassword": "New password",
     "password": "Password",
     "create": "Create an account",
     "company": "Company name",
     "first": "First name",
     "last": "Last name",
+    "notes": "Notes",
     "email": "E-mail",
     "phone": "Phone",
     "zipCode":"Zip Code",
@@ -132,6 +138,7 @@
     "build": "Building",
     "block": "Block",
     "register": "Register",
+    "director": "Director",
     "empty": "The field is required",
     "fillfields": "Please, fill in all fields",
     "login_issue": "Enter your username and password to log in",
@@ -148,9 +155,12 @@
     "confirmation2": "Thank you. You will receive a message with a new activation code shortly.",
     "dublicate": "E-mail is dublicate",
     "blockremove":"Unable to login .User has been blocked by administrator",
+    "beforeRegister": "Аccept the ",
+    "beforeRegisterTerms": "terms of the service",
+    "beforeRegisterDialog": "Please accept the  ",
     "errors": {
       "cashLimit": "Cash transaction cannot exceed 300,000 AMD",
-      "bank_agreement":"In order to accept payments by QR or by SMS it's required to make a PayX service agreement with a bank. Tariffs are defined by banks according to the card payment service agreement․",
+      "bank_agreement":"To accept payments through QR or Link, it is necessary to sign a service contract with a partner bank.",
       "loginLimit419": "Dear user, your StoreX's trial ended and access will be stopped. For activation please contactPayX. ",
       "loginLimitAttention":" The free trial of the system is available for 7 days",
       "attention": "Note",
@@ -173,7 +183,6 @@
       "wrongnumber": "Wrong phone number",
       "discount": "Please check the Discount field, it cannot be empty",
       "discount2": "The Discount field cannot be more than 99%",
-      "":"",
       "err":"error",
       "notMail": "E-mail is not valid",
       "noHdm": "Hdm is not available now",
@@ -187,9 +196,7 @@
     "logout": "LogOut",
     "feedback":"Contact us",
     "subject": "Subject",
-  "letter": "Feedback or suggestions"
-
-
+    "letter": "Feedback or suggestions"
   },
   "menubar": {
     "home": "Home",
@@ -211,6 +218,7 @@
     "uploadform": "Upload the completed Excel form",
     "chooseExcel": "Choose Excel file",
     "measureCorrectForm" : "Attention «Measure» field has a clear format",
+    "barcodeCorrectForm": "The product's internal code/barcode may include only Latin letters and numbers.",
     "vatCorrectForm":"If there are products not subject to VAT in the product list, mark «yes» in the column, otherwise, leave it empty.",
     "prod": " products"
   },
@@ -225,6 +233,7 @@
     "updatetitle": "Update product / ",
     "updatedate" : "Last update : ",
     "createtitle": "Create a new product",
+    "nonProduct": "No assortment available",
     "code": "Product code",
     "type": "Type",
     "brand": "Brand",
@@ -245,11 +254,14 @@
     "productadded":"The product is available in your store",
     "symb": "symbols", 
     "orderList": "Shopping list"
-
   },
   "basket": {
     "title": "Basket",
     "total_zero": "You can`t make a sale if the total cost of your purchases or the cost of a unit product (as a result of the discount) is less than 1 AMD.",
+    "no_new_count_prod": "You need to empty the basket",
+    "end_sale": "Goods are added to the basket.",
+    "add_to_prep": "The cart contains products for closing a transaction using prepayment, would you like to add this product?",
+    "price_change" : "The price of the product has changed. Please complete the sale outside of this transaction.",
     "empty": "The basket is empty",
     "total": "Total without discount  ",
     "partner": "Partner Tin",
@@ -262,17 +274,29 @@
     "sent": "The message is sent",
     "amount":"Amount due by",
     "scan": "Scan QR for payment",
-    "paymentsuccess": "The payment was successfully completed!",
+    "paymentsuccess": "Operation was successful",
     "qrlink": "QR link",
     "linkPayment": "Pay",
+    "orderPayment": "Cashless amount payable",
     "removeallprod": "Clean basket ?",
     "removeoneprod": "Remove current product from basket ?",
     "useprepayment":"Prepayment",
-    "prepaymentTitle": "Receive prepayment",
+    "usepayment":"Payment",
+    "prepaymentTitle": "Using prepayment",
+    "prepaymentGenerate":"Leave a prepayment",
     "nullishQuant": "There is a quantity mismatch in the basket",
-    "emptyPayInfo": "There are empty or incorrect fields"
+    "emptyPayInfo": "There are empty or incorrect fields",
+    "remainder":"Remainder",
+    "customer": "Customer",
+    "seeReciept": "Receipt view",
+    "completeSale": "Complete the transaction",
+    "reverseAll": "Complete Return",
+  
+    "reverseProd": "Refund from advance payment",
+    "reversePrep": "Return from product list",
+    "prepLimit": "If you want to make a full payment, go to the Payment section"
 
-   
+
   },
   "history": {
     "start_date": "Start date",
@@ -281,16 +305,16 @@
     "excel": "Download Excel",
     "paid": "Paid",
     "no_paid": "Unpaid",
-    "canceled": "Cancelled",
+    "canceled": "Returned",
     "date": "Date",
     "number": "Number",
     "performer": "Performer",
     "notspecified": "Not specified",
-    "check_details": "Details of Transaction",
+    "check_details": "details of Transaction",
     "hdm": "Reciept",
     "reverse": "Reverse",
     "reverse_products": "Reverse products",
-    "total": "Total",
+    "total": "Amount",
     "type": "Pay type",
     "cash": "Cash",
     "card": "Cash-less",
@@ -306,6 +330,9 @@
     "vat": "VAT",
     "transactionType":"Transaction Type",
     "prepaymentRedemption": "Prepayment",
+    "prepaymentRedemption1": "Prepayment redemption",
+    "prepaymentReverse": "Prepayment Reverse",
+    "restAmountReverse": "Balance to be paid",
     "redacted": "Redacted",
     "cardCashSell": "Cash & Card payment",
     "partialPayment" : "Partial payment",
@@ -317,14 +344,25 @@
     "whichCashless": "From which cashless",
     "whichPrepayment": "From which prepayment",
     "forReverse": "Refundable amount",
-    "getCash": "Get cash",
-    "getCard": "Get by transfer",
+    "takebackFromPrepayment":"Take back From Prepayment ",
+    "backProdsbyDram":"Value of returned products ",
+    "getCard": "Refund cashless",
+    "getCash": "Refund cash",
     "receiptPrice2": "Receipt price",
-    "transaction":"Transaction"
+    "transaction":"Transaction",
+    "reverseTotal": "Refund",
+    "noProdExcel": "Excel without product list",
+    "prodExcel": "Excel with product list",
+    "selectAll": "Select All",
+    "transactions" : "Transactions",
+    "pretransactions" : "Incomplete Transactions",
+    "cleanBasket" : "",
+    "noPrepaymentReciepts":"No prepayment transactions",
+    "reverseLimit": "Advance payment exceeds the value of the receipt. Make a full refund of the receipt.",
+    "receiptAmount": "Receipt value as a result of return",
+    "afterReverse": "in the result of return"
 
-
-    
-}, 
+  }, 
   "updates": {
     "changes": "Changes",
     "sales": "Sales",
@@ -338,11 +376,10 @@
     "date": "Date",
     "measure": "Unit",
     "price": "Price"
-
-
   },
   "settings": {
     "switcher": "E-Cash",
+    "hdmstatus2": "POS terminal",
     "hdmstatus1": "active E-Cash",
     "hdmstatus0": "passive E-Cash",
     "switchReturnStatus": "Product / Coupon Return",
@@ -363,8 +400,10 @@
     "active": "Active",
     "blocked": "Blocked",
     "update": "Update cashier data",
-    "ehdmAuth": "Permission to Print on E-Cash",
-    "reverseAuth": "E-Cash Return Permission",
+    "ehdmAuth": "Permission to Print on ETRM",
+    "hdmAuth": "Permission to Print on TRM",
+    "reverseAuth": "ETRM Return Permission",
+    "notAvailableInWeb": "Not Available on Web Site",
     "create": "New cashier",
     "remove": "Remove",
     "remove2": "Want to remove the cashier " ,
@@ -378,61 +417,83 @@
     "dublicatemail": "Cashier with this email address already exists",
     "successTitle":"Data for Login to StoreX",
     "isregistrehdm": "In order to activate the function of generating e-cash register, it is necessary to have contract  with PayX LLC on the service of e-cash register",
-    "payWithNewCard": "Pay by New Card",
-    "payWithNewCardAndAttach": "Attach a new card and pay",
-    "payByActiveCard": "Make a payment with an active card",
+    "payWithNewCard": "Another Card",
+    "payWithNewCardAndAttach": "Save Card",
+    "payByActiveCard": "Pay by Main Card",
+    "payByAttachedCard": "Pay by Card",
     "checkArcaStatus": "Checking Card Attach Status",
     "priceListSubTitle1": "Services",
-    "paymentMethods": "Payment method"
+    "paymentMethods": "Payment method",
+    "free": "Free",
+    "ETRM": "ETRM",
+    "StoreX": "StoreX",
+    "info":"Information",
+    "cashiereLimit": "Access to more than 2 cashiers, for each (one-time) 6000 dram․To activate the service, please contact 055 522225",
+    "operation": "Operation"
   },
   "cardService":{
-    "btnTitle" : "Services",
-    "chooseCard": "Choose active card",
+    "btnTitle" : "Activation of services",
+    "service": "Service Name",
+    "payDate": "Pay Date",
+    "activeDue":"Until",
+    "paid": "Amount",
+    "dialogTitle": "Service period",
+    "cardInfo":"Card",
+    "chooseCard": "Make the card the main one",
+    "chooseMain": "Make main",
+    "updateName": "Rename",
     "chooseAnotherCard": "Choose a card from the list",
-    
-    "attachedCards": "Attached Cards",
+    "attachedCards": "Cards & Payments",
+    "noAttachedCards":"There are no registered cards",
     "amount" : "Monthly service",
-    "amountDate": "Next payment date",
-    "currentCommitment": "Current Commitment",
+    "amountDate": "Payment Due Date ",
+    "currentCommitment": "Price",
     "createCard": "Add new card",
     "createCard2": "The card will be attached after the first payment is made",
     "remove": "Whant to remove your Credit Card?",
     "updateCard": "Update Credit Card information",
-    "authomatic" : "Monthly autopayment", 
+    "authomatic" : "Automatic payment with main card", 
     "ehdm":"Issue of e-cash receipt",
     "tax": "Provision of a tax account",
     "cardClone": "Card data exists.",
-    "historySubTitle": "Service Fee History",
-    "attanchAmount" : "In order to verify your card 10AMD will be charged. The amount will be returned after the confirmation. Do you want to continue?",
+    "historySubTitle": "Payments",
+    "attachAmount" : "Payment is possible only with VISA, MasterCard, ArCa cards issued by RA banks. To identify your card it will cost you 10 AMD which will be returned to you after transaction. Continue?",
     "newCard": "Add new card details",
     "payForService": "Pay for service  ",
     "payForSimilarServices": "Make similar transactions at the same time",
-    "attachCard":"Attach Card",
+    "attachCard":"New Card",
     "notInDate": "Dear customer, you have an outstanding payment obligation. Kindly complete the payment to continue using our services",
+    "notInDateTrueDays": "Dear customer, please pay the monthly service fee by ",
+    "notInDateTrueDays2": ". In case if the due payment is not done, the access to services will be suspended",
+    "dayCount": " days",
+    "dayCount1": " day",
+    "dayCount2": " days",
+    "notAvailableService": "For details of this service, please contact PayX",
     "balance": "Balance",
     "prepayment": "Leave advance payment",
     "subscription": "Subscription",
     "monthCount" : "month",
-
-
-
-  
+    "wrongCeil":  "There is a field with an incorrect format",
+    "mainCard" : "Main Card",
+    "editName": "Edit Credit Card Name",
+    "bankTransfer" : "Bank payment",
+    "bankMessage":"Payment can be done on bank account 1510030268626300. Access will be granted during 1 working day after the amount is credited on the mentioned account.",
     "inputs":{    
-
-       "cardName":"Card Name",
-       "cardNumber":"Card Number",
-       "expMonth":"exp. Month",
-       "expYear" : "exp. Year"
-     },
-    "wrongCeil":  "There is a field with an incorrect format"
-
-
-
-
+      "cardName":"Card Name",
+      "cardNumber":"Card Number",
+      "expMonth":"exp. Month",
+      "expYear" : "exp. Year"
+    },
+    "isBindTrue": "Autopay is enabled",
+    "isBindFalse":"Autopay is disabled",
+    "cantBind":"Automatic monthly payment service is available with a primary card"
   },
   "dialogs": {
     "done": "Operation is success completed!",
     "mismatch": "The passwords do not match!",
+    "novalidatepass": "Is Not Strong Password",
+    "validatepass": "Is Strong Password",
+    "passSuccess":"The password must contain at least 8 characters and consist of Latin letters, including at least one uppercase letter, one number, and one special character.",
     "empty": "An empty field exists",
     "welldone": "Well done",
     "sorry": "Sorry...",
@@ -454,7 +515,19 @@
     "saveData": "Do you want to save the collected data?",
     "excelAddProds": "Would you like to download the product(s) to your store ?",
     "excelCancelList": "Do you want to cancel changes ?",
-    "isInDate": "You currently have no current commitment"
+    "isInDate": "You have no current commitment",
+    "checkCardStatus200": "Payment completed",
+    "checkCardStatus201": "The card is attached",
+    "checkCardStatus400": "System failure. Please try again later",
+    "checkCardStatus410": "Insufficient funds",
+    "checkCardStatus411": "Incorrect card data input",
+    "checkCardStatus412": "Transaction is declined",
+    "limitCash": "The amount of cash back cannot exceed ",
+    "limitCard": "The amount of non-cash refund cannot exceed  ",
+    "autoPayAgreement": "By enabling the automatic payment function, you agree to automatically charge the monthly service fee to the active card.",
+    "chooseCard": "Make the card the main one ?",
+    "logoutQuestion": "Sign out?",
+    "returnPrepayment": "Would you like to cancel this transaction?"
 
   }
 }

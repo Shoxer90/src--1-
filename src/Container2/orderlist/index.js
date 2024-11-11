@@ -29,23 +29,6 @@ const BasketList = ({t}) => {
   }, []);
 
   return(
-    // basketContent?.payXPaymentLink && basketContent?.productsList ? <div className={styles.orderContainer} > 
-    //   <span style={{display:"flex", justifyContent:"flex-end"}}>
-    //     <LangSelect size={"22px"} />
-    //   </span>
-    //   <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-    //     <img src={basketContent?.storeLogo || "/defaultAvatar.png"}  alt="" className={styles.orderContainer_img}/>
-    //     <h5>{basketContent?.storeName}</h5>
-    //   </div>
-    //   <div style={{display:"flex", justifyContent:"center", margin:"5px auto"}}>
-    //     {t("productinputs.orderList").toUpperCase()}
-    //     <span style={{margin: "0 5px", fontWeight:600,fontSize:"110%"}}>&#8470;</span>
-    //     {basketContent?.saleId}
-    //   </div>
-    //   <DenseTable basketContent={basketContent} />
-    //   <Divider sx={{bcolor:"black"}} />
-    //   <OrderListPayInfo  t={t} basketContent={basketContent}/>
-    // </div>: <h5 style={{textAlign:"center",margin:"150px"}}> Էջը հասանելի չէ </h5>
     !load ? <Loader /> :
     basketContent?.payXPaymentLink ? <div className={styles.orderContainer} > 
       <span style={{display:"flex", justifyContent:"flex-end"}}>

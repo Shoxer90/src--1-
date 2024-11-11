@@ -1,32 +1,53 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { TableCell, TableRow } from '@mui/material';
+import PayHistoryDetails from './PayHistoryDetails';
 
-const HistoryTableItem = ({amountPaid, t, index, payDate}) => {
-  const date = new Date(payDate);
+const HistoryTableItem = ({price, days, cardName, cardPan, service, nextPaymentDate, t, index, date}) => {
+  const dateFormat = new Date(date);
+  const nextDateFormat = new Date(nextPaymentDate);
+  const [openHistoryDetails, setOpenHistoryDetails] = useState(false);
 
   return (
-    <TableRow sx={{'&:hover':{backgroundColor: 'rgb(243, 243, 239)', textAlign:"center"}}}>
+    <>
+    <TableRow sx={{'&:hover':{backgroundColor: 'rgb(243, 243, 239)', textAlign:"center"}}}
+    onClick={()=>setOpenHistoryDetails(true)}>
       <TableCell style={{padding:"0px 16px"}}>
-      {index+1}.
+        <span style={{color:"grey"}}>{index+1}. </span> <strong>{t(`settings.${service}`)} </strong>
+       
       </TableCell>
       <TableCell style={{padding:"0px 16px"}}>
         
+        <div>
           <div>
-            {date?.getUTCDate()>9 ? date?.getUTCDate() : `0${ date?.getUTCDate()}`}/
-            {date.getMonth()>8 ? date.getMonth()+1: `0${date.getMonth()+1}`}/
-            {date.getFullYear()} {" "} 
+            {dateFormat?.getUTCDate()>9 ? dateFormat?.getUTCDate() : `0${ dateFormat?.getUTCDate()}`}.
+            {dateFormat.getMonth()>8 ? dateFormat.getMonth()+1: `0${dateFormat.getMonth()+1}`}.
+            {dateFormat.getFullYear()} {" "} 
           </div>
-          <div> 
-            {date.getHours()>9? date.getHours(): `0${date.getHours()}`}:
-            {date.getMinutes()>9? date.getMinutes(): `0${date.getMinutes()}`}:
-            {date?.getSeconds()>9? date?.getSeconds(): `0${date?.getSeconds()}`}  
+          <div>
+            {dateFormat.getHours()>9? dateFormat.getHours(): `0${dateFormat.getHours()}`}։
+            {dateFormat.getMinutes()>9? dateFormat.getMinutes(): `0${dateFormat.getMinutes()}`}։
+            {dateFormat?.getSeconds()>9? dateFormat?.getSeconds(): `0${dateFormat?.getSeconds()}`}  
           </div> 
+        </div> 
       
       </TableCell>
       <TableCell style={{padding:"0px 16px"}}>
-        {amountPaid} {t("units.amd")} 
+        {price.toFixed(1)} <span style={{fontSize:"80%",color:"grey"}}> {t("units.amd")} </span>
       </TableCell>
+
     </TableRow>
+      {openHistoryDetails && <PayHistoryDetails 
+       open={openHistoryDetails}
+       close={setOpenHistoryDetails} 
+       service={service}
+       dateFormat={dateFormat}
+       nextDateFormat={nextDateFormat}
+       price={price}
+       days={days}
+       cardPan={cardPan}
+       cardName={cardName}
+       />}
+      </>
   )
 };
 

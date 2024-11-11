@@ -30,10 +30,12 @@ const UpdateProduct = ({
   setOpenUpdateProduct,
   product, 
   deleteAndRefresh, 
-  changeStatus, 
+  setNewPrice, 
   deleteBasketItem, 
   t,
-  dataGroup,
+  setFetching,
+  setContent,
+  content,
   getSelectData,
   typeCode,setTypeCode
 }) => {
@@ -62,35 +64,33 @@ const UpdateProduct = ({
   const onlyNumberAndADot = (event,num) => {
     setFixMessage("")
     const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
-    const text = event.target.value;  
+    let text = event.target.value; 
+    if(event.target.value === "0" || event.target.value === "."){
+      if(`${event.target.value}`.length > currentProduct?.[event.target.name].length){
+        text = "0."; 
+      }else{
+        text= "";
+      }
+    }
     if(valid.test(text)){
-      console.log(event.target.value)
-      if(event.target.value === "0"){
-        if(currentProduct?.measure === "հատ"){
+      if(event.target.value && event.target.name === "remainder" && currentProduct?.measure === "հատ" ){
+        if(event.target.value === "."){
           return
         }else{
-          console.log("TEXUMA")
           return setCurrentProduct({
             ...currentProduct,
-            [event.target.name]: `${event.target.value}`
+            [event.target.name]: Math.round(event.target.value.trim())
           })
         }
-      }
-      else if(event.target.value && event.target.name === "remainder" && currentProduct?.measure === "հատ" ){
-        setCurrentProduct({
-          ...currentProduct,
-          [event.target.name]: Math.round(event.target.value.trim())
-        })
       }else{
         setCurrentProduct({
           ...currentProduct,
-          [event.target.name]: event.target.value.trim()
+          [event.target.name]: text
         })
       }
-    }
-    else{
-      return 
-    }
+    }else{
+      return
+    };
   };
 
   const handleChangeInput = async(e) => {
@@ -102,9 +102,9 @@ const UpdateProduct = ({
       await getMeasureByNum(e.target.value).then((res) => {
         if(res === "հատ") {
          setCurrentProduct({
-           ...currentProduct,
-          [e.target.name]: res,
-          remainder: Math.round(currentProduct?.remainder)
+              ...currentProduct,
+            [e.target.name]: res,
+            remainder: Math.round(currentProduct?.remainder)
          })
         }else{
           setCurrentProduct({
@@ -120,13 +120,15 @@ const UpdateProduct = ({
       })
     }
 	};
-
+  
   const handleClose = () => {
     setOpenUpdateProduct(!openUpdateProd);
-  }
+  };
+
   const handleDelete = async() => {
     deleteAndRefresh(currentProduct.id).then(()=> {
-      changeStatus(dataGroup)
+      // changeStatus(dataGroup)
+      setFlag(!flag)
     })
     handleClose()
   };
@@ -140,13 +142,27 @@ const UpdateProduct = ({
       setIsEmptyField(true)
     }
   };
+
   const handleUpdate = async() => {
+    // setContent([])
+     const newArr = await content.map((item) => {
+      if(item?.id === currentProduct?.id){
+           return currentProduct
+      }else{
+        return item
+      }
+    });
+    setContent(newArr)
+
     updateProduct(currentProduct).then((res) => {
-      if(res === 200) { 
-        setMessage({message:t("dialogs.welldone"),type:"success"})
+      setFetching(true)
+      if(res === 200) {
+        deleteBasketItem(currentProduct?.id)
+
+        setFlag(!flag)
+        setMessage({message:t("dialogs.welldone"),type:"success"});
         setTimeout(() => {
-          changeStatus("GetAvailableProducts")
-          deleteBasketItem(currentProduct?.id)
+          // changeStatus("GetAvailableProducts")
           handleClose()  
         },2000)
       }else if(res === 400) {
@@ -157,9 +173,9 @@ const UpdateProduct = ({
   };
 
   const priceValidate = async (price, discount, type) => {
-    if(price === "")return
+    if(price === "") return
     if(`${type}` === "1" || `${type}` === "0") {
-      return( Math.round(price) - discount / 100 * Math.round(price)) < 1 ? (
+      return price - discount / 100 * price < 1 ? (
         setValidPrice(false),
         setFixMessage(t("dialogs.discountlimit"))
       ) : ( 
@@ -172,8 +188,8 @@ const UpdateProduct = ({
         setFixMessage(t("dialogs.discountlimit"))
       ):(
         setFixMessage(""),
-          setValidPrice(true)
-        )
+        setValidPrice(true)
+      )
     }
   };
 
@@ -184,14 +200,15 @@ const UpdateProduct = ({
   };
 
   const functionInit = async() => {
-   if(flag === 0 && currentProduct){
-     setTypeCode(currentProduct?.type)
-    await getSelectData()
-     setFlag(1)
-   }else{
-     getSelectData()
-   }
+    if(flag === 0 && currentProduct){
+      setTypeCode(currentProduct?.type)
+      await getSelectData()
+      setFlag(1)
+    }else{
+      getSelectData()
+    }
   };
+
   useEffect(() => {
     getMeasure()
     setCurrentProduct({
@@ -199,7 +216,9 @@ const UpdateProduct = ({
     })
     priceValidate(product?.price, product?.discount, product?.discountType)
     setTitleName(` ${product?.brand} ${product?.name} (${product?.type})`)
-  }, []);
+    setNewPrice(product?.price - (product?.price * product?.discount / 100))
+
+  }, [product?.discount, product?.price]);
 
 
   useEffect(() => {
@@ -208,7 +227,7 @@ const UpdateProduct = ({
 
   return (
     <Dialog
-      open={openUpdateProd}
+      open={!!openUpdateProd}
       TransitionComponent={Transition}
       maxWidth="lg"
       PaperProps={{
@@ -235,9 +254,9 @@ const UpdateProduct = ({
       { metric && <DialogContent>
         <Box className={styles.update}>
         <TextField 
+          autoComplete="off"
             error={isEmptyField && !currentProduct?.name}
             size="small"
-            variant="outlined"
             name="name" 
             value={currentProduct?.name}
             label={`${t("productinputs.name")} (${50-(currentProduct?.name)?.length})`}
@@ -245,8 +264,8 @@ const UpdateProduct = ({
             inputProps={{ maxLength: 50 }}
           />
           <TextField 
+            autoComplete="off"
             size="small"
-            variant="outlined"
             name="brand" 
             value={currentProduct?.brand}
             label={t("productinputs.brand")}
@@ -255,14 +274,7 @@ const UpdateProduct = ({
           <TextField 
             error={isEmptyField && !currentProduct?.remainder}
             size="small"
-            variant="outlined"
-            InputProps={{
-              inputProps: { 
-                min: metric === 1 ? 1 : 0.001,
-                step: metric === 1 ? 1 : 0.001
-              }
-            }}
-            type="number"
+            autoComplete="off"
             name="remainder" 
             value={currentProduct?.remainder}
             label={t("productinputs.count")}
@@ -273,6 +285,8 @@ const UpdateProduct = ({
             <Select
               error={isEmptyField && !currentProduct?.measure}
               size="small"
+              autoComplete="off"
+
               name="measure"
               value={metric}
               label={t("productinputs.measure")}
@@ -290,15 +304,8 @@ const UpdateProduct = ({
           </FormControl>
           <Box style={{display:"flex",justifyContent:"space-between"}}>
             <TextField 
-               size="small"
-              variant="outlined"
-              InputProps={{
-                inputProps: { 
-                  min: 1,
-                  step: 0.01
-                }
-              }}
-              type="number"
+              autoComplete="off"
+              size="small"
               name="purchasePrice" 
               value={currentProduct?.purchasePrice || ""}
               placeholder="0"
@@ -312,7 +319,7 @@ const UpdateProduct = ({
           <TextField 
             error={isEmptyField && !currentProduct?.price}
             size="small"
-            variant="outlined"
+            autoComplete="off"
             name="price" 
             InputProps={{
               inputProps: { 
@@ -320,7 +327,6 @@ const UpdateProduct = ({
                 step: 0.01
               }
             }}
-            type="number"
             value={currentProduct?.price}
             label={t("productinputs.price")}
             onChange={(e)=>{
@@ -332,13 +338,7 @@ const UpdateProduct = ({
             <TextField 
               error={isEmptyField && currentProduct?.discount === ""}
               size="small"
-              type="number"
-              InputProps={{
-                inputProps: { 
-                  min: 0,
-                  step: 1,
-                }
-              }}
+              autoComplete="off"
               sx={{
                 "& fieldset": { border: 'none' },
                 width: "40%"
@@ -348,9 +348,10 @@ const UpdateProduct = ({
               value={currentProduct?.discount || ""}
               label={<div style={{backgroundColor:"white"}}>{t("productinputs.discount")}</div>}
                 onChange={(e)=>{
-                  if(+e.target.value>99)return
-                  if(+e.target.value.indexOf(".") !== -1 && e.target.value.split(".")[1]?.length >2)return
-                  handleChangeInput(e)
+                  if(+e.target.value > 99){
+                    return
+                  }
+                  onlyNumberAndADot(e,2)
                   priceValidate(currentProduct?.price, e.target.value, currentProduct?.discountType ,e)
                 }}
             />
@@ -363,7 +364,7 @@ const UpdateProduct = ({
             }
           <div></div>
           {message?.message && 
-          <Dialog open={message.message}>
+          <Dialog open={!!message.message}>
             <SnackErr 
             message={message?.message} 
             type={message?.type} 
@@ -373,7 +374,7 @@ const UpdateProduct = ({
           }
         </Box>
           <div style={{height:"40px",width:"98%",color:"red",fontSize:"80%"}}>
-          {fixMessage && <p>{fixMessage}</p>}
+           {fixMessage && <p>{fixMessage}</p>}
           </div>
           <Box>
             {currentProduct?.dep === 2 && 
@@ -392,7 +393,12 @@ const UpdateProduct = ({
               {moment(currentProduct?.lastUpdate).format('DD MMM YYYY')}{" / "} 
               {moment(currentProduct?.lastUpdate).format('HH:mm:ss')}
             </div>
-            <ImageLoad func={updateImage} content={currentProduct?.photo} />
+            <ImageLoad 
+            setProduct={setCurrentProduct}
+            newProduct={currentProduct}
+            func={updateImage} 
+            content={currentProduct?.photo} 
+            />
           </Box>
         <Box className={styles.update_btns}>
           <Button 

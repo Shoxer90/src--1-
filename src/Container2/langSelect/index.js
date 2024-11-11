@@ -6,21 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
-export default function LangSelect({
-  size, 
-  // lang,setLang
-}) {
-  // const { i18n} = useTranslation();
-  
-  // const changeLanguage = (str) => {
-  //   localStorage.setItem("lang", str )
-  //   i18n.changeLanguage(str)
-  // };
-
-  // useEffect(() => {
-  //   setLang(localStorage.getItem("lang") || "am")
-  // }, []);
-
+export default function LangSelect({ size }) {
+ 
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { i18n} = useTranslation();
 
@@ -29,13 +16,7 @@ export default function LangSelect({
   }, [localStorage.getItem("lang")]);
 
   const changeLanguage = (str) => {
-    // if(str === "null"|| str === "undefined" || str === null || str === undefined){
-    //   return localStorage.setItem("lang", "en" )
-    //  }
-    // else{
-      localStorage.setItem("lang", str )
-      
-    // }
+    localStorage.setItem("lang", str )
     i18n.changeLanguage(str)
    setLang(localStorage.getItem("lang"))
   };

@@ -30,7 +30,7 @@
 
 .containerXX{
   width: 100%;
-  box-sizing: border-box;
+  // box-sizing: border-box;
   height: 70px;
   position: fixed;
   top: 0;
@@ -38,13 +38,11 @@
   display: flex;
   max-height: fit-content;
   justify-content: space-between; 
-  align-items: center;
-  background: white;
-  border-bottom: 1px solid rgb(211, 209, 209);
+  background-color: #d5ede4;
   box-shadow: 0 1px 6px 0px darkseagreen;
   align-items: center;
-  align-content: center;
   padding: 10px;
+  padding-bottom: 20px;
 }
 
 .middleMenu{
@@ -56,7 +54,7 @@
 
 .routeName{
   padding: 0;
-  margin: 0;
+  margin-bottom: 10px;
   font-size: 70%;
 }
 
@@ -101,6 +99,7 @@
   }
   &_title{
     margin:0px;
+    color: #3FB68A;
   }
   >img{
     height: 60px;
@@ -144,12 +143,14 @@
   }
 };
 
-@media screen and (max-width: 600px){
+@media screen and (max-width: 855px){
   .headerLogo{
-    &_title{
-      display: none;
-      overflow: hidden;
-    }
+    display: none;
+    overflow: hidden;
+    // &_username{
+    //   display: none;
+    //   overflow: hidden;
+    // }
   }
   .basketBTN{
     padding: 4px;

@@ -28,7 +28,7 @@ const LogIn = ({t,setIsLogIn,whereIsMyUs}) => {
         setIsLogIn={setIsLogIn}
         whereIsMyUs={whereIsMyUs}
       />
-       <span >
+       <span>
         <span className={styles.auth_container_signIn_link} >
           <strong onClick={()=>navigate("/registration")}>
             {t("authorize.create")}

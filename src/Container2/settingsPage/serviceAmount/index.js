@@ -1,92 +1,116 @@
 import React, { useState, memo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import AddCardIcon from '@mui/icons-material/AddCard';
-import { Box, Button, Card, Dialog, Divider } from '@mui/material';
-
-import AliceCarousel from 'react-alice-carousel';
-import "react-alice-carousel/lib/alice-carousel.css";
-
+import {Card, Dialog, Divider, useMediaQuery } from '@mui/material';
 import Services from './services';
 import CreditCard from './creditCard/CreditCard';
 import ServiceTitle from './ServiceTitle';
 import CreditCardWrapper from './creditCard/CreditCardWrapper';
-import AutoPaymentSwitch from "./autoPayment";
-import SmallCardForCarousel from './creditCard/SmallCardForCarousel.js';
-import CardTravelIcon from '@mui/icons-material/CardTravel';
-
-import { changeActiveStatus, removeBankCard } from '../../../services/cardpayments/internalPayments';
-import { getPaymentCardServices, postNewCreditCard } from '../../../services/internal/InternalPayments';
+import { removeBankCard } from '../../../services/cardpayments/internalPayments';
+import { changeCreditCardName, getPaymentCardServices, postNewCreditCard, setActiveCard } from '../../../services/internal/InternalPayments';
 
 import styles from "./index.module.scss"
 import ConfirmDialog from '../../dialogs/ConfirmDialog.js';
 import SnackErr from '../../dialogs/SnackErr.js';
-import PrepaymentConfirm from './paymentDialog/PrepaymentConfirm.js';
+import HistoryCard from './serviceAmountHistory/HistoryCard.js';
+import { useTheme } from '@mui/material/styles';
+import HistoryTable from './serviceAmountHistory/HistoryTable.js';
+import Loader from '../../loading/Loader.js';
+import AutoPaymentSwitch from "./autoPayment"
+import CreditCardNewName from './creditCard/CreditCardNewName.js';
 
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-const responsive = {
-  320: {items: 1},
-  568:{items: 2},
-  1024:{items: 7},
-  2040:{items: 8}
-};
 
 const stylesCard = {
-  m:2,
+  m: window.innerWidth > 1000 ? 2 : .2,
+  mb: 1,
   boxShadow: 3,
   borderRadius: 5,
-  height:"fit-content"
+  height:"fit-content",
+  padding:"10px 20px"
 };
 
-const stylesBox = {
-  m:5,
-  mb:1,
-  mt:0,
-  minHeight: "30dvh",
-  display:"flex",
-  boxShadow: 0,
-  justifyContent:"space-betweeen"
-};
 
-const stylesServCard = {
-  background:"#def7ee",
-  borderRadius: 3
-};
-
-const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
+const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate}) => {
   const ref = useRef();
-  const [internalPayments, setInternalPayments] = useState({}); 
+  const [internalPayments, setInternalPayments] = useState(); 
   const [payData, setPayData] = useState({
     isBinding: internalPayments?.autopayment?.hasAutoPayment,
-    serviceType: null,
+    serviceType: serviceType,
+    months: 1,
+    web: true
   });
-  const [openPrepayment,setOpenPrepayment] = useState(false);
   const [responseUrl,setResponseUrl] = useState("");
   const {t} = useTranslation()
-  const [openConfirmation, setOpenConfirmation] = useState(false);
   const [message, setMessage] = useState({message:"", type:""});
   const [isDelete,setIsDelete] = useState(false);
   const [refresh,setRefresh] = useState(false);
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const [operationWithCard, setOperationWithCard] = useState({text:"",function:"", cardId:""});
+  const [openDialog,setOpenDialog] = useState(false);
+  const [isLoad,setIsLoad] = useState(false);
+  const [cardName, setCardName] = useState({name:"",id:""});
+  const [openRename, setRename] = useState(false);
+  const [openAttachInfo,setOpenAttachInfo] = useState(false);
 
-  const removeCard = async(id) => {
+
+  const [isOpenHistory, setOpenHistory] = useState(false);
+
+  const successFetch = () => {
+    setIsDelete(!isDelete)
+    setOpenDialog(false)
+    setRefresh(!refresh)
+    setMessage({message:t("dialogs.done"),type:"success"})
+  };
+
+  const removeCard = async(id=internalPayments?.autopayment?.defaultCard?.cardId) => {
     await removeBankCard(id).then((res) => {
-      setIsDelete(!isDelete)
-      setOpenConfirmation(false)
-      setMessage({message:t("dialogs.done"),type:"success"})
+      successFetch()
     })
   };
 
-  const changeActiveCard = async(id) => {
-    await changeActiveStatus(id).then((res) => {
+  const setMainCard = (id) => {
+    setActiveCard(id).then((res) => {
+      successFetch()
+      setRename(false)
     })
   };
+
+  const changeCardName = (id) => {
+    changeCreditCardName(cardName).then((res) => {
+      if(res?.status === 200) {
+      successFetch()
+      setRename(false)
+      }
+    })
+  };
+
+  const handleOperation = (eNum,id,name) => {
+    if(eNum === 1) {
+      setOperationWithCard({
+        function: ()=> setMainCard(id),
+        text: t("cardService.chooseCard")
+      })
+    }else if(eNum === 2) {
+      setRename(true)
+      setCardName({name:name,id:id})
+      return
+    }else{
+      setOperationWithCard({
+        function: () =>removeCard(id),
+        text: t("cardService.remove")
+      })
+    }
+    setOpenDialog(true)
+  }
 
   const getInfo = async() => {
     await getPaymentCardServices().then((res) =>{
       setInternalPayments(res)
-      console.log(res,"resssss")
-      if(!res?.isInDate){
-        setMessage({message:t("cardService.notInDate"), type:"error"})
+      if(!res?.isInDate && !res?.days) {
+        setMessage({type:"error", message:t("cardService.notInDate")})
       }
       setPayData({
         isBinding: res?.autopayment?.hasAutoPayment,
@@ -95,124 +119,133 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser}) => {
   };
 
   const addNewCreditCard = async() => {
-   await postNewCreditCard().then((res) => {
-      setResponseUrl(res)
+    setIsLoad(true)
+    await postNewCreditCard().then((res) => {
+      setIsLoad(false)
+      return setResponseUrl(res)
     })
   };
 
   useEffect(() => {
     getInfo()
-  }, [refresh]);
+  }, [refresh, isDelete]);
 
   useEffect(() => {
    responseUrl && ref.current.click()
   }, [responseUrl]);
 
   return (
-  <div style={{margin:"70px"}}>
-    <h2> {t("cardService.btnTitle")}</h2>
-    <Divider color="black" />
+  <div className={styles.clientContainer} >
+    <Divider color="black" sx={{m:1}} />
     {isBlockedUser && <p style={{color:"red"}}>{t("cardService.notInDate")}</p>}
+    {internalPayments?.isInDate && internalPayments?.days ? 
+      <p style={{color:"red"}}>
+        {`${t("cardService.notInDateTrueDays")}  ${lastDate} ${t("cardService.notInDateTrueDays2")}`}
+      </p>: ""
+    }
     <Card sx={stylesCard}>
-      <ServiceTitle title={t("landing.priceListSubTitle1")} />
-      <Box sx={stylesBox}>
+      <div>
+        <ServiceTitle title={t("landing.priceListSubTitle1")} />
+        <div style={{width:"600px"}}></div>
+      </div>
+      <div style={{display:"flex", flexFlow:"row "}}>
         {internalPayments &&
           <Services 
             content={internalPayments}
-            t={t} 
-            changeActiveCard={changeActiveCard}
             payData={payData} 
             setPayData={setPayData}
             logOutFunc={logOutFunc}
+            isDelete={isDelete}
+            serviceType={serviceType}
+            refresh={refresh}
+            setRefresh={setRefresh}
           />
         }
-      </Box>
-    </Card>
 
+      </div>
+    </Card>
     <Card sx={stylesCard}>
-      <ServiceTitle title={t("settings.paymentMethods")} />
-      <AutoPaymentSwitch
-        payData={payData}
-        setPayData={setPayData}
-      />
-      <Box sx={stylesBox} >
-        {internalPayments?.autopayment?.defaultCard && <CreditCardWrapper 
-          setOpenConfirmation={setOpenConfirmation}
-          element={<CreditCard 
-            card={internalPayments?.autopayment?.defaultCard}
-          />}
-        />}
-        <Card 
-          sx={stylesServCard} 
-          className={styles.attachCardContainer}
-        >
-          <div>
-            <CardTravelIcon fontSize="large" sx={{w:10}}/>
-            <span style={{marginLeft:"7px",fontWeight: 600,}}>
-              {t("cardService.balance")} 6000 AMD
-            </span>
+      <div style={{display:"flex",justifyContent:"flex-start"}}>
+        <ServiceTitle title={t("cardService.attachedCards")} />
+        <span style={{width:"30%"}}></span>
+        <AutoPaymentSwitch
+          setMessage={setMessage}
+          payData={payData}
+          setPayData={setPayData}
+          hasAutoPayment={internalPayments?.autopayment?.hasAutoPayment}
+          isDefaultExist={internalPayments?.autopayment?.defaultCard}
+        /> 
+      </div>
+      <div style={{display:"flex",justifyContent:"flex-start",flexFlow:"row wrap"}}>
+          <div style={{margin:"10px"}}>
+            <Card className={styles.creditCard} onClick={()=>setOpenAttachInfo(true)} style={{borderRadius:"12px",cursor:"pointer"}}>
+              <div style={{margin:"auto",color:"white",alignContent:"center"}}>
+                <AddCircleOutlineIcon  sx={{ fontSize:40 }} />
+                <span style={{marginLeft:"5px"}}>{t("cardService.attachCard")}</span>
+              </div>
+            </Card>
           </div>
-          <Button variant="outlined" 
-            style={{ color: "rgba(26,61,48,1)", border:"solid rgba(26,61,48,1) 2px"}}
-            onClick={()=>setOpenPrepayment(true)}
-          >
-            {t("cardService.prepayment")}
-          </Button>
-        </Card>
+          {internalPayments?.cards?.length ?  internalPayments?.cards.map((card) => {
+            return  <div style={{margin:"10px"}}>
+              <CreditCardWrapper 
+                isMain={card?.isDefault}
+                handleOperation={handleOperation}
+                cardId={card?.cardId}
+                name={card?.bankName}
+                element={<CreditCard card={card} t={t} isMain={card?.isDefault}/>}
+              /> 
+            </div>
+          }) : <h1 style={{color:"lightgray",margin:"40px auto"}}>{t("cardService.noAttachedCards")}</h1>}
 
-        <Card 
-          sx={stylesServCard} 
-          className={styles.attachCardContainer}
-          onClick={addNewCreditCard}
-        >
-          <div>
-            <AddCardIcon fontSize="large" sx={{w:10}}/>
-            <span style={{marginLeft:"7px"}}>
-              {t("cardService.attachCard")}
-            </span>
-          </div>
-          {responseUrl && <a ref={ref} href={responseUrl}>{""}</a>}
-        </Card>
-
-      </Box>
-     {internalPayments?.cards?.length ? 
-        <Box>
-          <ServiceTitle title={t("cardService.attachedCards")} />
-          <div className={styles.carret}>
-            {/* <AliceCarousel 
-              animationDuration={1000}
-              responsive={responsive}
-              items={internalPayments?.cards}
-              disableButtonsControls
-            > */}
-              {internalPayments?.cards && 
-                internalPayments?.cards.map((card,index) => (
-                  <SmallCardForCarousel
-                    card={card}
-                    key={card?.cardId}
-                    refresh={refresh}
-                    setRefresh={setRefresh}
-                    index={index}
-                  />
-                ))
-              }
-            {/* </AliceCarousel> */}
-          </div>
-        </Box> : ""
-      }
+      </div>
+      
+      <div style={{alignItems:"start",display:"flex"}}>
+        <HistoryCard setOpenHistory={setOpenHistory} t={t} />
+      </div>
     </Card>
+   
+     { responseUrl && <a ref={ref} href={responseUrl}>{""}</a> }
+  
     <ConfirmDialog
-      open={openConfirmation}
-      close={setOpenConfirmation}
-      func={removeCard}
+      open={openDialog}
+      close={setOpenDialog}
+      func={()=>operationWithCard?.function(operationWithCard?.cardId)}
       t={t}
-      question={t("cardService.remove")}
+      title={operationWithCard?.title}
+      question={operationWithCard?.text}
     />
-    <PrepaymentConfirm open={openPrepayment} close={()=>setOpenPrepayment(false)}/>
-
-    <Dialog open={message?.message}>
-      <SnackErr message={message?.message} type={message?.type} close={setMessage} />
+   
+    <Dialog 
+      open={!!isOpenHistory} 
+      onClose={()=>setOpenHistory(false)}
+      fullScreen={fullScreen}
+    >
+      <HistoryTable  history={internalPayments?.history} setOpenHistory={setOpenHistory} />
     </Dialog>
+
+   {message?.message &&
+      <Dialog open={message?.message}>
+        <SnackErr message={message?.message} type={message?.type} close={setMessage} />
+      </Dialog> 
+    }
+
+    <Dialog open={!!isLoad}>
+        <Loader close={setIsLoad} />
+    </Dialog>
+    <CreditCardNewName 
+      open={openRename} 
+      close={()=>setRename(false)}
+      cardName={cardName}
+      setCardName={setCardName}
+      func={changeCardName}
+    />
+    <ConfirmDialog
+      t={t} 
+      func={addNewCreditCard} 
+      open={openAttachInfo}
+      close={setOpenAttachInfo}
+      question={<strong>{t("cardService.attachAmount")}</strong>}
+    />
   </div>
   )
 };

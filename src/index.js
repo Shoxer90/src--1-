@@ -13,6 +13,28 @@ import store from "./store";
 const container = document.getElementById("root");
 const root = createRoot(container);
 
+// if ('serviceWorker' in navigator) {
+//   window.addEventListener('load', () => {
+//       navigator.serviceWorker.register('/service-worker.js').then((registration) => {
+
+//           registration.onupdatefound = () => {
+//               const installingWorker = registration.installing;
+//               installingWorker.onstatechange = () => {
+//                   if (installingWorker.state === 'installed') {
+//                       if (navigator.serviceWorker.controller) {
+//                           // Новое содержимое доступно, перезагружаем страницу
+//                           window.location.reload();
+//                       }
+//                   }
+//               };
+//           };
+//       }).catch((error) => {
+//           console.error('ServiceWorker registration failed: ', error);
+//       });
+//   });
+// }
+
+
 
 root.render(
   // <React.StrictMode>

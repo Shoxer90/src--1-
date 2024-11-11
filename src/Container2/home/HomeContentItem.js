@@ -1,20 +1,18 @@
-import React, { useContext } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
-import { memo } from "react";
-import ViewWeekIcon from '@mui/icons-material/ViewWeek';
-import { Alert, Card, Divider, Snackbar } from "@mui/material";
+import React, { useContext, useState, useEffect, memo } from "react";
+import { Card, Dialog, Divider } from "@mui/material";
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import ModeIcon from '@mui/icons-material/Mode';
+import { updateIsFavorite } from "../../services/products/productsRequests";
 
 import UpdateProduct from "./product/UpdateProduct";
 
 import {LimitContext} from "../../context/Context";
 
 import styles from "./index.module.scss";
-import { updateIsFavorite } from "../../services/products/productsRequests";
+import SnackErr from "../dialogs/SnackErr";
+import ConfirmDialog from "../dialogs/ConfirmDialog";
 
 const HomeContentItem = ({
   t,
@@ -31,55 +29,70 @@ const HomeContentItem = ({
   getSelectData,
   typeCode,
   setTypeCode,
+  setFetching,
+  setContent,
+  content,
+
 
 }) => {
   const {limitedUsing} = useContext(LimitContext);
   const [openUpdateProd, setOpenUpdateProduct] = useState(false);
-  const [quantity,setQuantity] = useState();
+  const [quantity,setQuantity] = useState("");
   const [starSynth,setStarSynth] = useState();
+  const [message,setMessage] = useState();
+  const [openConfirm, setOpenConfirm] = useState(false);
   const [newPrice, setNewPrice] = useState(product?.price - (product?.price * product?.discount / 100));
-
   const handleStarChange = () => {
     setStarSynth(!starSynth)
     updateIsFavorite(product?.id, !product?.isFavorite)
   };
  
   const clickToBascket = () => {
-    setToBasket(product,quantity)
+    if(localStorage.getItem("endPrePayment")) {
+      setOpenConfirm(true)
+      return
+    }
+    setToBasket(product, quantity, false)
     setQuantity("")
   };
 
-  const createProdQuant = (e) => {
-    if(e.target.value.indexOf("-") !== -1){
-      setQuantity(+e.target.value * -1)
-      return
-    }
-    if(e.target.value === "0" || e.target.value === 0){
-    setQuantity("")
-    return
-    }
-    if((e.target.value.indexOf(".") !== -1 && e.target.value.split('.')[1]?.length > 3)){
-      return
-    }else{
-      if(e.target.value > product?.remainder) {
-        setQuantity(e.target.value)
-        return
-      } 
-      else if(quantity === 0 || quantity === "0"){
-        setQuantity("")
-        setQuantity(e.target.value.slice(-1))
-      }else if(product?.otherLangMeasure === "հատ") {
-        setQuantity(Math.round(e.target.value))
+  const addToBasketWithPrep = () => {
+    setToBasket(product, quantity, false)
+    setOpenConfirm(false)
+  }
+
+  const onlyNumberAndADot = (event) => {
+    let isValid = false;
+    if(event.target.value === "+" || event.target.value === "-"){
+      return setQuantity("")
+    }else if(product?.otherLangMeasure === "հատ"){
+      const needSymb = /^[0-9]*$/;
+      isValid = needSymb.test(event.target.value);
+      if(isValid && +event.target.value) {
+       return setQuantity(+event.target.value)
+      }else if(event.target.value === ""){
+       return setQuantity("")
+      }
+    }else if(product?.otherLangMeasure !== "հատ"){
+      const needSymb = /^\d+(\.\d{0,3})?$/
+      isValid = needSymb.test(event.target.value)
+      if((event.target.value ==="0" || event.target.value === 0) && `${event.target.value}`.length > `${quantity}`?.length) {
+        return setQuantity("0.")
+      }else 
+      if(isValid || event.target.value=== "") {
+        setQuantity(event.target.value)
       }else{
-        setQuantity(e.target.value)
+        return
       }
     }
-  };
+  }
 
   useEffect(() => {
     setStarSynth(product?.isFavorite)
-    
   },[]);
+
+  // useEffect(() => {
+  // },[product?.discount]);
 
   return (
     <>
@@ -113,20 +126,20 @@ const HomeContentItem = ({
         />
       </div>
       <strong>
-      <span 
-        className={product?.name?.length > 19 ? styles.hovertext : undefined}
-        style={{fontSize: product?.name?.length > 15? "70%": "100%",padding:"0px", margin:"0px"}}
-        data-hover={product?.name}
-      >
+        <span 
+          className={product?.name?.length > 19 ? styles.hovertext : undefined}
+          style={{fontSize: product?.name?.length > 15? "70%": "100%",padding:"0px", margin:"0px"}}
+          data-hover={product?.name}
+        >
           {product?.name?.length > 19 ? `${product?.name.slice(0,20)}...` : product?.name}
-      </span>
-        </strong>
+        </span>
+      </strong>
       <span 
         className={product?.brand?.length > 19 ? styles.hovertext: undefined}
         data-hover={product?.brand}
         style={{fontSize: product?.brand?.length > 15 ? "70%": "80%",minHeight:"20px"}}
       >
-        {product?.brand || ""}
+        {(product?.brand?.length > 19 ? `${product?.brand.slice(0,20)}...` : product?.brand) || ""}
       </span>
       <div className={styles.productContent_item_info} style={{fontSize:"90%"}}>
         <p style={{margin:0}}>
@@ -141,9 +154,8 @@ const HomeContentItem = ({
               <span>{t("productcard.newprice")} </span> 
               <strong>
                 { product?.discountType === 1 && ( Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice) }
-                {/* { product?.discountType === 2 && (product?.price - product?.discount) } */}
+                {/* { product?.discountType === 2 && (product?.price - product?.discount)  } */}
                 { product?.discountType === 0 && ( Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice)  }
-
                 { t("units.amd") }
               </strong>
             </span>
@@ -152,21 +164,18 @@ const HomeContentItem = ({
       </div>
       {product?.remainder ?
         <>
-          <div style={{fontSize:quantity > product?.remainder ? "90%":"70%", margin:"5px", color: quantity > product?.remainder && "red"}}>
-            {t("productcard.remainder")} {product?.remainder} {t(`units.${product?.measure}`)}
+          <div style={{fontSize:"70%", margin:"5px", color: quantity > product?.remainder && "red",fontWeight: quantity > product?.remainder && "700"}}>
+            {t("productcard.remainder")} {product?.remainder%1 ? product?.remainder.toFixed(3) : product?.remainder } {t(`units.${product?.measure}`)}
           </div>
           <div style={{fontSize:"80%",letterSpacing:"0.1px",padding:"3px"}}>
             {product?.barCode}
           </div>
           <div className={styles.productContent_item_addBasket}>
             <input 
-              min={product?.otherLangMeasure === "հատ" ? "1" : "0.001"}
-              step={product?.otherLangMeasure !== "հատ" ? "0.001" : "1"}
               max={`${product.remainder}`}
               placeholder="1"
-              type="number" 
               value={quantity}  
-              onChange={(e)=>createProdQuant(e)} 
+              onChange={(e)=>onlyNumberAndADot(e,3)} 
               disabled={basketExist.includes(product?.id)}
             />
             <ShoppingBasketIcon 
@@ -175,7 +184,10 @@ const HomeContentItem = ({
               onClick={clickToBascket}
             />
           </div> 
-        </>: <div style={{marginBottom:"14px",color:"red"}}>{t("productcard.outofstock")}</div>
+        </>: <>
+          <div style={{fontSize:"80%",letterSpacing:"0.1px",padding:"3px"}}>code : {product?.barCode}</div>
+          <div style={{marginBottom:"14px",color:"red"}}>{t("productcard.outofstock")}</div>
+        </>
       }
       </Card>
     </div>
@@ -193,8 +205,23 @@ const HomeContentItem = ({
       getSelectData={getSelectData}
       typeCode={typeCode}
       setTypeCode={setTypeCode}
-
+      setFetching={setFetching}
+      setContent={setContent}
+      content={content}
+      setNewPrice={setNewPrice}
     />}
+    {message ? 
+      <Dialog open={Boolean(message)}>
+        <SnackErr message={message} type="info" close={setMessage} />
+      </Dialog>
+    :""}
+    <ConfirmDialog
+      func={addToBasketWithPrep}
+      open={openConfirm}
+      title={t("mainnavigation.newproduct")}
+      close={setOpenConfirm}
+      question={t("basket.add_to_prep")}
+    />
   </>
   )
 };

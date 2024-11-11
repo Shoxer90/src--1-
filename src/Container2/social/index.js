@@ -9,7 +9,7 @@ const SocialMediaGroup = ({w}) => {
   const social = [
     {
       name:"facebook",
-      link:"https://www.facebook.com/payx.am/",
+      link:"https://www.facebook.com/profile.php?id=100094019746193&mibextid=LQQJ4d",
       icon: <i class="fab fa-facebook " style={{color:"white"}}></i>,
       backgr:"#3B5998",
     },{
@@ -19,7 +19,7 @@ const SocialMediaGroup = ({w}) => {
       backgr:"#0077B5",
     },{
       name:"instagram",
-      link:"https://www.instagram.com/payxmobile/",
+      link:"https://www.instagram.com/storex.am/",
       icon: <i class="fab fa-instagram " style={{color:"white"}}></i>,
       backgr:"rgba(244, 21, 59, 0.849)",
       backgr:"darkviolet",
@@ -32,7 +32,7 @@ const SocialMediaGroup = ({w}) => {
   ];
 
   return (
-    <span className={styles.socialContainer} style={{width:`${w}px`}}>
+    <div className={styles.socialContainer} style={{width:`${w}px`}}>
       {social && social.map((item,i) => (
         <SocialItem 
           key={i}
@@ -46,7 +46,7 @@ const SocialMediaGroup = ({w}) => {
           url={item?.link} 
         />
       ))}
-    </span>
+    </div>
   )
 };
 

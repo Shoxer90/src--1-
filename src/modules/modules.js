@@ -2,7 +2,7 @@ import { enGB} from "moment/locale/en-gb.js";
 import hyAm from "moment/locale/hy-am.js";
 import moment from "moment";
 import ru from 'moment/locale/ru';
-import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 export const dateFormat = (dateString) => {
   const newMonth = dateString.getMonth()+1;
@@ -85,3 +85,27 @@ export const takeMeMeasureArr = (lang) => {
 };
 
 export const allLanguageMeasures = ["հատ", "կգ", "գրամ", "լիտր", "մետր", "ք/մ", "խ/մ", "այլ", "pcs", "kg", "gramm", "liter", "metre", "sq/m", "cub/m", "other","шт", "кг", "грамм", "литр", "метр", "кв/м", "куб/м","другой"]
+
+export const taxCounting = (arr) => {
+  let tax = 0;
+  arr?.forEach((item) => {
+    tax += item?.totalWithoutTaxes
+  })
+  return tax.toFixed(2)
+};
+
+export const getResponseAfterPay = (statusCall) => {
+  if(statusCall === 200) {
+    return {type:"success", message:t("dialogs.checkCardStatus200")}
+  }else if(statusCall === 201) {
+    return {type:"success", message:t("dialogs.checkCardStatus201")}
+  }else if(statusCall === 410) {
+    return {type:"error", message:t("dialogs.checkCardStatus410")}
+  }else if(statusCall === 400) {
+    return {type:"error", message:t("dialogs.checkCardStatus400")}
+  }else if(statusCall === 411) {
+    return {type:"error", message:t("dialogs.checkCardStatus412")}
+  }else {
+    return {type:"error", message:t("dialogs.checkCardStatus400")}
+  }
+};

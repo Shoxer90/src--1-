@@ -20,7 +20,7 @@ const UserInfo = ({ user,logo,active, limitedUsing,t}) => {
     <div 
       className={styles.headerLogo_username} 
         onClick={()=>{
-        return  !limitedUsing ? navigate("/setting"):null
+        return  !limitedUsing ? navigate("/setting/user"):null
       }} 
     > 
       {screen < 785 ?
@@ -34,7 +34,7 @@ const UserInfo = ({ user,logo,active, limitedUsing,t}) => {
               <img 
                 src={logo ? logo:"/defaultAvatar.png"}
                 className={styles.avatarImg} 
-                style={{border:"solid green 1px"}} 
+                style={{border:"solid #3FB68A 1px"}} 
                 alt=""
               />
             </StyledBadgeGreen> :
@@ -49,7 +49,7 @@ const UserInfo = ({ user,logo,active, limitedUsing,t}) => {
         <span style={{alignSelf:"center",margin:"2px"}} className={styles.routeName}> {user} </span>
         </>:
         <>
-          <img src={logo? logo:"/defaultAvatar.png"} style={{border:active ?"solid green 1px" :"solid grey 1px"}} className={styles.avatarImg} alt="" />
+          <img src={logo? logo:"/defaultAvatar.png"} style={{border:active ?"solid #3FB68A 1px" :"solid grey 1px"}} className={styles.avatarImg} alt="" />
           <div style={{display:"flex",flexDirection:"column"}}>
             <span style={{alignSelf:"center",margin:"2px"}}>{user} </span>
             <ActiveIcon isEhdm={active} t={t}/>
@@ -57,6 +57,7 @@ const UserInfo = ({ user,logo,active, limitedUsing,t}) => {
         </>
       }
     </div>
+   
   ) 
 };
 

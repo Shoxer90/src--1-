@@ -5,6 +5,8 @@ import { useState } from "react";
 import { isUniqueNik, registrationNew } from "../../../services/auth/auth";
 import { Button, FormControl, FormHelperText, InputAdornment, TextField } from "@mui/material";
 import { mailValidate } from "../../../modules/mailValidate";
+import PreRegistrateAgreement from "../preRegistrate/PreRegistrateAgreement";
+import TermsConditionsLink from "../preRegistrate/TermsConditionsLink";
 
 
 const RegistrationForm = ({newUser, setNewUser, t, successSubmit, setIsLoad}) => { 
@@ -15,6 +17,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit, setIsLoad}) =>
   const [unique,setUnique] = useState(true);
   const [submitClick, setSubmitClick] = useState(false);
   const [validMail, setValidMail] = useState(false);
+  const [agree,setAgree] = useState(false);
 
   const handleChange = (e) => {
     setSubmitClick(false)
@@ -80,7 +83,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit, setIsLoad}) =>
   };
 
   return(
-    <div className={styles.reg_form}> 
+    <div className={styles.reg_form} autoComplete="off"> 
       <TextField  size="small" sx={{m:.4}} 
         className={styles.reg_form_input}
         error={!newUser?.legalName && submitClick}
@@ -178,18 +181,18 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit, setIsLoad}) =>
         <h6 style={{marginBottom:"1px"}}> {t("authorize.username")}</h6>
       <div className={styles.reg_form_div}>
         <FormControl style={{margin:"0px"}}>
-          <TextField  size="small" sx={{m:.4}} 
-            inputProps={{
-              autoComplete: 'off'
-          }}
-            error={!newUser?.userName && submitClick}
-            name="userName"
-            value={newUser?.userName}
-            label={`${t("authorize.username")}*`}
-            onChange={(e)=>isunique(e)}
-          />
-          <FormHelperText >
-          <span className={!unique? styles.errorMessage: styles.successMessage} style={{height:"12px"}}>
+          <p  size="small" sx={{m:.4}} 
+            // inputProps={{
+            //   autoComplete: 'off'
+            // }}
+            // error={!newUser?.userName && submitClick}
+            // name="userName"
+            // value={newUser?.userName}
+            label={`${t("authorize.username")}* (${t("authorize.tin")})`}
+            // onChange={(e)=>isunique(e)}
+          >{}</p>
+          <FormHelperText>
+          <span className={!unique? styles.errorMessage: styles.successMessage}>
             {newUser?.userName && !unique && t("authorize.exist")}
             {newUser?.userName && unique && t("authorize.exist1")}
           </span>
@@ -222,10 +225,17 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit, setIsLoad}) =>
           </span>
         }
       </div>
+      <PreRegistrateAgreement agree={agree} setAgree={setAgree} t={t} title={<TermsConditionsLink t={t} />}/>
+
       <Button 
         type="submit" 
         variant="contained"
-        onClick={() => {if(!submitClick)registrateUser(newUser)}}
+        // disabled={!agree}
+        onClick={() => {
+          
+          if(!agree)setMessage({message: `${t("authorize.beforeRegisterDialog")} ${t("authorize.beforeRegisterTerms")}`, type:"error"})
+          else if(!submitClick)registrateUser(newUser)
+        }}
         sx={{ backgroundColor:"rgb(17, 46, 17)",width:"300px",alignSelf:"center",m:1}}
       >
         {t("authorize.register")}

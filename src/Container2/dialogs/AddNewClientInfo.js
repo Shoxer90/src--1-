@@ -1,82 +1,173 @@
-import { Button, Dialog, DialogTitle, Divider, TextField } from "@mui/material";
-import React from "react";
+import { Button, Dialog, DialogTitle, Divider, InputAdornment, TextField } from "@mui/material";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { memo } from "react";
 import { updateUserPassword } from "../../services/user/userInfoQuery";
 import ConfirmDialog from "./ConfirmDialog";
 import CloseIcon from '@mui/icons-material/Close';
 import styles from "./index.module.scss";
+import validator from "validator";
+import SnackErr from "./SnackErr";
 
-const AddNewClientInfo = ({label, message, setMessage, t, openAddDialog, setOpenAddDialog}) => {
-  const [addData, setAddData] = useState({id:0});
+const AddNewClientInfo = ({ setMessage, t, openAddDialog, setOpenAddDialog,logOutFunc}) => {
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [newPass,setNewPass] = useState({password:"",confirmPass:""});
+  const [errMessage,setErrMessage] = useState({m:"", t:""})
+  const [submitClick, setSubmitClick] = useState(false);
+  const [isValid, setIsValid] = useState(false);
+  const [infoDialog,setInfoDialog] = useState({
+    isOpen:false,
+    message:"",
+    type: ""
+  });
 
-  const handleAddInfo = (name, value) => {
-    setAddData({
-      ...addData,
-      [name]: value,
+  const handleAddInfo = (e) => {
+    setSubmitClick(false)
+    setNewPass({
+      ...newPass,
+      [e.target.name]: e.target.value,
     })
   };
-
-  const sendNewInfo = () => {
-    if(label?.length + 1 === Object.values(addData)?.length){
-      addfunc(addData)
-    }else{
-      setMessage({m:t("dialogs.required"), t:"error"})
-      setTimeout(() => {
-        setMessage({m:"",t:""})
-      }, 3000)
-    }
+  
+  const passValidator = (value) => {
+    if (validator.isStrongPassword(value, { 
+      minLength: 8, minLowercase: 1, 
+      minUppercase: 1, minNumbers: 1, minSymbols: 1 
+    })) { 
+      setIsValid(true)
+      setErrMessage({t:"success", m: <div style={{color:"green"}}>{t("dialogs.validatepass")}</div>}) 
+    } else { 
+      setIsValid(false)
+      setErrMessage({t:"error", m: <div style={{color:"red"}}>{t("dialogs.novalidatepass")}</div>}) 
+    } 
   };
 
-  const addfunc = async (data) => {
+  const createNewPass = async() => {
+    setSubmitClick(true)
+    setOpenConfirm(false)
     setMessage({m:"", t:""})
-      if((data[t("settings.changepassword")] === "" || data[t("settings.changepassword")] === undefined) ||
-        (data[t("settings.confirmpassword")] === "" || data[t("settings.confirmpassword")] === undefined)
-      ){
-        setMessage({m:t("dialogs.empty"), t:"error"})
-      }else if(data[t("settings.changepassword")] !== data[t("settings.confirmpassword")]){
-        setMessage({m:t("dialogs.mismatch"), t:"error"})
-      }else{
-         await updateUserPassword({"password":`${data[t("settings.changepassword")]}`}).then((resp) => {
-          setMessage({m:t("dialogs.done"), t:"success"})
-          setOpenAddDialog(false)
+      if(!newPass?.password || !newPass?.confirmPass){
+        return setInfoDialog({
+          isOpen:true,
+          message: t("dialogs.empty"),
+          type: "error"
+        })
+      }else if(!isValid){
+        return setInfoDialog({
+          isOpen:true,
+          message: t("dialogs.novalidatepass"),
+          type: "error"
         })
       }
-    closeDialogue()
+      else if(newPass?.password !== newPass?.confirmPass){
+        return setInfoDialog({
+          isOpen:true,
+          message:`${t("dialogs.mismatch")} \n\n ${ t("dialogs.passSuccess")} `,
+          type: "error"
+        })
+      }
+      await updateUserPassword({password: newPass?.password}).then((resp) => {
+        if(resp === 200) {
+          setMessage({m: t("dialogs.done"), t: "success"})
+          setTimeout(() => [
+            logOutFunc()
+          ],2500)
+        }else if(resp === 401){
+          logOutFunc()
+        }else {
+          setMessage({m: t("dialogs.wrong"), t: "error"})
+        }
+        setOpenAddDialog(false)
+      })
   };
 
- const closeDialogue = () => {
-  setTimeout(()=>{
-    setMessage({m:"",t:""})
-  },3000)
- }
-  
+ const closeConfirmDialog = () => {
+  setOpenConfirm(false)
+  setInfoDialog({isOpen: false, message:"",type:"info"})
+ };
+
+ const closeMainDialog = () => {
+  setOpenAddDialog(false)
+  setNewPass({password:"",confirmPass:""})
+ };
+
+
+ useEffect(() => {
+  passValidator(newPass?.password)
+}, [newPass?.password]);
+
   return (
     <Dialog
-      open={openAddDialog}
-      onClose={()=>setOpenAddDialog(false)}
+      open={!!openAddDialog}
       width="lg"
     >
      <DialogTitle className={styles.dialogHeader}>
         {t("settings.changepassword")}
-        <CloseIcon onClick={()=>setOpenAddDialog(false)} />
+        <CloseIcon onClick={closeMainDialog} />
       </DialogTitle>
       <Divider />
       <div className={styles.newInfo}>
-        {label && label.map((inputName, index) => (
-          inputName !== "id" ?
-            <div key={index}>
-              <TextField 
-                sx={{width: "fit-content"}}
-                type="password"
-                label={inputName} 
-                value={addData.inputName}
-                name={inputName}
-                onChange={(e) => handleAddInfo(e.target.name, e.target.value)}
-              />
-            </div> : null
-        ))}
+      <TextField sx={{m:.6}}
+          inputProps={{
+            style: {
+              height: "26px",
+              padding:"1px 10px"
+            },
+          }}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">
+              <span 
+                onClick={()=>setInfoDialog({
+                  isOpen:true,
+                  message: t("dialogs.passSuccess"),
+                  type: "success"
+                })} 
+                style={{fontWeight:700,color:"green", fontSize:"130%", cursor:"pointer"}}
+              >
+                ?
+              </span>
+            </InputAdornment>,
+          }}
+          helperText={newPass?.password?.length ? errMessage?.m : ""}
+          error={!newPass?.password && submitClick}
+          autoComplete="off"
+          // autoComplete="new-password"
+          name="password"
+          type="password"
+          value={newPass?.password}
+          placeholder={`${t("authorize.password")} *`} 
+          onChange={(e)=>handleAddInfo(e)}
+        />
+        
+        <TextField sx={{m:.6}} 
+          inputProps={{
+            style: {
+              height: "26px",
+              padding:"1px 10px"
+            }
+          }}
+          error={(!newPass?.confirmPass && submitClick) || newPass?.password !== newPass?.confirmPass}
+          helperText={newPass?.confirmPass?.length && newPass?.password !== newPass?.confirmPass ? 
+            <div style={{fontSize:"90%"}}>
+              {t("dialogs.mismatch")} 
+            </div> 
+          : ""}
+          autoComplete="off"
+          name="confirmPass"
+          type="password"
+          value={newPass?.confirmPass}
+          placeholder={`${t("settings.confirmpassword")} *`}
+          onChange={(e)=>{
+            setMessage("")
+            handleAddInfo(e)
+          }}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">
+              <span style={{width:"9px"}}>
+              </span>
+            </InputAdornment>,
+          }}
+        />    
         <div className={styles.newInfo_btn}>
           <Button
             variant="contained"
@@ -87,21 +178,27 @@ const AddNewClientInfo = ({label, message, setMessage, t, openAddDialog, setOpen
           </Button>
           <Button
             variant="contained"
-            style={{background:"darkgreen"}}
             onClick={()=>setOpenConfirm(true)}
-            >
+            disabled={!newPass?.confirmPass || !newPass?.password}
+          >
             {t("buttons.save")}
           </Button>
         </div>
+
         <ConfirmDialog
           t={t}
           open={openConfirm}
           title={t("settings.changepassword")}
           question={t("settings.changepassword2")}
           close={setOpenConfirm}
-          func={()=>sendNewInfo()}
+          func={createNewPass}
           content={" "}
-        />
+        />;
+         {infoDialog?.message &&
+        <Dialog open={infoDialog?.isOpen} onClose={()=>setInfoDialog({isOpen: false, message:"",type:"info"})}>
+          <SnackErr type={infoDialog?.type} message={infoDialog?.message}  close={()=> closeConfirmDialog({isOpen: false, message:"",type:"info"})}/>
+        </Dialog>
+      }
       </div>
     </Dialog>
   )

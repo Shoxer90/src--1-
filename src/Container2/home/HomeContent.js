@@ -20,8 +20,12 @@ const HomeContent = ({
   getSelectData,
   typeCode,
   setTypeCode,
-  user
+  setFetching,
+  user,
+  setContent,
+  // content
 }) => {
+  
   return (
     <Card className={styles.productContent}>
      
@@ -43,10 +47,14 @@ const HomeContent = ({
             typeCode={typeCode}
             setTypeCode={setTypeCode}
             user={user}
-
+            setFetching={setFetching}
+            setContent={setContent}
+            content={content}
           />
         </div>
-      })}
+      })
+      // :<h1 style={{color:"lightgray",margin:"40px auto",height:"70dvh"}}>{t("productinputs.nonProduct")}</h1>
+      }
     </Card>
   )
 }

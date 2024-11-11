@@ -1,25 +1,27 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import * as XLSX from "xlsx";
 import ExcelRow from './ExcelRow';
 import styles from "./index.module.scss";
 import { Dialog, Divider } from '@mui/material';
 import AddMultipleProductsDialog from './AddMultipleProductsDialog';
-import { createProductList } from '../../../services/products/productsRequests';
+import { createProductList, getAllAdgCode } from '../../../services/products/productsRequests';
 import Loader from '../../loading/Loader';
 import SnackErr from '../../dialogs/SnackErr';
 import { useNavigate } from 'react-router-dom';
+import { t } from 'i18next';
 
-const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,flag}) => {
+const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
   const navigate = useNavigate();
   const [uploadFile,setUploadFile] = useState();
   const [isLoad,setIsLoad] = useState();
   const [message,setMessage] = useState({m:"",t:""});
   const [rowStatus,setRowStatus] = useState({});
   const [barCodes,setBarCodes] = useState([]);
-
- const readExcel = (e) => {
-  setIsLoad(true)
+  const [allAdgs, setAllAdgs] = useState([]);
+  
+  const readExcel = (e) => {
+   setIsLoad(true)
     const promise = new Promise((resolve,reject) => {
         
     const fileReader = new FileReader();
@@ -41,22 +43,21 @@ const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,
     promise.then((res) => {
      const arr = [];
      const barcodeList = []
-     console.log(res,"res aupload")
      res.forEach(prod => {
       prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] && barcodeList.push(prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"])
       return arr.push({
         "id": 0,
-        "type": prod?.["ԱՏԳ ԱԱ կոդ կամ ԱԴԳՏ դասակարգիչ / LP FEA code or PCTA classifier / ПП ВЭД код или КПВД классификатор *"] || "",
+        "type": `${prod?.["ԱՏԳ ԱԱ կոդ կամ ԱԴԳՏ դասակարգիչ / LP FEA code or PCTA classifier / ПП ВЭД код или КПВД классификатор *"]}` || "",
         "dep":  prod?.["ԱԱՀ - ով չհարկվող / Excluding VAT / Без учета НДС"] ? 2 : 0,
         "name": prod?.["Ապրանքի անվանումը (50 նիշ) / Product Name (50 Symbols) / Название товара (50 символа) *"] || "",
         "brand": prod?.["Ապրանքանիշ / Brand / Бренд"] || "",
-        "measure": prod?.["Չափման միավոր / Measure / Мера *"] ,
+        "measure": prod?.["Չափման միավոր / Measure / Мера *"],
         "otherLangMeasure": "",
         "photo": "",
         "barCode":  prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] || "",
         "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"] || 0,
-        "purchasePrice": +prod?.[" Ապրանքի ինքնարժեք / Purchase price / Закупочная цена "] || 0,
-        "price": +prod?.[" Վաճառքի գին / Product price / Цена продукта * "]|| 0,
+        "purchasePrice": +(prod?.["Ապրանքի ինքնարժեք / Purchase price / Закупочная цена"])?.toFixed(2) || 0,
+        "price": +(prod?.["Վաճառքի գին / Product price / Цена продукта *"])?.toFixed(2)|| 0,
         "discountedprice": 0,
         "discount": 0,
         "discountType": 0,
@@ -78,30 +79,27 @@ const PasteExcelToReact = ({t, logOutFunc, setCurrentPage, setDataGroup,setFlag,
   })
   };
 
-  console.log(uploadFile,"UPLOAD FILE")
-
-const checkRowStatus = async(obj, row) => {
-  const rowObjToArr = Array.from(Object.values(obj))
-  if(rowObjToArr.includes(false)) {
-    setRowStatus({
-      ...rowStatus,
-      [row]:false,
-    })
-  }else{
-    setRowStatus({
-      ...rowStatus,
-      [row]:true,
-    })
-  }
-}
+  const checkRowStatus = async(obj, row) => {
+    const rowObjToArr = Array.from(Object.values(obj))
+    if(rowObjToArr.includes(false)) {
+      setRowStatus({
+        ...rowStatus,
+        [row]:false,
+      })
+    }else{
+      setRowStatus({
+        ...rowStatus,
+        [row]:true,
+      })
+    }
+  };
 
 
- const confirmExcelList = async(res) => {
+  const confirmExcelList = async(res) => {
     createProductList(res).then((res)=> {
       setIsLoad(false)
       if(res === 200){
         setMessage({m: t("dialogs.done"),t: "success"})
-        // navigate("/")
       }else if(res === 401){
         logOutFunc()
       }else{
@@ -110,7 +108,7 @@ const checkRowStatus = async(obj, row) => {
       }
       setMessage({m: t("dialogs.done"),t: "success"})
     })
- };
+  };
 
   const createMultipleProds = async() => {
     setIsLoad(true)
@@ -127,11 +125,17 @@ const checkRowStatus = async(obj, row) => {
     setMessage({m:"",t:""})
     navigate("/")
     window.location.reload(false);
-  }
+  };
+
+  useEffect(() => {
+    !allAdgs.length && getAllAdgCode().then((res) => {
+      setAllAdgs(res)
+    })
+  }, []);
 
   return (
     <div style={{marginTop:"100px"}}>
-      <Dialog open={isLoad}>
+      <Dialog open={!!isLoad}>
         <Loader close={()=>setIsLoad(false)}/>
       </Dialog>
       {message &&
@@ -144,8 +148,11 @@ const checkRowStatus = async(obj, row) => {
         setUploadFile={setUploadFile}
         readExcel={readExcel}
         createMultipleProds={createMultipleProds}
+        setCurrentPage={setCurrentPage}
       />
       <Divider sx={{bc:"green",w:2}}/>
+      <form autoComplete="off">
+
       {
         uploadFile &&
         <table className={styles.table}>
@@ -172,7 +179,7 @@ const checkRowStatus = async(obj, row) => {
             </tr>
           </thead>
           {uploadFile.map((prod,index) => {
-            return <tbody>
+            return <tbody autoComplete="off">
               <ExcelRow
                 prod={prod} 
                 key={index+1} 
@@ -183,11 +190,13 @@ const checkRowStatus = async(obj, row) => {
                 t={t}
                 setBarCodes={setBarCodes}
                 barCodes={barCodes}
+                allAdgs={allAdgs}
               />
             </tbody>
           })}
         </table>
       }
+      </form>
     </div>
   );
 }

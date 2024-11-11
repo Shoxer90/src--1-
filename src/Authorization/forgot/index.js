@@ -6,13 +6,14 @@ import SnackErr from "../../Container2/dialogs/SnackErr";
 import { mailValidate } from "../../modules/mailValidate";
 import { forgotPassword } from "../../services/auth/auth";
 import styles from "../index.module.scss";
+import { useTranslation } from "react-i18next";
 
-const ForgotPassword = ({t}) => {
+const ForgotPassword = () => {
   const navigate = useNavigate();
-  const [userMail,setUserMail] = useState({});
-  const [openConfirmDial,setOpenConfDial] = useState(false);
+  const [userMail, setUserMail] = useState({});
+  const [openConfirmDial, setOpenConfDial] = useState(false);
   const [info, setInfo] = useState({});
-
+  const {t} = useTranslation();
 
   const reset = async() => {
     const isValid = await mailValidate(userMail.email)

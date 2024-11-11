@@ -1,4 +1,4 @@
-import React, { useContext, memo, useEffect } from "react";
+import React, { useContext, memo } from "react";
 
 import { Button } from "@mui/material";
 import {LimitContext} from "../../context/Context";
@@ -14,25 +14,27 @@ const HomeNavigation = ({
   setSearchValue,
   changeStatus,
   searchValue,
-  setMessage,
-  focusInput,
   dataGroup,
   setFrom,
-  t, 
+  t,
+  setContent,
+  content
 }) => {
   const {limitedUsing} = useContext(LimitContext);
-
+  
   const  handleSendQuery = async(str, index) => {
-    setMessage("")
+    setSearchValue("")
+    setContent([])
     await setCurrentPage(1)
     changeStatus(str,index)
   };
+
 
   return(
     <div onKeyDown={(e)=>{
       if(e.key === "Enter") {
         e.preventDefault()
-        byBarCodeSearching(searchValue)
+        byBarCodeSearching(dataGroup,searchValue)
       }}}
     >
     <div className={styles.mainNav}>
@@ -53,7 +55,10 @@ const HomeNavigation = ({
       </Button>
         <Button 
           variant="contained" 
-          onClick={()=>handleSendQuery("GetNotAvailableProducts", 1)} 
+          onClick={()=>{
+            handleSendQuery("GetNotAvailableProducts",1)
+          
+          }} 
           style={{
             background:(dataGroup === "GetNotAvailableProducts"? "#FFA500" : "gray"),
             height:"33px",
@@ -84,7 +89,7 @@ const HomeNavigation = ({
         byBarCodeSearching={byBarCodeSearching}
         setFrom={setFrom}
         stringFrom="main"
-        ref={focusInput}
+        dataGroup={dataGroup}
       />
       { !limitedUsing && <ExcelBurger t={t} setOpenNewProduct={setOpenNewProduct}/> }
     </div>

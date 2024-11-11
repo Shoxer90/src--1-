@@ -9,13 +9,16 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 
 import LogoutIcon from '@mui/icons-material/Logout';
+import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
 import { Box } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 import { LimitContext } from '../../context/Context';
 import styles from "./index.module.scss";
 import Flags from '../../Container2/language/Flags';
+import ConfirmDialog from "../../Container2/dialogs/ConfirmDialog"
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -54,12 +57,14 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-const MenuBurger = ({logout}) => {
+const MenuBurger = ({logout,setActiveBtn, user}) => {
   const {limitedUsing} = useContext(LimitContext);
   const {t} = useTranslation();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [logoutConfirm, setOpenLogoutConfirm] = useState(false);
+
 
   return (
     <div>
@@ -79,49 +84,78 @@ const MenuBurger = ({logout}) => {
       </Button>
       <StyledMenu
         anchorEl={anchorEl}
-        PaperProps={{  
-          style: {  
-            width: 270,  
-          },  
-       }} 
         open={open}
         onClose={() => setAnchorEl(null)}
-        style={{minWidth:"300px"}}
+        style={{minWidth:"350px"}}
       >
         {!limitedUsing && 
           <Box style={{display:'flex'}}>
-           <AccountCircleIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
-            <MenuItem 
-              fontSize="medium"
+            <MiscellaneousServicesIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
+            <MenuItem fontSize="medium"
               onClick={() => {
-                navigate("/setting")
+                setActiveBtn("")
+                navigate("/setting/user")
                 setAnchorEl(null)
               }}
             >
-              <h5>{t("menuburger.setting")}</h5>
+            <h5>{t("menuburger.setting")}</h5>
             </MenuItem>
           </Box>
-        } 
+        }
+        {!limitedUsing && 
+         <Box style={{display:'flex'}}>
+        <AccountCircleIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
+          <MenuItem fontSize="medium"
+            onClick={() => {
+              setActiveBtn("")
+              navigate("/setting/cashiers")
+              setAnchorEl(null)
+            }}
+          >
+           <h5>{t("settings.cashiers")}</h5>
+          </MenuItem>
+        </Box>}
+        {!limitedUsing && user?.showPaymentPage && 
+          <Box style={{display:'flex'}}>
+            <HomeRepairServiceIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
+            <MenuItem fontSize="medium"
+              onClick={() => {
+                setActiveBtn("")
+                navigate("/setting/services")
+                setAnchorEl(null)
+              }}
+            >
+            <h5>{t("cardService.btnTitle")}</h5>
+            </MenuItem>
+          </Box>
+        }
+       
         <Box style={{display:'flex'}}>
-          <QuestionAnswerIcon style={{marginLeft:"25px",marginTop:"6px"}}/>
+          <QuestionAnswerIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
           <MenuItem fontSize="medium"
             onClick={() => {
               navigate("/feedback")
+              setActiveBtn("")
               setAnchorEl(null)
             }}
           >
            <h5>{t("menuburger.feedback")}</h5>
           </MenuItem>
         </Box>
-        <Flags />
+        <Flags/>
         <Divider flexItem  style={{margin:1, backgroundColor:"gray"}}/>
-        <Box style={{display:"flex",justifyContent:"center"}}>
-          <LogoutIcon style={{marginTop: "6px"}} />
-          <MenuItem style={{}} onClick={logout} disableRipple>
+        <Box onClick={()=>setOpenLogoutConfirm(true)} style={{display:"flex",justifyContent:"center",margin:"5px", cursor:"pointer"}}>
+          <LogoutIcon style={{margin: "0px 10px"}} />
             <h5>{t("menuburger.logout")}</h5> 
-          </MenuItem>
         </Box>
       </StyledMenu>
+      <ConfirmDialog
+        t={t}
+        open={logoutConfirm}
+        close={setOpenLogoutConfirm}
+        func={logout}
+        content={t("dialogs.logoutQuestion")}
+      />
     </div>
   );
 }

@@ -41,6 +41,7 @@
 
 .historyItem{
     font-size: 1vw;
+    font-weight: 600;
     display: flex;
     justify-content: space-between;
     color:rgb(87, 87, 87);
@@ -60,13 +61,15 @@
         font-size: 2vw;
     }
  }  
-
+ @media screen and (max-width:1100px){
+    .history{
+        top: 175px;
+    }
+ }  
 
  .rowFlexBetween{
     display: flex;
     justify-content:space-between;
-    // flex-flow: column nowrap;
-    // padding: 1px 5px;
  }
 
  @media screen and (max-width: 700px) {
@@ -75,6 +78,9 @@
     }
     .history_searchBar{
       flex-flow: column nowrap;
+    }
+    .history{
+        top: 250px;
     }
 
 }

@@ -6,7 +6,7 @@ import { memo } from "react";
 
   return (
     <Snackbar 
-      open={message} 
+      open={!!message} 
       sx={{ height: "100%"}}
       anchorOrigin={{   
         vertical: "top",

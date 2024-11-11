@@ -1,21 +1,23 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import React from "react";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 
 const ConfirmDialog = ({
-  question,
   func, 
-  title,
   open,
+  title,
   close,
   content,
-  t,
-  nobutton
+  nobutton,
+  question,
 }) => {
+  const {t} = useTranslation();
+  
 
   return(
     <Dialog
-      open={open}
+      open={!!open}
       maxWidth="sm"
     >
       <DialogTitle>{title}</DialogTitle>
@@ -25,7 +27,7 @@ const ConfirmDialog = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={()=>close(false)}>
-          {nobutton || t("buttons.no")}
+          {nobutton || t("buttons.close")}
         </Button>
         <Button onClick={func}>{t("buttons.yes")}</Button>
       </DialogActions>

@@ -1,34 +1,36 @@
 import React, { memo } from "react";
 import ServiceItemSecond from "./ServiceItemSecond";
+
 import styles from "./index.module.scss";
 
 const Services = ({
-  t,
   content,
-  changeActiveCard,
-  payData, setPayData,
-  logOutFunc
+  isDelete,
+  payData, 
+  logOutFunc,
+  setPayData,
+  serviceType,
+  refresh, setRefresh
 }) => {
 
-  return (
-    <div>
-      <div className={styles.allservices}>
-        {content?.services && content?.services.map((service,index) => (
-          <div key={index}>
-            <ServiceItemSecond 
-              t={t} 
-              service={service}
-              content={content}
-              changeActiveCard={changeActiveCard}
-              payData={payData}
-              setPayData={setPayData}
-              logOutFunc={logOutFunc}
-            />
-          </div>
-        ))}
-      </div>
+  return(
+    <div className={styles.allservices}>
+      {content?.services && content?.services.map((service, index) => (
+        <ServiceItemSecond 
+          key={index}
+          service={service}
+          content={content}
+          isDelete={isDelete}
+          payData={payData}
+          logOutFunc={logOutFunc}
+          setPayData={setPayData}
+          serviceType={serviceType}
+          refresh={refresh}
+          setRefresh={setRefresh}
+        />
+      ))}
     </div>
-  );
+  )
 };
 
 export default memo(Services);

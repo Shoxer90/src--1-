@@ -13,7 +13,6 @@ import SnackErr from "../dialogs/SnackErr";
 
 const HomePage = ({
   t,
-  isLogin,
   measure,
   dataGroup,
   setDataGroup,
@@ -26,19 +25,22 @@ const HomePage = ({
   currentPage,
   setCurrentPage,
   setFrom,
-  focusInput,
-  searchValue, setSearchValue, byBarCodeSearching
+  searchValue, 
+  setSearchValue, 
+  byBarCodeSearching,
+  isLogin,
+  flag,
+  setFetching,
+  fetching
 }) => {
   
-  const [isFilter,setIsFilter] = useState(false);
-  const [openNewProd,setOpenNewProduct] = useState(false);
-  const [fetching,setFetching] = useState(true);
+  const [openNewProd, setOpenNewProduct] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [message,setMessage] = useState("");
-  const [snackMessage,setSnackMessage] = useState("");
-	const [typeCode,setTypeCode] = useState();
-  const [selectContent,setSelectContent] = useState();
+  const [snackMessage, setSnackMessage] = useState("");
+	const [typeCode, setTypeCode] = useState();
+  const [selectContent, setSelectContent] = useState();
   const [type, setType] = useState();
+
   const [newProduct,setProduct] = useState({
     purchasePrice: "",
     price: "",
@@ -50,20 +52,14 @@ const HomePage = ({
     barCode: "",
     photo:"",
     measure:"",
-    pan: 0
+    pan: 0,
+    dep: 0
   }); 
-
-  const deleteAndRefresh = async(id) => {
-    await removeProduct(id)
-    deleteBasketItem(id)
-  };
 
   const changeStatus = async(str) => {
     await setCurrentPage(1)
     setDataGroup(str)
-    await setIsFilter(false)
     setFetching(true)
-    setContent([])
     setProduct({
       measure: "",
       purchasePrice: "",
@@ -71,16 +67,58 @@ const HomePage = ({
       type: "",
       brand: "",
       name: "",
-      discount: "",
+      discount: 0,
       remainder: "",
-      photo:""
+      photo:"",
+      dep:0
     })
   };
   
+  const deleteAndRefresh = async(id) => {
+    await removeProduct(id).then((res) => {
+      if(res?.status === 200) {
+        // setFetching(true)
+        deleteBasketItem(id)
+        const newArr = content.filter(item => item?.id !== id)
+        setContent(newArr)
+        setSnackMessage(t("dialogs.done"))
+        setType("success")
+      }
+    })
+  };
+
+  const getSelectData = () => {
+    getAdg(typeCode).then((res) => {
+      if(res?.length > 1){
+        setSelectContent(res)
+        res?.forEach((item) => (
+          item?.code === typeCode ?
+          setProduct({
+            ...newProduct,
+            type: item?.code
+          }) : null
+        ))
+      }else if(res?.length === 1){
+        setSelectContent(res)
+        setProduct({
+          ...newProduct,
+          type:res[0].code
+        })
+      }else{
+        setProduct({
+          ...newProduct,
+          type:""
+        })
+        setSelectContent([])
+      }
+    })
+  };
+
   const scrollHandler = (e) => { 
+    setFetching(false)
     if(content?.length <= +totalCount){
       if(e.target.documentElement.scrollHeight - (
-        e.target.documentElement.scrollTop + window.innerHeight) < 300) {
+        e.target.documentElement.scrollTop + window.innerHeight) < 100) {
         setFetching(true)
       }
     }else{
@@ -88,105 +126,66 @@ const HomePage = ({
     }
   };
 
-  const getSelectData = () => {
-   
-    if( !typeCode?.length) {
-    setSelectContent([])
-    return
-    }else{
-      getAdg(typeCode).then((res) => {
-        if(res?.length > 1){
-          setSelectContent(res)
-          if(res[0]?.code === typeCode) {
-            setProduct({
-              ...newProduct,
-              type:res[0].code
-            })
-          }
-        }  
-        else if(res?.length === 1){
-          setSelectContent(res)
-          setProduct({
-            ...newProduct,
-            type:res[0].code
-          })
-        }else{
-          setSelectContent([{id:"", title:t("authorize.errors.adgcode"), code:""}])
-        }
-      })
-    } 
-  };
+  useEffect(() => {
+    setFetching(true)
+  },[]);
 
   useEffect(() => {
-    fetching && !isFilter &&
-    queryFunction(dataGroup,currentPage).then((res) => { 
-    setFetching(false)
+    if(searchValue)return
+    fetching && queryFunction(dataGroup, currentPage).then((res) => { 
+      setTotalCount(res?.headers["count"])
+      setFetching(false)
       if(res?.data?.length === 0){
-        return setIsFilter(true)
-      }else if(!content?.length ) {
-        setContent([...res?.data])
-      }
-      else{
+       return 
+      }else{
         setContent([...content, ...res?.data])
       }
       setCurrentPage(currentPage + 1) 
-      setTotalCount(res?.headers["count"])
     })
-      .finally(() => {
-      setFetching(false)
-    });
 
-}, [fetching, dataGroup, isLogin]);
-
-  useEffect(() => {
-    document.addEventListener("scroll", scrollHandler)
-    return function () {
-      document.removeEventListener("scroll",scrollHandler)
-    } 
-  }, []);
-
-  useEffect(() => {
-    setFetching(true)
-    setContent([])
-  },[])
+    if(totalCount && totalCount > content?.length){
+      document.addEventListener("scroll", scrollHandler)
+      return function () {
+        document.removeEventListener("scroll", scrollHandler)
+      } 
+    }
+    
+  }, [fetching, dataGroup, isLogin, openNewProd, content,flag]);
 
   return(
     <div className={styles.productPage}>
       <HomeNavigation 
+        byBarCodeSearching={byBarCodeSearching} 
         t={t}
         setOpenNewProduct={setOpenNewProduct}
-        openNewProd={openNewProd}
-        changeStatus={changeStatus}
-        byBarCodeSearching={byBarCodeSearching} 
         setCurrentPage={setCurrentPage}
-        setMessage={setMessage}
-        message={message}
-        dataGroup={dataGroup}
-        searchValue={searchValue}
         setSearchValue={setSearchValue}
+        changeStatus={changeStatus}
+        searchValue={searchValue}
+        openNewProd={openNewProd}
+        dataGroup={dataGroup}
+        setDataGroup={setDataGroup}
         setFrom={setFrom}
-        focusInput={focusInput}
+        setContent={setContent}
       />
-      {message ? 
-        <div style={{margin:"20% auto",color:"grey"}}>
-          <h1>{message}</h1>
-        </div> :
-        <HomeContent
-          t={t}
-          measure={measure}
-          setToBasket={setToBasket}
-          content={content}
-          deleteAndRefresh={deleteAndRefresh}
-          changeStatus={changeStatus} 
-          deleteBasketItem={deleteBasketItem}
-          basketExist={basketExist}
-          dataGroup={dataGroup}
-          selectContent={selectContent}
-          getSelectData={getSelectData}         
-          typeCode={typeCode}
-          setTypeCode={setTypeCode}
-        />
-      }
+      <HomeContent
+        t={t}
+        measure={measure}
+        setToBasket={setToBasket}
+        content={content}
+        deleteAndRefresh={deleteAndRefresh}
+        changeStatus={changeStatus} 
+        deleteBasketItem={deleteBasketItem}
+        basketExist={basketExist}
+        dataGroup={dataGroup}
+        selectContent={selectContent}
+        getSelectData={getSelectData}         
+        typeCode={typeCode}
+        setTypeCode={setTypeCode}
+        setDataGroup={setDataGroup} 
+        setFetching={setFetching} 
+        setContent={setContent}
+      />
       {openNewProd && <AddNewProduct 
         t={t} 
         newProduct={newProduct}
@@ -203,15 +202,28 @@ const HomePage = ({
         globalMessage={snackMessage}
         setGlobalMessage={setSnackMessage}
         setGlobalType={setType}
+        setFetching={setFetching}
+        setContent={setContent}
+        content={content}
       />}
+      {/* <ConfirmDialog
+        t={t}
+        func={}
+        open={notification}
+        title={notification[0]}
+        close={}
+        content={}
+        nobutton={}
+        buttonTitle={}
+        question={}
+      /> */}
+     
       <Dialog open={Boolean(type)}>
         <SnackErr open={snackMessage} type={type} close={setType} message={snackMessage}/>
       </Dialog>
-     
-
-       <Dialog open={fetching}> 
+      <Dialog open={!!fetching}> 
         <Loader close={setFetching} />
-     </Dialog>
+      </Dialog>
     </div>
   )
 };

@@ -6,16 +6,16 @@ export async function loginAPI (username, password){
     headers: {},
   };
 
-  const body = { username: username, password: password };
-  try {
-    const res = await axios.post(baseUrl + "Login/Login", body, option);
-      localStorage.setItem("role", res?.data?.role);
-      localStorage.setItem("token", res.headers["token"]);
-      return res;
-  } catch(err) {
-    return err?.response?.status;
-  }
-};
+  const body = { username: username, password: password, isLastVersion:true };
+    try {
+      const res = await axios.post(baseUrl + "Login/Login", body, option);
+        localStorage.setItem("role", res?.data?.role);
+        localStorage.setItem("token", res.headers["token"]);
+        return res;
+    } catch(err) {
+      return err?.response?.status;
+    }
+  };
 
 export default loginAPI;
 
@@ -47,17 +47,7 @@ export async function updateUserPassword (password, token){
   }
 };
 
-// deprecated userRegistration
-export async function userRegistration(user) {
-  
-  try{
-    const  data = await axios.post(baseUrl + `Registration/Registration`,user, option);
-    return data.status
-  }catch(err){
-    return err.request.status
-  }
-};
-//
+
 export async function registrationNew(user) {
   
   const newUser = {
@@ -132,3 +122,13 @@ export async function createNewCashier(inputs) {
     return err
   }
 };
+
+
+export const getNews = async(lang) => {
+  try{
+    const  data = await axios.get(baseUrl + `Login/GetNews?language=${lang}`, {});
+    return data.data
+  }catch(err){
+    return err
+  }
+}

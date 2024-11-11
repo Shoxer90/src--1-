@@ -10,7 +10,7 @@ count,
 price,
 discount,
 discountType,
-agdCode
+adgCode
 }) => {
   const [prodPrice, setProdPrice] = useState();
   useEffect(() => {
@@ -27,7 +27,7 @@ agdCode
     <div style={{fontSize:"90%",padding:"1px 6px"}}>
       <div className={styles.rowFlexBetween}>
         <strong> {index}. {brand} {name} </strong> 
-        <span>( { agdCode} ) </span>
+        <span>( { adgCode} ) </span>
       </div>  
       <div>
        <span >{t("productinputs.price")} {price} </span> 

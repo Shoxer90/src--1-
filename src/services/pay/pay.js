@@ -96,11 +96,12 @@ export const basketListCreator = async(id) => {
 export const basketListUrl = async(body) => {
   try{
     const data = await axios.post(baseUrl + `Sale/CopyBasketListV2`, body, option())
-    return data?.data
+    return data
   }catch(err){
     return err?.response?.status
   }
 }
+
 
 export const saleProductFromBasket = async(content) => {
   const option = {
@@ -110,6 +111,20 @@ export const saleProductFromBasket = async(content) => {
   };
   try{
     const data = await axios.put(baseUrl + `Sale/Sale`, content, option)
+    return data.data
+  }catch(err){
+    return err.response.status
+  }
+}
+
+export const leftPrepaymentForProducts = async(content) => {
+  const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+  };
+  try{
+    const data = await axios.post(baseUrl + `PrePayment/SalePrepayment`, content, option)
     return data.data
   }catch(err){
     return err.response.status

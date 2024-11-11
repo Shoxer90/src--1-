@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import Basket from "./Container/Bascket/index";
-
-import SettingsPage from "./Container2/settingsPage";
+// import Basket from "./Container/Bascket/index";
+import Basket from "./Container/basket";
 import HistoryPage from "./Container2/historyPage";
 import Header from "./Container/Header/Header";
 import ProductChanges from "./Container2/analytics";
-import HomePage from "./Container2/home"
-import Confirmation from "./Authorization/Confirmation";
+import HomePage from "./Container2/home/index"
+// import Confirmation from "./Authorization/Confirmation";
 import FeedBackPage from "./Container2/feedback";
 import CheckStatusArCa from "./Container2/settingsPage/serviceAmount/attachCard"
 
@@ -21,12 +20,7 @@ import { measureTranslate } from "./services/language/lang";
 import "./App.css";
 import BasketList from "./Container2/orderlist"
 import ClientCardContainer from "./Container2/settingsPage/serviceAmount";
-import FormTitle from "./Authorization/FormTitle";
-import ClientInterface from "./Authorization/ClientInterface";
-import Login from "./Authorization/login";
-import Registration from "./Authorization/registration";
-import ForgotPassword from "./Authorization/forgot"
-import ResetPassword from "./Authorization/forgot/ResetPassword";
+
 import PrivacyPolicy from "./Privacy/index";
 
 import { fetchUser } from "./store/userSlice";
@@ -35,9 +29,18 @@ import PasteExcelToReact from "./Container2/home/excelLoader";
 
 import { Alert, Snackbar } from "@mui/material";
 import useDebonce from "./Container2/hooks/useDebonce";
-import { useRef } from "react";
 import Cashiers from "./Container2/settingsPage/cashiers/Cashiers";
 import SettingsUser from "./Container2/settingsPage/user"
+import { getNewNotifications } from "./services/user/getUser";
+import Notification from "./Container2/dialogs/Notification";
+import LoginAuthContainer from "./Authorization/loginAuth";
+import Login from "./Authorization/loginAuth/login";
+import Registration from "./Authorization/loginAuth/registration";
+import ForgotPassword from "./Authorization/loginAuth/forgotPass";
+import ResetPassword from "./Authorization/loginAuth/resetpass/ResetPassword";
+import Confirmation from "./Authorization/loginAuth/confirmation";
+import PrePaymentList from "./Container2/prepayment/";
+
 const App = () => {
 
   const [limitedUsing, setLimitedUsing] = useState();
@@ -52,8 +55,6 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [measure, setMeasure] = useState([]);
   const {t} = useTranslation();
-  const [userData, setUserData] = useState({});
-  const [lang, setLang] = useState();
   const navigate = useNavigate();
   const [message,setMessage] = useState({message:"",type:""});
   const [searchValue,setSearchValue] = useState("");
@@ -62,35 +63,75 @@ const App = () => {
   const dispatch = useDispatch();
   const {user} = useSelector(state => state.user);
   const [isBlockedUser,setBlockedUser] = useState(false);
-  const focusInput = useRef();
   const debounce = useDebonce(searchValue, 1000);
   const debounceBasket = useDebonce(barcodeScanValue, 20);
+  const [activeBtn, setActiveBtn] = useState("/");
+  const [lastDate,setLastDate] = useState("");
+  const [fetching, setFetching] = useState(true);
+  const [notification, setNotification] = useState([]);
+  const [count, setCount] = useState(0);
+  const [openWindow,setOpenWindow] = useState({
+    prepayment: false ,
+    payment: false,
+    isOpen: false,
+    prePaymentAmount: JSON.parse(localStorage.getItem("endPrePayment"))?.prepayment || 0,
+    isPrepayment: localStorage.getItem("endPrePayment") ? true : false
+  });
 
-  useEffect(() =>{
-    debounce && byBarCodeSearching(debounce)
-  },[debounce]);
+  const [paymentInfo, setPaymentInfo] = useState({
+    discount: 0,
+    discountType: 0,
+    cashAmount: 0,
+    cardAmount: 0,
+    prePaymentAmount: openWindow?.prePaymentAmount || 0,
+    partialAmount: 0,
+    partnerTin: "",
+    sales: [],
+    prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id,
+    isPrepayment: openWindow?.prepayment,
+    customer_Name: "",
+    customer_Phone: ""
+  });
 
-  useEffect(() =>{
-    debounceBasket && byBarCodeSearching(debounceBasket)
-  },[debounceBasket]);
-
+ 
   const whereIsMyUs = async() => {
-    await dispatch(fetchUser()).then((res) => {
+    console.log("10.10.24 prepayment,reverse prepayment")
+    await dispatch(fetchUser()).then(async(res) => {
+      const date = new Date(res?.payload?.nextPaymentDate);
+      setLastDate(
+        `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
+      )
+      await datePainter(res?.payload?.nextPaymentDate)
       localStorage.setItem("status", JSON.stringify(res?.payload?.isEhdmStatus)) 
       localStorage.setItem("reverse", JSON.stringify(res?.payload?.reverceStatus))
       localStorage.setItem("taxRegime", JSON.stringify(res?.payload?.taxRegime))
       checkUserStatus()
       if(res?.error?.message === "Rejected"){
         logOutFunc()
-        // syntethic possibility
-        // }else if(res?.payload?.isInDate === false){
-      }else if(res?.payload?.isInDate === false){
+      }else if(res?.payload?.isInDate === false && !res?.payload?.days && res?.payload?.showPaymentPage){
         navigate("/setting/services")
         setBlockedUser(true)
-      }else if(res?.payload?.isInDate === true){
+      }
+      else if(res?.payload?.isInDate === true && res?.payload?.days &&  res?.payload?.showPaymentPage){
+        setMessage({
+          type:"error",
+          message:`${t("cardService.notInDateTrueDays")} ${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}  ${t("cardService.notInDateTrueDays2")}`
+        })
+      }
+      else if(res?.payload?.isInDate === true){
         setBlockedUser(false)
+        !res?.payload?.confirmation && res?.payload?.showPaymentPage && !count && checkForNewNotification()
+        setCount(true)
       }
     })
+
+  };
+
+  const datePainter = (dateString) => {
+    const date = new Date(dateString);
+    setLastDate(
+      `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
+    )
   };
 
   const checkUserStatus = () => {
@@ -102,59 +143,79 @@ const App = () => {
     }
   };
 
-  const byBarCodeSearching = async(barcode) => {
+  const byBarCodeSearching = async(group,barcode) => {
     if(barcode === "" || barcode === " "){
       await queryFunction(dataGroup, 1).then((res) => {
         setContent(res?.data)
         setMessage("")
       })
       setCurrentPage(2)
+      return
     }else{
       setMessage("")
-      await byBarCode(barcode).then((res) => {
-        if(from === "basket" && res?.length){
-          res.forEach((item) =>{
-            if(item?.barCode === barcode){
-              if(item?.remainder){
-                setSearchValue("")
-                setToBasketFromSearchInput(item, 1)
-              }else{
-                return setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
+      await byBarCode(group, barcode).then((res) => {
+        if(from === "basket"){
+          if(res?.length) {
+            res.forEach((item) =>{
+              if(item?.barCode === barcode){
+                if(item?.remainder){
+                  setSearchValue("")
+                  setToBasketFromSearchInput(item, 1)
+                }else{
+                  return setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
+                }
               }
-            }
-          })
+            })
+          }else(
+           setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
+          )
         }else if(from === "main") {
-          return res?.length ? setContent(res) : setMessage({message: t("mainnavigation.searchconcl"), type: "error"})
+          return res?.length ? setContent(res) : (
+            setContent([]) ,
+            setMessage({message: t("mainnavigation.searchconcl"), type: "error"})
+          )
         }
       })
     }
   };
 
-  const loadBasket = async() => {
+  const loadBasket = () => {
     let existArr = []
     let arrForSale = []
-    await getBasketContent().then((res) => {
-      return res ? (
-      setBasketContent(res),
-      setBasketGoodsqty(res?.length),
-      res.forEach((item) => {
-      existArr.push(item?.id)
-      arrForSale.push({id:item?.id, count:+item?.count})
-    }),
-      localStorage.setItem("basketExistId", JSON.stringify(existArr)),
-      localStorage.setItem("basketIdCount", JSON.stringify(arrForSale)),
-      setBasketExist(localStorage.getItem("basketExistId"))
-      ) : (
-      localStorage.setItem("basketExistId", JSON.stringify(existArr)),
-      localStorage.setItem("basketIdCount", JSON.stringify(arrForSale)),
-      setBasketExist(localStorage.getItem("basketExistId")),
-      setBasketGoodsqty(0),
-      setBasketContent([])
-      ) 
+    getBasketContent().then((res) => {
+      if(res) {
+        setBasketContent(res)
+        setBasketGoodsqty(res?.length)
+        res.forEach((item) => {
+          existArr.push(item?.productId || item?.id)
+          arrForSale.push({id:item?.productId || item?.id, count: +item?.count})
+        })
+      }else {
+        setBasketGoodsqty(0)
+        setBasketContent([])
+        setPaymentInfo({
+          discountType: 0,
+          cashAmount: 0,
+          cardAmount: 0,
+          prePaymentAmount: openWindow?.prePaymentAmount || 0,
+          partialAmount: 0,
+          partnerTin: "",
+          sales: [],
+          prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id,
+          isPrepayment: openWindow?.prepayment,
+          customer_Name: "",
+          customer_Phone: ""
+        })
+      }
+      localStorage.setItem("basketExistId", JSON.stringify(existArr))
+      localStorage.setItem("basketIdCount", JSON.stringify(arrForSale))
+      return setBasketExist(JSON.parse(localStorage.getItem("basketExistId")))
     })
   };
 
+
   const changeCountOfBasketItem = async(id,value) => {
+    console.log(id,value,"id,value")
     let handleArr = [] 
     await  getBasketContent().then((res) => {
       res.map((prod) => {
@@ -171,31 +232,62 @@ const App = () => {
 
   const deleteBasketItem = async(id) => {
     let handleArr = await basketContent.filter(prod => prod.id !== id)
+    if(!handleArr?.length) {
+      localStorage.removeItem("endPrePayment")
+      setOpenWindow({
+        prepayment: false ,
+        payment: false,
+        isOpen: false,
+        prePaymentAmount:0
+      })
+    }
     await localStorage.setItem("bascket1", JSON.stringify(handleArr))
     await setFlag(flag+1)
     await loadBasket()
   };
+  
   const deleteBasketGoods = async() => {
     setFlag(flag+1)
+    localStorage.removeItem("endPrePayment")
+    setPaymentInfo({
+      discountType: 0,
+      cashAmount: 0,
+      cardAmount: 0,
+      prePaymentAmount: openWindow?.prePaymentAmount || 0,
+      partialAmount: 0,
+      partnerTin: "",
+      sales: [],
+      prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id || "",
+      isPrepayment: openWindow?.prepayment,
+      customer_Name: "",
+      customer_Phone: ""
+    })
+    setOpenWindow({
+      prepayment: false,
+      payment: false,
+      isOpen: false,
+      prePaymentAmount: 0
+    })
     await localStorage.removeItem('bascket1')
     loadBasket()
   };
   
-  const setToBasket = (wishProduct, quantity) => {
+  const setToBasket = (wishProduct, quantity, isFromPrepaymentPage) => {
     const basket = basketContent
-      if(quantity && quantity > wishProduct?.remainder){
+    if(quantity && quantity > wishProduct?.remainder && !isFromPrepaymentPage){
       setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
       return
     }else if(basketExist.includes(wishProduct?.id)){
         setMessage({message: t("productcard.secondclick"), type:"success"})
         return
     }else{
+     
       basket.unshift({
         ...wishProduct,
         discountPrice: wishProduct?.discountType === 2? 
         wishProduct?.price - wishProduct.discount :
         wishProduct?.price - (wishProduct.price * wishProduct.discount/100) ,
-        count:+(quantity  ? quantity: 1)
+        count:+(quantity ? quantity: 1)
       })
     }
     localStorage.setItem("bascket1", JSON.stringify(basket))
@@ -215,7 +307,7 @@ const App = () => {
             count:prod?.count + 1,
             discountPrice: wishProduct?.discountType === 2? 
             wishProduct?.price - wishProduct?.discount :
-            wishProduct?.price - (wishProduct?.price * wishProduct?.discount/100) ,
+            wishProduct?.price - (wishProduct?.price * wishProduct?.discount/100),
           }
         }else{
           return prod
@@ -242,19 +334,15 @@ const App = () => {
   const logOutFunc = () =>{
     const language = localStorage.getItem("lang");
     setContent([]);
+    setCount(false)
     localStorage.clear();
     localStorage.setItem("lang", language)
     setIsLogIn(false)
   };  
 
-  const queryFunction = async(name, page=1) => {
-    const data = await productQuery(dataGroup, page)
-    return data === 401 ? logOutFunc() : data
-  };
-
+  
   const getMeasure = async() => {
     const str = localStorage.getItem("lang")
-    setLang(str || "am")
     switch(str){
       case "en":
         await measureTranslate(2).then((res) => {
@@ -262,12 +350,12 @@ const App = () => {
         })
       break;
       case "am":
-       await measureTranslate(1).then((res) => {
-        setMeasure(res?.data)
-       })
-      break;
-      case "ru":
-        measureTranslate(3).then((res) => {
+        await measureTranslate(1).then((res) => {
+          setMeasure(res?.data)
+        })
+        break;
+        case "ru":
+          measureTranslate(3).then((res) => {
           setMeasure(res?.data)
          })
       break;
@@ -275,77 +363,75 @@ const App = () => {
         await measureTranslate(1).then((res) => {
           setMeasure(res?.data)
         })
-    }
+      }
   };
+
+  const queryFunction = async(name, page=1) => {
+    const data = await productQuery(name, page)
+    return data === 401 ? logOutFunc() : data
+  };
+    
+  const changeStatus = async(str) => {
+    setCurrentPage(1)
+    setDataGroup(str)
+    const response = await queryFunction(str, 1)
+    setContent([ ...response?.data]);
+    setCurrentPage(2)
+  };
+
+  const checkForNewNotification = () => {
+    getNewNotifications().then((res) => {
+      setNotification(res)
+    })
+  };
+  
   
   useEffect(() => { 
     getMeasure()
-  },[t])
+  },[t]);
 
   useEffect(() => {
+    getMeasure()
     setDataGroup("GetAvailableProducts")
     setCurrentPage(1)
     loadBasket()
-  },[isLogin,flag])
-
-  useEffect(() => { 
-    loadBasket()
-  }, [flag]);
+  },[isLogin]);
 
   useEffect(() => {
+    setCount(false)
     whereIsMyUs() 
-  },[])
+    setDataGroup("GetAvailableProducts")
+  },[]);
+
+ useEffect(() => {
+   setPaymentInfo({
+    ...paymentInfo,
+    isPrepayment: openWindow?.prepayment
+   })
+  },[openWindow]);
+
+  
+  useEffect(() =>{
+   searchValue && debounce && byBarCodeSearching(dataGroup,debounce)
+  },[debounce]);
+
+  useEffect(() => {
+    barcodeScanValue &&  debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
+  },[debounceBasket]);
+
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>
-    <div className="App">
+    <div className="App"  autoComplete="off">
       {!isLogin ?
         <Routes>
-          <Route path="*" element={ 
-             <ClientInterface 
-             title={<FormTitle operation={t("authorize.login")} />}
-             element={<Login t={t} setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />}
-             t={t}
-             lang={lang}
-             setLang={setLang}
-           />}
-          />
-          <Route path="/login" element={
-            <ClientInterface 
-              title={<FormTitle operation={t("authorize.login")} />}
-              element={<Login t={t} setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />}
-              t={t}
-              lang={lang}
-              setLang={setLang}
-            />}
-          />
-          <Route path="/registration" element={
-            <ClientInterface 
-              title={<FormTitle operation={t("authorize.registration")} />}
-              element={<Registration t={t} logOutFunc={logOutFunc} />}
-              t={t}
-              lang={lang}
-              setLang={setLang}
-            />}
-          />
+          <Route path="*" element={<LoginAuthContainer children={<Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />} />
+          <Route path="/login" element={<LoginAuthContainer children={<Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />} />
+          <Route path="/registration" element={<LoginAuthContainer children={<Registration logOutFunc={logOutFunc} />} />} />
+          <Route path="/forgot-password" element={<LoginAuthContainer children={<ForgotPassword />} />} />
+          <Route path="/reset-password/*" element={<LoginAuthContainer children={<ResetPassword />} />} />
+          <Route path="/confirmation/*" element={<LoginAuthContainer children={<Confirmation />} />} />
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-          <Route path="/forgot-password" element={
-            <ClientInterface 
-              title={<FormTitle operation={t("authorize.reset")} />}
-              element={<ForgotPassword t={t} />}
-              t={t}
-            />}
-          />
-          <Route path="/reset-password/*" element={ 
-            <ClientInterface 
-              title={<FormTitle operation={t("authorize.reset2")} />}
-              element={<ResetPassword t={t} />}
-              t={t}
-           />}
-          />
           <Route path="/basket/*" element={<BasketList t={t} />} />
-          <Route path="/confirmation/*" element={<Confirmation t={t} />} />
-          <Route path="/api/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
-
         </Routes> :
         <>
           <Header
@@ -353,13 +439,14 @@ const App = () => {
             setOpenBasket={setOpenBasket}
             basketGoodsqty={basketGoodsqty}
             logOutFunc={logOutFunc} 
-            setCurrentPage={setCurrentPage}
             setIsLogIn={setIsLogIn}
             user={user}
             logo={user?.logo}
             active={user?.isEhdmStatus}
-            setContent={setContent}
+            activeBtn={activeBtn}
+            setActiveBtn={setActiveBtn}
           />
+          {/* <button style={{marginTop:"175px"}} onClick={hardReloadWithBypassCache}>Полная перезагрузка с обходом кеша</button> */}
           {!isBlockedUser ? <Routes>
             <Route
               path="/"
@@ -385,51 +472,54 @@ const App = () => {
                   setSearchValue={setSearchValue}
                   byBarCodeSearching={byBarCodeSearching}
                   setFrom={setFrom}
-                  focusInput={focusInput}
+                  changeStatus={changeStatus}
+                  flag={flag}
+                  fetching={fetching}
+                  setFetching={setFetching}
+                  openWindow={openWindow}
+
                 />
               }  
             />
-             <Route path="/excel" element={
-              <PasteExcelToReact 
-                logOutFunc={logOutFunc}
-                t={t} 
-                loadBasket={loadBasket}
-                setFlag={setFlag}
-                flag={flag}
-                setCurrentPage={setCurrentPage}
-                setDataGroup={setDataGroup}
-              />} />
-            <Route path="/feedback" element={
-              <FeedBackPage 
-                logOutFunc={logOutFunc}
-                t={t} 
-              />
-            } />
-            <Route path="/setting" element={
-              <SettingsPage 
-                logOutFunc={logOutFunc}
-                whereIsMyUs={whereIsMyUs}
-                t={t}
-                user={user} 
-                userData={userData}
-                setUserData={setUserData}
-              />
-
-            } />
-            <Route path="/setting/cashiers" element={<Cashiers t={t} screen={window.innerWidth} /> } />
-            <Route path="/setting/user" element={<SettingsUser user={user} t={t} setUserData={setUserData} whereIsMyUs={whereIsMyUs} />} />
-            <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} t={t}  measure={measure} />} />
+            <Route path="/excel" element={<PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} />} />
+            <Route path="/feedback" element={<FeedBackPage logOutFunc={logOutFunc} t={t} />} />
+            <Route path="/setting/cashiers" element={<Cashiers t={t} cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
+            <Route path="/setting/user" element={<SettingsUser user={user} t={t} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc}/>} />
+            <Route path="/history"
+              element={<HistoryPage 
+                logOutFunc={logOutFunc} 
+                t={t}  
+                measure={measure} 
+                paymentInfo={paymentInfo} 
+                setPaymentInfo={setPaymentInfo}
+                setToBasket={setToBasket}
+                setOpenBasket={setOpenBasket}
+                setOpenWindow={setOpenWindow}
+                deleteBasketGoods={deleteBasketGoods}
+              />}
+            />
             <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
             <Route path="/basket/*" element={<BasketList t={t} />} />
+            <Route path="/prepayment" element={<PrePaymentList 
+              setOpenBasket={setOpenBasket} 
+              setToBasket={setToBasket}
+              setOpenWindow={setOpenWindow}
+              deleteBasketGoods={deleteBasketGoods}
+              setPaymentInfo={setPaymentInfo}
+              paymentInfo={paymentInfo}
+              loadBasket={loadBasket}
+              basketExist={basketExist}
+              flag={flag}
+            />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-            <Route path="/api/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
-            <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc}/>} />
+            {user?.showPaymentPage &&<Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
+            {user?.showPaymentPage &&<Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
           </Routes> :
           <Routes>
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-            <Route path="/api/InternalPayments/CheackStatusArca" element={<CheckStatusArCa />} />
-            <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />
-            <Route path="*" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser}/>} />
+            {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
+            {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser} serviceType={user?.activeServiceType}/>} />}
+            <Route path="*" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser} serviceType={user?.activeServiceType} />} />
           </Routes>
         }
          {!isBlockedUser && <Basket 
@@ -452,14 +542,30 @@ const App = () => {
             setSearchValue={setBarcodeScanValue}
             byBarCodeSearching={byBarCodeSearching}
             setFrom={setFrom}
+            user={user}
+            setMesFromHead={setMessage}
+            fetching={fetching}
+            setFetching={setFetching}
+            setCurrentPage={setCurrentPage}
+            openWindow={openWindow}
+            setOpenWindow={setOpenWindow}
+            paymentInfo={paymentInfo}
+            setPaymentInfo={setPaymentInfo}
           />}
+          {notification.length ? <Notification 
+            t={t}
+            func={()=>setNotification([])}
+            data={notification}
+            setData={setNotification}
+            open={notification.length}
+          /> : ""}
          <Snackbar  
             sx={{ height: "100%" }}
             anchorOrigin={{   
               vertical: "top",
               horizontal: "center"
             }} 
-            open={message?.message} 
+            open={!!message?.message} 
             autoHideDuration={6000} 
             onClose={()=>setMessage({type:"", message:""})}
           >

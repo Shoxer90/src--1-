@@ -1,11 +1,20 @@
 import React, { memo } from 'react';
-import styles from "./index.module.scss";
 import { Button, Divider } from '@mui/material';
+
 import PaymentIcon from '@mui/icons-material/Payment';
+
+import styles from "./index.module.scss";
 const OrderListPayInfo = ({basketContent,t}) => {
   return (
       <div className={styles.orderContainer_payContainer}>
-
+         { basketContent?.partnerTin  && 
+          <div className={styles.orderContainer_payContainer_item}>
+            {t("basket.partner")}  
+            <span style={{margin:"0px 7px"}}> 
+             {basketContent?.partnerTin} 
+            </span> 
+         </div>
+          }
         <div className={styles.orderContainer_payContainer_item}>
          {t("basket.recieptPrice")}  
          <span style={{margin:"0px 7px"}}> {basketContent?.total}{t("units.amd")} </span> 
@@ -17,14 +26,19 @@ const OrderListPayInfo = ({basketContent,t}) => {
         </div>
 
         <div  className={styles.orderContainer_payContainer_item}>
+         {t("history.card")} 
+         <span style={{margin:"0px 7px"}}> {basketContent?.cardAmount}  {t("units.amd")} </span>
+        </div>
+
+        <div  className={styles.orderContainer_payContainer_item}>
          {t("basket.useprepayment")} 
          <span style={{margin:"0px 7px"}}> {basketContent?.prePayment}  {t("units.amd")} </span>
         </div>
 
-        <Divider sx={{bcolor:"black"}} />
-        <div style={{fontSize:"110%",color:"EE8D1C"}} className={styles.orderContainer_payContainer_item}>
+        <Divider style={{ background: '#343a40', width:"60%", fontWight:600, margin:"10px 0px" }} />
+        <div style={{fontSize:"100%",color:"EE8D1C"}} className={styles.orderContainer_payContainer_item}>
           <strong> 
-            {t("history.card")} 
+          {t("basket.orderPayment")}
           </strong> 
           <strong> 
             <span style={{margin:"0px 7px"}}>
@@ -33,7 +47,7 @@ const OrderListPayInfo = ({basketContent,t}) => {
             </span> 
           </strong>
         </div>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",width:"250px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <h1>
           <PaymentIcon
             sx={{
@@ -45,9 +59,7 @@ const OrderListPayInfo = ({basketContent,t}) => {
 
           </h1>
           <a href={basketContent?.payXPaymentLink} style={{margin:"20px 0px",textDecoration:"none", color:"white", }} rel="noreferrer" >
-            <Button
-              // startIcon={<CreditScoreIcon />} 
-              variant="contained" style={{color:"white",letterSpacing:"3px", background:"#63B48D",width:"200px"}}>
+            <Button variant="contained" style={{color:"white",letterSpacing:"5px", background:"#63B48D",width:"200px"}}>
               {t("basket.linkPayment")} 
             </Button> 
           </a>

@@ -41,14 +41,14 @@ const Confirmation = ({t}) => {
   
   const resendCodeToPhone = async() => {
     setLoad(true)
-      await newConfirmCode(tokenBase64).then((res) => {
+    await newConfirmCode(tokenBase64).then((res) => {
       setLoad(false)
       if(res === 401){
         setRedirectMessage({type:"error",message:t("dialogs.deprecated")})
       }else if(res === 200){
         setMessage({type:"success",message:t("authorize.confirmation2")})
       }
-     })
+    })
   };
 
   useEffect(() => {

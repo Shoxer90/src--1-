@@ -1,11 +1,18 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 
 import { IconButton, InputBase, Paper } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';
 
 
-const SearchBarcode = ({searchValue, setSearchValue, byBarCodeSearching, setFrom,stringFrom}) => {
+const SearchBarcode = ({
+  searchValue, 
+  setSearchValue, 
+  byBarCodeSearching, 
+  setFrom,
+  stringFrom,
+  dataGroup
+}) => {
 
   const handleChangeSearch = (e) => {
     setFrom(stringFrom)
@@ -13,7 +20,13 @@ const SearchBarcode = ({searchValue, setSearchValue, byBarCodeSearching, setFrom
   };
 
   const {t} = useTranslation();
-   
+
+  //##NewNew
+  useEffect(() => {
+    (searchValue === "" || !searchValue) && byBarCodeSearching(dataGroup, "");
+    // searchValue && byBarCodeSearching(dataGroup, searchValue);
+  }, [searchValue]);
+
   return (
     <Paper
       component="form"
@@ -31,9 +44,9 @@ const SearchBarcode = ({searchValue, setSearchValue, byBarCodeSearching, setFrom
         placeholder={t("mainnavigation.placeholder")}
         autoFocus
         style={{width:"80%"}}
-        />
-      <IconButton type="button" sx={{p: '10px'}} onClick={()=>byBarCodeSearching(searchValue)}>
-      <SearchIcon fontSize="medium" />
+      />
+      <IconButton type="button" sx={{p: '10px'}} onClick={()=>byBarCodeSearching(dataGroup, searchValue)}>
+       <SearchIcon fontSize="medium" />
       </IconButton>
    </Paper> 
   )

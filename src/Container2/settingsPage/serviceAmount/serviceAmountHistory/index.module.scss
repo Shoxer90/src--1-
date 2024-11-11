@@ -1,0 +1,11 @@
+.history{
+  display:flex;
+  flex-flow: column nowrap;
+  font-weight: 700;
+
+  &_item{
+    display:flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+}

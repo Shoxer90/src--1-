@@ -11,12 +11,21 @@ import Loader from "../loading/Loader";
 import { loadResources } from "i18next";
 import HistoryContent from "./content/HistoryContent";
 import { columnNames } from "../../services/baseUrl";
+import { getPrepayment } from "../../services/products/productsRequests";
 
-const HistoryPage = ({logOutFunc, t}) => {
+
+const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
+  setToBasket,
+  setOpenBasket,
+  setOpenWindow,
+  deleteBasketGoods
+}) => {
   const perPage = 10;
   const search = useLocation().search;
   const status = {status:new URLSearchParams(search).get("status")};
   const page = + (new URLSearchParams(search).get("page")) || 1 ;
+
+  
   const coordinator = {
     startDate: new URLSearchParams(search).get('startDate'),
     endDate: new URLSearchParams(search).get('endDate'),
@@ -59,7 +68,9 @@ const HistoryPage = ({logOutFunc, t}) => {
         response = await getSaleProducts("GetNotPaidSaleProductsByPage", {page: page, count: perPage})
       }else if(data === "Canceled"){
        response = await getSaleProducts("GetReveredHistoryByPage", {page: page, count: perPage})
-      }
+      }else if(data === "Prepayment"){
+        response = await getPrepayment({page: page, count: perPage, searchString:""})
+       }
       if(response === 401){
         logOutFunc()
       }else{
@@ -90,7 +101,7 @@ const HistoryPage = ({logOutFunc, t}) => {
     historyContent ? 
     <div className={styles.history}>
       {isLoad && 
-        <Dialog open={isLoad}>
+        <Dialog open={!!isLoad}>
           <Loader />
         </Dialog>
       } 
@@ -114,6 +125,12 @@ const HistoryPage = ({logOutFunc, t}) => {
           pageName={status}
           logOutFunc={logOutFunc}
           initialFunc={initialFunc}
+          paymentInfo={paymentInfo} 
+          setPaymentInfo={setPaymentInfo}
+          setToBasket={setToBasket}
+          setOpenBasket={setOpenBasket}
+          setOpenWindow={setOpenWindow}
+          deleteBasketGoods={deleteBasketGoods}
         />
         {!hidepagination && <PaginationSnip 
           page={page}
@@ -127,7 +144,6 @@ const HistoryPage = ({logOutFunc, t}) => {
     </div>:
     <Dialog open={!historyContent}>
       <Loader />
-  
     </Dialog>
   )
 };

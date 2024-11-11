@@ -7,15 +7,16 @@ import styles from "../index.module.scss";
 import ConfirmDialog from "../../../Container2/dialogs/ConfirmDialog";
 import { useState } from "react";
 
-const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent}) => {
+const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent, setSingleClick, setFetching}) => {
 
   const [openDialog,setOpenDialog] = useState(false);
 
    const cleanAllGoods = () => {
-    deleteBasketGoods()
+   setSingleClick({pointerEvents:"none"})
+   deleteBasketGoods()
     setOpenDialog(false)
   };
-  
+
   return(
     <div className={styles.bask_container_header}>
       <span style={{fontSize:"130%"}}>{t("basket.title")}</span>
@@ -30,7 +31,9 @@ const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent}) => {
         </Button>: ""
       }
       <IconButton
-        onClick={()=>setOpenBasket(false)}
+        onClick={()=>{
+          setOpenBasket(false)
+        }}
         style={{color:"gray", left:2}}
       > 
         <CloseIcon />

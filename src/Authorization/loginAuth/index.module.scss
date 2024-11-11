@@ -1,0 +1,61 @@
+.form{
+  display: flex;
+  flex-flow:column nowrap;
+  justify-content: flex-start;
+}
+
+.payxInfo{
+  // margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 48dvw;
+  font-weight: 600;
+  align-self: center;
+}
+
+.notifications {
+  padding: 0px 10px;
+  width: 48%;
+  font-weight: 600;
+  color: black;
+  text-align: start;
+}
+
+.regContent{
+  display: flex;
+  width: 98dvw;
+  justify-content: space-between;
+   &_content{
+    height:82dvh;
+   }
+  // padding: 0px 20px;
+} 
+
+@media screen and (max-width: 770px) {
+ 
+  .notifications{
+    width: 90dvw;
+  }
+  .payxInfo{
+    font-size: 90%;
+    width: 98dvw;
+  }
+  .regContent{
+    flex-flow: column;
+    &_content{
+      width:96dvw;
+    }
+  }
+}
+@media screen and (max-width: 1040px) {
+ 
+  .payxInfo{
+    font-size: 70%;
+    margin-top: 5px;
+
+  }
+  .regContent_content{
+    height: auto;
+  }
+
+}

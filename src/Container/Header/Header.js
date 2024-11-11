@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useContext, memo} from "react";
+import React, { useEffect , useContext, memo, useState} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 
 import Logo from "./Logo";
@@ -10,6 +10,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import HistoryIcon from '@mui/icons-material/History';
 import InventorySharpIcon from '@mui/icons-material/InventorySharp';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 
 import styles from "./index.module.scss";
 
@@ -20,16 +21,18 @@ const Header = ({
   setOpenBasket,
   basketGoodsqty,
   logOutFunc,
-  setCurrentPage,
+  // setCurrentPage,
   user,
   logo,
   active,
   setContent,
+  activeBtn, setActiveBtn
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [activeBtn, setActiveBtn] = useState();
   const {limitedUsing} = useContext(LimitContext);
+
+  // const [activeBtn, setActiveBtn] = useState();
 
   useEffect(() => {
     setActiveBtn(location.pathname)
@@ -37,14 +40,13 @@ const Header = ({
 
   return (
       <div className={styles.containerXX}> 
-        <div style={{display:"flex", padding:"5px"}}
+        <div 
           onClick={() => {
-            setCurrentPage(1)
             navigate("/")
             setActiveBtn("/")
           }
         }>
-          <Logo user={user} t={t} active={active} setContent={setContent} />
+          <Logo />
         </div>
         <div className={styles.middleMenu} >
           <div className={styles.headerLinkBtn}>
@@ -57,8 +59,6 @@ const Header = ({
                 if(activeBtn === "/"){
                   return
                 }else{
-                  setContent([])
-                  setCurrentPage(1)
                   navigate("/")
                   setActiveBtn("/")
                 }
@@ -73,8 +73,6 @@ const Header = ({
                 fontSize:(activeBtn === "/history" &&"140%")
               }}
               onClick={() => {
-                setContent([])
-                setCurrentPage(1)
                 navigate("/history?status=Paid&page=1")
                 setActiveBtn("/history")
               }}
@@ -88,8 +86,6 @@ const Header = ({
                 fontSize:(activeBtn === "/product-info/updates" && "140%")
               }}
               onClick={() => {
-                setContent([])
-                setCurrentPage(1)
                 setActiveBtn("/product-info/updates")
                 navigate("/product-info")
               }}
@@ -97,8 +93,23 @@ const Header = ({
               <InventorySharpIcon fontSize="large"/>
               <span className={styles.routeName}>{t("menubar.product")}</span>
             </h6>}
+            <h6 
+              style={{
+                color:(activeBtn === "/prepayment"? "#FFA500" : "#383838"),
+                fontSize:(activeBtn === "/prepayment" &&"140%")
+              }}
+              onClick={() => {
+                navigate("/prepayment?page=1")
+                setActiveBtn("/prepayment")
+              }}
+            >
+              <ProductionQuantityLimitsIcon fontSize="large"/>
+              <span className={styles.routeName}>{t("basket.useprepayment")}</span>
+            </h6>
           </div>
         </div>
+
+        
         <div className={styles.contentX}>
           { user?.firstname === undefined ? "":  
             <UserInfo user={user?.firstname+ " " + user?.lastname} logo={logo} active={active} t={t} limitedUsing={limitedUsing}/>
@@ -116,14 +127,14 @@ const Header = ({
             <Button
               className={styles.basketBTN}
               variant="contained"
-              style={{background:"#28A745",borderRadius:"8px"}}
+              style={{background:"#3FB68A",borderRadius:"8px"}}
               onClick={()=>setOpenBasket(true)}
             >
               <ShoppingCartIcon/>
               <span className={styles.routeName}>{t("menubar.basket")}</span> 
             </Button>
           </Badge>
-          <MenuBurger logout={logOutFunc} />
+          <MenuBurger logout={logOutFunc} setActiveBtn={setActiveBtn} user={user}/>
         </div>
      </div>
   );

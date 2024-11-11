@@ -5,7 +5,7 @@ const ActiveIcon = ({isEhdm, t}) => {
   const [screen,setScreenWidth] = useState(window.innerWidth);
 
   const styleDiv = {
-    background: isEhdm? "#28A745" : "grey",
+    background: isEhdm? "#3FB68A" : "grey",
     minWidth: "90px",
     color:"white",
     borderRadius:"5px",

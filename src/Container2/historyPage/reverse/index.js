@@ -11,10 +11,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import { reverseProductNew } from "../../../services/user/userHistoryQuery";
 import Loader from "../../loading/Loader";
 
-import styles from "./index.module.scss";
-import ReverseItem from "./ReverseItem";
-import ReverceConditions from "./ReverceConditions";
 import ReversePrepayment from "./ReversePrepayment";
+import ReverceConditions2 from "./ReverseConditions2"
+import ReverseContent from "./content/ReverseContent";
+import ReverceConditionsPrepayment from "./ReverceConditionsPrepayment";
 
 const ReverseContainer = ({
   products, 
@@ -25,27 +25,29 @@ const ReverseContainer = ({
   t,
   setOpenHDM, 
   messageAfterReverse,
-  saleInfo
+  saleInfo,
+  amountForPrePayment,
+  setAmountForPrePayment,
+  detailsData
+
 }) => {
   const [ownMessage,setOwnMessage]=useState();
   const [type,setType] = useState();
   const [load,setLoad] = useState(false);
   const [reverseContainer,setReverseContainer] = useState([]);
   const [reverseTotal, setReverseTotal] = useState(0);
-
   const [reversePrepayment, setReversePrepayment] = useState(false);
 
   const [conditionState,setCondition] = useState({
-  cashAmount: 0,
-  cardAmount: 0,
-});
+    cashAmount: 0,
+    cardAmount: 0,
+  });
 
   const cancelDialog = () => {
     setOwnMessage({m:"", t:""})
     dialogManage();
     initialFunc("Paid");
   };
-
 
   const handleOk = async(body) => {
     setLoad(true)
@@ -67,31 +69,6 @@ const ReverseContainer = ({
       }
     })
   };  
-
-  const handleChange = (i,measure,name, value) => {
-    if(!value || value <= 0) return
-    setReverseContainer(reverseContainer.map((item,index) => {
-      if(index !== i){
-        return item
-      }else {
-        if(+value > products[i].count) return item
-        else if(measure === "հատ" || measure === "pcs" || measure === "шт"){
-          return{
-            ...item,
-            [name]: Math.round(+value)
-          }
-        }else if((value.indexOf(".") !== -1 && value.split('.')[1]?.length > 3 ) || +value > products[index].quantity){ 
-          return item
-
-        }else{
-          return {
-            ...item,
-            [name]: +value
-          }
-        }
-      }
-    })
-  )}
   
   const checkedProduct = (i,name, value) => {
     setReverseContainer(
@@ -108,6 +85,17 @@ const ReverseContainer = ({
     )
   };
 
+  const selectAllProducts = async(bool) => {
+    const newArr = await products.map((item, index) =>{
+        return {
+          ...item,
+          isChecked: bool,
+          quantity: reverseContainer[index].quantity
+        }
+      })
+      setReverseContainer(newArr)
+  };
+  
   const reverse = async () => {
     const newArr = []
     if(saleInfo?.res?.printResponseInfo?.saleType !== 0) {
@@ -115,7 +103,7 @@ const ReverseContainer = ({
         if(item?.isChecked){
           newArr.push({
             recieptId: item?.recieptId,
-            quantity: item?.quantity
+            quantity: +item?.quantity
           })
         }  
         return newArr
@@ -141,86 +129,101 @@ const ReverseContainer = ({
     await products && products.map((item) => arr.push({
       recieptId: item?.recieptId, 
       quantity: item?.count, 
-      // isChecked: false
-      isChecked: saleInfo?.res?.printResponseInfo?.partialAmount? true : false
+      isChecked: saleInfo?.res?.printResponseInfo?.partialAmount ? true : false
     }))
     setReverseContainer(arr)
-
-  }
- 
+  };
+  
   useEffect(() => {
     fillReverseContainer()
   }, [openDialog]);
+
   return (
     <Dialog
-      sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
-      open={openDialog}
+      // sx={{ '& .MuiDialog-paper': { maxHeight: 435 } }}
+      open={!!openDialog}
+      sx={{
+        "& .MuiDialog-container": {
+          "& .MuiPaper-root": {
+            width: "100%",
+            maxWidth: "800px",  
+          },
+        },
+      }}
     >
       <DialogTitle>
         {t("history.reverse_products")}
       </DialogTitle>
       <IconButton
-          aria-label="close"
-          onClick={dialogManage}
-          sx={{
-            position: 'absolute',
-            right: 11,
-            top: 11,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-
-      <Divider color="black"/>
-
+        aria-label="close"
+        onClick={dialogManage}
+        sx={{
+          position: 'absolute',
+          right: 11,
+          top: 11,
+          color: (theme) => theme.palette.grey[500],
+        }}
+      >
+        <CloseIcon />
+      </IconButton>
+      <Divider color="black" />
       <DialogContent  style={{padding:"10px"}} >
         <div style={{padding:"10px",paddingBottom:"12px"}}> 
-          {products?.length ? products.map((product,index) => (
-            <ReverseItem 
-              key={product?.id} 
-              product={product} 
-              checkedProduct={checkedProduct} 
-              index={index} 
-              products={products}
-              handleChange={handleChange}
-              reverseContainer={reverseContainer}
+          {products?.length ?
+            <ReverseContent 
               t={t}
+              products={products} 
+              setReverseContainer={setReverseContainer}
+              reverseContainer={reverseContainer}
+              checkedProduct={checkedProduct}
               setReverseTotal={setReverseTotal}
-              reverseTotal={reverseTotal}
               saleInfo={saleInfo}
-            />
-          )) :
+              selectAllProducts={selectAllProducts}
+            /> :
             <ReversePrepayment
               saleInfo={saleInfo} 
-              handleChange={handleChange}
               setReverseTotal={setReverseTotal}
-              reverseTotal={reverseTotal}
               reversePrepayment={reversePrepayment}
               setReversePrepayment={setReversePrepayment}
+             
             />
           }
         </div>
         <Divider color="black" />
-        <ReverceConditions 
-          saleInfo={saleInfo} 
-          t={t} 
-          reverseTotal={reverseTotal} 
-          conditionState={conditionState}
-          setCondition={setCondition} 
-          reversePrepayment={reversePrepayment}
-          setReversePrepayment={setReversePrepayment}
-        />
-      <Divider color="black" />
+        {detailsData?.saleType !== 5 ?
+          <ReverceConditions2
+            saleInfo={saleInfo} 
+            t={t} 
+            // reverseTotal={reverseTotal} 
+            conditionState={conditionState}
+            setCondition={setCondition} 
+          />:
+          <ReverceConditionsPrepayment
+            saleInfo={saleInfo} 
+            t={t} 
+            // reverseTotal={reverseTotal} 
+            conditionState={conditionState}
+            setCondition={setCondition}
+            amountForPrePayment={amountForPrePayment} 
+            setAmountForPrePayment={setAmountForPrePayment}
+            detailsData={detailsData}
+          />
+        }
+        <Divider color="black" />
       </DialogContent>
       <DialogActions style={{position:"sticky",marginTop:"0px"}}>
         <Button autoFocus onClick={dialogManage}>
           {t("buttons.close")}
         </Button>
-        <Button onClick={reverse}>{t("buttons.submit")}</Button>
+        <Button 
+          onClick={reverse}
+          disabled = {conditionState?.cashAmount > saleInfo?.res?.printResponseInfo?.cashAmount + saleInfo?.res?.printResponseInfo?.prePayment || conditionState?.cardAmount > saleInfo?.res?.printResponseInfo?.cardAmount}
+        >
+          {t("buttons.submit")}
+        </Button>
       </DialogActions>
       
-      <Dialog open={load}> <Loader /> </Dialog>
+      <Dialog open={!!load}> <Loader /> </Dialog>
 
       {ownMessage && 
         <Dialog open={Boolean(ownMessage)} >

@@ -16,21 +16,3 @@ export const getExcelEmptyForm = async() => {
       return err
     }
   };
-
-  
-export const putExcelFilledForm = async(body) => {
-    const option = {
-        credentials: 'include',
-        headers: {
-            Authorization: localStorage.getItem("token"),
-            'Content-Type': 'application/json',
-            'accept':'application/json'
-        },
-    };  
-    try{
-      const data =  await axios.put(baseUrl + `Products/AddProductByExcel`,body, option)
-      return data
-    }catch(err){
-      return err?.response?.status
-    }
-  };

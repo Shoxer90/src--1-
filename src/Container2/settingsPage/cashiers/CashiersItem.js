@@ -41,7 +41,7 @@ const CashiersItem = ({
         </span>
       </div>
         <span><strong>{t("settings.status")} </strong></span>
-        <div style={{display:"flex",alignItems:"center"}}>
+        <div style={{textAlign:"start",display:"flex",flexFlow:"column"}}>
         <FormControlLabel 
           control={
             <Switch  
@@ -52,7 +52,21 @@ const CashiersItem = ({
           }
           label={employee.blocked ? t("settings.blocked") : t("settings.active")} 
         />
+        {/* FOR HDM */}
+        <div>
+         <FormControlLabel 
+          control={
+            <Switch  
+              checked={employee?.hdmStatus}
+              onChange={(e)=>isCashierEhdm(employee.id,e.target.checked)}
+              value={employee.ehdmStatus}
+            />
+          }
+          label={t("settings.hdmAuth")} 
+        />
+        <span style={{fontSize:'65%',color:"green"}}>({t("settings.notAvailableInWeb")})</span>
         </div>
+        {/*  */}
         <FormControlLabel 
           control={
             <Switch  
@@ -73,6 +87,7 @@ const CashiersItem = ({
           }
           label={t("settings.reverseAuth")} 
         />
+        </div>
       <div className={styles.cashier_item_info}>
         <Button 
           value="2"

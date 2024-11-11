@@ -1,4 +1,4 @@
-import { Avatar, Dialog, Divider } from "@mui/material";
+import { Avatar, Dialog } from "@mui/material";
 import  React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -12,24 +12,44 @@ import CashiersItem from "./CashiersItem";
 import SnackErr from "../../dialogs/SnackErr";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
-const Cashiers = ({t, logOutFunc, screen}) => {
+const Cashiers = ({t, logOutFunc, cashierLimit}) => {
   const [cashiers, setCashiers] = useState([]);
   const [openCashierDial, setOpenCashierDail] = useState(false);
   const [newCashierSuccess, setCashierSuccess] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openLimitOver, setOpenLimitOver] = useState(false);
   const [register, setRegister] = useState(false);
   const [updateDial, setUpdateDial] = useState(false);
   const [updateContent, setUpdateContent] = useState({});
   const [data, setData] = useState();
-	const [userInfo, setUserInfo] = useState({});
-
-
-  const handleUpdateCashier = async(data) => {
-    await updateCashiersData(data).then((res) => {
-      setRegister(!register)
-    })
-    setUpdateDial(false)
+	
+  const openAddNewCashier = () => {
+      if(cashierLimit > cashiers?.length) {
+      setOpenCashierDail(true)     
+    }else{
+      limitOver()
+    }
   };
+
+  const limitOver = () => {
+    setOpenLimitOver(true)
+  };
+
+  const closeAddDialog = () => {
+    setOpenCashierDail(false)
+    setOpenLimitOver(false)
+  }
+
+  // const handleUpdateCashier = async(data) => {
+  //   await updateCashiersData(data).then((res) => {
+  //     if(res?.status === 200) {
+  //       setRegister(!register)
+  //     }else if(res?.status === 405) {
+
+  //     }
+  //   })
+  //   setUpdateDial(false)
+  // };
 
   const isCashierReverse = async(id,bool) => {
     await setCashierReverseStatus(id, bool);
@@ -106,25 +126,23 @@ const Cashiers = ({t, logOutFunc, screen}) => {
   }, [register]);
 
   return (
-    <div style={{ margin: "90px"}}>
+    <div style={{ marginTop: "90px"}}>
       <div className={styles.cashier_title}> 
        <h1> {t("settings.cashiers")}</h1>
-      </div>
-      <Divider color="black" />
-      <div className={styles.cashier}>
         <Avatar
           onClick={()=>{
-            setOpenCashierDail(true)
-            setUserInfo({})
+            openAddNewCashier()
           }}
           sx={{ 
             "&:hover": { bgcolor: '#1976d2' , color:"white"}, 
-            margin: 1,
+            ml: 1,
             cursor:"pointer"
           }}
          >
          <GroupAddIcon />
         </Avatar> 
+      </div>
+      <div className={styles.cashier}>
         {cashiers && cashiers.map((employee, index) => ( 
           <CashiersItem 
             key={index}
@@ -146,17 +164,14 @@ const Cashiers = ({t, logOutFunc, screen}) => {
         setRegister={setRegister}
         setOpenCashierDail={setOpenCashierDail}
         openCashierDial={openCashierDial}
-        userInfo={userInfo} 
-        setUserInfo={setUserInfo}
         logOutFunc={logOutFunc}
+        limitOver={limitOver}
       />
     }
     {newCashierSuccess &&
-    <Dialog
-     open={newCashierSuccess}
-    >
-      <SnackErr message={t("")} type="success" close={setCashierSuccess(false)}/>
-    </Dialog>
+      <Dialog open={!!newCashierSuccess}>
+        <SnackErr message={t("")} type="success" close={setCashierSuccess(false)}/>
+      </Dialog>
     }
     <UpdateCashiers
       t={t} 
@@ -164,7 +179,9 @@ const Cashiers = ({t, logOutFunc, screen}) => {
       setUpdateDial={setUpdateDial}
       updateContent={updateContent}
       setUpdateContent={setUpdateContent}
-      handleUpdateCashier={handleUpdateCashier}
+      setRegister={setRegister}
+      register={register}
+      logOutFunc={logOutFunc}
     />
     <ConfirmDialog
       t={t}
@@ -174,6 +191,14 @@ const Cashiers = ({t, logOutFunc, screen}) => {
       close={setOpenConfirm}
       func={()=>cashierStatus(data?.id, "2")}
       content={data?.name}
+    />
+    <ConfirmDialog
+      t={t} 
+      func={closeAddDialog} 
+      open={openLimitOver}
+      close={closeAddDialog}
+      question={<strong>{t("settings.cashiereLimit")}</strong>}
+      nobutton={true}
     />
   </div>
   )

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { format } from "date-fns";
 import { baseUrl, option } from "../baseUrl";
 
 // get not filtered data Paid,Unpaid,Canceled by page
@@ -74,11 +73,9 @@ export async function sendSmsPDF(plchld, body) {
   }
 };
 
-export async function generateToExcel(date){
-  const queryDate = {
-    startDate: date?.startDate ? format(date?.startDate, 'MM-dd-yyyy') : format(new Date(), 'MM-dd-yyyy'),
-    endDate: date?.endDate ? format(date?.endDate, 'MM-dd-yyyy'): format(new Date(), 'MM-dd-yyyy')
-  };
+
+export async function generateToExcel(queryDate){
+
   const bb = {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -86,9 +83,29 @@ export async function generateToExcel(date){
     responseType: "blob"
   }
   try {
-    const  data = await axios.get(baseUrl + `History/GenerateExcel?startDate=${queryDate?.startDate}&endDate=${queryDate?.endDate}`, bb);
-    return data.data
+    const  data = await axios.get(baseUrl + `History/GenerateExcel?startDate=${queryDate?.startDate}&endDate=${queryDate?.endDate}&products=${queryDate?.products}`, bb);
+    return data?.data
   }catch(err) {
     return err
   }
 };
+
+export async function editOrReversePrepaymentReceipt(body) {
+  try{
+    const  data = await axios.post(baseUrl + `PrePayment/EditPrePaymentProducts`, body, option());
+    return data
+  }catch(err){
+    return  err?.response?.status
+  }
+};
+
+export async function closePrepaymentReceiptWithSelling(body) {
+  try{
+    const  data = await axios.post(baseUrl + `PrePayment/SalePrepayment`, body, option());
+    return data
+  }catch(err){
+    return  err?.response?.status
+  }
+};
+
+

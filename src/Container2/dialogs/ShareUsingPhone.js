@@ -4,8 +4,8 @@ import { useState } from "react";
 import validator from "validator";
 import { Box } from "@mui/system";
 import { sendSmsPDF } from "../../services/user/userHistoryQuery";
-import PhoneInput from "../historyPage/hdm/PhoneInput";
-import MailInput from "../historyPage/hdm/MailInput";
+import PhoneInput from "../historyPage/newHdm/PhoneInput";
+import MailInput from "../historyPage/newHdm/MailInput";
 import ActionMessage from "./ActionMessage";
 import { Dialog } from "@mui/material";
 

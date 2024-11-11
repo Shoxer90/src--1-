@@ -21,7 +21,7 @@ const ChangesAnalyses = ({open, setOpen, content, name, t}) => {
 
   return (
     <Dialog
-      open={open}
+      open={Boolean(open)}
       style={{background: "rgb(40,167,69,0.15)"}}
       onClose={handleClose}
       TransitionComponent={Transition}
