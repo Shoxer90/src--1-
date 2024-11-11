@@ -40,7 +40,6 @@ import ForgotPassword from "./Authorization/loginAuth/forgotPass";
 import ResetPassword from "./Authorization/loginAuth/resetpass/ResetPassword";
 import Confirmation from "./Authorization/loginAuth/confirmation";
 import PrePaymentList from "./Container2/prepayment/";
-import { untrackedProds } from "./Container/basket/untrackedProds";
 
 const App = () => {
 
@@ -96,7 +95,7 @@ const App = () => {
 
  
   const whereIsMyUs = async() => {
-    console.log("04.10.24 prepayment,reverse prepayment")
+    console.log("10.10.24 prepayment,reverse prepayment")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -144,7 +143,7 @@ const App = () => {
     }
   };
 
-  const byBarCodeSearching = async(barcode) => {
+  const byBarCodeSearching = async(group,barcode) => {
     if(barcode === "" || barcode === " "){
       await queryFunction(dataGroup, 1).then((res) => {
         setContent(res?.data)
@@ -154,20 +153,27 @@ const App = () => {
       return
     }else{
       setMessage("")
-      await byBarCode(barcode).then((res) => {
-        if(from === "basket" && res?.length){
-          res.forEach((item) =>{
-            if(item?.barCode === barcode){
-              if(item?.remainder){
-                setSearchValue("")
-                setToBasketFromSearchInput(item, 1)
-              }else{
-                return setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
+      await byBarCode(group, barcode).then((res) => {
+        if(from === "basket"){
+          if(res?.length) {
+            res.forEach((item) =>{
+              if(item?.barCode === barcode){
+                if(item?.remainder){
+                  setSearchValue("")
+                  setToBasketFromSearchInput(item, 1)
+                }else{
+                  return setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
+                }
               }
-            }
-          })
+            })
+          }else(
+           setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
+          )
         }else if(from === "main") {
-          return res?.length ? setContent(res) : setMessage({message: t("mainnavigation.searchconcl"), type: "error"})
+          return res?.length ? setContent(res) : (
+            setContent([]) ,
+            setMessage({message: t("mainnavigation.searchconcl"), type: "error"})
+          )
         }
       })
     }
@@ -187,6 +193,19 @@ const App = () => {
       }else {
         setBasketGoodsqty(0)
         setBasketContent([])
+        setPaymentInfo({
+          discountType: 0,
+          cashAmount: 0,
+          cardAmount: 0,
+          prePaymentAmount: openWindow?.prePaymentAmount || 0,
+          partialAmount: 0,
+          partnerTin: "",
+          sales: [],
+          prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id,
+          isPrepayment: openWindow?.prepayment,
+          customer_Name: "",
+          customer_Phone: ""
+        })
       }
       localStorage.setItem("basketExistId", JSON.stringify(existArr))
       localStorage.setItem("basketIdCount", JSON.stringify(arrForSale))
@@ -196,6 +215,7 @@ const App = () => {
 
 
   const changeCountOfBasketItem = async(id,value) => {
+    console.log(id,value,"id,value")
     let handleArr = [] 
     await  getBasketContent().then((res) => {
       res.map((prod) => {
@@ -229,6 +249,19 @@ const App = () => {
   const deleteBasketGoods = async() => {
     setFlag(flag+1)
     localStorage.removeItem("endPrePayment")
+    setPaymentInfo({
+      discountType: 0,
+      cashAmount: 0,
+      cardAmount: 0,
+      prePaymentAmount: openWindow?.prePaymentAmount || 0,
+      partialAmount: 0,
+      partnerTin: "",
+      sales: [],
+      prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id || "",
+      isPrepayment: openWindow?.prepayment,
+      customer_Name: "",
+      customer_Phone: ""
+    })
     setOpenWindow({
       prepayment: false,
       payment: false,
@@ -240,18 +273,15 @@ const App = () => {
   };
   
   const setToBasket = (wishProduct, quantity, isFromPrepaymentPage) => {
-
     const basket = basketContent
-    if(quantity && quantity > wishProduct?.remainder){
+    if(quantity && quantity > wishProduct?.remainder && !isFromPrepaymentPage){
       setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
       return
     }else if(basketExist.includes(wishProduct?.id)){
         setMessage({message: t("productcard.secondclick"), type:"success"})
         return
     }else{
-      if(!isFromPrepaymentPage) {
-        untrackedProds(wishProduct, quantity || 1)
-      }
+     
       basket.unshift({
         ...wishProduct,
         discountPrice: wishProduct?.discountType === 2? 
@@ -350,7 +380,6 @@ const App = () => {
   };
 
   const checkForNewNotification = () => {
-
     getNewNotifications().then((res) => {
       setNotification(res)
     })
@@ -383,11 +412,11 @@ const App = () => {
 
   
   useEffect(() =>{
-    debounce && byBarCodeSearching(debounce)
+   searchValue && debounce && byBarCodeSearching(dataGroup,debounce)
   },[debounce]);
 
   useEffect(() => {
-    barcodeScanValue &&  debounceBasket && byBarCodeSearching(debounceBasket)
+    barcodeScanValue &&  debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
   },[debounceBasket]);
 
   return (
@@ -456,7 +485,19 @@ const App = () => {
             <Route path="/feedback" element={<FeedBackPage logOutFunc={logOutFunc} t={t} />} />
             <Route path="/setting/cashiers" element={<Cashiers t={t} cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
             <Route path="/setting/user" element={<SettingsUser user={user} t={t} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc}/>} />
-            <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} t={t}  measure={measure} />} />
+            <Route path="/history"
+              element={<HistoryPage 
+                logOutFunc={logOutFunc} 
+                t={t}  
+                measure={measure} 
+                paymentInfo={paymentInfo} 
+                setPaymentInfo={setPaymentInfo}
+                setToBasket={setToBasket}
+                setOpenBasket={setOpenBasket}
+                setOpenWindow={setOpenWindow}
+                deleteBasketGoods={deleteBasketGoods}
+              />}
+            />
             <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
             <Route path="/basket/*" element={<BasketList t={t} />} />
             <Route path="/prepayment" element={<PrePaymentList 

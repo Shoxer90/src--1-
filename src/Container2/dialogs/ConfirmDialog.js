@@ -1,9 +1,9 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import React from "react";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 
 const ConfirmDialog = ({
-  t,
   func, 
   open,
   title,
@@ -12,6 +12,7 @@ const ConfirmDialog = ({
   nobutton,
   question,
 }) => {
+  const {t} = useTranslation();
   
 
   return(

@@ -62,9 +62,9 @@ const SearchHistory = ({filterFunc, coordinator, t, initialFunc,status,columns,s
               sx={{
                 border: "none",
                 width: 150,
-                svg: "grey" ,
-                input: "grey" ,
-                label: "grey" ,
+                svg: "grey",
+                input: "grey",
+                label: "grey",
               }}
               />}
           />

@@ -12,7 +12,14 @@ const HistoryContent = ({
   setLoad,
   pageName,
   logOutFunc,
-  initialFunc}) => {
+  initialFunc,
+  paymentInfo,
+  setPaymentInfo,
+  setToBasket,
+  setOpenBasket,
+  setOpenWindow,
+  deleteBasketGoods
+}) => {
     
   const [filterBody, setFilterBody] = useState([]);
   const [message, setMessage] = useState({m:"",t:""})
@@ -65,6 +72,12 @@ const HistoryContent = ({
                   date={new Date(item?.date)}
                   messageAfterReverse={messageAfterReverse}
                   setReverdLink={setReverdLink}
+                  paymentInfo={paymentInfo}
+                  setPaymentInfo={setPaymentInfo}
+                  setToBasket={setToBasket}
+                  setOpenBasket={setOpenBasket}
+                  setOpenWindow={setOpenWindow}
+                  deleteBasketGoods={deleteBasketGoods}
                 />
               ))}
               </TableBody>

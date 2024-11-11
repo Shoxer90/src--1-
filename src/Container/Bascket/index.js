@@ -11,7 +11,9 @@ import moment from "moment";
 
 import PayQRLink from "../../Container2/historyPage/hdm/PayQRLink";
 import { cheackProductCount } from "../../services/products/productsRequests";
-import Receipt from "../../Container2/historyPage/hdm/receipt";
+// newww
+import Receipt from "../../Container2/historyPage/newHdm/receipt";
+// import Receipt from "../../Container2/historyPage/hdm/receipt";
 import BasketHeader from "./header/BasketHeader";
 import BasketContent from "./content/BasketContent";
 import AdvancePayment from "./payment/AdvancePayment";

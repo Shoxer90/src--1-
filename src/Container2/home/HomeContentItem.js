@@ -12,6 +12,7 @@ import {LimitContext} from "../../context/Context";
 
 import styles from "./index.module.scss";
 import SnackErr from "../dialogs/SnackErr";
+import ConfirmDialog from "../dialogs/ConfirmDialog";
 
 const HomeContentItem = ({
   t,
@@ -39,6 +40,7 @@ const HomeContentItem = ({
   const [quantity,setQuantity] = useState("");
   const [starSynth,setStarSynth] = useState();
   const [message,setMessage] = useState();
+  const [openConfirm, setOpenConfirm] = useState(false);
   const [newPrice, setNewPrice] = useState(product?.price - (product?.price * product?.discount / 100));
   const handleStarChange = () => {
     setStarSynth(!starSynth)
@@ -47,12 +49,17 @@ const HomeContentItem = ({
  
   const clickToBascket = () => {
     if(localStorage.getItem("endPrePayment")) {
-      setMessage(t("basket.no_new_count_prod"))
+      setOpenConfirm(true)
       return
     }
     setToBasket(product, quantity, false)
     setQuantity("")
   };
+
+  const addToBasketWithPrep = () => {
+    setToBasket(product, quantity, false)
+    setOpenConfirm(false)
+  }
 
   const onlyNumberAndADot = (event) => {
     let isValid = false;
@@ -177,7 +184,10 @@ const HomeContentItem = ({
               onClick={clickToBascket}
             />
           </div> 
-        </>: <div style={{marginBottom:"14px",color:"red"}}>{t("productcard.outofstock")}</div>
+        </>: <>
+          <div style={{fontSize:"80%",letterSpacing:"0.1px",padding:"3px"}}>code : {product?.barCode}</div>
+          <div style={{marginBottom:"14px",color:"red"}}>{t("productcard.outofstock")}</div>
+        </>
       }
       </Card>
     </div>
@@ -205,6 +215,13 @@ const HomeContentItem = ({
         <SnackErr message={message} type="info" close={setMessage} />
       </Dialog>
     :""}
+    <ConfirmDialog
+      func={addToBasketWithPrep}
+      open={openConfirm}
+      title={t("mainnavigation.newproduct")}
+      close={setOpenConfirm}
+      question={t("basket.add_to_prep")}
+    />
   </>
   )
 };

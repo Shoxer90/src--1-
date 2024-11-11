@@ -14,23 +14,6 @@ const ProductPayment = ({
   const [val, setVal] = useState(totalPrice);
   const [flag, setFlag] = useState();
 
-  const discountChange = (e) => {
-    checkDiscountVsProdPrice(e.target.value)
-    if(e.target.value > 99) {
-      return setPaymentInfo({
-        ...paymentInfo,
-        [e.target.name]:99,
-        cardAmount: 0,
-        prePaymentAmount: 0,
-      }) 
-    }else{
-      setPaymentInfo({
-        ...paymentInfo,
-        [e.target.name]: +Math.round(e.target.value)
-      })
-    }
-  };
-
   const handleChangeInput = (e) => {
     const valid =/^\d+(\.\d{1,2})?$/;
     const text = e.target.value;  

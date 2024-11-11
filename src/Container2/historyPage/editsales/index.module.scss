@@ -1,22 +1,13 @@
 .reverseContainer{
-  padding: 20px;
   &_header{
     display: flex;
     justify-content: space-between;
-    padding: 5px 10px;
+    padding: 10px;
     align-items: center;
-  }
-  &_content{
-
-  }
-  &_footer{
-
   }
 }
 .radioDialog {
   display:flex;
-  font-size: large;
-  align-items: center;
   text-align: center;
   justify-content: space-between;
   cursor: pointer;
@@ -26,20 +17,20 @@
     background-color: lightgrey;
   }
   p {
-    margin: 5px 8px;
+    margin: 5px;
   }
  & input[type=checkbox] {
     cursor: pointer;
-    width:60px;
+    width:50px;
     height: 1.1em;
   }
   & img {
-    width: 40px;
+    width: 35px;
     height: 30px;
     border: solid grey 1px;
     border-radius: 2px;
     align-self:center;
-    margin: 2px;
+    margin: 1px;
   }
   }
   .reverse_quantity{
@@ -49,7 +40,8 @@
       border:solid grey 2px;
       border-radius: 4px;
       cursor: pointer;
-      width:60px;
+      width:50px;
+      padding: 2px;
     }
   }
 

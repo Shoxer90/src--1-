@@ -1,18 +1,18 @@
 import React, { forwardRef, useEffect, useState, memo } from "react";
-import { AppBar, Dialog, DialogContent, Divider, Slide } from "@mui/material";
+import { AppBar, Button, Dialog, DialogContent, Divider, IconButton, Slide } from "@mui/material";
 import { Box } from "@mui/system";
 import styles from "./index.module.scss"
-import { basketListUrl, leftPrepaymentForProducts, payRequestQR, saleProductFromBasket, sendSmsForPay } from "../../services/pay/pay";
-import QRPay from "../../Container2/historyPage/hdm/QRPay";
-import PhonePay from "../../Container2/historyPage/hdm/PhonePay.js";
+import { basketListUrl, payRequestQR, saleProductFromBasket, sendSmsForPay } from "../../services/pay/pay";
+import QRPay from "../../Container2/historyPage/newHdm/QRPay";
+import PhonePay from "../../Container2/historyPage/newHdm/PhonePay.js";
 import Loader from "../../Container2/loading/Loader";
 import SnackErr from "../../Container2/dialogs/SnackErr";
 import moment from "moment";
 import PaymentContainer from "./payment";
 
-import PayQRLink from "../../Container2/historyPage/hdm/PayQRLink";
+import PayQRLink from "../../Container2/historyPage/newHdm/PayQRLink";
 import { cheackProductCount } from "../../services/products/productsRequests";
-import Receipt from "../../Container2/historyPage/hdm/receipt";
+import Receipt from "../../Container2/historyPage/newHdm/receipt";
 import BasketHeader from "./header/BasketHeader";
 import BasketContent from "./content/BasketContent";
 import PayButtons from "./operation/PayButtons";
@@ -20,12 +20,14 @@ import ProductPayment from "./payment/ProductPayment";
 import SearchBarcode from "../../SearchBarcode";
 import { taxCounting } from "../../modules/modules.js";
 import ProductPrePayment from "./payment/ProductPrePayment.js";
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
+
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const  Bascket = ({
+const Bascket = ({
   t,
   userName,
   logOutFunc,
@@ -71,9 +73,7 @@ const  Bascket = ({
   const [blockTheButton, setBlockTheButton] = useState(true);
   const [taxCount, setTaxCount] = useState(0);
   const [seeBtn,setSeeBtn] = useState();
-
-
-
+  const [freezeCount, setFreezeCount] = useState([]);
   const closePhoneDialog = () => {
     setOpenPhonePay(false)
     setOpenBasket(false)
@@ -113,7 +113,7 @@ const  Bascket = ({
         ...paymentInfo,
         // cashAmount: total-openWindow?.prePaymentAmount,
         prePaymentAmount: openWindow?.prePaymentAmount,
-        cashAmount: 0,
+        cashAmount:0,
         cardAmount: 0,
         sales: salesArr,
       })
@@ -298,6 +298,18 @@ const  Bascket = ({
    searchValue?.length && setSearchValue("")
   }, [basketContent, flag, openBasket]);
 
+  const getFreezedCounts = async() => {
+    if(localStorage.getItem("endPrePayment")) {
+      const data = await JSON.parse(localStorage.getItem("freezeBasketCounts"))
+      console.log(data,"freez data")
+      setFreezeCount(data)
+    }
+  }
+
+  useEffect(() => {
+    getFreezedCounts()
+  }, [])
+
 
   return (
     <Dialog
@@ -322,7 +334,7 @@ const  Bascket = ({
             onKeyDown={(e)=>{
               if(e.key === "Enter") {
                 e.preventDefault()
-                byBarCodeSearching(setSearchValue)
+                byBarCodeSearching("GetAvailableProducts ",setSearchValue)
               }}}
             >
             <BasketHeader 
@@ -335,9 +347,8 @@ const  Bascket = ({
               setSingleClick={setSingleClick}
               setFetching={setFetching}
             />
-            <Divider style={{margin:2, backgroundColor:"gray"}}/>
-            {localStorage.getItem("endPrePayment") ? "":
-            <>
+            <Divider sx={{mt:2}}/>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <SearchBarcode
                 searchValue={searchValue}
                 setSearchValue={setSearchValue}
@@ -345,8 +356,14 @@ const  Bascket = ({
                 stringFrom="basket"
                 setFrom={setFrom}
               />
-            <Divider style={{margin:1, backgroundColor:"gray"}} />
-            </>}
+              <IconButton 
+                href="/"
+                disableElevation
+                disableRipple
+              >
+                <ControlPointIcon fontSize="large" />
+              </IconButton>
+            </div>
             <DialogContent 
               className={styles.bask_container_body_content}  
               style={{margin:0,padding:0}}
@@ -357,7 +374,6 @@ const  Bascket = ({
                 changeCountOfBasketItem={changeCountOfBasketItem}
                 deleteBasketItem={deleteBasketItem}
                 loadBasket={loadBasket}
-                t={t}
                 screen={screen}
                 setFlag={setFlag}
                 flag={flag}
@@ -368,6 +384,9 @@ const  Bascket = ({
                 paymentInfo={paymentInfo}
                 createMessage={createMessage}
                 setIsEmpty={setIsEmpty}
+                totalPrice={totalPrice}
+                freezeCount={freezeCount}
+
               />
             </DialogContent>
             <Divider style={{margin:2,height:"2px", backgroundColor:"black"}}/>
@@ -441,6 +460,7 @@ const  Bascket = ({
                   singleClick={singleClick}
                   setSingleClick={setSingleClick}
                   setOpenBasket={setOpenBasket}
+                  openWindow={openWindow}
                 />
               </div>: ""}
           </Box>

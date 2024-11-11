@@ -16,7 +16,8 @@ const SaleAmountReverse = ({
   // reverse
 }) =>{
   const {t} = useTranslation();
-
+console.log(cashAmount, "cashAmount",)
+console.log(prePaymentAmount, "prePaymentAmount")
   useEffect(() => {
     if(reverseTotal >  cashAmount + prePaymentAmount) {
       setConditionState({
@@ -44,30 +45,45 @@ const SaleAmountReverse = ({
   return(
     <>
       <div className={styles.conditions}>
-        <div style={{marginTop:"5px"}}>
-          <div style={{color:"green", fontSize:"100%"}}>{t("history.receiptPrice2")} {total} {t("units.amd")}</div>
-          <div>{t("history.whichCash")} {cashAmount} {t("units.amd")}</div>
-          <div>{t("history.whichCashless")} {cardAmount} {t("units.amd")}</div>
-          <div>{t("history.whichPrepayment")} {prePaymentAmount} {t("units.amd")}</div>
-          <div style={{color:"green", fontSize:"100%"}}>
-            {t("history.forReverse")} 
-            {+conditionState?.cashAmount + conditionState?.cardAmount} 
-            {t("units.amd")}
+        <div style={{marginTop:"5px",width:"37%"}}>
+          <div style={{color:"green", display:"flex", justifyContent:"space-between"}}>
+            <span>{t("history.receiptPrice2")}</span>
+            <span>{total} {t("units.amd")}</span>
           </div>
+            <div style={{display:"flex", justifyContent:"space-between"}}>
+              <span>{t("history.whichCash")}</span>
+              <span>{cashAmount} {t("units.amd")}</span>
+            </div>
+            <div style={{display:"flex", justifyContent:"space-between"}}>
+              <span>{t("history.whichCashless")}</span>
+              <span>{cardAmount} {t("units.amd")}</span>
+            </div>
+            <div style={{display:"flex", justifyContent:"space-between"}}>
+              <span>{t("history.whichPrepayment")}</span>
+              <span>{prePaymentAmount} {t("units.amd")}</span>
+            </div>
+            <div style={{color:"green", display:"flex",justifyContent:"space-between"}}>
+              <span style={{color:"green", alignContent:"center"}}>{t("history.forReverse")}</span>
+              <span>{+conditionState?.cashAmount + conditionState?.cardAmount} {t("units.amd")}</span>
+            </div>
           </div>
-          <div>
-            <div>{t("history.getCash")} 
+          <div style={{width:"60%"}}>
+          <div style={{display:"flex", justifyContent:"space-between", marginTop:"2px"}}>
+            <span>{t("history.getCash")}</span>
+            <span>
               <input 
-                 style={{height:"20px"}}
-                 autoComplete="off"
-                 name="cashAmount"
-                 value={conditionState?.cashAmount || ""}
-                 readOnly
+                style={{height:"20px"}}
+                autoComplete="off"
+                name="cashAmount"
+                value={conditionState?.cashAmount || ""}
+                readOnly
               />
               {t("units.amd")}
-            </div>
-            <div>
-              {t("history.getCard")} 
+            </span>
+          </div>
+          <div style={{display:"flex", justifyContent:"space-between"}}>
+            <span>{t("history.getCard")}</span>
+            <span>
               <input 
                 style={{height:"20px"}}
                 autoComplete="off"
@@ -81,17 +97,19 @@ const SaleAmountReverse = ({
                   }
                 }}
               /> 
-              {t("units.amd")}</div>
+              {t("units.amd")}
+            </span>
           </div>
+        </div>
 
         </div>
-        <div style = {{color:"red", fontSize:"90%", padding:"0px 20px"}}> 
+        <div style = {{color:"red",  padding:"0px 20px"}}> 
           {(conditionState?.cashAmount > cashAmount + prePaymentAmount) && `${t("dialogs.limitCash")} ${+cashAmount+ prePaymentAmount} ${t("units.amd")}`}
         </div>
-        <div style = {{color:"red", fontSize:"90%", padding:"0px 20px"}}> 
+        <div style = {{color:"red",  padding:"0px 20px"}}> 
         {(conditionState?.cardAmount > cardAmount) && `${t("dialogs.limitCard")} ${cardAmount} ${t("units.amd")}`}
         </div> 
-        <div style = {{color:"red", fontSize:"90%", padding:"0px 20px"}}> 
+        <div style = {{color:"red",  padding:"0px 20px"}}> 
         {(conditionState?.cardAmount > cardAmount) && `${t("total")} ${reverseTotal}fgjfdfg ${t("units.amd")}`}
         </div> 
       </>

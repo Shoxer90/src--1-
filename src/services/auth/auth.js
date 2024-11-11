@@ -124,9 +124,9 @@ export async function createNewCashier(inputs) {
 };
 
 
-export const getNews = async() => {
+export const getNews = async(lang) => {
   try{
-    const  data = await axios.get(baseUrl + `Login/GetNews`, {});
+    const  data = await axios.get(baseUrl + `Login/GetNews?language=${lang}`, {});
     return data.data
   }catch(err){
     return err

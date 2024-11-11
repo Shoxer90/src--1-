@@ -36,7 +36,6 @@ const ReceiptItem = ({
           </span>
           <span> x </span>
           <span> {quantity} 
-          {/* {t(`units.${unit}`)}  */}
           </span>
           <span> = </span>
           <span>

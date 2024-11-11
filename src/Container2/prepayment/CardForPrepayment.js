@@ -17,6 +17,7 @@ const CardForPrepayment = ({
   paymentInfo,
   deleteBasketGoods,
   reload, setReload,
+  setOpenBasket
 }) => {
   const {t} = useTranslation();
   const [total, setTotal] = useState(0);
@@ -28,9 +29,10 @@ const CardForPrepayment = ({
     overflowY: item?.products?.length > 8? "scroll": "",
     maxHeight:"240px"
   };
-
+  
   const createBasketContent = async() => {
-    if(localStorage.getItem("bascket1")) {
+
+    if((JSON.parse(localStorage.getItem("basketExistId"))).length) {
       setMessage({message:`${t("basket.no_new_count_prod")}`, type:"info"})
       return
     }
@@ -50,10 +52,13 @@ const CardForPrepayment = ({
       })) 
       // here is new solution will be
       if(item?.products?.length){
-        item?.products?.map((prod) => (
+        let freezeCounts = []
+        item?.products?.map((prod) => {
           setToBasket(prod, prod?.count, true)
-          
-        ))
+          return freezeCounts.unshift({id:prod?.productId,bar:prod?.goodCode,count:prod?.count})
+        })
+        localStorage.setItem("freezeBasketCounts", JSON.stringify(freezeCounts))
+        setOpenBasket(true)
       }
       return setOpenWindow({
         prepayment: false ,
@@ -64,10 +69,20 @@ const CardForPrepayment = ({
     }
   };
 
-  const removeReciept = () => {
+  const removeReciept = async() => {
+    setOpenConfirm(false)
+
     setIsLoad(true)
+    let prodArr = []
+    await item?.products.forEach((prod, index) => {
+      prodArr.push( {
+        "recieptId": index,
+        "quantity": prod?.count
+      })
+    })
+    
     reverseProductNew({
-      products: [],
+      products: prodArr,
       saleDetailId: item?.id,
       cashAmount: item?.cashAmount,
       cardAmount: item?.cardAmount
@@ -76,8 +91,10 @@ const CardForPrepayment = ({
       if(res?.status === 200) {
         deleteBasketGoods()
         setMessage({message:t("dialogs.done"), type:"success"})
+      }else{
+        setMessage({message:t("dialogs.wrong"), type:"error"})
+
       }
-      setOpenConfirm(false)
     })
   };
 
@@ -109,38 +126,45 @@ const CardForPrepayment = ({
         })}
       </div>
       <div style={{position:"absolute",bottom:"0px"}}>
-      <div style={{fontWeight:600, fontSize:"70%", margin:"7px 5px"}}> 
-        {t("basket.useprepayment")} {item?.cashAmount + item?.cardAmount} 
-        {t("units.amd")} / {t("basket.remainder")} {total - (item?.cashAmount + item?.cardAmount)} {t("units.amd")}
-      </div>
-        <ButtonGroup>
-          {item?.link?.trim() ? <a href={item?.link} rel="noreferrer" target="_blank">
-          <Button
-            variant="contained"
-            // href={item?.link} 
-            sx={{background:"orange",margin:"2px", fontSize:"60%",fontWeight:600,letterSpacing:"1px"}}
-            size="small"
-          >
-            {t("basket.seeReciept")}
-          </Button>
-        </a>: ""}
-        <Button
-          variant="contained"
-          onClick={()=>setOpenConfirm(true)}
-          sx={{background:"orangered",margin:"2px", fontSize:"60%",fontWeight:600,letterSpacing:"1px"}}
-          // size="small"
-        >
-          {t("buttons.cancel")}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={createBasketContent}
-          sx={{background:"#3FB68A",margin:"2px", fontSize:"60%", fontWeight:600,letterSpacing:"1px"}}
+        <div style={{fontWeight:600, fontSize:"60%", margin:"7px 5px"}}> 
+          {t("basket.useprepayment")} {item?.cashAmount + item?.cardAmount} 
+          {t("units.amd")} / {t("basket.remainder")} {total - (item?.cashAmount + item?.cardAmount)} {t("units.amd")}
+        </div>
+  
+        <div style={{width:"91%", display:"flex"}}>
+          {/* {item?.link?.trim() ?  */}
+            <Button variant="contained" size="small">
+              <a 
+                style={{padding:"0px", textDecoration:"none", color:"white"}} 
+                href={item?.link?.trim() ? item?.link : null} 
+                rel="noreferrer" 
+                target="_blank"
+              >
+                {t("basket.seeReciept")}
+              </a>
+            </Button>
+          {/* : ""} */}
+        <Button 
+          variant="contained" 
           size="small"
+          sx={{background:"orangered"}}
+          onClick={()=>setOpenConfirm(true)}
+        >
+          {t("basket.reverseAll")}
+
+        </Button>
+        
+        <Button 
+          variant="contained" 
+          size="small"
+          sx={{background:"#3FB68A"}}
+          onClick={()=>{
+            createBasketContent()
+          }}
         >
           {t("basket.completeSale")}
         </Button>
-        </ButtonGroup>
+      </div>
         <ConfirmDialog 
           t={t}
           func={removeReciept}
@@ -148,7 +172,6 @@ const CardForPrepayment = ({
           title={<h6>{t("history.checkNum")} {item?.recieptId}</h6>}
           close={setOpenConfirm}
           content={""}
-          // nobutton={}
           question={t("dialogs.returnPrepayment")}
           />
           <Dialog open={isLoad}><Loader /></Dialog>
@@ -159,3 +182,40 @@ const CardForPrepayment = ({
 };
 
 export default memo(CardForPrepayment);
+
+      // {/* <ButtonGroup style={{margin:"3px"}}>
+      //     {item?.link?.trim() ? 
+      //       <Button
+      //         variant="contained"
+      //         sx={{background:"orange", fontSize:"61%",fontWeight:600,letterSpacing:"1px"}}
+      //         size="small"
+      //       >
+      //         <a style={{padding:"0px", textDecoration:"none", color:"white"}} href={item?.link} rel="noreferrer" target="_blank">
+      //           {t("basket.seeReciept")}
+      //         </a>
+      //       </Button>
+      //    : ""}
+      //   <Button
+      //     variant="contained"
+      //     onClick={createBasketContent}
+      //     sx={{background:"#3FB68A", fontSize:"62%", fontWeight:600,letterSpacing:"1px"}}
+      //     size="small"
+      //   >
+      //     {t("basket.completeSale")}
+      //   </Button>
+      //   </ButtonGroup> */}
+
+      // {/* <Button variant="contained" 
+      //     sx={{background:"#3FB68A"}}
+      //   >
+      //     {t("basket.reverseProd")}
+
+      //   </Button> */}
+      //   {/* <Button 
+      //     variant="contained" 
+      //     sx={{background:"orangered"}}
+          
+      //   >
+      //     {t("basket.reversePrep")}
+
+      //   </Button> */}

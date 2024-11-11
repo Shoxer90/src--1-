@@ -14,7 +14,12 @@ import { columnNames } from "../../services/baseUrl";
 import { getPrepayment } from "../../services/products/productsRequests";
 
 
-const HistoryPage = ({logOutFunc, t}) => {
+const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
+  setToBasket,
+  setOpenBasket,
+  setOpenWindow,
+  deleteBasketGoods
+}) => {
   const perPage = 10;
   const search = useLocation().search;
   const status = {status:new URLSearchParams(search).get("status")};
@@ -120,6 +125,12 @@ const HistoryPage = ({logOutFunc, t}) => {
           pageName={status}
           logOutFunc={logOutFunc}
           initialFunc={initialFunc}
+          paymentInfo={paymentInfo} 
+          setPaymentInfo={setPaymentInfo}
+          setToBasket={setToBasket}
+          setOpenBasket={setOpenBasket}
+          setOpenWindow={setOpenWindow}
+          deleteBasketGoods={deleteBasketGoods}
         />
         {!hidepagination && <PaginationSnip 
           page={page}

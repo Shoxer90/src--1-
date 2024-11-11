@@ -5,7 +5,8 @@ import { useEffect } from "react";
 import { hdm_generate } from "../../../services/user/hdm_query";
 import HistoryDetails from "../details/HistoryDetails";
 import ReverseContainer from "../reverse";
-import Receipt from "../hdm/receipt/index";
+import Receipt from "../newHdm/receipt/index";
+// import Receipt from "../hdm/receipt/index";
 import { taxCounting } from "../../../modules/modules";
 // import ReverseBtn from "../hdm/receipt/ReverseBtn";
 import ReverseDialog from "../editsales/index";
@@ -19,7 +20,13 @@ const HistoryItems = ({
   initialFunc,
   date,
   messageAfterReverse,
-  setReverdLink
+  setReverdLink,
+  paymentInfo,
+  setPaymentInfo,
+  setToBasket,
+  setOpenBasket,
+  setOpenWindow,
+  deleteBasketGoods
 }) => {
 
   const [openDetails, setOpenDetails] = useState(false);
@@ -39,7 +46,7 @@ const HistoryItems = ({
 
   const openCloseHDM = async(id) => {
     setLoad(true)
-    if(pageName?.status !== "Paid" ) {
+    if(pageName?.status !== "Paid" && pageName?.status !== "Prepayment" ) {
       setOpenDetails(true)
       if(pageName?.status === "Canceled"){
         setReverdLink(item?.link)
@@ -77,12 +84,13 @@ const HistoryItems = ({
   item && fullPriceWithOutAdditionalDiscount()
 }, [item?.status]);
 
+
   return (
     <>
     <TableRow
       key={item?.id}
       // onClick={()=> openCloseHDM(item?.id)}
-      sx={{'&:hover':{backgroundColor: 'rgb(243, 243, 239)'}}}
+      sx={{'&:hover':{backgroundColor: 'rgb(243, 243, 239)'}, }}
     >
       {filterBody.includes("id") && 
         <TableCell style={{padding:"0px 16px"}}>
@@ -110,17 +118,18 @@ const HistoryItems = ({
         </TableCell>
       }
       {filterBody.includes("recieptId") && 
-        <TableCell style={{padding:"0px", textAlign:"center"}}>
+        <TableCell style={{padding:"0px 5px", textAlign:"center"}}>
           <span style={{fontWeight:700}}>
             {item?.recieptId}
           </span>
           <div>
-            <Button sx={{mr:1,fontSize:"70%", background:'orange'}} size="small" onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>
-            {pageName?.status  === "Paid" || pageName?.status  === "Prepayment" ? <Button size="small"  sx={{mr:1, fontSize:"70%", background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}
+            <Button sx={{m:1,fontSize:"70%", background:'orange', width:"73.8px"}} size="small" onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>
+            {pageName?.status  === "Paid" ? <Button size="small"  sx={{ fontSize:"65%", background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}
           </div>
         </TableCell>
       }
       {pageName?.status !=="Prepayment" ? filterBody.includes("total") && <TableCell style={{padding:"0px"}}>{item?.total} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>:<TableCell> - </TableCell>}
+     
       {filterBody.includes("cashAmount") && <TableCell>{item?.cashAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
       {filterBody.includes("cardAmount") && <TableCell>{item?.cardAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
       {filterBody.includes("prepaymentAmount") && <TableCell>{item?.saleType === 5 ? item?.total: item?.prePaymentAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
@@ -145,7 +154,7 @@ const HistoryItems = ({
         {pageName?.status  === "Paid" || pageName?.status  === "Prepayment" ? <Button sx={{mr:1, background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}
       </TableCell> */}
     </TableRow>
-    { openDetails && (pageName?.status ==="Unpaid" || pageName?.status ==="Prepayment") &&
+    { openDetails && pageName?.status ==="Unpaid" &&
       <HistoryDetails
         openDetails={openDetails}
         id={item?.id} 
@@ -164,7 +173,7 @@ const HistoryItems = ({
       />
     }
  
-   { openHDM && pageName?.status === "Paid" &&
+   { openHDM && (pageName?.status === "Paid"  || pageName?.status ==="Prepayment") &&
      <Receipt
       setOpenHDM={setOpenHDM}
       taxCount={taxCount}
@@ -201,8 +210,12 @@ const HistoryItems = ({
       products={item?.products}
       item={item}
       messageAfterReverse={messageAfterReverse}
-      
-
+      paymentInfo={paymentInfo}
+      setPaymentInfo={setPaymentInfo}
+      setToBasket={setToBasket}
+      setOpenBasket={setOpenBasket}
+      setOpenWindow={setOpenWindow}
+      deleteBasketGoods={deleteBasketGoods}
     /> }
     </>
   )

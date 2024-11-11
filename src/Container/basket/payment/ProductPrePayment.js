@@ -57,24 +57,9 @@ const ProductPrePayment = ({
     }
 };
 
-
-  const initialPayment = () => {
-   
-  };
-
   useEffect(() => {
-    // !trsf && cashChanges()
     setVal(totalPrice)
-  if(paymentInfo?.cardAmount + paymentInfo?.cashAmount >= totalPrice) {
-    setBlockTheButton(true)
-
-    setMessage(t("basket.prepLimit"))
-    // if the type is not error,after close messag dialog basket prods removed
-    return setType("error")
-  }else if(!paymentInfo?.cardAmount && !paymentInfo?.cashAmount){
-    setBlockTheButton(true)
-
-  }
+    !paymentInfo?.cardAmount && !paymentInfo?.cashAmount && setBlockTheButton(true)
   }, [totalPrice, flag, paymentInfo?.discount, paymentInfo?.cardAmount, paymentInfo?.cashAmount]);
 
   return(
@@ -148,7 +133,7 @@ const ProductPrePayment = ({
 
       <div>
         <span>
-          {`${t("authorize.first")}  ${t("authorize.last")}`}
+          {t("authorize.notes")}
         </span>
         <input
           value={paymentInfo?.customer_Name}

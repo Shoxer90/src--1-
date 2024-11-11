@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react";
+import { memo, useEffect, useRef } from "react";
 import styles from "./index.module.scss";
 import { useTranslation } from "react-i18next";
 import { Alert, Dialog, DialogContent, DialogTitle, Divider } from "@mui/material";
@@ -16,7 +16,13 @@ const ReverseDialog = ({
   setOpendDialog,
   products,
   item,
-  messageAfterReverse
+  messageAfterReverse,
+  paymentInfo,
+  setPaymentInfo,
+  setToBasket,
+  setOpenBasket,
+  setOpenWindow,
+  deleteBasketGoods
 }) => {
 
   const {t} = useTranslation();
@@ -24,8 +30,15 @@ const ReverseDialog = ({
   const [load, setLoad] = useState(false);
   const [ownMessage, setOwnMessage] = useState();
   const [reverseTotal, setReverseTotal] = useState(0);
+  const [goToReversePdf, setGoToReversePdf] = useState("");
   const [reverseContainer, setReverseContainer] = useState([]);
+  const [isAllSelected, setIsAllSelected] = useState(false);
   const [receiptAmountForPrepayment, setReceiptAmountForPrepayment] = useState(0);
+  const ref = useRef();
+  const [operationType,setOperationType] = useState({
+    returnPrepayment: false,
+    returnProds: false,
+  });
 
   const [conditionState, setConditionState] = useState({
     cashAmount: 0,
@@ -41,10 +54,14 @@ const ReverseDialog = ({
         isChecked: bool,
       })
     })
+    setIsAllSelected(bool)
     return setReverseContainer(newArr)
   };
 
   const checkedProduct = (i, name, value) => {
+    if(!value) {
+      setIsAllSelected(false)
+    }
     setReverseContainer(
       reverseContainer.map((item,index) =>{
         if(index === i){
@@ -73,12 +90,13 @@ const handleOk = async(func, body) => {
       setType("error")
       setOwnMessage(`${t("dialogs.sorry")}, ${t("dialogs.noReverse")}`)
     }else if(res.status === 200){ 
-      setOpendDialog(false)
+      if(res?.data?.reverceLink){
+        setGoToReversePdf(res?.data?.reverceLink)
+      }
       messageAfterReverse();
     }
   })
 };  
-
 const chooseFuncForSubmit = () => {
       if(item?.saleType !== 5) {
     reverse()
@@ -171,23 +189,31 @@ const reverse = async () => {
     totalCounter()
   }, [reverseContainer]);
 
+  useEffect(() => {
+    goToReversePdf && ref.current.click()
+  }, [goToReversePdf]);
+
   return(
     <Dialog
       open={openDialog}
-      fullWidth
-      minWidth="1000px"
-      minHeight="1330px"
+      PaperProps={{
+        sx: {
+          width: '800px',
+          maxWidth: 'none',
+        },
+      }}
     >
-      <DialogContent className={styles.reverseContainer}>
-
+      <DialogContent>
         <DialogTitle className={styles.reverseContainer_header}>
-          {t("history.reverse_products")}
+          <span>{t("history.reverse_products")}</span>
+          <a ref={ref} target="_blank" href={goToReversePdf} rel="noreferrer"> </a>
           <CloseIcon onClick={()=>setOpendDialog(false)} />
         </DialogTitle>
-
         <Divider color="black" />
 
-        <SelectAll selectAllProducts={selectAllProducts} />
+       {operationType?.returnProds ? 
+        <SelectAll selectAllProducts={selectAllProducts} isAllSelected={isAllSelected} />:""
+       } 
         {products.map((prod,index)=>(
           <ItemReverse
             key={prod?.id}
@@ -197,6 +223,8 @@ const reverse = async () => {
             checkedProduct={checkedProduct}
             index={index}
             totalCounter={totalCounter}
+            operationType={operationType}
+
           />
         ))}
         <Divider color="black" />
@@ -210,6 +238,16 @@ const reverse = async () => {
           receiptAmountForPrepayment={receiptAmountForPrepayment}
           reverse={reverse}
           chooseFuncForSubmit={chooseFuncForSubmit}
+          isAllSelected={isAllSelected}
+          setIsAllSelected={setIsAllSelected}
+          paymentInfo={paymentInfo}
+          setPaymentInfo={setPaymentInfo}
+          setToBasket={setToBasket}
+          setOpenBasket={setOpenBasket}
+          setOpenWindow={setOpenWindow}
+          deleteBasketGoods={deleteBasketGoods}
+          operationType={operationType}
+          setOperationType={setOperationType}
         />
 
         {ownMessage && 

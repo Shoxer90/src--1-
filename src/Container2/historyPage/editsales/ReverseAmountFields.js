@@ -4,11 +4,18 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@mui/material";
 import PrepaymentAmountReverse from "./amountReverse/PrepaymentAmountReverse";
 import SaleAmountReverse from "./amountReverse/SaleAmountReverse";
+import PrepaymentAmountReverseV2 from "./amountReverse/PrepaymentAmountReverseV2";
 
 
 const ReverseAmountFields = ({
   cashAmount,
   cardAmount,
+  partnerTin,
+  customer_Name,
+  customer_Phone,
+  id,
+  recieptId,
+  products,
   saleType,
   reverseTotal,
   total,
@@ -17,7 +24,17 @@ const ReverseAmountFields = ({
   setConditionState,
   totalCounter,
   receiptAmountForPrepayment,
-  chooseFuncForSubmit
+  chooseFuncForSubmit,
+  isAllSelected,
+  setIsAllSelected,
+  paymentInfo,
+  setPaymentInfo,
+  setToBasket,
+  setOpenBasket,
+  setOpenWindow,
+  deleteBasketGoods,
+  operationType,
+  setOperationType,
 }) => {
   const [blockButton,setBlockButton] = useState(false);
   const {t} = useTranslation();
@@ -58,7 +75,11 @@ const ReverseAmountFields = ({
     if(reverseTotal && cashAmount+prePaymentAmount < conditionState?.cashAmount && cardAmount < conditionState?.cardAmount) {
       setBlockButton(false)
       
-    }else if(!reverseTotal || cashAmount+prePaymentAmount < conditionState?.cashAmount || cardAmount < conditionState?.cardAmount ) {
+    }else if(!reverseTotal || 
+      cashAmount+prePaymentAmount < conditionState?.cashAmount || 
+      cardAmount < conditionState?.cardAmount || 
+      (receiptAmountForPrepayment && receiptAmountForPrepayment-reverseTotal < total && !isAllSelected)
+    ) {
       setBlockButton(true)
     }else{
       setBlockButton(false)
@@ -80,7 +101,7 @@ const ReverseAmountFields = ({
           totalCounter={totalCounter}
           handleChangeInput={handleChangeInput}
         />:
-        <PrepaymentAmountReverse 
+        <PrepaymentAmountReverseV2 
           cashAmount={cashAmount}
           cardAmount={cardAmount}
           saleType={saleType}
@@ -92,7 +113,22 @@ const ReverseAmountFields = ({
           totalCounter={totalCounter}
           receiptAmountForPrepayment={receiptAmountForPrepayment}
           handleChangeInput={handleChangeInput}
-
+          isAllSelected={isAllSelected}
+          setIsAllSelected={setIsAllSelected}
+          paymentInfo={paymentInfo}
+          setPaymentInfo={setPaymentInfo}
+          partnerTin={partnerTin}
+          customer_Name={customer_Name}
+          customer_Phone={customer_Phone}
+          id={id}
+          recieptId={recieptId}
+          products={products}
+          setToBasket={setToBasket}
+          setOpenBasket={setOpenBasket}
+          setOpenWindow={setOpenWindow}
+          deleteBasketGoods={deleteBasketGoods}
+          operationType={operationType}
+          setOperationType={setOperationType}
         />
       }
       <div style={{display:"flex", justifyContent:"center"}}>

@@ -168,24 +168,24 @@ const HomePage = ({
         setFrom={setFrom}
         setContent={setContent}
       />
-        <HomeContent
-          t={t}
-          measure={measure}
-          setToBasket={setToBasket}
-          content={content}
-          deleteAndRefresh={deleteAndRefresh}
-          changeStatus={changeStatus} 
-          deleteBasketItem={deleteBasketItem}
-          basketExist={basketExist}
-          dataGroup={dataGroup}
-          selectContent={selectContent}
-          getSelectData={getSelectData}         
-          typeCode={typeCode}
-          setTypeCode={setTypeCode}
-          setDataGroup={setDataGroup} 
-          setFetching={setFetching} 
-          setContent={setContent}
-        />
+      <HomeContent
+        t={t}
+        measure={measure}
+        setToBasket={setToBasket}
+        content={content}
+        deleteAndRefresh={deleteAndRefresh}
+        changeStatus={changeStatus} 
+        deleteBasketItem={deleteBasketItem}
+        basketExist={basketExist}
+        dataGroup={dataGroup}
+        selectContent={selectContent}
+        getSelectData={getSelectData}         
+        typeCode={typeCode}
+        setTypeCode={setTypeCode}
+        setDataGroup={setDataGroup} 
+        setFetching={setFetching} 
+        setContent={setContent}
+      />
       {openNewProd && <AddNewProduct 
         t={t} 
         newProduct={newProduct}

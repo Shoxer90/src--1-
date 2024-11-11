@@ -23,6 +23,7 @@ const HomeNavigation = ({
   const {limitedUsing} = useContext(LimitContext);
   
   const  handleSendQuery = async(str, index) => {
+    setSearchValue("")
     setContent([])
     await setCurrentPage(1)
     changeStatus(str,index)
@@ -33,7 +34,7 @@ const HomeNavigation = ({
     <div onKeyDown={(e)=>{
       if(e.key === "Enter") {
         e.preventDefault()
-        byBarCodeSearching(searchValue)
+        byBarCodeSearching(dataGroup,searchValue)
       }}}
     >
     <div className={styles.mainNav}>
@@ -88,6 +89,7 @@ const HomeNavigation = ({
         byBarCodeSearching={byBarCodeSearching}
         setFrom={setFrom}
         stringFrom="main"
+        dataGroup={dataGroup}
       />
       { !limitedUsing && <ExcelBurger t={t} setOpenNewProduct={setOpenNewProduct}/> }
     </div>

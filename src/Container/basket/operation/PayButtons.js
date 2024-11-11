@@ -10,8 +10,11 @@ const PayButtons = ({
   blockTheButton,
   totalPrice,
   singleClick,
-  setSingleClick
+  setSingleClick,
+  openWindow
 }) => {
+  // ete kanxavjari chek enq pakum 
+  // prePaymentAmount-@ galis a voch zro
 
   const buttonBlock = {
     opacity: "0.3",
@@ -32,23 +35,31 @@ const PayButtons = ({
             multiSaleProducts(1)
           } 
         }}
-        style={(!totalPrice  && !paymentInfo?.cashAmount && !paymentInfo?.cardAmount) ||
-          (totalPrice-paymentInfo?.prePaymentAmount === paymentInfo?.cardAmount)  || !paymentInfo?.cashAmount ?
-          buttonBlock : null
+          
+        style={
+          // (!totalPrice && !paymentInfo?.cashAmount && !paymentInfo?.cardAmount) || 
+          // (totalPrice-paymentInfo?.prePaymentAmount === paymentInfo?.cardAmount) || 
+          // (!paymentInfo?.cashAmount && !openWindow?.prePaymentAmount && openWindow?.prePaymentAmount) ?
+          // buttonBlock : null
+          (totalPrice && paymentInfo?.cashAmount) ||
+          (totalPrice === paymentInfo?.prePaymentAmount && paymentInfo?.prePaymentAmount) ? null :buttonBlock
         }
+     
       />
       <img
         src="/image/card.png"
         alt="card pay"
         onClick={()=>{
-          
-        if(!singleClick?.pointerEvents) {
-          setSingleClick(buttonBlock)
+          if(!singleClick?.pointerEvents) {
+            setSingleClick(buttonBlock)
             multiSaleProducts(1)
-        }
+          }
         }}
-        style={paymentInfo?.cardAmount ? null: buttonBlock}
-        // style={totalPrice-paymentInfo?.prePaymentAmount !== paymentInfo?.cardAmount? buttonBlock : null}
+        style={
+          // (!paymentInfo?.cardAmount && !openWindow?.prePaymentAmount) ? buttonBlock : null
+          (totalPrice && paymentInfo?.cardAmount) ||
+          (totalPrice === paymentInfo?.prePaymentAmount && paymentInfo?.prePaymentAmount) ? null :buttonBlock}
+        // style={paymentInfo?.cardAmount ? null: buttonBlock}
       />
 
       <img

@@ -122,6 +122,7 @@
     "company": "Company name",
     "first": "First name",
     "last": "Last name",
+    "notes": "Notes",
     "email": "E-mail",
     "phone": "Phone",
     "zipCode":"Zip Code",
@@ -257,7 +258,10 @@
   "basket": {
     "title": "Basket",
     "total_zero": "You can`t make a sale if the total cost of your purchases or the cost of a unit product (as a result of the discount) is less than 1 AMD.",
-    "no_new_count_prod": "It is not possible to increase the quantity and assortment of the product. It is necessary to complete the transaction.",
+    "no_new_count_prod": "You need to empty the basket",
+    "end_sale": "Goods are added to the basket.",
+    "add_to_prep": "The cart contains products for closing a transaction using prepayment, would you like to add this product?",
+    "price_change" : "The price of the product has changed. Please complete the sale outside of this transaction.",
     "empty": "The basket is empty",
     "total": "Total without discount  ",
     "partner": "Partner Tin",
@@ -286,6 +290,10 @@
     "customer": "Customer",
     "seeReciept": "Receipt view",
     "completeSale": "Complete the transaction",
+    "reverseAll": "Complete Return",
+  
+    "reverseProd": "Refund from advance payment",
+    "reversePrep": "Return from product list",
     "prepLimit": "If you want to make a full payment, go to the Payment section"
 
 
@@ -349,7 +357,10 @@
     "transactions" : "Transactions",
     "pretransactions" : "Incomplete Transactions",
     "cleanBasket" : "",
-    "noPrepaymentReciepts":"No prepayment transactions"
+    "noPrepaymentReciepts":"No prepayment transactions",
+    "reverseLimit": "Advance payment exceeds the value of the receipt. Make a full refund of the receipt.",
+    "receiptAmount": "Receipt value as a result of return",
+    "afterReverse": "in the result of return"
 
   }, 
   "updates": {

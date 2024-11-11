@@ -10,7 +10,8 @@ const SearchBarcode = ({
   setSearchValue, 
   byBarCodeSearching, 
   setFrom,
-  stringFrom
+  stringFrom,
+  dataGroup
 }) => {
 
   const handleChangeSearch = (e) => {
@@ -22,7 +23,8 @@ const SearchBarcode = ({
 
   //##NewNew
   useEffect(() => {
-    (searchValue === "" || !searchValue) && byBarCodeSearching("");
+    (searchValue === "" || !searchValue) && byBarCodeSearching(dataGroup, "");
+    // searchValue && byBarCodeSearching(dataGroup, searchValue);
   }, [searchValue]);
 
   return (
@@ -43,7 +45,7 @@ const SearchBarcode = ({
         autoFocus
         style={{width:"80%"}}
       />
-      <IconButton type="button" sx={{p: '10px'}} onClick={()=>byBarCodeSearching(searchValue)}>
+      <IconButton type="button" sx={{p: '10px'}} onClick={()=>byBarCodeSearching(dataGroup, searchValue)}>
        <SearchIcon fontSize="medium" />
       </IconButton>
    </Paper> 
