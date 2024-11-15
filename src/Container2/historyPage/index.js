@@ -133,6 +133,13 @@ const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
           deleteBasketGoods={deleteBasketGoods}
         />
         {!hidepagination && <PaginationSnip 
+        style={{
+          position:"fixed", 
+          bottom:0, 
+          width:"100dvw",  
+          display:"flex",
+          justifyContent: "center"
+        }}
           page={page}
           navig_Name={`history?status=${status.status}`}
           refreshPage={refreshPage}

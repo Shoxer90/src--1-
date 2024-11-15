@@ -16,8 +16,7 @@ const SaleAmountReverse = ({
   // reverse
 }) =>{
   const {t} = useTranslation();
-console.log(cashAmount, "cashAmount",)
-console.log(prePaymentAmount, "prePaymentAmount")
+
   useEffect(() => {
     if(reverseTotal >  cashAmount + prePaymentAmount) {
       setConditionState({

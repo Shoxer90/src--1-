@@ -215,7 +215,6 @@ const App = () => {
 
 
   const changeCountOfBasketItem = async(id,value) => {
-    console.log(id,value,"id,value")
     let handleArr = [] 
     await  getBasketContent().then((res) => {
       res.map((prod) => {
@@ -232,6 +231,13 @@ const App = () => {
 
   const deleteBasketItem = async(id) => {
     let handleArr = await basketContent.filter(prod => prod.id !== id)
+// handling freze prods when you want to close prepayment transaction
+      let freeze = await JSON.parse(localStorage.getItem("freezeBasketCounts"))
+      if(freeze?.length){
+        freeze = await freeze.filter(prod => prod.id !== id)
+        localStorage.setItem("freezeBasketCounts", JSON.stringify(freeze))
+      }
+// 
     if(!handleArr?.length) {
       localStorage.removeItem("endPrePayment")
       setOpenWindow({
@@ -247,8 +253,9 @@ const App = () => {
   };
   
   const deleteBasketGoods = async() => {
-    setFlag(flag+1)
+    !localStorage.getItem("endPrePayment") && setFlag(flag+1);
     localStorage.removeItem("endPrePayment")
+    localStorage.removeItem("freezeBasketCounts")
     setPaymentInfo({
       discountType: 0,
       cashAmount: 0,
@@ -269,7 +276,7 @@ const App = () => {
       prePaymentAmount: 0
     })
     await localStorage.removeItem('bascket1')
-    loadBasket()
+    !localStorage.getItem("endPrePayment") && loadBasket()
   };
   
   const setToBasket = (wishProduct, quantity, isFromPrepaymentPage) => {
@@ -385,7 +392,6 @@ const App = () => {
     })
   };
   
-  
   useEffect(() => { 
     getMeasure()
   },[t]);
@@ -404,15 +410,14 @@ const App = () => {
   },[]);
 
  useEffect(() => {
-   setPaymentInfo({
+  setPaymentInfo({
     ...paymentInfo,
     isPrepayment: openWindow?.prepayment
-   })
+  })
   },[openWindow]);
 
-  
   useEffect(() =>{
-   searchValue && debounce && byBarCodeSearching(dataGroup,debounce)
+    searchValue && debounce && byBarCodeSearching(dataGroup,debounce)
   },[debounce]);
 
   useEffect(() => {
@@ -477,7 +482,6 @@ const App = () => {
                   fetching={fetching}
                   setFetching={setFetching}
                   openWindow={openWindow}
-
                 />
               }  
             />
@@ -522,7 +526,7 @@ const App = () => {
             <Route path="*" element={<ClientCardContainer logOutFunc={logOutFunc} isBlockedUser={isBlockedUser} serviceType={user?.activeServiceType} />} />
           </Routes>
         }
-         {!isBlockedUser && <Basket 
+         {!isBlockedUser && openBasket && <Basket 
             t={t}
             userName={user?.firstname + " " + user?.lastname}
             logOutFunc={logOutFunc}
@@ -559,7 +563,7 @@ const App = () => {
             setData={setNotification}
             open={notification.length}
           /> : ""}
-         <Snackbar  
+          <Snackbar  
             sx={{ height: "100%" }}
             anchorOrigin={{   
               vertical: "top",

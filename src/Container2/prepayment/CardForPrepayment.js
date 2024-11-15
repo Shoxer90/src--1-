@@ -52,16 +52,12 @@ const CardForPrepayment = ({
       })) 
       // here is new solution will be
       if(item?.products?.length){
-        let freezeCounts = []
-        item?.products?.map((prod) => {
-          setToBasket(prod, prod?.count, true)
-          return freezeCounts.unshift({id:prod?.productId,bar:prod?.goodCode,count:prod?.count})
-        })
-        localStorage.setItem("freezeBasketCounts", JSON.stringify(freezeCounts))
-        setOpenBasket(true)
+        localStorage.setItem("freezeBasketCounts", JSON.stringify(item?.products))
+        item?.products?.forEach((prod) => setToBasket(prod, prod?.count, true))
       }
+      setOpenBasket(true)
       return setOpenWindow({
-        prepayment: false ,
+        prepayment: false,
         payment: true,
         isOpen: true,
         prePaymentAmount: item?.cashAmount + item?.cardAmount
@@ -71,7 +67,6 @@ const CardForPrepayment = ({
 
   const removeReciept = async() => {
     setOpenConfirm(false)
-
     setIsLoad(true)
     let prodArr = []
     await item?.products.forEach((prod, index) => {

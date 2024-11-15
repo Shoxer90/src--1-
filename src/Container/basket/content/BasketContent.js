@@ -2,9 +2,9 @@ import { Divider } from "@mui/material";
 import React from "react";
 import { memo } from "react";
 import styles from "../index.module.scss";
-import BascketContentItem from "./BaskteContentItem";
+import BasketContentItem from "./BasketContentItem";
 
-const BasketContent = ({
+const BasketContent = React.forwardRef(({
   avail,
   paymentInfo, 
   setAvail,
@@ -18,7 +18,9 @@ const BasketContent = ({
   setIsEmpty,
   createMessage,
   totalPrice,
-  freezeCount
+  freezeCount,
+  message,
+  ref
 }) => {
 
   return (
@@ -26,7 +28,7 @@ const BasketContent = ({
     <Divider style={{margin:1,backgroundColor:"gray"}} />
     {basketContent && basketContent?.map((el, i) => (
       <span key={i}>
-        <BascketContentItem 
+        <BasketContentItem 
           index={i}
           el={el}
           avail={avail}
@@ -43,13 +45,14 @@ const BasketContent = ({
           loadBasket={loadBasket}
           totalPrice={totalPrice}
           freezeCount={freezeCount}
+          message={message}
+          ref={ref}
         />
         <Divider sx={{backgroundColor:"gray"}} color="black" />
       </span>
     ))}
   </div>
 )
-}
-
+})
 
 export default memo(BasketContent);

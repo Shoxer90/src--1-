@@ -44,7 +44,6 @@ const PrepaymentAmountReverseV2 = ({
  
 
   const createBasketContent = async() => {
-    console.log((JSON.parse(localStorage.getItem("basketExistId"))).length,"length")
     if((JSON.parse(localStorage.getItem("basketExistId"))).length) {
       setMessage({m:`${t("basket.no_new_count_prod")}`, t:"info"})
       return
@@ -57,7 +56,6 @@ const PrepaymentAmountReverseV2 = ({
         "customer_Name": customer_Name,
         "customer_Phone": customer_Phone,
       })
-      console.log(localStorage.getItem("endPrePayment"),"localStorage.g")
 
     if(!localStorage.getItem("endPrePayment")) {
       localStorage.setItem("endPrePayment", JSON.stringify({
