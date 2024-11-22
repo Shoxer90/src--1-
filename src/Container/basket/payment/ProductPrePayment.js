@@ -2,7 +2,6 @@ import React, { useEffect, useState, memo} from "react";
 import styles from "../index.module.scss";
 import { numberSpacing } from "../../../modules/numberSpacing";
 import { Divider } from "@mui/material";
-import payment from ".";
 
 const ProductPrePayment = ({
   t, 
@@ -10,8 +9,7 @@ const ProductPrePayment = ({
   checkDiscountVsProdPrice, 
   paymentInfo, 
   setPaymentInfo,
-  message, setMessage,
-  setBlockTheButton,setType,
+  setBlockTheButton,
 }) => {
   const [val, setVal] = useState(totalPrice);
   const [flag, setFlag] = useState();

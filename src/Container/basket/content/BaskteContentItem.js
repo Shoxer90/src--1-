@@ -20,16 +20,27 @@ const BascketContentItem = ({
   createMessage,
   totalPrice,
   freezeCount,
-  index
+  message,
 }) => {
   const [notAvailable, setNotAvailable] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const ref = useRef();
   const {t} = useTranslation();
+
   const removeOneProduct = () => {
     notAvailable && setAvail(avail.filter(item => item!==el.id))
     deleteBasketItem(el.id)
     setOpenDialog(false)
+  }
+
+  const makeErrStyle = (bool) => {
+    bool ?  ref.current.style={
+      color:"red",
+      fontSize:"110%",
+      border:"solid red 2px"}:
+      ref.current.style.color="";
+      ref.current.style.border="";
+      ref.current.style.fontSize=""
   }
 
   const handleChangeInput = async(e) => {
@@ -84,35 +95,27 @@ const BascketContentItem = ({
   };
 
   const checkPriceChange = (e) => {
-    console.log( +e.target.value," e.target.value")
-    if(+e.target.value > el?.count){
+    makeErrStyle(false)
+    if(e.target.value === "" || !e.target.value) {
+      makeErrStyle(true)
+      handleChangeForClosePrePayment(e)
+    }else if(el?.remainder < e?.target?.value) {
+      makeErrStyle(true)
+      handleChangeForClosePrePayment(e)
+      createMessage("error", t("dialogs.havenot"))
+    }else {
       byBarCode("GetAvailableProducts", el?.goodCode).then((res) => {
         if(res?.length) {
           res.forEach((item) => {
-            if(item?.barCode === el?.goodCode){
-              if(+e.target.value > item?.remainder) {
-                return createMessage("error", t("dialogs.havenot"))
-              }else if(el?.price !== item?.price) {
-                return createMessage("error", t("dialogs.havenot"))
-              }else{
-                console.log(e,+e.target.value, "mtav 1")
-               return handleChangeForClosePrePayment(e)
-              }
+            if(item?.barCode === el?.goodCode && el?.price === item?.price) {
+              return handleChangeForClosePrePayment(e)
             }else{
+              makeErrStyle(true)
               return createMessage("error", t("dialogs.havenot"))
             }
           })
-        }else{
-          console.log("mtav 3")
-
-           createMessage("error", t("dialogs.havenot"))
-           return
         }
-      })
-    }else{
-      console.log("mtav 4")
-
-      return handleChangeForClosePrePayment(e)
+      }) 
     }
   };
 
@@ -162,7 +165,7 @@ const BascketContentItem = ({
       createMessage("error", t("history.reverseLimit"))
     };
 
-  }, [totalPrice])
+  }, [totalPrice]);
 
   return (
     <div className={styles.basketContent_item} style={{border:notAvailable? "red solid 2px":"none"}}> 

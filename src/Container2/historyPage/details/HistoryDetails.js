@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { Divider } from "@mui/material";
@@ -11,52 +10,41 @@ import HistoryDetailsItem from "./HistoryDetailsItem";
 import HistoryDetailsFooter from "./HistoryDetailsFooter";
 import { useTranslation } from "react-i18next";
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function HistoryDetails({
+  item,
   openDetails,
-  id, 
-  products,
-  setOpenDetails,
-  cashier,
   originTotal,
-  date,
+  setOpenDetails,
   message,
   setMessage,
-  hdmMode,
-  item,
   amountForPrePayment, 
   setAmountForPrePayment
 }) {
+
   const {t} = useTranslation();
-  const [prodItems, setProdItems] = useState([]);
 
   const handleClose = () => {
     setMessage()
     setOpenDetails(false);
   };
-
+  
   const totalCounterForPrePayment = () => {
     let total = 0
-    let arr = []
-    products && products.map((product, index) => {
+    item?.products && item?.products.map((product, index) => {
       total += product?.count * product?.discountedPrice
-      return arr.push(<HistoryDetailsItem key={index} {...product} t={t} index={index+1} />)
     })
-    setAmountForPrePayment({rest:total - originTotal,amount:total})
-    setProdItems(arr)
-  }
+    setAmountForPrePayment({rest:total - originTotal, amount:total})
+  };
 
   useEffect(() => {
     item?.saleType === 5 && 
     totalCounterForPrePayment() && 
     localStorage.setItem("prepaymentAmount", item?.cardAmount + item?.cashAmount)
   }, []);
-
-
 
   return (
     <Dialog
@@ -67,27 +55,32 @@ export default function HistoryDetails({
     >
       <div style={{fontSize:"80%", padding:"5px"}}>
         <DialogTitle style={{display:"flex", justifyContent:"space-between", padding:"0px",paddingLeft:"10px",position:"sticky"}}>
-          <span>  {id} {t("history.check_details")}</span>
+          <span>  {item?.id} {t("history.check_details")}</span>
           <Button onClick={handleClose}> <CloseIcon /> </Button>
         </DialogTitle>
 
         <Divider color="black" />
         
-        <div>{hdmMode ===2 && "Fizikakan"}</div>
+        <div>{item?.hdmMode ===2 && "Fizikakan"}</div>
         <div style={{margin:"3px 10px", display:"flex",justifyContent:"space-between"}}>
           <div>
-            <div>{date.slice(0,10)} {date.slice(11,19)} </div>
-            <div>{t("settings.cashier")}: {cashier}</div>
+            <div>{item?.date.slice(0,10)} {item?.date.slice(11,19)} </div>
+            <div>{t("settings.cashier")}: {item?.cashier?.id}</div>
           </div>
         </div>
+
+        {
+          item?.products && item?.products.map((prod,index) => {
+            return <HistoryDetailsItem
+              key={prod?.id}
+              index={index}
+              {...prod}
+            />
+          })
+        }
+
         <Divider sx={{bgColor:"black"}} />
-        <DialogContent sx={{p:1}}>
-          {prodItems}
-          <HistoryDetailsFooter 
-            item={item} 
-            amountForPrePayment={amountForPrePayment}
-          />
-        </DialogContent>
+          <HistoryDetailsFooter item={item} amountForPrePayment={amountForPrePayment} />
       </div> 
       {message &&
         <Dialog open={Boolean(message)}>

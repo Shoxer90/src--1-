@@ -61,7 +61,7 @@ const ProductPayment = ({
           {t("history.total")} 
         </span>
         <input 
-        value={numberSpacing(totalPrice.toFixed(2))}
+        value={numberSpacing(totalPrice ? totalPrice?.toFixed(2) : 0)}
         readOnly/>
       </div>
 

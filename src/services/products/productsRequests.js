@@ -89,7 +89,24 @@ export const cheackProductCount = async(body) => {
   }catch(err) {
     return err.response?.status
   }
-}
+};
+
+// check product available count and price
+export const cheackProductCountnPrice = async(body) => {
+  // [
+  //   {
+  //     "id": 20248,
+  //     "count": 2141,
+  //     "price": 12
+  //   }
+  // ]
+  try{
+    const data = await axios.put( baseUrl + "Products/CheackProduct", body, option());
+    return data?.data
+  }catch(err) {
+    return err.response?.status
+  }
+} 
 
 export const searchByName = async(input) =>{
   const option = {

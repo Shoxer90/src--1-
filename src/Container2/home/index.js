@@ -150,7 +150,7 @@ const HomePage = ({
       } 
     }
     
-  }, [fetching, dataGroup, isLogin, openNewProd, content,flag]);
+  }, [fetching, dataGroup, isLogin, openNewProd, content, flag]);
 
   return(
     <div className={styles.productPage}>

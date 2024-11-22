@@ -45,13 +45,12 @@ const HistoryItems = ({
   };
 
   const openCloseHDM = async(id) => {
-    setLoad(true)
-    if(pageName?.status !== "Paid" && pageName?.status !== "Prepayment" ) {
-      setOpenDetails(true)
-      if(pageName?.status === "Canceled"){
-        setReverdLink(item?.link)
-      }
-    }else if(!openHDM ){
+    if(pageName?.status === "Unpaid") {
+      return setOpenDetails(true)
+    }else if(pageName?.status === "Canceled"){
+      return setReverdLink(item?.link)
+    }else{
+      setLoad(true)
       await hdm_generate(id).then((resp) => {
         setLoad(false)
         if(resp?.res?.printResponse){
@@ -60,9 +59,6 @@ const HistoryItems = ({
           setSaleData(resp)
           setLoad(false)
           setOpenHDM(true)
-        }else if(resp === 500){
-        setLoad(false)
-          setMessage(t("authorize.errors.noHdm"))
         }else if(resp === 401){
           setLoad(false)
           logOutFunc()
@@ -120,10 +116,10 @@ const HistoryItems = ({
       {filterBody.includes("recieptId") && 
         <TableCell style={{padding:"0px 5px", textAlign:"center"}}>
           <span style={{fontWeight:700}}>
-            {item?.recieptId}
+            {item?.recieptId || ""}
           </span>
           <div>
-            <Button sx={{m:1,fontSize:"70%", background:'orange', width:"73.8px"}} size="small" onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>
+            {item?.link ? <Button sx={{m:1,fontSize:"70%", background:'orange', width:"73.8px"}} size="small" onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>:""}
             {pageName?.status  === "Paid" ? <Button size="small"  sx={{ fontSize:"65%", background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}
           </div>
         </TableCell>
@@ -148,26 +144,15 @@ const HistoryItems = ({
       }
       {filterBody.includes("partnerTin") && <TableCell style={{padding:"0px 16px"}}>{item?.partnerTin || t("history.notspecified")}</TableCell>}
       {filterBody.includes("cashier") && <TableCell style={{padding:"0px 16px"}}>{item?.cashier.fullName}</TableCell>}
-      {/* 12.09 */}
-      {/* <TableCell>
-        <Button sx={{mr:1, background:'orange'}} onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>
-        {pageName?.status  === "Paid" || pageName?.status  === "Prepayment" ? <Button sx={{mr:1, background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}
-      </TableCell> */}
     </TableRow>
     { openDetails && pageName?.status ==="Unpaid" &&
       <HistoryDetails
+        item={item}
         openDetails={openDetails}
-        id={item?.id} 
-        products={item?.products}
-        setOpenDetails={setOpenDetails}
-        cashier={item?.cashier.id}
         originTotal={originTotal}
-        date={item?.date}
+        setOpenDetails={setOpenDetails}
         message={message}
         setMessage={setMessage}
-        hdmMode={item?.hdmMode}
-        item={item}
-        recieptId={item?.recieptId}
         amountForPrePayment={amountForPrePayment} 
         setAmountForPrePayment={setAmountForPrePayment}
       />

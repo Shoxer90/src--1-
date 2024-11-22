@@ -21,6 +21,7 @@ import SearchBarcode from "../../SearchBarcode";
 import { taxCounting } from "../../modules/modules.js";
 import ProductPrePayment from "./payment/ProductPrePayment.js";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import isBoolean from "validator/lib/isBoolean.js";
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -51,12 +52,12 @@ const Bascket = ({
   setFetching,
   setCurrentPage,
   openWindow,setOpenWindow,
-  paymentInfo, setPaymentInfo
+  paymentInfo, setPaymentInfo,
 }) => {
   const [screen, setScreen] = useState(window.innerWidth);
   const [saleData, setSaleData] = useState();
   const [loader, setLoader] = useState(false);
-  const [totalPrice,setTotalPrice] = useState(0);
+  const [totalPrice,setTotalPrice] = useState();
   const [openHDM, setOpenHDM] = useState(false);
   const [openQr,setOpenQr] = useState(false);
   const [openLinkQR, setOpenLinkQr] = useState(false);
@@ -74,6 +75,7 @@ const Bascket = ({
   const [taxCount, setTaxCount] = useState(0);
   const [seeBtn,setSeeBtn] = useState();
   const [freezeCount, setFreezeCount] = useState([]);
+
   const closePhoneDialog = () => {
     setOpenPhonePay(false)
     setOpenBasket(false)
@@ -94,13 +96,15 @@ const Bascket = ({
       return item
     })
   };
-
   const createPaymentSales = async() => {
     setIsEmpty(false)
     createMessage("","")
     let total = 0
-    let arr = await localStorage.getItem("basketIdCount")
-    const salesArr = await JSON.parse(arr)
+    let arr = await JSON.parse(localStorage.getItem("basketIdCount"))
+    if(!freezeCount?.length && localStorage.getItem("endPrePayment")) {
+      setFreezeCount(arr)
+    }
+    const salesArr =  arr
     if(salesArr?.length) {
       setSingleClick({})
       basketContent.forEach((item) => {
@@ -228,6 +232,7 @@ const Bascket = ({
       setDataQr(result?.data?.message);
       setOpenLinkQr(true)
     }
+    deleteBasketGoods()
     setFetching(true)
   };
 
@@ -262,12 +267,14 @@ const Bascket = ({
     setContent([])
     setCurrentPage(1)
     setFetching(true)
+    setFlag(!flag)
     setOpenHDM(false)
     deleteBasketGoods()
   };
 
   const closeDialog = () => {
     setSingleClick({})
+    console.log(basketContent,"basket content")
     setMessage()
     if(type !== "error") {
       deleteBasketGoods() 
@@ -295,21 +302,27 @@ const Bascket = ({
 
   useEffect(()=> {
     createPaymentSales()
-   searchValue?.length && setSearchValue("")
+    searchValue?.length && setSearchValue("")
   }, [basketContent, flag, openBasket]);
 
   const getFreezedCounts = async() => {
-    if(localStorage.getItem("endPrePayment")) {
-      const data = await JSON.parse(localStorage.getItem("freezeBasketCounts"))
-      console.log(data,"freez data")
+    if(localStorage.getItem("freezeBasketCounts")) {
+      const data = await (JSON.parse(localStorage.getItem("freezeBasketCounts")))
       setFreezeCount(data)
     }
-  }
+  };
 
   useEffect(() => {
     getFreezedCounts()
   }, [])
 
+  useEffect(() => {
+
+    if(totalPrice - paymentInfo?.prePaymentAmount < 0 && paymentInfo?.prePaymentAmount ){
+      createMessage("error", t("history.reverseLimit"))
+    }
+
+  }, [totalPrice]);
 
   return (
     <Dialog
@@ -345,7 +358,6 @@ const Bascket = ({
               setPaymentInfo={setPaymentInfo}
               paymentInfo={paymentInfo}
               setSingleClick={setSingleClick}
-              setFetching={setFetching}
             />
             <Divider sx={{mt:2}}/>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -386,7 +398,8 @@ const Bascket = ({
                 setIsEmpty={setIsEmpty}
                 totalPrice={totalPrice}
                 freezeCount={freezeCount}
-
+                message={message}
+                setBlockTheButton={setBlockTheButton}
               />
             </DialogContent>
             <Divider style={{margin:2,height:"2px", backgroundColor:"black"}}/>
