@@ -4,7 +4,7 @@ import { memo } from "react";
 import styles from "../index.module.scss";
 import BasketContentItem from "./BasketContentItem";
 
-const BasketContent = React.forwardRef(({
+const BasketContent = ({
   avail,
   paymentInfo, 
   setAvail,
@@ -14,13 +14,8 @@ const BasketContent = React.forwardRef(({
   screen,
   flag,
   setSingleClick,
-  loadBasket,
-  setIsEmpty,
   createMessage,
-  totalPrice,
   freezeCount,
-  message,
-  ref
 }) => {
 
   return (
@@ -29,30 +24,24 @@ const BasketContent = React.forwardRef(({
     {basketContent && basketContent?.map((el, i) => (
       <span key={i}>
         <BasketContentItem 
-          index={i}
           el={el}
           avail={avail}
           setAvail={setAvail}
-          paymentInfo={paymentInfo}
-          setIsEmpty={setIsEmpty}
           deleteBasketItem={deleteBasketItem}
           changeCountOfBasketItem={changeCountOfBasketItem}
+          paymentInfo={paymentInfo}
           screen={screen}
           flag={flag}
-          setSingleClick={setSingleClick}
           createMessage={createMessage}
           //unused props
-          loadBasket={loadBasket}
-          totalPrice={totalPrice}
+          setSingleClick={setSingleClick}
           freezeCount={freezeCount}
-          message={message}
-          ref={ref}
         />
         <Divider sx={{backgroundColor:"gray"}} color="black" />
       </span>
     ))}
   </div>
 )
-})
+}
 
 export default memo(BasketContent);

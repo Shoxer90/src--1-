@@ -75,6 +75,7 @@ const Bascket = ({
   const [taxCount, setTaxCount] = useState(0);
   const [seeBtn,setSeeBtn] = useState();
   const [freezeCount, setFreezeCount] = useState([]);
+
   const closePhoneDialog = () => {
     setOpenPhonePay(false)
     setOpenBasket(false)
@@ -102,7 +103,6 @@ const Bascket = ({
     let arr = await JSON.parse(localStorage.getItem("basketIdCount"))
     if(!freezeCount?.length && localStorage.getItem("endPrePayment")) {
       setFreezeCount(arr)
-      console.log(arr,"ARR")
     }
     const salesArr =  arr
     if(salesArr?.length) {
@@ -232,6 +232,7 @@ const Bascket = ({
       setDataQr(result?.data?.message);
       setOpenLinkQr(true)
     }
+    deleteBasketGoods()
     setFetching(true)
   };
 
@@ -266,12 +267,14 @@ const Bascket = ({
     setContent([])
     setCurrentPage(1)
     setFetching(true)
+    setFlag(!flag)
     setOpenHDM(false)
     deleteBasketGoods()
   };
 
   const closeDialog = () => {
     setSingleClick({})
+    console.log(basketContent,"basket content")
     setMessage()
     if(type !== "error") {
       deleteBasketGoods() 
@@ -305,7 +308,6 @@ const Bascket = ({
   const getFreezedCounts = async() => {
     if(localStorage.getItem("freezeBasketCounts")) {
       const data = await (JSON.parse(localStorage.getItem("freezeBasketCounts")))
-      console.log(data,"DTATA")
       setFreezeCount(data)
     }
   };
@@ -315,13 +317,7 @@ const Bascket = ({
   }, [])
 
   useEffect(() => {
-    console.log(totalPrice,paymentInfo?.prePaymentAmount,"totalPrice")
-    //  return ()=> {
-    //   if(localStorage.getItem("endPrePayment") && totalPrice !== undefined && totalPrice - paymentInfo?.prePaymentAmount < 0) {
-    //     console.log("papap")
-    //     createMessage("error", t("history.reverseLimit"))
-    //   }
-    // };
+
     if(totalPrice - paymentInfo?.prePaymentAmount < 0 && paymentInfo?.prePaymentAmount ){
       createMessage("error", t("history.reverseLimit"))
     }
@@ -362,7 +358,6 @@ const Bascket = ({
               setPaymentInfo={setPaymentInfo}
               paymentInfo={paymentInfo}
               setSingleClick={setSingleClick}
-              setFetching={setFetching}
             />
             <Divider sx={{mt:2}}/>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -404,6 +399,7 @@ const Bascket = ({
                 totalPrice={totalPrice}
                 freezeCount={freezeCount}
                 message={message}
+                setBlockTheButton={setBlockTheButton}
               />
             </DialogContent>
             <Divider style={{margin:2,height:"2px", backgroundColor:"black"}}/>

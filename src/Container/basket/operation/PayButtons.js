@@ -11,11 +11,12 @@ const PayButtons = ({
   totalPrice,
   singleClick,
   setSingleClick,
-  openWindow
+  openWindow,
+  someIssue
 }) => {
   // ete kanxavjari chek enq pakum 
   // prePaymentAmount-@ galis a voch zro
-
+console.log(blockTheButton,"BLOCK THE BTN")
   const buttonBlock = {
     opacity: "0.3",
     border:"red",
@@ -24,7 +25,7 @@ const PayButtons = ({
   return(
     <div 
       className={styles.bask_container_body_footer_icons}
-      style={blockTheButton ? buttonBlock : null}
+      style={blockTheButton || someIssue?.status ? buttonBlock : null}
     >
       <img
         src="/image/cash.png"

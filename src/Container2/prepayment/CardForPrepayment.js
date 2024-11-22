@@ -126,39 +126,32 @@ const CardForPrepayment = ({
           {t("units.amd")} / {t("basket.remainder")} {total - (item?.cashAmount + item?.cardAmount)} {t("units.amd")}
         </div>
   
-        <div style={{width:"91%", display:"flex"}}>
-          {/* {item?.link?.trim() ?  */}
-            <Button variant="contained" size="small">
-              <a 
-                style={{padding:"0px", textDecoration:"none", color:"white"}} 
-                href={item?.link?.trim() ? item?.link : null} 
-                rel="noreferrer" 
-                target="_blank"
-              >
-                {t("basket.seeReciept")}
-              </a>
-            </Button>
-          {/* : ""} */}
-        <Button 
-          variant="contained" 
-          size="small"
-          sx={{background:"orangered"}}
-          onClick={()=>setOpenConfirm(true)}
-        >
-          {t("basket.reverseAll")}
+        <div style={{width:"fit-content", display:"flex",margin:"2px"}}>
+          <Button variant="contained" sx={{fontSize:"60%"}}>
+            <a 
+              style={{padding:"0px", textDecoration:"none", color:"white"}} 
+              href={item?.link?.trim() ? item?.link : null} 
+              rel="noreferrer" 
+              target="_blank"
+            >
+              {t("basket.seeReciept")}
+            </a>
+          </Button>
+          <Button 
+            variant="contained" 
+            sx={{background:"orangered", fontSize:"56%", letterSpacing:0.3}}
+            onClick={()=>setOpenConfirm(true)}
+          >
+            {t("history.prepaymentReverse")}
 
-        </Button>
-        
-        <Button 
-          variant="contained" 
-          size="small"
-          sx={{background:"#3FB68A"}}
-          onClick={()=>{
-            createBasketContent()
-          }}
-        >
-          {t("basket.completeSale")}
-        </Button>
+          </Button>
+          <Button 
+              variant="contained" 
+              sx={{background:"#3FB68A", fontSize:"60%"}}
+              onClick={()=>createBasketContent()}
+            >
+              {t("basket.completeSale")}
+            </Button>
       </div>
         <ConfirmDialog 
           t={t}
@@ -177,40 +170,3 @@ const CardForPrepayment = ({
 };
 
 export default memo(CardForPrepayment);
-
-      // {/* <ButtonGroup style={{margin:"3px"}}>
-      //     {item?.link?.trim() ? 
-      //       <Button
-      //         variant="contained"
-      //         sx={{background:"orange", fontSize:"61%",fontWeight:600,letterSpacing:"1px"}}
-      //         size="small"
-      //       >
-      //         <a style={{padding:"0px", textDecoration:"none", color:"white"}} href={item?.link} rel="noreferrer" target="_blank">
-      //           {t("basket.seeReciept")}
-      //         </a>
-      //       </Button>
-      //    : ""}
-      //   <Button
-      //     variant="contained"
-      //     onClick={createBasketContent}
-      //     sx={{background:"#3FB68A", fontSize:"62%", fontWeight:600,letterSpacing:"1px"}}
-      //     size="small"
-      //   >
-      //     {t("basket.completeSale")}
-      //   </Button>
-      //   </ButtonGroup> */}
-
-      // {/* <Button variant="contained" 
-      //     sx={{background:"#3FB68A"}}
-      //   >
-      //     {t("basket.reverseProd")}
-
-      //   </Button> */}
-      //   {/* <Button 
-      //     variant="contained" 
-      //     sx={{background:"orangered"}}
-          
-      //   >
-      //     {t("basket.reversePrep")}
-
-      //   </Button> */}

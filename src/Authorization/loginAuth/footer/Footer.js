@@ -9,7 +9,16 @@ const Footer = ({color}) => {
 
 
   return (
-    <div>
+    <div style={{
+        background:"white",
+        position:"fixed", 
+        bottom:0, 
+        width:"50dvw",  
+        zIndex:1000,
+        fontSize:"80%"
+        // display:"flex",
+        // justifyContent: "center"
+    }}>
       <div style={{height:"2px", backgroundColor:"#3FB68A", margin:"10px 0px"}}></div>
       
       <div className={styles.payxInfo}> 

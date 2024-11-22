@@ -158,6 +158,9 @@
     "beforeRegister": "Аccept the ",
     "beforeRegisterTerms": "terms of the service",
     "beforeRegisterDialog": "Please accept the  ",
+    "infoInLoginPage1": "Storex is designed to make trading simple and easy.",
+    "infoInLoginPage2": "For more information visit ",
+    "infoInLoginPage3": "Also download the StoreX app to arrange shopping via phone.",
     "errors": {
       "cashLimit": "Cash transaction cannot exceed 300,000 AMD",
       "bank_agreement":"To accept payments through QR or Link, it is necessary to sign a service contract with a partner bank.",
@@ -331,6 +334,8 @@
     "transactionType":"Transaction Type",
     "prepaymentRedemption": "Prepayment",
     "prepaymentRedemption1": "Prepayment redemption",
+    "prepaymentRedemption2": "Uncompleted Transactions",
+    "prepaymentRedemption3": "Using prepayment",
     "prepaymentReverse": "Prepayment Reverse",
     "restAmountReverse": "Balance to be paid",
     "redacted": "Redacted",

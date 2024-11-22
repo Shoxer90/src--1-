@@ -7,13 +7,11 @@ import styles from "../index.module.scss";
 import ConfirmDialog from "../../../Container2/dialogs/ConfirmDialog";
 import { useState } from "react";
 
-const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent, setSingleClick, setFetching}) => {
+const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent, setSingleClick}) => {
 
   const [openDialog,setOpenDialog] = useState(false);
 
    const cleanAllGoods = () => {
-    
-
    setSingleClick({pointerEvents:"none"})
    deleteBasketGoods()
     setOpenDialog(false)

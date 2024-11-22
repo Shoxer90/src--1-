@@ -1,10 +1,11 @@
 import { Divider } from "@mui/material";
 import React, { memo, useEffect, useState } from "react";
 import styles from "../index.module.scss";
+import { useTranslation } from "react-i18next";
 const HistoryDetailsItem = ({
-t,
 unit,
-name,index,
+name,
+index,
 brand,
 count,
 price,
@@ -13,6 +14,7 @@ discountType,
 adgCode
 }) => {
   const [prodPrice, setProdPrice] = useState();
+  const {t} = useTranslation();
   useEffect(() => {
     if(discount) {
       discountType === 2 ? setProdPrice(price - discount):
@@ -26,7 +28,7 @@ adgCode
   return (
     <div style={{fontSize:"90%",padding:"1px 6px"}}>
       <div className={styles.rowFlexBetween}>
-        <strong> {index}. {brand} {name} </strong> 
+        <strong> {index+1}. {brand} {name} </strong> 
         <span>( { adgCode} ) </span>
       </div>  
       <div>

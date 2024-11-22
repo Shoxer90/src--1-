@@ -32,7 +32,7 @@ const PrePaymentList = ({
   
 
   const getPrepaymentList = () => {
-    getPrepayment({page: currentPage, count: 24, searchString: ""}).then((res) =>{
+    getPrepayment({page: currentPage, count: 24, searchString: "", isPayd:false}).then((res) =>{
       setList(res?.data)
       setCount(res?.count)
       setLoad(false)
@@ -51,7 +51,7 @@ const PrePaymentList = ({
     <div className={styles.container}>
       { list.length ?
         <>
-        <h3>{t("history.pretransactions")}</h3>
+          <h3>{t("history.pretransactions")}</h3>
           <div className={styles.container_cards}>
             {list.map((item) => 
               <CardForPrepayment 
@@ -68,6 +68,8 @@ const PrePaymentList = ({
               />
             )}
           </div>
+        </>: <h4 style={{color:"lightgrey", marginTop:"50px"}}>{t("history.noPrepaymentReciepts")}</h4>
+      }
           <div style={{display:"flex", justifyContent:"center"}}>
             {count ?<Pagination
               style={{
@@ -90,8 +92,6 @@ const PrePaymentList = ({
               )}
             /> : null}
           </div>
-        </>: <h4 style={{color:"lightgrey", marginTop:"50px"}}>{t("history.noPrepaymentReciepts")}</h4>
-      }
       <Dialog open={load}><Loader /></Dialog>
     </div>
   )

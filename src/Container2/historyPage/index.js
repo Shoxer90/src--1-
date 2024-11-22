@@ -4,7 +4,7 @@ import { useState } from "react";
 import { filterByDate, getSaleProducts } from "../../services/user/userHistoryQuery";
 import styles from "./index.module.scss";
 import SearchHistory from "./searchtab/SearchHistory";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import PaginationSnip from "../pagination";
 import { Dialog } from "@mui/material";
 import Loader from "../loading/Loader";
@@ -24,16 +24,13 @@ const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
   const search = useLocation().search;
   const status = {status:new URLSearchParams(search).get("status")};
   const page = + (new URLSearchParams(search).get("page")) || 1 ;
-
   
   const coordinator = {
     startDate: new URLSearchParams(search).get('startDate'),
     endDate: new URLSearchParams(search).get('endDate'),
-  }
+  };
   
-  const [searchParams, setSearchParams] = useSearchParams();
   const [historyContent, setHistoryContent] = useState();
-  const [pageData, setPageData] = useState("Paid");
   const [isLoad, setLoad] = useState(true);
   const [hidepagination, setHidePagination] = useState(false);
   const [columns, setColumns] = useState([]);
@@ -41,16 +38,11 @@ const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
 
   const refreshPage = item =>{
     setLoad(true)
-    setSearchParams({page: item})
   };
 
   const filterFunc = async(value) => {
     setLoad(true)
     setHidePagination(true)
-    setSearchParams({
-      ...status,
-      ...value,
-    })
     await filterByDate(value, status?.status).then((resp) => {
       setLoad(false)
       setHistoryContent(resp)
@@ -60,7 +52,6 @@ const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
 
     const initialFunc = async(data,page=1) => {
       setLoad(true)
-      setSearchParams({status:data, page})
       let response = []
       if(data === "Paid"){
         response = await getSaleProducts("GetSaleProductsByPage", {page: page, count: perPage})
@@ -69,7 +60,9 @@ const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
       }else if(data === "Canceled"){
        response = await getSaleProducts("GetReveredHistoryByPage", {page: page, count: perPage})
       }else if(data === "Prepayment"){
-        response = await getPrepayment({page: page, count: perPage, searchString:""})
+        response = await getPrepayment({page: page, count: perPage, searchString:"", isPayd: false})
+       }else if(data === "EndPrepayment"){
+        response = await getPrepayment({page: page, count: perPage, searchString:"", isPayd: true})
        }
       if(response === 401){
         logOutFunc()
@@ -88,7 +81,7 @@ const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
       initialFunc(status?.status, page)
     }
 
-  }, [page, pageData]);
+  }, [page]);
 
   useEffect(() => {
     if(!localStorage.getItem("historyColumn")){

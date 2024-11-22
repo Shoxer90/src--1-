@@ -109,3 +109,17 @@ export async function closePrepaymentReceiptWithSelling(body) {
 };
 
 
+// New lite history queries, get whole history and get history by Id
+
+export async function getHistoryById(id) {
+  try {
+    const data = await axios.get(baseUrl + `History/GetHistoryByRecieptId?code=${id}`,option())
+    console.log(data?.data, "new")
+    return data?.data
+  }catch(err) {
+    console.log(err?.response?.status, "new")
+    return err?.response?.status
+  }
+
+}
+

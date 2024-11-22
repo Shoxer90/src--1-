@@ -158,6 +158,9 @@
     "beforeRegister": "Ընդունում եմ ",
     "beforeRegisterTerms": "սպասարկման պայմանները",
     "beforeRegisterDialog": "Անհրաժեշտ է ընդունել ",
+    "infoInLoginPage1": "Storex on-line առևտրային ծրագիրը նախատեսված է առևտուրը պարզ և հեշտ կատարելու համար:",
+    "infoInLoginPage2": "Մանրամասն տեղեկությունների համար այցելեք ",
+    "infoInLoginPage3": "Ներբեռնեք նաև StoreX հավելվածը՝ առևտուրը հեռախոսի միջոցով կազմակերպելու համար։",
     "errors": {
       "cashLimit": "Կանխիկ գործարքը չի կարող գերազանցել 300 000 ՀՀ դրամը",
       "bank_agreement":"QR-ի կամ Link հղումների միջոցով վճարումներ ընդունելու համար անհրաժեշտ է կնքել սպասարկման պայմանագիր՝գործընկեր բանկի հետ։",
@@ -332,6 +335,8 @@
     "transactionType":"Գործարքի տեսակը",
     "prepaymentRedemption": "Կանխավճար",
     "prepaymentRedemption1": "Կանխավճարի օգտագործում",
+    "prepaymentRedemption2": "Չավարտված գործարքներ",
+    "prepaymentRedemption3": "Կանխավճարի օգտագործումով",
     "prepaymentReverse":"Կանխավճարի վերադարձ",
     "restAmountReverse":"Վճարման ենթակա մնացորդ",
     "redacted": "Խմբագրված",

@@ -11,6 +11,7 @@
   width: 48dvw;
   font-weight: 600;
   align-self: center;
+  
 }
 
 .notifications {
@@ -26,9 +27,9 @@
   width: 98dvw;
   justify-content: space-between;
    &_content{
-    height:82dvh;
+  width: 50dvw;
+  // height:82dvh;
    }
-  // padding: 0px 20px;
 } 
 
 @media screen and (max-width: 770px) {

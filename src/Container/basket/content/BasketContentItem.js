@@ -9,29 +9,27 @@ import { useTranslation } from 'react-i18next';
 const BasketContentItem = ({
   el, 
   avail, 
-  paymentInfo, 
   setAvail, 
-  setIsEmpty, 
   deleteBasketItem,
   changeCountOfBasketItem,
   screen,
   flag,
-  setSingleClick,
   createMessage,
-  message,
   freezeCount,
 }) => {
   const [notAvailable, setNotAvailable] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [currentProd, setCurrentProd] = useState({});
+  const [errRed, setErrRed] = useState(false);
+  const [ownCount, setOwnCount] = useState(0);
+
   const ref = useRef();
   const {t} = useTranslation();
 
   const removeOneProduct = async() => {
-    notAvailable && setAvail(avail.filter(item => item!==el.id))
+    notAvailable && setAvail(avail.filter(item => item !== el.id))
     deleteBasketItem(el.id)
     setOpenDialog(false)
-  }
+  };
 
   const getErrorStyle = (isErr) => {
     if(isErr) {
@@ -42,74 +40,17 @@ const BasketContentItem = ({
       ref.current.style.color="";
       ref.current.style.border="";
     }
-  }
-
-  const handleChangeInput = async(e) => {
-      setNotAvailable(false) 
-      setIsEmpty(false)
-      setSingleClick({
-        "cash": false,
-        "card": false,
-        "qr": false,
-        "link": false
-      })
-      ref.current.style.color="";
-      ref.current.style.border="";
-      ref.current.style.fontSize="";
-      if(e.target.value === "" || +e.target.value === 0){
-        ref.current.style.border="solid red 2px"
-        ref.current.style.color="red"
-      }
-      if(e.target.value[0] === "0" && e.target.value[1] !== "."){
-        return changeCountOfBasketItem( el?.id, (+e.target.value).toFixed())
-      }
-      if((+e.target.value > el?.remainder) || (el?.price <= 1 && paymentInfo?.discount)){
-        ref.current.style.color="red"
-        ref.current.style.fontSize="110%"
-        ref.current.style.border="solid red 2px"
-        createMessage("error", t("dialogs.havenot"))
-      }
-      changeCountOfBasketItem( el?.id, e.target.value)
   };
-
-  const handleCountChange = (event) => {
-    setSingleClick({})
-    let isValid = false;
-    const data = event.target.value;
-    if (el?.otherLangMeasure === "հատ"){
-      const needSymb = /^[0-9]*$/;
-      isValid = needSymb.test(data)
-      if(isValid) {
-        handleChangeInput(event)
-      }else{
-        return
-      }
-    }else{
-      const needSymb = /^\d+(\.\d{0,3})?$/
-      isValid = needSymb.test(data)
-      if(isValid || event.target.value=== "") {
-        handleChangeInput(event)
-      }else{
-        return
-      }
-    }
-  };
-
 
   const newFunction = (target) => {
     getErrorStyle(false)
-    if(+target > currentProd?.count && message)return
     let isValid = false;
     if(el?.measure === "հատ" || el?.measure === "pcs" || el?.measure === "шт") {
-      // if(el?.unit === "հատ" || el?.unit === "pcs" || el?.unit === "шт") {
       const needSymb = /^[0-9]*$/;
       isValid = needSymb.test(target);
       if(isValid || target === "") {
-        setCurrentProd({
-          ...currentProd,
-          count: target
-        });
-        checkPriceChangeV2(target)
+      
+        checkPriceChangeV2(+target)
       }else{
         return
       }
@@ -117,16 +58,12 @@ const BasketContentItem = ({
       const needSymb = /^\d+(\.\d{0,3})?$/
       isValid = needSymb.test(target)
       if(isValid || target === "") {
-        setCurrentProd({
-          ...currentProd,
-          count: target
-        })
         if(target[`${target}`.length - 1] === ".") {
           return checkPriceChangeV2(target)
         }else { 
           return checkPriceChangeV2(+target)
         }
-      } else if (target === "0" || target === "."){
+      }else if (target === "0" || target === "."){
         return checkPriceChangeV2( "0.")
       }else{
        return
@@ -134,8 +71,22 @@ const BasketContentItem = ({
     }
   };
 
+  const lastFunc = (val) => {
+    let count = {count:0}
+    if(freezeCount?.length) {
+      count = freezeCount.find(item => item?.productId === el?.productId)
+      if(count === undefined) {
+        count = {count:0}
+      }
+    }
+    if(+val > (+count?.count + el?.remainder)) {
+      return setErrRed(true)
+    }else {
+      newFunction(val)
+    }
+  };
+  
   const checkPriceChangeV2 = async(val) => {
-      console.log(freezeCount,"count freex")
       let count = {count:0}
       if(freezeCount?.length) {
         count = freezeCount.find(item => item?.productId === el?.productId)
@@ -143,21 +94,20 @@ const BasketContentItem = ({
           count = {count:0}
         }
       }
-      console.log(count,"count")
-      console.log(count === undefined,"count")
       if(+val > count?.count) {
       cheackProductCountnPrice([{
-        "id": currentProd?.productId || currentProd?.id,
+        "id": el?.productId || el?.id,
         "count": val - count?.count,
-        "price": currentProd?.price
+        "price": el?.price
       }]).then((result) => {
         if(!result[0]?.countStatus) {
           getErrorStyle(true)
-         return createMessage("error", t("dialogs.havenot"))
+          return createMessage("error", `${t("dialogs.havenot")} ${el?.name} ${ val - count?.count} ${t(`${el?.measure}`)}`)
         }else if(!result[0]?.priceStatus) {
           getErrorStyle(true)
           return createMessage("error", t("basket.price_change"))
-        }else{
+        }
+        else{
           changeCountOfBasketItem( el?.id, val)
         }
       })
@@ -168,7 +118,6 @@ const BasketContentItem = ({
   
   useEffect(() => {  
     setNotAvailable(false)
-    setCurrentProd(el)
   }, [flag]);
 
   useEffect(() => {
@@ -177,6 +126,22 @@ const BasketContentItem = ({
       return item === el?.id ? setNotAvailable(true) : setNotAvailable(false)
     }): setNotAvailable(false)
   }, [avail]);
+
+  const getFreezedCount= () => {
+    let count = 0
+    if(freezeCount?.length) {
+      count = freezeCount.find(item => item?.productId === el?.productId)
+      if(count === undefined) {
+        return setOwnCount(0)
+      }else{
+        return setOwnCount(count?.count)
+      }
+    }
+  };
+
+  useEffect(() => {
+    getFreezedCount()
+  }, [freezeCount]);
 
   return (
     <div className={styles.basketContent_item} ref={ref} style={{border:notAvailable? "red solid 2px":"none"}}> 
@@ -210,7 +175,14 @@ const BasketContentItem = ({
             </div>
             <div style={{fontSize:"90%"}}>
               <strong>{el?.barCode || el?.goodCode? `bar ${el?.barCode || el?.goodCode} /  `: ""}</strong>
-              <span style={{color:!el?.remainder? "red": null}}> {`${t("productcard.remainder")} ${el?.remainder}`} {el?.measure ? t(`units.${el?.measure}`): t(`units.${el?.unit}`)} </span>
+              <span 
+                style={{
+                  color:!el?.remainder || errRed ? "red": null,
+                  fontWeight:!el?.remainder || errRed ? 700: null
+                }}
+              > 
+                {`${t("productcard.remainder")} ${el?.remainder}`}{ownCount ? ` + ${ownCount}` : ""} {el?.measure ? t(`units.${el?.measure}`): t(`units.${el?.unit}`)}
+              </span>
         
             </div>
           </div> 
@@ -219,20 +191,14 @@ const BasketContentItem = ({
           <input
             ref={ref}
             style={{ width:"100%",border: !el?.count? "red solid 2px":null}}
-            // value={el?.count}
-            value={currentProd?.count}
+            value={el?.count}
             onChange={(event) => {
-              if(localStorage.getItem("endPrePayment")) {
-                newFunction(event.target.value)
-              }else{
-                // handleCountChange(event)
-                newFunction(event.target.value)
-              }}
-            } 
+              setErrRed(false)
+              lastFunc(event.target.value)
+            }} 
           />
           <div style={{margin:"3px",width:"40px", fontSize:"80%"}}>
             {el?.measure ? t(`units.${el?.measure}`) : t(`units.${el?.unit}`)}
-            
           </div>
         </div>
         <div 
