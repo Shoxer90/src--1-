@@ -101,7 +101,7 @@ const ReverseItem = ({
           style={{width:"40px",height:"30px",border:"solid grey 1px",borderRadius:"2px",alignSelf:"center",margin:"2px"}} 
         />
         <p style={{fontSize:"80%"}}>{product?.brand} {product?.name}</p>
-        <span style={{fontSize:"60%"}}>{product?.count} {t(`units.${product?.unit}`)} x {product?.discountedPrice} {t("units.amd")}</span>
+        <span style={{fontSize:"60%"}}>{product?.count}ԳԳԳԳԳԳԳԳԳԳԳԳԳ {t(`units.${product?.unit}`)} x {product?.discountedPrice} {t("units.amd")}</span>
       </span>
       <label className={styles.reverse_quantity}>
         <input

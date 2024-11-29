@@ -274,7 +274,6 @@ const Bascket = ({
 
   const closeDialog = () => {
     setSingleClick({})
-    console.log(basketContent,"basket content")
     setMessage()
     if(type !== "error") {
       deleteBasketGoods() 

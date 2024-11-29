@@ -79,7 +79,9 @@
     "метр": "metre",
     "кв/м": "sq/m",
     "куб/м": "cub/m",
-    "другой": "other"
+    "другой": "other",
+    "max":"maximal"
+
   },
   "buttons": {
     "close": "Close",
@@ -96,6 +98,7 @@
     "ok":"Ok",
     "sendResetLink": "Send Reset Link",
     "back" : "Back",
+    "reverse": "Reverse",
     "createMultiProds": "Import Catalog",
     "view": "View"
   },
@@ -294,7 +297,7 @@
     "seeReciept": "Receipt view",
     "completeSale": "Complete the transaction",
     "reverseAll": "Complete Return",
-  
+    "reverseAll2": "Prepayment and product complete return",
     "reverseProd": "Refund from advance payment",
     "reversePrep": "Return from product list",
     "prepLimit": "If you want to make a full payment, go to the Payment section"
@@ -320,7 +323,7 @@
     "total": "Amount",
     "type": "Pay type",
     "cash": "Cash",
-    "card": "Cash-less",
+    "card": "Cashless",
     "combo":"Cash+cashless+advance use",
     "qr": "QR",
     "link": "Link",
@@ -337,6 +340,8 @@
     "prepaymentRedemption2": "Uncompleted Transactions",
     "prepaymentRedemption3": "Using prepayment",
     "prepaymentReverse": "Prepayment Reverse",
+    "prepaymentReverse2":"Indicate the amount of the prepayment to be reversed. The amount entered should not exceed the amount of the prepayment made in the given method.",
+    "prepaymentReverse3": "(For example, the amount of advance payment left in cash is AMD 100, and cashless is AMD 150, in case of AMD 200 return, at least AMD 100 will be returned in cash)",
     "restAmountReverse": "Balance to be paid",
     "redacted": "Redacted",
     "cardCashSell": "Cash & Card payment",

@@ -73,7 +73,7 @@ const ReverceConditionsPrepayment = ({
 
         {amountForPrePayment?.rest ?
           <span style={{ fontSize:"120%",color:"green"}}> 
-            {t("history.prepaymentRedemption")} {amountForPrePayment?.amount - amountForPrePayment?.rest} {t("units.amd")}
+            {t("history.prepaymentRedemption")} {amountForPrePayment?.amount - amountForPrePayment?.rest} ֆգգհյյհգյֆյ{t("units.amd")}
           </span> :""
         }
         

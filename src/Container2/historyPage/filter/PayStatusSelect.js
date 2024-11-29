@@ -2,7 +2,7 @@ import React from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { memo } from "react";
 
-const PayStatusSelect = ({t,initialFunc,status}) => {
+const PayStatusSelect = ({t,initialFunc, status, setStatus}) => {
 
   return(
     <FormControl  sx={{ m: 1, width: 170 }} >

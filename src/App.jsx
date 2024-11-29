@@ -95,7 +95,7 @@ const App = () => {
 
  
   const whereIsMyUs = async() => {
-    console.log("10.10.24 prepayment,reverse prepayment")
+    console.log("29.11.24 new")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(

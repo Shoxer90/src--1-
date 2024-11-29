@@ -194,14 +194,12 @@ const ReverseContainer = ({
           <ReverceConditions2
             saleInfo={saleInfo} 
             t={t} 
-            // reverseTotal={reverseTotal} 
             conditionState={conditionState}
             setCondition={setCondition} 
           />:
           <ReverceConditionsPrepayment
             saleInfo={saleInfo} 
             t={t} 
-            // reverseTotal={reverseTotal} 
             conditionState={conditionState}
             setCondition={setCondition}
             amountForPrePayment={amountForPrePayment} 

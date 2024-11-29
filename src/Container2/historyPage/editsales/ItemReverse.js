@@ -9,7 +9,6 @@ const ItemReverse = ({
   setReverseContainer,
   checkedProduct,
   totalCounter,
-  operationType
 }) => {
 
   const handleChange = (e) => {
@@ -64,20 +63,13 @@ const ItemReverse = ({
   return(
     <label className={styles.radioDialog}>
       <span style={{display:"flex",alignItems:"center"}}>
-       { operationType?.returnProds ? 
         <input 
           type="checkbox"
           name="isChecked"
-          onChange={(e)=>{
-            checkedProduct(index, e.target.name,e.target.checked)
-          }}
+          onChange={(e)=>checkedProduct(index, e.target.name,e.target.checked)}
           checked={reverseContainer[index]?.isChecked || false}
-        />:""
-       } 
-        <img 
-          src={photo || "/default-placeholder.png"} 
-          alt="prod"
         />
+        <img src={photo || "/default-placeholder.png"} alt="prod" />
         <span style={{fontWeight:600}}>{brand} {name}</span>
       </span>
       <label className={styles.reverse_quantity}>

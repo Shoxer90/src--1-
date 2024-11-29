@@ -72,14 +72,13 @@ const HistoryItems = ({
   };
 
   const fullPriceWithOutAdditionalDiscount = () => {
-    const fullPrice = (item?.additionalDiscount/100 * item?.total) / (1- item?.additionalDiscount/100) + item?.total
+    const fullPrice = (item?.additionalDiscount/100 * item?.total) / (1 - item?.additionalDiscount/100) + item?.total
     setOriginTotal(fullPrice)
   };
 
   useEffect(() => {
   item && fullPriceWithOutAdditionalDiscount()
 }, [item?.status]);
-
 
   return (
     <>

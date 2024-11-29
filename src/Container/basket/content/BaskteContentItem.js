@@ -120,7 +120,6 @@ const BascketContentItem = ({
   };
 
   const handleChangeForClosePrePayment = (e) => {
-    console.log(e.target.value , "mtav erkrord func")
     let isValid = false;
     const data = e.target.value;
     if(el?.unit === "հատ" || el?.unit === "pcs" || el?.unit === "шт"){

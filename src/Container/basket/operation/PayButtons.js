@@ -16,7 +16,6 @@ const PayButtons = ({
 }) => {
   // ete kanxavjari chek enq pakum 
   // prePaymentAmount-@ galis a voch zro
-console.log(blockTheButton,"BLOCK THE BTN")
   const buttonBlock = {
     opacity: "0.3",
     border:"red",

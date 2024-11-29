@@ -1,21 +1,11 @@
 import { memo, useEffect, useState } from "react";
-import styles from "./index.module.scss";
 import { useTranslation } from "react-i18next";
 import { Button } from "@mui/material";
-import PrepaymentAmountReverse from "./amountReverse/PrepaymentAmountReverse";
 import SaleAmountReverse from "./amountReverse/SaleAmountReverse";
-import PrepaymentAmountReverseV2 from "./amountReverse/PrepaymentAmountReverseV2";
-
 
 const ReverseAmountFields = ({
   cashAmount,
   cardAmount,
-  partnerTin,
-  customer_Name,
-  customer_Phone,
-  id,
-  recieptId,
-  products,
   saleType,
   reverseTotal,
   total,
@@ -26,15 +16,6 @@ const ReverseAmountFields = ({
   receiptAmountForPrepayment,
   chooseFuncForSubmit,
   isAllSelected,
-  setIsAllSelected,
-  paymentInfo,
-  setPaymentInfo,
-  setToBasket,
-  setOpenBasket,
-  setOpenWindow,
-  deleteBasketGoods,
-  operationType,
-  setOperationType,
 }) => {
   const [blockButton,setBlockButton] = useState(false);
   const {t} = useTranslation();
@@ -88,49 +69,18 @@ const ReverseAmountFields = ({
 
   return(
     <div >
-      {saleType !== 5 ? 
-        <SaleAmountReverse
-          cashAmount={cashAmount}
-          cardAmount={cardAmount}
-          saleType={saleType}
-          reverseTotal={reverseTotal}
-          total={total}
-          prePaymentAmount={prePaymentAmount}
-          conditionState={conditionState}
-          setConditionState={setConditionState}
-          totalCounter={totalCounter}
-          handleChangeInput={handleChangeInput}
-        />:
-        <PrepaymentAmountReverseV2 
-          cashAmount={cashAmount}
-          cardAmount={cardAmount}
-          saleType={saleType}
-          reverseTotal={reverseTotal}
-          total={total}
-          prePaymentAmount={prePaymentAmount}
-          conditionState={conditionState}
-          setConditionState={setConditionState}
-          totalCounter={totalCounter}
-          receiptAmountForPrepayment={receiptAmountForPrepayment}
-          handleChangeInput={handleChangeInput}
-          isAllSelected={isAllSelected}
-          setIsAllSelected={setIsAllSelected}
-          paymentInfo={paymentInfo}
-          setPaymentInfo={setPaymentInfo}
-          partnerTin={partnerTin}
-          customer_Name={customer_Name}
-          customer_Phone={customer_Phone}
-          id={id}
-          recieptId={recieptId}
-          products={products}
-          setToBasket={setToBasket}
-          setOpenBasket={setOpenBasket}
-          setOpenWindow={setOpenWindow}
-          deleteBasketGoods={deleteBasketGoods}
-          operationType={operationType}
-          setOperationType={setOperationType}
-        />
-      }
+      <SaleAmountReverse
+        cashAmount={cashAmount}
+        cardAmount={cardAmount}
+        saleType={saleType}
+        reverseTotal={reverseTotal}
+        total={total}
+        prePaymentAmount={prePaymentAmount}
+        conditionState={conditionState}
+        setConditionState={setConditionState}
+        totalCounter={totalCounter}
+        handleChangeInput={handleChangeInput}
+      />
       <div style={{display:"flex", justifyContent:"center"}}>
         <Button 
           variant="contained" 
@@ -140,9 +90,7 @@ const ReverseAmountFields = ({
         >
           {t("buttons.submit")}
         </Button>
-
       </div>
-
     </div>
   )
 };

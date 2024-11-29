@@ -22,7 +22,8 @@ const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
 }) => {
   const perPage = 10;
   const search = useLocation().search;
-  const status = {status:new URLSearchParams(search).get("status")};
+  // const status = {status:new URLSearchParams(search).get("status")};
+  const [status, setStatus] = useState({status:new URLSearchParams(search).get("status")})
   const page = + (new URLSearchParams(search).get("page")) || 1 ;
   
   const coordinator = {
@@ -70,6 +71,7 @@ const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
         setHistoryContent(response)
         setLoad(false)
       }
+      setStatus({status: data})
     };
 
   useEffect(() => {
@@ -89,7 +91,7 @@ const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
     }
     setColumns(JSON.parse(localStorage.getItem("historyColumn")))
   },[]);
-  
+
   return(
     historyContent ? 
     <div className={styles.history}>
@@ -104,7 +106,8 @@ const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
           coordinator={coordinator} 
           t={t}
           initialFunc={initialFunc}
-          status={status.status}
+          status={status?.status}
+          setStatus={setStatus}
           columns={columns}
           setColumns={setColumns}
         />
@@ -134,7 +137,7 @@ const HistoryPage = ({logOutFunc, t, paymentInfo, setPaymentInfo,
           justifyContent: "center"
         }}
           page={page}
-          navig_Name={`history?status=${status.status}`}
+          navig_Name={`history?status=${status?.status}`}
           refreshPage={refreshPage}
           loader={loadResources}
           pageCount={historyContent.count}

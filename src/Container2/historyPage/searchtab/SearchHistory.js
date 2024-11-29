@@ -12,7 +12,7 @@ import HistoryExcelBurger from "../searchtab/burgerExcelLoader"
 
 import styles from "../index.module.scss";
 
-const SearchHistory = ({filterFunc, coordinator, t, initialFunc,status,columns,setColumns}) => {
+const SearchHistory = ({filterFunc, coordinator, t, initialFunc,status, setStatus,columns,setColumns}) => {
 
   const [value, setValue] = useState({
     endDate: coordinator?.endDate ? coordinator?.endDate : new Date(),
@@ -41,6 +41,7 @@ const SearchHistory = ({filterFunc, coordinator, t, initialFunc,status,columns,s
         status={status}
         columns={columns}
         setColumns={setColumns}
+        setStatus={setStatus}
       />
       <div className={styles.history_searchBar_date}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>

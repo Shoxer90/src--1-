@@ -209,7 +209,7 @@
   }
 };
 
-@media screen and(max-width: 860px) {
+@media screen and (max-width: 860px) {
 
   .basketContent {
     font-size: 80%;
@@ -227,7 +227,7 @@
   }
 };
 
-@media screen and(max-width: 700px) {
+@media screen and (max-width: 700px) {
   .basket_details{
     &_totalPrice{
       font-size: large;
@@ -242,7 +242,7 @@
   }
 };
 
-@media screen and(max-width: 500px) {
+@media screen and (max-width: 500px) {
   .basketContent_item{
     grid-template-columns: 3fr 2fr 1fr;  
    &_info_price{

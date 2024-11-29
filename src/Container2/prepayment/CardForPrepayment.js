@@ -1,12 +1,13 @@
 import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./index.module.scss";
-import { Button, ButtonGroup, Dialog } from "@mui/material";
+import { Button, ButtonGroup, ButtonGroupButtonContext, ButtonGroupContext, Dialog } from "@mui/material";
 import CardContent from "./CardContent";
 import ConfirmDialog from "../dialogs/ConfirmDialog";
 import { reverseProductNew } from "../../services/user/userHistoryQuery";
 import Loader from "../loading/Loader";
 import SnackErr from "../dialogs/SnackErr";
+import ReversePrepaymentDialog from "./ReversePrepaymentDialog";
 
 
 const CardForPrepayment = ({
@@ -35,7 +36,8 @@ const CardForPrepayment = ({
     if((JSON.parse(localStorage.getItem("basketExistId"))).length) {
       setMessage({message:`${t("basket.no_new_count_prod")}`, type:"info"})
       return
-    }
+    };
+    
     setPaymentInfo({
       ...paymentInfo,
       "prePaymentSaleDetailId": item?.id,
@@ -93,6 +95,21 @@ const CardForPrepayment = ({
     })
   };
 
+  const handleReversePrep = (dataInput) => {
+    setIsLoad(true)
+
+    reverseProductNew(dataInput).then((res) => {
+      setIsLoad(false)
+      if(res?.status === 200) {
+        deleteBasketGoods()
+        setMessage({message:t("dialogs.done"), type:"success"})
+      }else{
+        setMessage({message:t("dialogs.wrong"), type:"error"})
+
+      }
+    })
+  }
+
   const closeDialog = () => {
     setMessage({type:"",message:''})
     return localStorage.getItem("bascket1") ? "": setReload(!reload)
@@ -109,12 +126,13 @@ const CardForPrepayment = ({
   useEffect(() => {
   closeDialog()
   },[]);
-
   return (
     total ? <div className={styles.container_cards_item} style={{position:"relative"}}>
 
       <h6>{t("history.checkNum")} {item?.recieptId}</h6>
-      <div style={{height:"20px", color:"orange"}}>{item?.customer_Name ?<h6>{item?.customer_Name} {item?.customer_Phone}</h6>:""}</div>
+      <div style={{height:"20px", color:"orange"}}>
+        {item?.customer_Name ?<h6>{item?.customer_Name} {item?.customer_Phone}</h6>:""}
+      </div>
       <div style={contentStyle}>
         {item?.products.map((prod,index) => {
           return <CardContent prod={prod} index={index} key={prod?.id} />
@@ -125,42 +143,41 @@ const CardForPrepayment = ({
           {t("basket.useprepayment")} {item?.cashAmount + item?.cardAmount} 
           {t("units.amd")} / {t("basket.remainder")} {total - (item?.cashAmount + item?.cardAmount)} {t("units.amd")}
         </div>
-  
-        <div style={{width:"fit-content", display:"flex",margin:"2px"}}>
-          <Button variant="contained" sx={{fontSize:"60%"}}>
-            <a 
-              style={{padding:"0px", textDecoration:"none", color:"white"}} 
-              href={item?.link?.trim() ? item?.link : null} 
-              rel="noreferrer" 
-              target="_blank"
-            >
-              {t("basket.seeReciept")}
-            </a>
-          </Button>
-          <Button 
-            variant="contained" 
-            sx={{background:"orangered", fontSize:"56%", letterSpacing:0.3}}
-            onClick={()=>setOpenConfirm(true)}
-          >
-            {t("history.prepaymentReverse")}
-
-          </Button>
-          <Button 
-              variant="contained" 
-              sx={{background:"#3FB68A", fontSize:"60%"}}
-              onClick={()=>createBasketContent()}
-            >
-              {t("basket.completeSale")}
+          <div style={{justifyContent:"space-between", display:"flex"}}>
+                <Button variant="contained" sx={{fontSize:"60%"}} size="small" >
+              <a 
+                style={{padding:"0px", textDecoration:"none", color:"white"}} 
+                href={item?.link?.trim() ? item?.link : null} 
+                rel="noreferrer"  
+                target="_blank"
+              >
+                {t("basket.seeReciept")}
+              </a>
             </Button>
-      </div>
-        <ConfirmDialog 
-          t={t}
-          func={removeReciept}
-          open={openConfirm}
-          title={<h6>{t("history.checkNum")} {item?.recieptId}</h6>}
-          close={setOpenConfirm}
-          content={""}
-          question={t("dialogs.returnPrepayment")}
+            <Button
+              variant="contained" 
+              sx={{background:"orangered", fontSize:"56%", letterSpacing:0.3}}
+                size="small"
+              onClick={()=>setOpenConfirm(true)}
+            >
+              {t("history.prepaymentReverse")}
+
+            </Button>
+            <Button 
+                variant="contained" 
+                sx={{background:"#3FB68A", fontSize:"60%"}}
+                onClick={()=>createBasketContent()}
+                size="small"
+              >
+                {t("basket.completeSale")}
+              </Button>
+          </div>
+          <ReversePrepaymentDialog 
+            biteRev={handleReversePrep}
+            allRev={removeReciept}
+            open={openConfirm}
+            close={()=>setOpenConfirm(false)}
+            item={item}
           />
           <Dialog open={isLoad}><Loader /></Dialog>
           <Dialog open={message?.message}><SnackErr message={message?.message} type={message?.type} close={closeDialog}/></Dialog>

@@ -35,10 +35,7 @@ const ReverseDialog = ({
   const [isAllSelected, setIsAllSelected] = useState(false);
   const [receiptAmountForPrepayment, setReceiptAmountForPrepayment] = useState(0);
   const ref = useRef();
-  const [operationType,setOperationType] = useState({
-    returnPrepayment: false,
-    returnProds: false,
-  });
+
 
   const [conditionState, setConditionState] = useState({
     cashAmount: 0,
@@ -211,9 +208,7 @@ const reverse = async () => {
         </DialogTitle>
         <Divider color="black" />
 
-       {operationType?.returnProds ? 
-        <SelectAll selectAllProducts={selectAllProducts} isAllSelected={isAllSelected} />:""
-       } 
+        <SelectAll selectAllProducts={selectAllProducts} isAllSelected={isAllSelected} />
         {products.map((prod,index)=>(
           <ItemReverse
             key={prod?.id}
@@ -223,7 +218,6 @@ const reverse = async () => {
             checkedProduct={checkedProduct}
             index={index}
             totalCounter={totalCounter}
-            operationType={operationType}
 
           />
         ))}
@@ -246,8 +240,6 @@ const reverse = async () => {
           setOpenBasket={setOpenBasket}
           setOpenWindow={setOpenWindow}
           deleteBasketGoods={deleteBasketGoods}
-          operationType={operationType}
-          setOperationType={setOperationType}
         />
 
         {ownMessage && 
