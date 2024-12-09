@@ -1,10 +1,8 @@
 import { Button, TableCell, TableRow } from "@mui/material";
-import { memo, useState } from "react";
+import { memo, useState,  useEffect } from "react";
 import HdmStatus from "../../../modules/hdmStatus";
-import { useEffect } from "react";
 import { hdm_generate } from "../../../services/user/hdm_query";
 import HistoryDetails from "../details/HistoryDetails";
-import ReverseContainer from "../reverse";
 import Receipt from "../newHdm/receipt/index";
 // import Receipt from "../hdm/receipt/index";
 import { taxCounting } from "../../../modules/modules";
@@ -17,7 +15,6 @@ const HistoryItems = ({
   setLoad,
   pageName,
   logOutFunc,
-  initialFunc,
   date,
   messageAfterReverse,
   setReverdLink,
@@ -81,18 +78,15 @@ const HistoryItems = ({
 }, [item?.status]);
 
   return (
-    <>
     <TableRow
       key={item?.id}
-      // onClick={()=> openCloseHDM(item?.id)}
-      sx={{'&:hover':{backgroundColor: 'rgb(243, 243, 239)'}, }}
+      sx={{'&:hover':{backgroundColor: 'rgb(243, 243, 239)'}}}
     >
       {filterBody.includes("id") && 
         <TableCell style={{padding:"0px 16px"}}>
           <strong>
             {item?.id}
             <HdmStatus t={t} status={Boolean(item?.ehdmStatus)} mode={Boolean(item?.hdmMode)} />
-
           </strong>
         </TableCell>
       }
@@ -112,15 +106,19 @@ const HistoryItems = ({
           </div>
         </TableCell>
       }
+
+      {filterBody.includes("operation") &&
+        <div style={{display:"flex", padding:"2px",flexFlow:"column", alignContent:"center"}}>
+          <div>{item?.link ? <Button size="small" sx={{mb:.5,fontSize:"70%", background:'orange', width:"73.8px"}} onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>:""}</div>
+          <div>{pageName?.status  === "Paid" ? <Button size="small" sx={{width:"73.8px", fontSize:"65%", background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}</div>
+        </div>
+      }
+
       {filterBody.includes("recieptId") && 
         <TableCell style={{padding:"0px 5px", textAlign:"center"}}>
           <span style={{fontWeight:700}}>
             {item?.recieptId || ""}
           </span>
-          <div>
-            {item?.link ? <Button sx={{m:1,fontSize:"70%", background:'orange', width:"73.8px"}} size="small" onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>:""}
-            {pageName?.status  === "Paid" ? <Button size="small"  sx={{ fontSize:"65%", background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}
-          </div>
         </TableCell>
       }
       {pageName?.status !=="Prepayment" ? filterBody.includes("total") && <TableCell style={{padding:"0px"}}>{item?.total} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>:<TableCell> - </TableCell>}
@@ -143,7 +141,6 @@ const HistoryItems = ({
       }
       {filterBody.includes("partnerTin") && <TableCell style={{padding:"0px 16px"}}>{item?.partnerTin || t("history.notspecified")}</TableCell>}
       {filterBody.includes("cashier") && <TableCell style={{padding:"0px 16px"}}>{item?.cashier.fullName}</TableCell>}
-    </TableRow>
     { openDetails && pageName?.status ==="Unpaid" &&
       <HistoryDetails
         item={item}
@@ -172,22 +169,7 @@ const HistoryItems = ({
       userName={item?.cashier?.fullName}
     />
    } 
-    {/* {openDialog &&
-      <ReverseContainer
-        products={item?.products}
-        dialogManage={dialogManage}
-        openDialog={openDialog}
-        saleDetailId={item?.id}
-        initialFunc={initialFunc}
-        t={t}
-        setOpenHDM={setOpenHDM}
-        messageAfterReverse={messageAfterReverse}
-        saleInfo={saleData}
-        amountForPrePayment={amountForPrePayment} 
-        setAmountForPrePayment={setAmountForPrePayment}
-        detailsData={item}
-      />
-    } */}
+  
     { openDialog && <ReverseDialog
       openDialog={openDialog}
       setOpendDialog={setOpenDialog}
@@ -201,7 +183,7 @@ const HistoryItems = ({
       setOpenWindow={setOpenWindow}
       deleteBasketGoods={deleteBasketGoods}
     /> }
-    </>
+    </TableRow>
   )
 };
 

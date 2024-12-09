@@ -1,9 +1,8 @@
-import { Alert, Dialog, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { memo, useRef } from "react";
+import { memo, useRef, useEffect, useState } from "react";
+
 import HistoryItems from "./HistoryItems";
-import Loader from "../../loading/Loader";
-import { useEffect } from "react";
-import { useState } from "react";
+
+import { Alert, Dialog, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 
 const HistoryContent = ({
   content,
@@ -12,7 +11,6 @@ const HistoryContent = ({
   setLoad,
   pageName,
   logOutFunc,
-  initialFunc,
   paymentInfo,
   setPaymentInfo,
   setToBasket,
@@ -35,7 +33,6 @@ const HistoryContent = ({
 
   const messageAfterReverse = () => {
     setMessage({m:t("dialogs.welldone"),t:"success"})
-    initialFunc("Paid")
   };
 
   useEffect(() => {
@@ -49,7 +46,7 @@ const HistoryContent = ({
   return (
     <div>
       <a href={reveredLink} target="_blank" ref={ref} rel="noreferrer" > </a>
-      {!content ? <Loader /> :
+  
         <TableContainer style={{fontSize:"120%"}}component={Paper}>
           <Table aria-label="simple table">
             <TableHead>
@@ -59,16 +56,14 @@ const HistoryContent = ({
             </TableHead>
             <TableBody style={{fontSize:"60%"}}>
               {content &&  content.map((item, index) => (
-                <HistoryItems item={item} 
-                  index={index} 
-                  t={t} 
+                <HistoryItems
                   key={index}
-                  columns={columns} 
+                  item={item} 
+                  t={t} 
                   filterBody={filterBody} 
                   setLoad={setLoad}
                   pageName={pageName}
                   logOutFunc={logOutFunc}
-                  initialFunc={initialFunc}
                   date={new Date(item?.date)}
                   messageAfterReverse={messageAfterReverse}
                   setReverdLink={setReverdLink}
@@ -83,7 +78,7 @@ const HistoryContent = ({
               </TableBody>
           </Table>
         </TableContainer>
-      }
+   
       {message?.m && 
         <Dialog open={Boolean(message?.m)}>
           <Alert type={message?.t} onClose={() =>setMessage({m:"",t:""})}>{message?.m}</Alert> 

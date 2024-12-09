@@ -3,5 +3,15 @@
     flex-flow: row wrap;
     justify-content: center;
     margin: 5px;
+    margin-bottom:0px;
+    background-color: aliceblue;
+    border-top: solid darkgrey 2px;
+    // style={{
+        position:fixed;
+        bottom:0; 
+        width:100dvw;  
+        display:flex;
+        justify-content:center;
+    //   }}
 
 }

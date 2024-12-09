@@ -21,7 +21,6 @@ import SearchBarcode from "../../SearchBarcode";
 import { taxCounting } from "../../modules/modules.js";
 import ProductPrePayment from "./payment/ProductPrePayment.js";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import isBoolean from "validator/lib/isBoolean.js";
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -189,6 +188,8 @@ const Bascket = ({
     }else if(saletype === 4) {
       saleResponse = await basketListUrl(paymentInfo)
     }
+    // if sale is pending
+
     responseTreatment(saleResponse, saletype)
     const tax = await taxCounting(saleResponse?.res?.printResponseInfo?.items)
     setTaxCount(tax)
@@ -207,6 +208,7 @@ const Bascket = ({
     }else if(result === 400){
       createMessage("error", `${t("dialogs.sorry")}, ${t("dialogs.wrong")}`)
       setAvail([])
+      return
     }else if(result === 406){
       setAvail([])
       createMessage("error", t("basket.total_zero"))

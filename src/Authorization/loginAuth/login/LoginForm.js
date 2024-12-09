@@ -9,7 +9,15 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import loginAPI from '../../../services/auth/auth';
 
-const LogInFormNew = ({screenWidth, t, setMessage, whereIsMyUs, message, setIsLogIn}) => {
+const LogInFormNew = ({
+  screenWidth, 
+  t, 
+  setMessage,
+  whereIsMyUs, 
+  message,
+  setIsLogIn,
+  setLoading,
+}) => {
   const navigate = useNavigate();
   const [seePass, setSeePass] = useState(false)
 
@@ -23,8 +31,12 @@ const LogInFormNew = ({screenWidth, t, setMessage, whereIsMyUs, message, setIsLo
   } = useForm({});
   
   const signInToAccount = async(userData) => {
-    
+    setLoading(true)
+  
     const token = await loginAPI( userData?.username, userData?.password);
+    setLoading(true)
+
+    console.log(token)
     if(token === 402){
       setMessage(t("authorize.blockremove"))
     }else if(token === 400) {
@@ -43,6 +55,7 @@ const LogInFormNew = ({screenWidth, t, setMessage, whereIsMyUs, message, setIsLo
       reset()
     );
   };
+   
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(signInToAccount)}>
@@ -66,15 +79,12 @@ const LogInFormNew = ({screenWidth, t, setMessage, whereIsMyUs, message, setIsLo
       <span style={{position:"relative",height:"fit-content", fontSize:"100%",padding:"0px", width: screenWidth>768 ?"60%": "100%"}}>
         <input 
           style={{
-            // width:screenWidth>768 ?"60%": "100%",
             width:"100%",
             fontSize:"120%",
             marginBottom:"10px",
             padding:"2px 10px",
             border: errors?.password || message? "red solid 2px": "grey solid",
             borderRadius:"6px",
-            // alignSelf:"center",
-
           }}
           placeholder={t("authorize.password")}
           type={seePass ? "text" :"password"}

@@ -32,14 +32,10 @@ const ColumnSelect = ({t,columns,setColumns}) => {
     <div>
       <FormControl sx={{ m: 1, width: 200 }}>
         <Select
-          // labelId="demo-multiple-checkbox-label"
-          // id="demo-multiple-checkbox"
           multiple
           name={columns?.title}
           value={[t("history.activeColumns")]}
           onChange={handleChange}
-          // controlShouldRenderValue={false}
-          // hideSelectedOptions={false} 
           input={<OutlinedInput label="" />}
           renderValue={(selected) => selected.join(', ')}
         >

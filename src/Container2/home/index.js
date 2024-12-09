@@ -13,6 +13,7 @@ import SnackErr from "../dialogs/SnackErr";
 
 const HomePage = ({
   t,
+  isLogin,
   measure,
   dataGroup,
   setDataGroup,
@@ -28,7 +29,6 @@ const HomePage = ({
   searchValue, 
   setSearchValue, 
   byBarCodeSearching,
-  isLogin,
   flag,
   setFetching,
   fetching

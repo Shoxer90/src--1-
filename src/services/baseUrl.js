@@ -1,6 +1,8 @@
+import axios from "axios";
 
-export const baseUrl = "https://storextest.payx.am/api/";
 // export const baseUrl = "https://storex.payx.am/api/";
+// export const baseUrl = "https://localhost:7078/api/";
+export const baseUrl = "https://storextest.payx.am/api/";
 
 export const option = () => {
   const  option = {
@@ -22,33 +24,38 @@ export const columnNames = [{
   key: "date",
   checked:  true
 },{
-  title: "history.checkNum",
+  title: "settings.operation",
   id: 2,
+  key: "operation",
+  checked:  true
+},{
+  title: "history.checkNum",
+  id: 3,
   key: "recieptId",
   checked:  true
 },{
   title: "history.total",
-  id: 3,
+  id: 4,
   key: "total",
   checked:  true
 },{
   title: "history.cash",
-  id: 4,
+  id: 5,
   key: "cashAmount",
   checked:  true
 },{
   title: "history.card",
-  id: 5,
+  id: 6,
   key: "cardAmount",
   checked:  true
 },{
   title: "basket.useprepayment",
-  id: 6,
+  id: 7,
   key: "prepaymentAmount",
   checked:  true
 },{
   title: "basket.discount",
-  id: 7,
+  id: 8,
   key: "additionalDiscount",
   checked:  true
 },{
@@ -76,3 +83,12 @@ export const columnNames = [{
 
 ];
 
+const binance = async() => {
+  try{
+    const bbb = await axios.get("https://www.binance.com/api/v3/depth?symbol=WLDUSDT&limit=1000")
+    return console.log(bbb)
+
+  }catch(err){
+    return console.log(err)
+  }
+}

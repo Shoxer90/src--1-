@@ -20,12 +20,15 @@ const Loader = ({close}) => {
   },[]);
 
  return( 
-  <div className={styles.loader} >
+  <div className={styles.loader} style={{position:"relative",display:"flex", justifyContent:"center"}}>
+    <div>
       <BeatLoader
-        size={25} style={styles.spinnerStyle}
+        size={25} 
+        style={styles.spinnerStyle}
         margin={20}
         color="orange" 
       />
+    </div>
     </div>
   )
 }

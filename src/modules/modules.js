@@ -109,3 +109,4 @@ export const getResponseAfterPay = (statusCall) => {
     return {type:"error", message:t("dialogs.checkCardStatus400")}
   }
 };
+

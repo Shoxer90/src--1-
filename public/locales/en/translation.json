@@ -324,7 +324,7 @@
     "type": "Pay type",
     "cash": "Cash",
     "card": "Cashless",
-    "combo":"Cash+cashless+advance use",
+    "combo":"Using prepayment",
     "qr": "QR",
     "link": "Link",
     "history_zero": "Transaction history is still empty",

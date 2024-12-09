@@ -46,18 +46,18 @@ const HistoryExcelBurger = ({t,fileReader, setValue, value}) => {
 
   return (
     
-    <div style={{fontSize: "70%"}}>
+    <div>
       <Button
         variant="contained"
-        style={{color: "white",height: "35px",fontSize:"90%" }}
-        // onClick={(event) => setAnchorEl(event.currentTarget)}
+        size='small'
+        // style={{color: "white",height: "35px"}}
         onClick={()=> fileReader({
           endDate: format(value.endDate, 'MM-dd-yyyy'),
           startDate: format(value.startDate, 'MM-dd-yyyy'),
           products: false
         })}
       >
-        <ControlPointIcon style={{margin:"auto 1px"}}/>
+        <ControlPointIcon fontSize="small" style={{margin:"1px"}} />
         {window.innerWidth> 481 && t("history.excel")}
       </Button>
 

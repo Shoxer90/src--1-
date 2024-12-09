@@ -1,13 +1,13 @@
 .history{
     position: relative;
     top: 145px;
-    margin: 0px 10px;
+    padding-bottom:40px;
     &_search{
         position: fixed;
         top: 70px;
         z-index: 2;
         background-color: rgb(243, 243, 239);
-        width:98.5%;
+        width:100dvw;
         padding:0 10px;
         box-shadow:3px 5px 5px grey;
     }

@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-// import Basket from "./Container/Bascket/index";
 import Basket from "./Container/basket";
 import HistoryPage from "./Container2/historyPage";
 import Header from "./Container/Header/Header";
 import ProductChanges from "./Container2/analytics";
 import HomePage from "./Container2/home/index"
-// import Confirmation from "./Authorization/Confirmation";
 import FeedBackPage from "./Container2/feedback";
 import CheckStatusArCa from "./Container2/settingsPage/serviceAmount/attachCard"
 
@@ -56,7 +54,7 @@ const App = () => {
   const [measure, setMeasure] = useState([]);
   const {t} = useTranslation();
   const navigate = useNavigate();
-  const [message,setMessage] = useState({message:"",type:""});
+  const [message,setMessage] = useState({message:"", type:""});
   const [searchValue,setSearchValue] = useState("");
   const [barcodeScanValue,setBarcodeScanValue] = useState("");
   const [from, setFrom] = useState("");
@@ -70,8 +68,8 @@ const App = () => {
   const [fetching, setFetching] = useState(true);
   const [notification, setNotification] = useState([]);
   const [count, setCount] = useState(0);
-  const [openWindow,setOpenWindow] = useState({
-    prepayment: false ,
+  const [openWindow, setOpenWindow] = useState({
+    prepayment: false,
     payment: false,
     isOpen: false,
     prePaymentAmount: JSON.parse(localStorage.getItem("endPrePayment"))?.prepayment || 0,
@@ -92,7 +90,6 @@ const App = () => {
     customer_Name: "",
     customer_Phone: ""
   });
-
  
   const whereIsMyUs = async() => {
     console.log("29.11.24 new")
@@ -377,14 +374,6 @@ const App = () => {
     const data = await productQuery(name, page)
     return data === 401 ? logOutFunc() : data
   };
-    
-  const changeStatus = async(str) => {
-    setCurrentPage(1)
-    setDataGroup(str)
-    const response = await queryFunction(str, 1)
-    setContent([ ...response?.data]);
-    setCurrentPage(2)
-  };
 
   const checkForNewNotification = () => {
     getNewNotifications().then((res) => {
@@ -430,7 +419,11 @@ const App = () => {
       {!isLogin ?
         <Routes>
           <Route path="*" element={<LoginAuthContainer children={<Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />} />
-          <Route path="/login" element={<LoginAuthContainer children={<Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />} />
+          <Route 
+            path="/login" 
+            element={<LoginAuthContainer children={
+            <Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />}
+          />
           <Route path="/registration" element={<LoginAuthContainer children={<Registration logOutFunc={logOutFunc} />} />} />
           <Route path="/forgot-password" element={<LoginAuthContainer children={<ForgotPassword />} />} />
           <Route path="/reset-password/*" element={<LoginAuthContainer children={<ResetPassword />} />} />
@@ -465,23 +458,18 @@ const App = () => {
                   setContent={setContent}
                   content={content}
                   setToBasket={setToBasket}
-                  setOpenBasket={setOpenBasket}
-                  openBasket={openBasket}
                   deleteBasketItem={deleteBasketItem}
                   basketExist={basketExist}
                   queryFunction={queryFunction}
                   currentPage={currentPage}
                   setCurrentPage={setCurrentPage}
-                  user={user}
+                  setFrom={setFrom}
                   searchValue={searchValue}
                   setSearchValue={setSearchValue}
                   byBarCodeSearching={byBarCodeSearching}
-                  setFrom={setFrom}
-                  changeStatus={changeStatus}
                   flag={flag}
-                  fetching={fetching}
                   setFetching={setFetching}
-                  openWindow={openWindow}
+                  fetching={fetching}
                 />
               }  
             />
@@ -511,8 +499,6 @@ const App = () => {
               deleteBasketGoods={deleteBasketGoods}
               setPaymentInfo={setPaymentInfo}
               paymentInfo={paymentInfo}
-              loadBasket={loadBasket}
-              basketExist={basketExist}
               flag={flag}
             />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
@@ -541,14 +527,12 @@ const App = () => {
             flag={flag}
             setFlag={setFlag}
             setContent={setContent}
-            setBasketContent={setBasketContent}
-            searchValue={barcodeScanValue}
-            setSearchValue={setBarcodeScanValue}
             byBarCodeSearching={byBarCodeSearching}
             setFrom={setFrom}
+            searchValue={barcodeScanValue}
+            setSearchValue={setBarcodeScanValue}
             user={user}
             setMesFromHead={setMessage}
-            fetching={fetching}
             setFetching={setFetching}
             setCurrentPage={setCurrentPage}
             openWindow={openWindow}

@@ -49,7 +49,6 @@ const BasketContentItem = ({
       const needSymb = /^[0-9]*$/;
       isValid = needSymb.test(target);
       if(isValid || target === "") {
-      
         checkPriceChangeV2(+target)
       }else{
         return
@@ -66,7 +65,7 @@ const BasketContentItem = ({
       }else if (target === "0" || target === "."){
         return checkPriceChangeV2( "0.")
       }else{
-       return
+        return
       }
     }
   };
@@ -197,6 +196,7 @@ const BasketContentItem = ({
               lastFunc(event.target.value)
             }} 
           />
+
           <div style={{margin:"3px",width:"40px", fontSize:"80%"}}>
             {el?.measure ? t(`units.${el?.measure}`) : t(`units.${el?.unit}`)}
           </div>
