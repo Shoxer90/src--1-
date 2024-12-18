@@ -43,7 +43,9 @@ export const getMeasureByNum = async(num) => {
     case 7:
       return "խ/մ";
     case 8:
-    return "այլ";
+    return "մլ";
+    case 9:
+      return "այլ";
     default: 
     return "այլ"
   }
@@ -64,27 +66,26 @@ export const getMeasureByStr = async(num) => {
      return 6;
    case "խ/մ":
      return 7;
+    case "մլ":
+    return 8;
    case "այլ":
-   return 8;
+   return 9;
    default: 
-   return 8;
+   return 9;
   }
 }
-export const MEASURE_RU=["шт", "кг", "грамм", "литр", "метр", "кв/м", "куб/м", "другой"]
-export const MEASURE_EN=["pcs", "kg", "gramm", "liter", "metre", "sq/m", "cub/m", "other"]
-export const MEASURE_AM=["հատ", "կգ", "գրամ", "լիտր", "մետր", "ք/մ", "խ/մ", "այլ"]
 
 export const takeMeMeasureArr = (lang) => {
   if(lang === "ru"){
-    return ["шт", "кг", "грамм", "литр", "метр", "кв/м", "куб/м", "другой"]
+    return ["шт", "кг", "грамм", "литр", "метр", "кв/м", "куб/м", "мл", "другой"]
   }else if(lang === 'en') {
-    return ["pcs", "kg", "gramm", "liter", "metre", "sq/m", "cub/m", "other" ]
+    return ["pcs", "kg", "gramm", "liter", "metre", "sq/m", "cub/m", "ml", "other" ]
   }else{
-    return ["հատ", "կգ", "գրամ", "լիտր", "մետր", "ք/մ", "խ/մ", "այլ" ]
+    return ["հատ", "կգ", "գրամ", "լիտր", "մետր", "ք/մ", "խ/մ", "մլ", "այլ" ]
   }
 };
 
-export const allLanguageMeasures = ["հատ", "կգ", "գրամ", "լիտր", "մետր", "ք/մ", "խ/մ", "այլ", "pcs", "kg", "gramm", "liter", "metre", "sq/m", "cub/m", "other","шт", "кг", "грамм", "литр", "метр", "кв/м", "куб/м","другой"]
+export const allLanguageMeasures = ["հատ", "կգ", "գրամ", "լիտր", "մետր", "ք/մ", "խ/մ","մլ", "այլ", "pcs", "kg", "gramm", "liter", "metre", "sq/m", "cub/m","ml", "other","шт", "кг", "грамм", "литр", "метр", "кв/м", "куб/м","мл", "другой"]
 
 export const taxCounting = (arr) => {
   let tax = 0;

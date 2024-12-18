@@ -49,7 +49,7 @@ const ProductPrePayment = ({
       setBlockTheButton(false)
       setPaymentInfo({
         ...paymentInfo,
-        [e.target.name]:+e.target.value,
+        [e.target.name]:Math.floor(+e.target.value*100)/100,
       })
       setFlag(e.target.value)
     }
@@ -63,46 +63,38 @@ const ProductPrePayment = ({
   return(
     paymentInfo && <div className={styles.saleInfoInputs}>
       <div>
-        <span>
-          {t("history.total")} 
-        </span>
-        <input 
-          value={numberSpacing(totalPrice.toFixed(2))}
-          readOnly/>
+        <span>{t("history.total")}</span>
+        <input value={numberSpacing(totalPrice.toFixed(2))} readOnly />
       </div>
-
-      <h6>{t("basket.prepaymentGenerate")}</h6>
-
-      <div>
+      <div style={{margin:"10px 0px", color:'orange', fontWeight:700}}>
         <span>
-          {t("history.cash")}
+          {t("basket.remainder")} 
+          <span style={{marginLeft:"10px",display:"inline-block"}}>
+            {(totalPrice-paymentInfo?.cardAmount-paymentInfo?.cashAmount).toFixed(2)}
+          </span>
         </span>
+      </div>
+      <h6>{t("basket.prepaymentGenerate")}</h6>
+      <div>
+        <span>{t("history.cash")}</span>
         <input
           name="cashAmount"
           value={paymentInfo?.cashAmount || ""}
           autoComplete="off"
-
           onChange={(e)=> {
-            if(+e.target.value + paymentInfo?.cardAmount <= val){
-              handleChangeInput(e)
-            }
+            if(+e.target.value + paymentInfo?.cardAmount <= val) handleChangeInput(e)
           }}
         />
       </div>
     
       <div>
-        <span>
-          {t("history.card")}
-        </span>
+        <span>{t("history.card")}</span>
         <input
           value={paymentInfo?.cardAmount || ""}
           name="cardAmount"
-
           autoComplete="off"
           onChange={(e)=> {
-            if(+e.target.value + paymentInfo?.cashAmount <= val){
-              handleChangeInput(e)
-            }
+            if(+e.target.value + paymentInfo?.cashAmount <= val) handleChangeInput(e)
           }}
         />
       </div>
@@ -130,9 +122,7 @@ const ProductPrePayment = ({
       </div>
 
       <div>
-        <span>
-          {t("authorize.notes")}
-        </span>
+        <span>{t("authorize.notes")} </span>
         <input
           value={paymentInfo?.customer_Name}
           autoComplete="off"
@@ -145,7 +135,7 @@ const ProductPrePayment = ({
           }}
         />
       </div>
-      <div>
+      {/* <div>
         <span >
         {t('authorize.phone')}
         </span>
@@ -160,17 +150,10 @@ const ProductPrePayment = ({
             })
           }}
         />
-      </div>
+      </div> */}
 {/* PHONE AND NAME  IS OVER*/}
      
-      <h5 style={{marginTop:"13px", marginBottom:"13px", color:'orange'}}>
-        <span>
-          {t("basket.remainder")} 
-        </span>
-        <span style={{marginLeft:"20px"}}>
-          {(totalPrice-paymentInfo?.cardAmount-paymentInfo?.cashAmount).toFixed(2)}
-        </span>
-      </h5>
+     
       <Divider flexItem sx={{bgcolor:"black"}} />
 
     </div>

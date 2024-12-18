@@ -3,7 +3,7 @@ import { memo } from 'react';
 import styles from "../index.module.scss";
 import { useForm } from 'react-hook-form';
 // import loginAPI from '../../../services/auth/auth';
-import { Alert, Button } from '@mui/material';
+import { Alert, Button, Dialog} from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -33,28 +33,31 @@ const LogInFormNew = ({
   const signInToAccount = async(userData) => {
     setLoading(true)
   
-    const token = await loginAPI( userData?.username, userData?.password);
-    setLoading(true)
-
-    console.log(token)
-    if(token === 402){
-      setMessage(t("authorize.blockremove"))
-    }else if(token === 400) {
-      setMessage(t("authorize.incorrect"))
-    }else if(token === 419){
-     return  setMessage(t("authorize.errors.loginLimit419"))
-    }
-    return !token?.data?.token ? ( 
+    // const token = await loginAPI( userData?.username, userData?.password);
+    loginAPI( userData?.username, userData?.password).then((token) => {
+      setLoading(false)
+      if(token === 402){
+        setMessage(t("authorize.blockremove"))
+      }else if(token === 400) {
+        setMessage(t("authorize.incorrect"))
+      }else if(token === 419){
+        return  setMessage(t("authorize.errors.loginLimit419"))
+      }else if(token === 415 || token === 500){
+        return  setMessage(t("dialogs.wrong"))
+      }
+      return !token?.data?.token ? ( 
       setTimeout(() => {
         setMessage()
       },6000)
-    ): (
-      whereIsMyUs(),
-      setIsLogIn(true),
-      navigate("/"),
-      reset()
-    );
-  };
+      ): (
+        whereIsMyUs(),
+        setIsLogIn(true),
+        navigate("/"),
+        reset()
+      )
+    })
+  }
+
    
 
   return (
@@ -118,9 +121,11 @@ const LogInFormNew = ({
       <div style={{minHeight: "50px",color:"red",fontSize:"small"}}>
         {(errors?.password ||  errors?.username )? <p>{errors?.password?.message || t("authorize.empty")}</p>:""}
         {message &&
-          <Alert  severity="error">
-            <strong>{message}</strong>
-          </Alert>
+          <Dialog open={!!message} onClose={()=>setMessage("")}>
+            <Alert  severity="error">
+              <strong>{message}</strong>
+            </Alert>
+          </Dialog>
         }
       </div>
 

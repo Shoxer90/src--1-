@@ -1,11 +1,14 @@
 import { memo, useEffect, useState } from "react";
-import styles from "./index.module.scss";
-import { getPrepayment } from "../../services/products/productsRequests";
-import CardForPrepayment from "./CardForPrepayment";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
+
+import { getPrepayment } from "../../services/products/productsRequests";
+import CardForPrepayment from "./CardForPrepayment";
 import Loader from "../loading/Loader";
+
 import { Dialog, Pagination, PaginationItem } from "@mui/material";
+
+import styles from "./index.module.scss";
 
 const PrePaymentList = ({
   setOpenBasket, 
@@ -21,7 +24,6 @@ const PrePaymentList = ({
   const [page, setPage] = useState();
   const [count, setCount] = useState();
   const [list, setList] = useState([]);
-  const [reload, setReload] = useState(false);
   const [screenWidth, setScreenWidth] = useState();
   const [load, setLoad] = useState(false);
   const {t} = useTranslation();
@@ -29,7 +31,6 @@ const PrePaymentList = ({
   window.addEventListener('resize', function(event) {
     setScreenWidth(window.innerWidth)
   }, true);
-  
 
   const getPrepaymentList = () => {
     getPrepayment({page: currentPage, count: 24, searchString: "", isPayd:false}).then((res) =>{
@@ -45,7 +46,6 @@ const PrePaymentList = ({
     setPage(currentPage)
     getPrepaymentList()
   },[currentPage, flag]);
-
 
   return (
     <div className={styles.container}>
@@ -63,8 +63,6 @@ const PrePaymentList = ({
                 setOpenWindow={setOpenWindow} 
                 setPaymentInfo={setPaymentInfo}
                 paymentInfo={paymentInfo}
-                setReload={setReload}
-                reload={reload}
               />
             )}
           </div>

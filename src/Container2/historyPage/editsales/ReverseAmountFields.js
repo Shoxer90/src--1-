@@ -53,12 +53,12 @@ const ReverseAmountFields = ({
 
 
   useEffect(() => {
-    if(reverseTotal && cashAmount+prePaymentAmount < conditionState?.cashAmount && cardAmount < conditionState?.cardAmount) {
+    if(reverseTotal && cashAmount+prePaymentAmount < Math.ceil(conditionState?.cashAmount*100)/100 && cardAmount < conditionState?.cardAmount) {
       setBlockButton(false)
       
     }else if(!reverseTotal || 
-      cashAmount+prePaymentAmount < conditionState?.cashAmount || 
-      cardAmount < conditionState?.cardAmount || 
+      cashAmount+prePaymentAmount < Math.floor(conditionState?.cashAmount*100)/100  || 
+      cardAmount < Math.floor(conditionState?.cardAmount*100)/100 || 
       (receiptAmountForPrepayment && receiptAmountForPrepayment-reverseTotal < total && !isAllSelected)
     ) {
       setBlockButton(true)

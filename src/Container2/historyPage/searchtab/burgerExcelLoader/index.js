@@ -52,8 +52,8 @@ const HistoryExcelBurger = ({t,fileReader, setValue, value}) => {
         size='small'
         // style={{color: "white",height: "35px"}}
         onClick={()=> fileReader({
-          endDate: format(value.endDate, 'MM-dd-yyyy'),
-          startDate: format(value.startDate, 'MM-dd-yyyy'),
+          endDate: format(new Date(value.endDate), 'MM-dd-yyyy'),
+          startDate: format(new Date(value.startDate), 'MM-dd-yyyy'),
           products: false
         })}
       >

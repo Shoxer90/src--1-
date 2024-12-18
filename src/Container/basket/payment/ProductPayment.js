@@ -56,14 +56,14 @@ const ProductPayment = ({
       setPaymentInfo({
         ...paymentInfo,
         cashAmount: +e.target.value,
-        cardAmount: val-e.target.value
+        cardAmount: Math.floor((val-e.target.value)*100)/100
       })
     }else {
     if(e.target.name === "cardAmount")
       setPaymentInfo({
         ...paymentInfo,
         cardAmount: +e.target.value,
-        cashAmount: val - e.target.value
+        cashAmount: Math.floor((val-e.target.value)*100)/100
       })
     }
   };

@@ -91,9 +91,6 @@ const HomeContentItem = ({
     setStarSynth(product?.isFavorite)
   },[]);
 
-  // useEffect(() => {
-  // },[product?.discount]);
-
   return (
     <>
     <div style={{position:"relative", cursor:"pointer",}}>
@@ -145,27 +142,33 @@ const HomeContentItem = ({
         <p style={{margin:0}}>
           <strong>
             {product?.price} 
-            <span style={{fontSize:"90%"}}> {t("units.amd")} / {t(`units.${product?.measure}`)}</span>
-          </strong>
-        </p>
-        <div style={{height:"20px", margin:"5px",color:"red"}}>
-          {product?.discount > 0 && 
-            <span style={{fontSize:"90%"}}>
-              <span>{t("productcard.newprice")} </span> 
+            <span style={{fontSize:"90%"}}> {t("units.amd")} 
+            {product?.discount > 0 && 
+            <span style={{fontSize:"90%", color:"orangered"}}>
+              <span> / {t("productcard.newprice")} </span> 
               <strong>
                 { product?.discountType === 1 && ( Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice) }
-                {/* { product?.discountType === 2 && (product?.price - product?.discount)  } */}
                 { product?.discountType === 0 && ( Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice)  }
                 { t("units.amd") }
               </strong>
             </span>
           }
-        </div>
+              </span>
+          </strong>
+        </p>
+      
       </div>
       {product?.remainder ?
         <>
-          <div style={{fontSize:"70%", margin:"5px", color: quantity > product?.remainder && "red",fontWeight: quantity > product?.remainder && "700"}}>
+          <div style={{fontSize:"70%", margin:"1px", color: quantity > product?.remainder && "red",fontWeight: quantity > product?.remainder && "700"}}>
             {t("productcard.remainder")} {product?.remainder%1 ? product?.remainder.toFixed(3) : product?.remainder } {t(`units.${product?.measure}`)}
+          </div>
+
+          <div style={{fontSize:"70%", margin:"1px", color:"blue",fontWeight:"700", minHeight:"17px"}}>
+            { product?.remainderPrePayment ?
+             <span>
+              {t("productcard.remainderPrePayment")} {product?.remainderPrePayment%1 ? product?.remainderPrePayment.toFixed(3) : product?.remainderPrePayment } {t(`units.${product?.measure}`) }
+             </span>: " "}
           </div>
           <div style={{fontSize:"80%",letterSpacing:"0.1px",padding:"3px"}}>
             {product?.barCode}

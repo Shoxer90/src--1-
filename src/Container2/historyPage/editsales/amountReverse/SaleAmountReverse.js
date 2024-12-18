@@ -21,7 +21,7 @@ const SaleAmountReverse = ({
     if(reverseTotal >  cashAmount + prePaymentAmount) {
       setConditionState({
         cashAmount: +(cashAmount + prePaymentAmount).toFixed(2),
-        cardAmount: +(reverseTotal -  (cashAmount + prePaymentAmount)).toFixed(2),
+        cardAmount: +(Math.floor(reverseTotal*100)/100 -  (Math.floor(cashAmount*100)/100 + prePaymentAmount)),
       })
 
     }else{
@@ -37,7 +37,7 @@ const SaleAmountReverse = ({
   useEffect(() => {
     setConditionState({
       ...conditionState,
-      cashAmount: +(reverseTotal- conditionState?.cardAmount).toFixed(2)
+      cashAmount: Math.floor(+(reverseTotal- conditionState?.cardAmount)*100)/100
     })
   }, [conditionState?.cardAmount]);
 
@@ -63,7 +63,7 @@ const SaleAmountReverse = ({
             </div>
             <div style={{color:"green", display:"flex",justifyContent:"space-between"}}>
               <span style={{color:"green", alignContent:"center"}}>{t("history.forReverse")}</span>
-              <span>{+conditionState?.cashAmount + conditionState?.cardAmount} {t("units.amd")}</span>
+              <span>{(Math.floor((+conditionState?.cashAmount + conditionState?.cardAmount)*100))/100} {t("units.amd")}</span>
             </div>
           </div>
           <div style={{width:"60%"}}>
@@ -106,10 +106,10 @@ const SaleAmountReverse = ({
           {(conditionState?.cashAmount > cashAmount + prePaymentAmount) && `${t("dialogs.limitCash")} ${+cashAmount+ prePaymentAmount} ${t("units.amd")}`}
         </div>
         <div style = {{color:"red",  padding:"0px 20px"}}> 
-        {(conditionState?.cardAmount > cardAmount) && `${t("dialogs.limitCard")} ${cardAmount} ${t("units.amd")}`}
+          {(conditionState?.cardAmount > cardAmount) && `${t("dialogs.limitCard")} ${cardAmount} ${t("units.amd")}`}
         </div> 
         <div style = {{color:"red",  padding:"0px 20px"}}> 
-        {(conditionState?.cardAmount > cardAmount) && `${t("total")} ${reverseTotal}fgjfdfg ${t("units.amd")}`}
+          {(conditionState?.cardAmount > cardAmount) && `${t("total")} ${reverseTotal}  ${t("units.amd")}`}
         </div> 
       </>
   )

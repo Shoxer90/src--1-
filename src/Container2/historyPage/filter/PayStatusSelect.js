@@ -17,10 +17,10 @@ const PayStatusSelect = ({
         onChange={(e) => getHistoryByStartAndEndDates(e.target.value, 1, initDate)}
       >
         <MenuItem value="Paid"> {t("history.paid")} </MenuItem>
+        <MenuItem value="Prepayment"> {t("history.prepaymentRedemption2")} </MenuItem>
         <MenuItem value="Canceled"> {t("history.canceled")} </MenuItem>
         <MenuItem value="Unpaid"> {t("history.no_paid")} </MenuItem>
-        <MenuItem value="Prepayment"> {t("history.prepaymentRedemption2")} </MenuItem>
-        <MenuItem value="EndPrepayment"> {t("history.prepaymentRedemption3")} </MenuItem>
+        {/* <MenuItem value="EndPrepayment"> {t("history.prepaymentRedemption3")} </MenuItem> */}
       </Select>
     </FormControl>
   )

@@ -302,7 +302,7 @@ const UpdateProduct = ({
               ))}
             </Select>
           </FormControl>
-          <Box style={{display:"flex",justifyContent:"space-between"}}>
+          {/* <Box style={{display:"flex",justifyContent:"space-between"}}> */}
             <TextField 
               autoComplete="off"
               size="small"
@@ -312,10 +312,10 @@ const UpdateProduct = ({
               label={t("productinputs.purchase")}
               onChange={(e)=> onlyNumberAndADot(e,2)} 
             />
-            <div style={{margin:"auto",padding:"10px 0px"}}>
+            {/* <div style={{margin:"auto",padding:"10px 0px"}}>
              {(parseInt(currentProduct?.price/(currentProduct?.purchasePrice/100))-100) || 0} %
-            </div>
-          </Box>
+            </div> */}
+          {/* </Box> */}
           <TextField 
             error={isEmptyField && !currentProduct?.price}
             size="small"

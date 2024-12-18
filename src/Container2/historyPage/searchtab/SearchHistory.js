@@ -50,8 +50,6 @@ const SearchHistory = ({
     initialDateCreator()
   };
 
-  // console.log(initDate,"initDate")
-
   return (
     <div className={styles.history_searchBar}>
       <HistoryFilter

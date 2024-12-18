@@ -80,6 +80,9 @@
     "кв/м": "sq/m",
     "куб/м": "cub/m",
     "другой": "other",
+    "мл": "ml",
+    "ml": "ml",
+    "մլ" : "ml",
     "max":"maximal"
 
   },
@@ -231,6 +234,7 @@
   "productcard": {
     "outofstock": "Out of stock",
     "remainder": "Available ",
+    "remainderPrePayment": "Remained",
     "discount": "Discount",
     "secondclick": "Your product is in Basket:You can change quantity into Basket!",
     "newprice": "New price  "
@@ -289,7 +293,7 @@
     "useprepayment":"Prepayment",
     "usepayment":"Payment",
     "prepaymentTitle": "Using prepayment",
-    "prepaymentGenerate":"Leave a prepayment",
+    "prepaymentGenerate":"Get an advance",
     "nullishQuant": "There is a quantity mismatch in the basket",
     "emptyPayInfo": "There are empty or incorrect fields",
     "remainder":"Remainder",
@@ -311,7 +315,7 @@
     "excel": "Download Excel",
     "paid": "Paid",
     "no_paid": "Unpaid",
-    "canceled": "Returned",
+    "canceled": "Return",
     "date": "Date",
     "number": "Number",
     "performer": "Performer",

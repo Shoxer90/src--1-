@@ -92,7 +92,7 @@ const App = () => {
   });
  
   const whereIsMyUs = async() => {
-    console.log("29.11.24 new")
+    console.log("16․12.24 new")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(

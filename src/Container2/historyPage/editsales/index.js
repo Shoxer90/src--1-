@@ -30,7 +30,7 @@ const ReverseDialog = ({
   const [load, setLoad] = useState(false);
   const [ownMessage, setOwnMessage] = useState();
   const [reverseTotal, setReverseTotal] = useState(0);
-  const [goToReversePdf, setGoToReversePdf] = useState("");
+  // const [goToReversePdf, setGoToReversePdf] = useState("");
   const [reverseContainer, setReverseContainer] = useState([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
   const [receiptAmountForPrepayment, setReceiptAmountForPrepayment] = useState(0);
@@ -86,16 +86,15 @@ const handleOk = async(func, body) => {
     }else if(res === 403) {
       setType("error")
       setOwnMessage(`${t("dialogs.sorry")}, ${t("dialogs.noReverse")}`)
-    }else if(res.status === 200){ 
-      if(res?.data?.reverceLink){
-        setGoToReversePdf(res?.data?.reverceLink)
-      }
-      messageAfterReverse();
+    }else if(res.status === 200 && res?.data?.reverceLink){
+      messageAfterReverse(res?.data?.reverceLink);
+      setOpendDialog(false)
     }
   })
 };  
+
 const chooseFuncForSubmit = () => {
-      if(item?.saleType !== 5) {
+  if(item?.saleType !== 5) {
     reverse()
   }else {
     if(!conditionState?.cardAmount && !conditionState?.cashAmount) {
@@ -142,8 +141,10 @@ const reverse = async () => {
     await handleOk(reverseProductNew, {
       saleDetailId: item?.id,
       products: [...newArr],
-      cashAmount: +conditionState?.cashAmount,
-      cardAmount: +conditionState?.cardAmount
+      cashAmount: Math.round(+conditionState?.cashAmount*100) /100,
+      cardAmount: Math.round(+conditionState?.cardAmount*100) /100,
+      // cashAmount: +conditionState?.cashAmount,
+      // cardAmount: +conditionState?.cardAmount
     })
  
 };
@@ -186,10 +187,6 @@ const reverse = async () => {
     totalCounter()
   }, [reverseContainer]);
 
-  useEffect(() => {
-    goToReversePdf && ref.current.click()
-  }, [goToReversePdf]);
-
   return(
     <Dialog
       open={openDialog}
@@ -203,7 +200,7 @@ const reverse = async () => {
       <DialogContent>
         <DialogTitle className={styles.reverseContainer_header}>
           <span>{t("history.reverse_products")}</span>
-          <a ref={ref} target="_blank" href={goToReversePdf} rel="noreferrer"> </a>
+          {/* <a ref={ref} target="_blank" href={goToReversePdf} rel="noreferrer"> </a> */}
           <CloseIcon onClick={()=>setOpendDialog(false)} />
         </DialogTitle>
         <Divider color="black" />

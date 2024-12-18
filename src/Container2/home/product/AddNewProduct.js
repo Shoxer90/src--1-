@@ -312,7 +312,7 @@ const AddNewProduct = ({
               variant="outlined"
               autoComplete="off"
 
-              style={{width:"45%", height:"40px",margin:"5px 0 0 0"}}
+              style={{width:"50%", height:"40px",}}
               InputProps={{
                 inputProps: { 
                   min: newProduct?.measure !== "հատ" ? 0.001 : 1,
@@ -325,7 +325,7 @@ const AddNewProduct = ({
               label={t("productinputs.count")}
               onChange={(e)=>onlyNumberAndADot(e,3)} 
             />
-            <FormControl sx={{ width: "40%",margin:"5px 0 0 0" }}>
+            <FormControl sx={{ width: "50%"}}>
               <InputLabel>{t("productinputs.measure")}</InputLabel>
               <Select
                 error={emptyValidate && !measureStr}
@@ -350,7 +350,7 @@ const AddNewProduct = ({
             <TextField 
               size="small"
               variant="outlined"
-              style={{width:"45%", height:"30px"}}
+              // style={{width:"45%", height:"30px"}}
               name="purchasePrice"
               autoComplete="off"
               InputProps={{
@@ -364,15 +364,15 @@ const AddNewProduct = ({
               label={t("productinputs.purchase")}
               onChange={(e)=>onlyNumberAndADot(e,2)}
             />
-            <div style={{margin:"auto"}}>
+            {/* <div style={{margin:"auto"}}>
               {(parseInt(newProduct?.price/(newProduct?.purchasePrice/100))-100) || 0} %
-            </div>
+            </div> */}
           <TextField
             error={emptyValidate && !newProduct?.price}
             size="small"
             variant="outlined"
             autoComplete="off"
-            style={{width:"40%", height:"40px"}}
+            // style={{width:"40%", height:"40px"}}
             InputProps={{
               inputProps: { 
                 min: 1,
@@ -403,21 +403,21 @@ const AddNewProduct = ({
               setProduct={setProduct}
             />
           </Box>
-          {
-            regime === "1" &&
+          {(regime !== "3" || regime !== "7")  &&
             <div className={styles.duoInput}>
-            <FormControlLabel 
-              style={{alignSelf:"start"}}
-              name="dep"
-              control={<Checkbox />} 
-              label={t("productinputs.ndsNone")}
-              checked={newProduct?.dep}
-              onChange={(e)=> setProduct({
-                ...newProduct,
-                [e.target.name]: e.target.checked? 2 : 0,
-              })}
-            />
-          </div>}
+              <FormControlLabel 
+                style={{alignSelf:"start"}}
+                name="dep"
+                control={<Checkbox />} 
+                label={t("productinputs.ndsNone")}
+                checked={newProduct?.dep}
+                onChange={(e)=> setProduct({
+                  ...newProduct,
+                  [e.target.name]: e.target.checked? 2 : 0,
+                })}
+              />
+            </div>
+          }
         </div>
       </DialogContent>
       <Dialog open={message}>

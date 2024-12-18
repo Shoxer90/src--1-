@@ -201,7 +201,7 @@ const Bascket = ({
     if(result === 401){
       logOutFunc()
       return 
-    }else if(result === 500 || result === 0){
+    }else if(result === 500 || result === 415 || result === 0){
       setType("error")
       setMessage(`${t("dialogs.sorry")}, ${t("dialogs.wrong")}`)
       return

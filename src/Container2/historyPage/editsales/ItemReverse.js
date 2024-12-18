@@ -22,7 +22,7 @@ const ItemReverse = ({
           if(isValid || e.target.value === "") {
             return{
               ...item,
-              [e.target.name]: Math.round(+e.target.value)
+              [e.target.name]: Math.ceil(+e.target.value)
             }
           }else{
             return item
@@ -39,7 +39,9 @@ const ItemReverse = ({
             }else{ 
               return{
               ...item,
-              [e.target.name]: +e.target.value
+              // [e.target.name]: +e.target.value
+              [e.target.name]: Math.round(+e.target.value * 100) / 100
+
               }
             }
           }else if (e.target.value === "0" || e.target.value === "."){

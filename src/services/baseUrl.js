@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // export const baseUrl = "https://storex.payx.am/api/";
-// export const baseUrl = "https://localhost:7078/api/";
+// export const baseUrl = "https://localhost:192.168.1";
 export const baseUrl = "https://storextest.payx.am/api/";
 
 export const option = () => {
@@ -86,9 +86,8 @@ export const columnNames = [{
 const binance = async() => {
   try{
     const bbb = await axios.get("https://www.binance.com/api/v3/depth?symbol=WLDUSDT&limit=1000")
-    return console.log(bbb)
 
   }catch(err){
-    return console.log(err)
+    return err
   }
 }

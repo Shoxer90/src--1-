@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { filterByDate, getSaleProducts } from "../../services/user/userHistoryQuery";
+import { getSaleProducts } from "../../services/user/userHistoryQuery";
 import styles from "./index.module.scss";
 import SearchHistory from "./searchtab/SearchHistory";
 import { useLocation, useSearchParams } from "react-router-dom";
@@ -12,8 +12,6 @@ import { loadResources } from "i18next";
 import HistoryContent from "./content/HistoryContent";
 import { columnNames } from "../../services/baseUrl";
 import { getPrepayment } from "../../services/products/productsRequests";
-import axios from "axios";
-
 
 const HistoryPage = ({
   logOutFunc,
@@ -33,8 +31,8 @@ const HistoryPage = ({
   const [status, setStatus] = useState({status:new URLSearchParams(search).get("status")});
   const [historyContent, setHistoryContent] = useState();
   const [isLoad, setLoad] = useState(true);
-  const [hidepagination, setHidePagination] = useState(false);
   const [columns, setColumns] = useState([]);
+  const [flag, setFlag] = useState(false)
   
   const page = + (new URLSearchParams(search).get("page")) || 1 ;
   const coordinator = {
@@ -42,11 +40,7 @@ const HistoryPage = ({
     endDate: new URLSearchParams(search).get('endDate'),
   };
 
-  const refreshPage = () =>{
-    setLoad(true)
-  };
-
-  const getHistoryByStartAndEndDates = async(data, page=1, date) => {
+  const getHistoryByStartAndEndDates = async(data="Paid", page=1, date) => {
     setLoad(true)
     setSearchParams({
       status:data,
@@ -55,7 +49,6 @@ const HistoryPage = ({
       endDate: date?.endDate?.slice(0,10) || searchParams.get("endDate"),
     })
     let response = [];
-
     if(data === "Paid") {
       response = await getSaleProducts("GetSaleProductsByPage", {page: page, count: perPage,byDate: date})
     }else if(data === "Unpaid") {
@@ -75,7 +68,6 @@ const HistoryPage = ({
     }
     setStatus({status: data})
   };
-
 
   const initialDateCreator = async() => {
     let currentDate = new Date();
@@ -97,11 +89,10 @@ const HistoryPage = ({
   };
 
   useEffect(() => {
-    getHistoryByStartAndEndDates(status?.status, page, initDate)
-  }, [page]);
+    initialDateCreator()
+  }, [page, flag]);
 
   useEffect(() => {
-    initialDateCreator()
     if(!localStorage.getItem("historyColumn")){
       localStorage.setItem("historyColumn", JSON.stringify(columnNames))
     }
@@ -134,10 +125,11 @@ const HistoryPage = ({
     <div className={styles.historyContent}> 
         <HistoryContent 
           content={historyContent?.data}
-          t={t}
           columns={columns}
           setLoad={setLoad}
           pageName={status}
+          setFlag={setFlag}
+          flag={flag}
           logOutFunc={logOutFunc}
           paymentInfo={paymentInfo} 
           setPaymentInfo={setPaymentInfo}
@@ -145,8 +137,9 @@ const HistoryPage = ({
           setOpenBasket={setOpenBasket}
           setOpenWindow={setOpenWindow}
           deleteBasketGoods={deleteBasketGoods}
+          getHistoryByStartAndEndDates={getHistoryByStartAndEndDates}
         />
-        {!hidepagination && historyContent?.count/perPage > 1 &&
+        { historyContent?.count/perPage > 1 &&
         <PaginationSnip 
           style={{
             position:"fixed", 
@@ -157,7 +150,6 @@ const HistoryPage = ({
           }}
           page={page}
           navig_Name={`history?status=${status?.status}`}
-          refreshPage={refreshPage}
           loader={loadResources}
           pageCount={historyContent?.count}
           perPage={perPage}

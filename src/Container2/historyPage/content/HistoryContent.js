@@ -3,12 +3,14 @@ import { memo, useRef, useEffect, useState } from "react";
 import HistoryItems from "./HistoryItems";
 
 import { Alert, Dialog, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const HistoryContent = ({
   content,
-  t, 
   columns,
   setLoad,
+  flag,
+  setFlag,
   pageName,
   logOutFunc,
   paymentInfo,
@@ -16,14 +18,14 @@ const HistoryContent = ({
   setToBasket,
   setOpenBasket,
   setOpenWindow,
-  deleteBasketGoods
+  deleteBasketGoods,
+  getHistoryByStartAndEndDates
 }) => {
-    
   const [filterBody, setFilterBody] = useState([]);
   const [message, setMessage] = useState({m:"",t:""})
   const [reveredLink,setReverdLink] = useState("")
-  
   const ref = useRef();
+  const {t} = useTranslation();
 
   const filterBodyFill = () => {
     const newBody = [];
@@ -31,9 +33,15 @@ const HistoryContent = ({
     setFilterBody(newBody)
   };
 
-  const messageAfterReverse = () => {
+  const messageAfterReverse = (urlString) => {
+    setFlag((flag) => urlString)
     setMessage({m:t("dialogs.welldone"),t:"success"})
+
   };
+  const handleCloseMessage = () => {
+    setMessage({m:"",t:""})
+    setReverdLink(flag)
+  }
 
   useEffect(() => {
     filterBodyFill()
@@ -78,10 +86,9 @@ const HistoryContent = ({
               </TableBody>
           </Table>
         </TableContainer>
-   
       {message?.m && 
         <Dialog open={Boolean(message?.m)}>
-          <Alert type={message?.t} onClose={() =>setMessage({m:"",t:""})}>{message?.m}</Alert> 
+          <Alert type={message?.t} onClose={() =>handleCloseMessage({m:"",t:""})}>{message?.m}</Alert> 
         </Dialog>
       }
     </div>

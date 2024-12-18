@@ -4,9 +4,7 @@ import HdmStatus from "../../../modules/hdmStatus";
 import { hdm_generate } from "../../../services/user/hdm_query";
 import HistoryDetails from "../details/HistoryDetails";
 import Receipt from "../newHdm/receipt/index";
-// import Receipt from "../hdm/receipt/index";
 import { taxCounting } from "../../../modules/modules";
-// import ReverseBtn from "../hdm/receipt/ReverseBtn";
 import ReverseDialog from "../editsales/index";
 const HistoryItems = ({
   item, 
@@ -43,11 +41,11 @@ const HistoryItems = ({
 
   const openCloseHDM = async(id) => {
     if(pageName?.status === "Unpaid") {
-      return setOpenDetails(true)
+    return setOpenDetails(true)
     }else if(pageName?.status === "Canceled"){
-      return setReverdLink(item?.link)
+    return item?.link ? setReverdLink(item?.link) : setOpenDetails(true)
     }else{
-      setLoad(true)
+    setLoad(true)
       await hdm_generate(id).then((resp) => {
         setLoad(false)
         if(resp?.res?.printResponse){
@@ -108,10 +106,10 @@ const HistoryItems = ({
       }
 
       {filterBody.includes("operation") &&
-        <div style={{display:"flex", padding:"2px",flexFlow:"column", alignContent:"center"}}>
-          <div>{item?.link ? <Button size="small" sx={{mb:.5,fontSize:"70%", background:'orange', width:"73.8px"}} onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>:""}</div>
-          <div>{pageName?.status  === "Paid" ? <Button size="small" sx={{width:"73.8px", fontSize:"65%", background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}</div>
-        </div>
+        <TableCell  style={{display:"flex", padding:"3px",flexFlow:"column", justifyContent:"center", minHeight:"72px"}}>
+          <div>{<Button size="small" sx={{mb:.5,fontSize:"70%", background:'orange', width:"73.8px"}} onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>}</div>
+          <div>{pageName?.status  === "Paid" && item?.saleType !==5 ? <Button size="small" sx={{width:"73.8px", fontSize:"65%", background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}</div>
+        </TableCell>
       }
 
       {filterBody.includes("recieptId") && 
@@ -141,7 +139,7 @@ const HistoryItems = ({
       }
       {filterBody.includes("partnerTin") && <TableCell style={{padding:"0px 16px"}}>{item?.partnerTin || t("history.notspecified")}</TableCell>}
       {filterBody.includes("cashier") && <TableCell style={{padding:"0px 16px"}}>{item?.cashier.fullName}</TableCell>}
-    { openDetails && pageName?.status ==="Unpaid" &&
+    { openDetails && (pageName?.status ==="Unpaid" || pageName?.status ==="Canceled") &&
       <HistoryDetails
         item={item}
         openDetails={openDetails}

@@ -39,7 +39,7 @@ const ReceiptItem = ({
           </span>
           <span> = </span>
           <span>
-          {((price -  price *  discount / 100) * quantity ).toFixed(2) } դրամ
+          {Math.floor((price - price*discount/100)*quantity*100)/100} դրամ
           </span>
         </div>
         <Divider sx={{bgcolor:"black"}} />

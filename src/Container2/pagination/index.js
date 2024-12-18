@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const PaginationSnip = ({
-  refreshPage,
   pageCount, 
   page, 
   navig_Name,
@@ -30,7 +29,6 @@ const PaginationSnip = ({
             component={Link}
             to={`/${navig_Name}${item?.page === 1 ? '' : `&page=${item?.page}`}`}
             {...item}
-            onClick={()=>refreshPage(item.page)}
           />
         )}
       />
