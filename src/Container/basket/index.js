@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useState, memo } from "react";
-import { AppBar, Button, Dialog, DialogContent, Divider, IconButton, Slide } from "@mui/material";
+import { AppBar, Dialog, DialogContent, Divider, IconButton, Slide } from "@mui/material";
 import { Box } from "@mui/system";
 import styles from "./index.module.scss"
 import { basketListUrl, payRequestQR, saleProductFromBasket, sendSmsForPay } from "../../services/pay/pay";
@@ -21,6 +21,7 @@ import SearchBarcode from "../../SearchBarcode";
 import { taxCounting } from "../../modules/modules.js";
 import ProductPrePayment from "./payment/ProductPrePayment.js";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import { useTranslation } from "react-i18next";
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -28,7 +29,6 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 const Bascket = ({
-  t,
   userName,
   logOutFunc,
   changeCountOfBasketItem,
@@ -50,10 +50,13 @@ const Bascket = ({
   setMesFromHead,
   setFetching,
   setCurrentPage,
-  openWindow,setOpenWindow,
+  openWindow,
+  setOpenWindow,
   paymentInfo, setPaymentInfo,
 }) => {
+  const {t} = useTranslation();
   const [screen, setScreen] = useState(window.innerWidth);
+
   const [saleData, setSaleData] = useState();
   const [loader, setLoader] = useState(false);
   const [totalPrice,setTotalPrice] = useState();

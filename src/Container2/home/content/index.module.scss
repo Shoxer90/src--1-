@@ -1,0 +1,75 @@
+.products{
+    background-color: rgb(250, 250, 245);
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+      width: 100%;
+    .btnHistory{
+      margin-top: 80px;
+      background-color: rgb(250, 250, 245);
+      color: white;
+      display: flex;
+      padding-bottom: 0;
+    }
+    &_update{
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-around;
+      padding: 15px;
+      justify-content: center;
+      &_item{
+        border-radius: 5px;
+        padding: 5px;
+      }
+      &_card{
+        display:flex;
+        align-content: center;
+        >img{
+          border: solid rgb(173, 173, 173) 1px;
+          border-radius: 8px;
+        }
+      }
+      &_card_info{
+        align-content: center;
+        text-align: start;
+      }
+    }
+  }
+
+  .hovertext {
+    position: relative;
+  }
+  .hovertext:before {
+    content: attr(data-hover);
+    visibility: hidden;
+    opacity: 0.5;
+    min-width: 140px;
+    background-color: rgb(172, 170, 170);
+    text-align: center;
+    border-radius: 5px;
+    padding: 4px;
+    transition: opacity .5s ease-in-out;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 110%;
+  }
+  
+  .hovertext:hover:before {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .productContent_item_addBasket{
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+    >input{
+      width:100px;
+      border-radius: 8px;
+      font-weight: 700;
+      border: solid orange 1px;
+      padding-left: 10px;
+      margin-right:  5px;
+      font-size: large;
+    }
+  }

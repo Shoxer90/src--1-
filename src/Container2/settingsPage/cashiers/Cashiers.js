@@ -3,7 +3,7 @@ import  React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { memo } from "react";
-import { getCashiers, operationCashiers, setCashierEhdmStatus, setCashierReverseStatus, updateCashiersData } from "../../../services/user/userInfoQuery";
+import { getCashiers, operationCashiers, setCashierEhdmStatus, setCashierReverseStatus } from "../../../services/user/userInfoQuery";
 import styles from "./index.module.scss";
 import NewCashier from "../../dialogs/NewCashier";
 import UpdateCashiers from "../../dialogs/updateCashiers";
@@ -11,8 +11,11 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import CashiersItem from "./CashiersItem";
 import SnackErr from "../../dialogs/SnackErr";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import { useTranslation } from "react-i18next";
 
-const Cashiers = ({t, logOutFunc, cashierLimit}) => {
+const Cashiers = ({logOutFunc, cashierLimit}) => {
+  const {t} = useTranslation();
+
   const [cashiers, setCashiers] = useState([]);
   const [openCashierDial, setOpenCashierDail] = useState(false);
   const [newCashierSuccess, setCashierSuccess] = useState(false);
@@ -39,17 +42,6 @@ const Cashiers = ({t, logOutFunc, cashierLimit}) => {
     setOpenCashierDail(false)
     setOpenLimitOver(false)
   }
-
-  // const handleUpdateCashier = async(data) => {
-  //   await updateCashiersData(data).then((res) => {
-  //     if(res?.status === 200) {
-  //       setRegister(!register)
-  //     }else if(res?.status === 405) {
-
-  //     }
-  //   })
-  //   setUpdateDial(false)
-  // };
 
   const isCashierReverse = async(id,bool) => {
     await setCashierReverseStatus(id, bool);
@@ -174,7 +166,6 @@ const Cashiers = ({t, logOutFunc, cashierLimit}) => {
       </Dialog>
     }
     <UpdateCashiers
-      t={t} 
       updateDial={updateDial}
       setUpdateDial={setUpdateDial}
       updateContent={updateContent}

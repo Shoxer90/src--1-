@@ -1,46 +1,42 @@
-import React from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
-import { memo } from "react";
-import { useState } from "react";
+import React, { memo ,useState, useEffect } from "react";
 import { createProduct, uniqueBarCode } from "../../../services/products/productsRequests";
-import { useEffect } from "react";
 import { Box } from "@mui/system";
 import { Checkbox, DialogContent, Divider, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Slide, TextField } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import SnackErr from "../../dialogs/SnackErr"
 import { getMeasureByNum } from "../../../modules/modules";
-import styles from "../index.module.scss";
 import ImageLoad from "./ImageLoad";
-import ProductAdg from "./ProductAdg";
 import ProductAdg2 from "./ProductAdg2";
 import BarcodeInput from "./BarcodeInput";
 import ConfirmDialog from "../../dialogs/ConfirmDialog";
+
+import styles from "../index.module.scss";
+import { useTranslation } from 'react-i18next';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const AddNewProduct = ({
-  setOpenNewProduct,
-  changeStatus,
-  openNewProd,
   newProduct,
   setProduct,
+  setOpenNewProduct,
+  openNewProd,
+  changeStatus,
   measure,
-  t,
+  getSelectData,
   typeCode,
   setTypeCode,
-  getSelectData,
   selectContent,
   setFetching,
-  content,
   setContent,
   setGlobalMessage,
   setGlobalType
 }) => {
-
+  const {t} = useTranslation();
   const [type, setType] = useState("success");
   const [regime, setRegime] = useState();
 	const [message, setMessage] = useState("");
@@ -126,10 +122,6 @@ const AddNewProduct = ({
             setMessage(t("productinputs.productadded"))
             setType("success")
             changeStatus("GetAvailableProducts")
-            // setContent([
-            //   newProduct,
-            //   ...content
-            // ])
             setTimeout(() => {
               handleClose()
               setType()
@@ -217,7 +209,7 @@ const AddNewProduct = ({
       photo:"",
       measure:"",
       pan: 0,
-      dep: 0
+      dep: 1
     })
     localStorage.removeItem("newProduct")
   };
@@ -272,9 +264,6 @@ const AddNewProduct = ({
         <Divider style={{backgroundColor:"gray"}} /> 
         <div className={styles.newProdForm}>
           <ProductAdg2
-          // <ProductAdg
-            t={t}
-            emptyValidate={emptyValidate}
             typeCode={typeCode}
             setTypeCode={setTypeCode}
             newProduct={newProduct}
@@ -292,7 +281,6 @@ const AddNewProduct = ({
             onChange={(e)=>handleChangeInput(e)} 
             inputProps={{ maxLength: 50 }}
             autoComplete="off"
-
           /> 
           <TextField 
             size="small"
@@ -303,7 +291,6 @@ const AddNewProduct = ({
             label={`${t("productinputs.brand")}`}
             onChange={(e)=>handleChangeInput(e)} 
             autoComplete="off"
-
           />
           <div className={styles.duoInput}>
             <TextField 
@@ -311,15 +298,13 @@ const AddNewProduct = ({
               size="small"
               variant="outlined"
               autoComplete="off"
-
-              style={{width:"50%", height:"40px",}}
+              style={{width:"50%", height:"40px"}}
               InputProps={{
                 inputProps: { 
                   min: newProduct?.measure !== "հատ" ? 0.001 : 1,
                   step: newProduct?.measure !== "հատ" ? 0.01 : 1
                 }
               }}
-              // type="number"
               name="remainder" 
               value={newProduct?.remainder}
               label={t("productinputs.count")}
@@ -350,7 +335,6 @@ const AddNewProduct = ({
             <TextField 
               size="small"
               variant="outlined"
-              // style={{width:"45%", height:"30px"}}
               name="purchasePrice"
               autoComplete="off"
               InputProps={{
@@ -359,20 +343,16 @@ const AddNewProduct = ({
                   step: 0.1
                 }
               }}
-              // type="number" 
               value={newProduct?.purchasePrice}
               label={t("productinputs.purchase")}
               onChange={(e)=>onlyNumberAndADot(e,2)}
             />
-            {/* <div style={{margin:"auto"}}>
-              {(parseInt(newProduct?.price/(newProduct?.purchasePrice/100))-100) || 0} %
-            </div> */}
+
           <TextField
             error={emptyValidate && !newProduct?.price}
             size="small"
             variant="outlined"
             autoComplete="off"
-            // style={{width:"40%", height:"40px"}}
             InputProps={{
               inputProps: { 
                 min: 1,
@@ -396,10 +376,8 @@ const AddNewProduct = ({
             <BarcodeInput
               emptyValidate={emptyValidate}
               newProduct={newProduct}
-              handleChangeInput={handleChangeInput}
               isUniqBarCode={isUniqBarCode}
               setIsUniqBarcode={setIsUniqBarcode}
-              t={t}
               setProduct={setProduct}
             />
           </Box>
@@ -410,10 +388,10 @@ const AddNewProduct = ({
                 name="dep"
                 control={<Checkbox />} 
                 label={t("productinputs.ndsNone")}
-                checked={newProduct?.dep}
+                checked={newProduct?.dep === 2}
                 onChange={(e)=> setProduct({
                   ...newProduct,
-                  [e.target.name]: e.target.checked? 2 : 0,
+                  [e.target.name]: e.target.checked? 2 : 1,
                 })}
               />
             </div>

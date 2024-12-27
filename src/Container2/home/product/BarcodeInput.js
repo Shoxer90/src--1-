@@ -2,6 +2,7 @@ import React , { memo } from "react";
 
 import { TextField } from "@mui/material";
 import Barcode from "react-barcode";
+import { useTranslation } from "react-i18next";
 
 const BarcodeInput = ({
   emptyValidate, 
@@ -9,9 +10,9 @@ const BarcodeInput = ({
   setProduct,
   isUniqBarCode,
   setIsUniqBarcode,
-  t, 
 }) => {
-
+  const {t}= useTranslation();
+  
   const barcodeValidation = (event) => {
     const valid = /^[a-zA-Z0-9_]+$/
     const text = event.target.value;  

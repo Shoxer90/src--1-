@@ -15,24 +15,22 @@ import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantity
 import styles from "./index.module.scss";
 
 import UserInfo from "./userAvatar/index"
+import { useTranslation } from "react-i18next";
 
 const Header = ({
-  t,
   setOpenBasket,
   basketGoodsqty,
   logOutFunc,
-  // setCurrentPage,
   user,
   logo,
   active,
-  setContent,
-  activeBtn, setActiveBtn
+  activeBtn,
+  setActiveBtn
 }) => {
+  const {t} = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const {limitedUsing} = useContext(LimitContext);
-
-  // const [activeBtn, setActiveBtn] = useState();
 
   useEffect(() => {
     setActiveBtn(location.pathname)
@@ -80,7 +78,7 @@ const Header = ({
               <HistoryIcon fontSize="large"/>
               <span className={styles.routeName}>{t("menubar.history")}</span>
             </h6>
-            {!limitedUsing && <h6 
+            {/* {!limitedUsing && <h6 
               style={{
                 color:(activeBtn === "/product-info/updates"? "#FFA500" : "#383838"),
                 fontSize:(activeBtn === "/product-info/updates" && "140%")
@@ -92,7 +90,7 @@ const Header = ({
             >
               <InventorySharpIcon fontSize="large"/>
               <span className={styles.routeName}>{t("menubar.product")}</span>
-            </h6>}
+            </h6>} */}
             <h6 
               style={{
                 color:(activeBtn === "/prepayment"? "#FFA500" : "#383838"),

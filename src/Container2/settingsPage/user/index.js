@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import styles from "./index.module.scss";
 import ClientShopAvatar from "./ClientShopAvatar";
 import { Button, Dialog } from "@mui/material";
 import ClientInfo from "./ClientInfo";
@@ -10,17 +10,16 @@ import { changeEHDM } from "../../../services/user/userInfoQuery";
 import SnackErr from "../../dialogs/SnackErr";
 import Loader from "../../loading/Loader";
 
-const SettingsUser = ({user,t, whereIsMyUs, logOutFunc}) => {
+import styles from "./index.module.scss";
+
+const SettingsUser = ({user, whereIsMyUs, logOutFunc}) => {
+
+  const {t} = useTranslation();
+  
   const [confirmSwitch, setConfirmSwitch] = useState(false);
   const [openAddDialog, setOpenAddDialog] = useState(false)
-  const [inputLabels, setInputLabels] = useState();
   const [isLoad, setIsLoad] = useState(false);
   const [message,setMessage] = useState({m:"", t:""});
-
-  const addClientInfo = async(name) => {
-    setInputLabels([t("settings.changepassword"), t("settings.confirmpassword")])
-    setOpenAddDialog(true)
-  };
   
   const switchStatus = async(newStatus) => {
     setIsLoad(true)
@@ -38,15 +37,9 @@ const SettingsUser = ({user,t, whereIsMyUs, logOutFunc}) => {
     whereIsMyUs()
   }, [isLoad]);
 
-  // useEffect(() => {
-  //   whereIsMyUs()
-  // }, [synth, message]);
-
   return(
   <div className={styles.settings_user}>
-    <ClientShopAvatar 
-      client={user}
-    />
+    <ClientShopAvatar client={user} />
     <h4 className={styles.settings_user_name}>
       {user?.firstname} {user?.lastname}  
     </h4>
@@ -74,7 +67,7 @@ const SettingsUser = ({user,t, whereIsMyUs, logOutFunc}) => {
       </label>
     </h6>
     {user && <ClientInfo />}
-    <Button onClick={()=>addClientInfo("password")}>
+    <Button onClick={()=>setOpenAddDialog(true)}>
       {t("settings.changepassword")} 
     </Button>
     <ConfirmDialog
@@ -89,7 +82,6 @@ const SettingsUser = ({user,t, whereIsMyUs, logOutFunc}) => {
       t={t}
     />
       <AddNewClientInfo 
-        t={t}
         setMessage={setMessage}
         openAddDialog={openAddDialog}
         setOpenAddDialog={setOpenAddDialog}

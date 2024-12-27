@@ -19,6 +19,7 @@ import styles from ".././index.module.scss";
 import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import ImageLoad from "./ImageLoad";
 import Barcode from "react-barcode";
+import { useTranslation } from "react-i18next";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -32,13 +33,15 @@ const UpdateProduct = ({
   deleteAndRefresh, 
   setNewPrice, 
   deleteBasketItem, 
-  t,
   setFetching,
   setContent,
   content,
   getSelectData,
-  typeCode,setTypeCode
+  typeCode,
+  setTypeCode
 }) => {
+  const {t} = useTranslation();
+
   const [currentProduct,setCurrentProduct] = useState();
   const [confirmation, setConfirmation] = useState(false);
   const [message, setMessage] =  useState({message:"",type:""});
@@ -312,10 +315,7 @@ const UpdateProduct = ({
               label={t("productinputs.purchase")}
               onChange={(e)=> onlyNumberAndADot(e,2)} 
             />
-            {/* <div style={{margin:"auto",padding:"10px 0px"}}>
-             {(parseInt(currentProduct?.price/(currentProduct?.purchasePrice/100))-100) || 0} %
-            </div> */}
-          {/* </Box> */}
+            
           <TextField 
             error={isEmptyField && !currentProduct?.price}
             size="small"

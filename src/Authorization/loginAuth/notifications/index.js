@@ -1,8 +1,11 @@
 import { memo, useEffect, useState } from "react";
 import { getNews } from "../../../services/auth/auth";
 import styles from "../index.module.scss";
+import { useTranslation } from "react-i18next";
 
-const NotificationComponent = ({t}) => {
+const NotificationComponent = () => {
+  const {t} = useTranslation();
+  
   const [notification, setNotification] = useState([]);
 
   useEffect(() => {

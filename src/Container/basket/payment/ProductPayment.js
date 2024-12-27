@@ -56,7 +56,7 @@ const ProductPayment = ({
       setPaymentInfo({
         ...paymentInfo,
         cashAmount: +e.target.value,
-        cardAmount: Math.floor((val-e.target.value)*100)/100
+        cardAmount: Math.round((val-e.target.value)*100)/100
       })
     }else {
     if(e.target.name === "cardAmount")
@@ -66,10 +66,22 @@ const ProductPayment = ({
         cashAmount: Math.floor((val-e.target.value)*100)/100
       })
     }
+  }; 
+
+  const limitChar = (e,val) => {
+    const text = e.target.value;  
+      const valid = /^[0-9]*$/;
+      if(valid.test(text) &&  text.length <= val) {
+        return setPaymentInfo({
+          ...paymentInfo,
+          [e.target.name]:e.target.value
+        })
+      }else {
+        e.preventDefault(); 
+      }
   };
 
   useEffect(() => {
-    // !trsf && cashChanges()
     setVal(totalPrice - prepayment)
     setBlockTheButton(false)
   }, [totalPrice, flag, paymentInfo?.discount, paymentInfo?.cardAmount, paymentInfo?.prePaymentAmount]);
@@ -104,7 +116,6 @@ const ProductPayment = ({
         </span>
         <input
           value={`${( totalPrice- paymentInfo?.prePaymentAmount).toFixed(2)}  ${t("units.amd")}`}
-          // value={`${(totalPrice-paymentInfo?.cardAmount-paymentInfo?.cashAmount- paymentInfo?.prePaymentAmount).toFixed(2)}  ${t("units.amd")}`}
           readOnly
           style={{color:"orange",fontWeight: 600}}
         />
@@ -130,7 +141,6 @@ const ProductPayment = ({
           {t("history.card")}
         </span>
         <input
-          // value={paymentInfo?.cardAmount || ""}
           value={paymentInfo?.cardAmount || ""}
           name="cardAmount"
           autoComplete="off"
@@ -150,27 +160,12 @@ const ProductPayment = ({
           autoComplete="off"
           name="partnerTin"
           placeholder={`8 ${t('productinputs.symb')}`}
-          onChange={(e)=> {
-            if(`${e.target.value}`?.length <= 8){
-              setPaymentInfo({
-                ...paymentInfo,
-                [e.target.name]:e.target.value.replace(/[^1-9]+/g,"")
-              })
-            }
-          }}
+          onChange={(e)=>limitChar(e,8)}
         />
       </div>
         <div style={{height:"20px", color:"orange", display:"flex", justifyContent:"flex-start"}}>
           <span>{paymentInfo?.customer_Name}</span> <span style={{marginLeft:"10px"}}> {paymentInfo?.customer_Phone}</span>
         </div>
-      {/* <span style={{marginTop:"13px", marginBottom:"13px", color:'orange'}}>
-        <span>
-          {t("basket.remainder")} 
-        </span>
-        <span style={{marginLeft:"20px"}}>
-          {(totalPrice-paymentInfo?.cardAmount-paymentInfo?.cashAmount- paymentInfo?.prePaymentAmount).toFixed(2)}
-        </span>
-      </span> */}
       <Divider flexItem sx={{bgcolor:"black"}} />
     </div>
   )

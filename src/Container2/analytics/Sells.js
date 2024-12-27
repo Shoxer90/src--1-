@@ -11,15 +11,17 @@ import Loader from "../loading/Loader";
 import { dateFormat } from "../../modules/modules";
 import { useLocation, useNavigate } from "react-router-dom";
 import Chart from "react-google-charts";
+import { useTranslation } from "react-i18next";
    
 function Sells({
-  t,
   sells, 
   titles, 
   dateArr, 
   productsSaleByDays,
   longTitlePage,
 }) {
+  const {t} = useTranslation();
+  
   const search = useLocation().search;
   const [chart, setChart] = useState();
   const [params ,setParams] = useState(new URLSearchParams(search).get('prod') || "All");

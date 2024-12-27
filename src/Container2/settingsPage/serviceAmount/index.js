@@ -1,4 +1,4 @@
-import React, { useState, memo, useEffect, useRef } from 'react';
+import React, { useState, memo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {Card, Dialog, Divider, useMediaQuery } from '@mui/material';
@@ -33,7 +33,6 @@ const stylesCard = {
 
 
 const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate}) => {
-  const ref = useRef();
   const [internalPayments, setInternalPayments] = useState(); 
   const [payData, setPayData] = useState({
     isBinding: internalPayments?.autopayment?.hasAutoPayment,
@@ -41,7 +40,6 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
     months: 1,
     web: true
   });
-  const [responseUrl,setResponseUrl] = useState("");
   const {t} = useTranslation()
   const [message, setMessage] = useState({message:"", type:""});
   const [isDelete,setIsDelete] = useState(false);
@@ -122,17 +120,14 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
     setIsLoad(true)
     await postNewCreditCard().then((res) => {
       setIsLoad(false)
-      return setResponseUrl(res)
+      window.open(res, '_blank');
+
     })
   };
 
   useEffect(() => {
     getInfo()
   }, [refresh, isDelete]);
-
-  useEffect(() => {
-   responseUrl && ref.current.click()
-  }, [responseUrl]);
 
   return (
   <div className={styles.clientContainer} >
@@ -204,8 +199,6 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
       </div>
     </Card>
    
-     { responseUrl && <a ref={ref} href={responseUrl}>{""}</a> }
-  
     <ConfirmDialog
       open={openDialog}
       close={setOpenDialog}

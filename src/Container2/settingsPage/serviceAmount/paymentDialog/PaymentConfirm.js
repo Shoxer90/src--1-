@@ -1,10 +1,8 @@
 import { Divider } from '@mui/material';
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import styles from "./index.module.scss";
 import { useTranslation } from 'react-i18next';
-import { bindNewCard } from '../../../../services/cardpayments/internalPayments';
-import ConfirmDialog from '../../../dialogs/ConfirmDialog';
 import AttachedCardsItem from './AttachedCardsItem';
 
 const PaymentConfirm = ({
@@ -16,34 +14,13 @@ const PaymentConfirm = ({
   method
 }) => {
   const {t} = useTranslation();
-  const [load,setLoad] = useState(false);
-  const [openDialog, setOpenDialog]= useState();
   const [activateBtn,setActivateBtn] = useState(0);
-  const [newLink,setNewLink] = useState("")
-  const ref = useRef();
 
   const activeStyle = {
     boxShadow: "10px 5px 5px grey",
     scale:"1.04",
     transition: "width 2s",
   };
-  
-  
-  const getLinkForNewCard = async() => {
-    setLoad(true)
-    await bindNewCard(payData).then((res) => {
-      setLoad(false)
-      if(res?.formUrl) {
-        setNewLink(res?.formUrl)
-      }else{
-        // do something
-      }
-    })
-  };
-
-  useEffect(() => {
-    newLink && ref?.current.click()
-  },[newLink]);
 
   useEffect(() => {
     setPayData({
@@ -61,18 +38,18 @@ const PaymentConfirm = ({
       </div>
       {cardArr?.length ?
         <div>
-            {cardArr.map((card,index)=>(
-              <AttachedCardsItem 
-                card={card} 
-                payData={payData}
-                setActivateBtn={setActivateBtn}
-                setPayData={setPayData}
-                setMethod={setMethod}
-                index={index}
-                activateBtn={activateBtn}
-                activeStyle={activeStyle}
-              /> 
-            ))}
+          {cardArr.map((card,index)=>(
+            <AttachedCardsItem 
+              card={card} 
+              payData={payData}
+              setActivateBtn={setActivateBtn}
+              setPayData={setPayData}
+              setMethod={setMethod}
+              index={index}
+              activateBtn={activateBtn}
+              activeStyle={activeStyle}
+            /> 
+          ))}
         </div>: ""
       }
       </div>
@@ -119,14 +96,6 @@ const PaymentConfirm = ({
           <span style={{marginLeft:"10px"}}>{t("settings.payWithNewCardAndAttach")}</span>
         </label>}
       </div>
-      {newLink && 
-        <a 
-          ref={ref} 
-          href={newLink} 
-          rel="noreferrer" 
-        >""
-        </a>
-      }
     </div>
   )
 }

@@ -1,11 +1,12 @@
   import { Card } from '@mui/material';
-  import React,{useState} from 'react'
-  import { memo } from 'react';
+  import { useTranslation } from 'react-i18next';
+  import {memo , useState} from 'react'
   import ChangeAnalyses from './ChangeAnalyses';
 
   import styles from "./index.module.scss";
 
-  const Updates = ({updates, t}) => {
+  const Updates = ({updates}) => {
+  const {t} = useTranslation();
 
   const [open, setOpen] = useState(false);
   const [changes, setChanges] = useState([]);
@@ -22,7 +23,7 @@
   
   return (
       <div className={styles.products_update}>
-        {updates.map((el,i) => (
+        {updates?.length && updates?.map((el,i) => (
           <Card 
             key={i}
             onClick={()=>updateItemClick(el?.id, el?.name)}

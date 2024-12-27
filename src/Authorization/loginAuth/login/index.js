@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from "react";
-import PrivacyForgotLinks from "../PrivacyForgotLinks";
+import PrivacyForgotLinks from "./PrivacyForgotLinks";
 import SocialMediaGroup from "../../../Container2/social";
 import LogInFormNew from "../login/LoginForm";
 import LangSelect from "../../../Container2/langSelect";
@@ -22,9 +22,9 @@ const Login = ({whereIsMyUs,setIsLogIn}) => {
   }, []);
 
   return(
-    <div>
+    <div  style={{color:"#3FB68A"}}>
       <div style={{display:"flex", justifyContent:"space-between",alignItems:"center"}}>
-        <span style={{color:"#3FB68A",fontSize:"110%",fontWeight:600, textAlign:"start"}}>Storex On - line</span>
+        <h5>Storex On - line</h5>
         <LangSelect size={"22px"} />
       </div>
       <LogInFormNew 
@@ -53,15 +53,12 @@ const Login = ({whereIsMyUs,setIsLogIn}) => {
         </p>
       <span id="apple">
       <img src="/11223.png" alt="" style={{ height:"2dvw"}}/>
-      {/* <img src="/11223.png" alt="" style={{ width:"110px"}}/> */}
       </span>
       <span id="storexQR">
         <img src="/storexQr.png" alt="" style={{ width:"80px"}}/>
-        {/* <img src="/storexQr.png" alt="" style={{ width:"80px"}}/> */}
       </span>
       <span id="android">
         <img src="/11230.png" alt="" style={{ height:"2dvw"}}/>
-        {/* <img src="/11230.png" alt="" style={{ width:"110px"}}/> */}
       </span>
       <Dialog open={loading}>
         <Loader/>

@@ -13,16 +13,16 @@ import {LimitContext} from "../../context/Context";
 import styles from "./index.module.scss";
 import SnackErr from "../dialogs/SnackErr";
 import ConfirmDialog from "../dialogs/ConfirmDialog";
+import { useTranslation } from "react-i18next";
 
 const HomeContentItem = ({
-  t,
+  measure,
   setToBasket,
   basketExist,
   deleteAndRefresh,
   changeStatus,
-  product,
   deleteBasketItem,
-  measure,
+  product,
   index,
   dataGroup,
   selectContent,
@@ -35,6 +35,7 @@ const HomeContentItem = ({
 
 
 }) => {
+  const {t} = useTranslation();
   const {limitedUsing} = useContext(LimitContext);
   const [openUpdateProd, setOpenUpdateProduct] = useState(false);
   const [quantity,setQuantity] = useState("");

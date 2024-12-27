@@ -12,17 +12,10 @@ import { loadResources } from "i18next";
 import HistoryContent from "./content/HistoryContent";
 import { columnNames } from "../../services/baseUrl";
 import { getPrepayment } from "../../services/products/productsRequests";
+import { useTranslation } from "react-i18next";
 
-const HistoryPage = ({
-  logOutFunc,
-  t,
-  paymentInfo, 
-  setPaymentInfo,
-  setToBasket,
-  setOpenBasket,
-  setOpenWindow,
-  deleteBasketGoods
-}) => {
+const HistoryPage = ({logOutFunc}) => {
+  const {t} = useTranslation();
   const perPage = 10;
   const search = useLocation().search;
 
@@ -131,13 +124,6 @@ const HistoryPage = ({
           setFlag={setFlag}
           flag={flag}
           logOutFunc={logOutFunc}
-          paymentInfo={paymentInfo} 
-          setPaymentInfo={setPaymentInfo}
-          setToBasket={setToBasket}
-          setOpenBasket={setOpenBasket}
-          setOpenWindow={setOpenWindow}
-          deleteBasketGoods={deleteBasketGoods}
-          getHistoryByStartAndEndDates={getHistoryByStartAndEndDates}
         />
         { historyContent?.count/perPage > 1 &&
         <PaginationSnip 

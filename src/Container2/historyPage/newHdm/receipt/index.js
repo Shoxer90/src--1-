@@ -11,12 +11,12 @@ import {
 import ActionMessage from '../../../dialogs/ActionMessage';
 import SharePage from './SharePage';
 import ReceiptHeader from './ReceiptHeader';
-import ReverseBtn from './ReverseBtn';
 import ReceiptPartners from './ReceiptPartners';
 import ReceiptItem from './ReceiptItem';
 import ReceiptFooter from './ReceiptFooter';
 import styles from "./index.module.scss";
 import ReceiptFiscal from './ReceiptFiscal';
+import { useTranslation } from 'react-i18next';
 
 const Reciept = ({ 
   setOpenHDM, 
@@ -24,11 +24,12 @@ const Reciept = ({
   saleData, 
   openHDM, 
   date, 
-  t,  
+  totalPrice,
   userName,
 }) => {
-  
+  const {t} = useTranslation();
   const componentRef = useRef();
+
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [buildedData, setBuildData] = useState({ });

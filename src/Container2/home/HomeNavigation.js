@@ -6,6 +6,7 @@ import {LimitContext} from "../../context/Context";
 import styles from "./index.module.scss";
 import ExcelBurger from "./excelLoader/buttonForAdd"
 import SearchBarcode from "../../SearchBarcode";
+import { useTranslation } from "react-i18next";
 
 const HomeNavigation = ({
   byBarCodeSearching, 
@@ -16,10 +17,10 @@ const HomeNavigation = ({
   searchValue,
   dataGroup,
   setFrom,
-  t,
   setContent,
-  content
 }) => {
+  const {t} = useTranslation();
+  
   const {limitedUsing} = useContext(LimitContext);
   
   const  handleSendQuery = async(str, index) => {

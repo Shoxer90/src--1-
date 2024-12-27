@@ -8,8 +8,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import ItemReverse from "./ItemReverse";
 import SelectAll from "./SelectAll";
 import { editOrReversePrepaymentReceipt, reverseProductNew } from "../../../services/user/userHistoryQuery";
-import ReverseAmountFields from "./ReverseAmountFields";
 import Loader from "../../loading/Loader";
+import ReverseConditions from "./condition/ReverseConditions";
 
 const ReverseDialog = ({
   openDialog,
@@ -17,12 +17,6 @@ const ReverseDialog = ({
   products,
   item,
   messageAfterReverse,
-  paymentInfo,
-  setPaymentInfo,
-  setToBasket,
-  setOpenBasket,
-  setOpenWindow,
-  deleteBasketGoods
 }) => {
 
   const {t} = useTranslation();
@@ -30,7 +24,6 @@ const ReverseDialog = ({
   const [load, setLoad] = useState(false);
   const [ownMessage, setOwnMessage] = useState();
   const [reverseTotal, setReverseTotal] = useState(0);
-  // const [goToReversePdf, setGoToReversePdf] = useState("");
   const [reverseContainer, setReverseContainer] = useState([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
   const [receiptAmountForPrepayment, setReceiptAmountForPrepayment] = useState(0);
@@ -157,7 +150,11 @@ const reverse = async () => {
       }
     })
     await setReverseTotal(total)
-  }; 
+  };
+
+console.log(reverseTotal,"reverseTotal");
+console.log(conditionState.productscashAmount,"cashAmount");
+console.log(conditionState.cardAmount,"cardAmount");
 
   const fillReverseContainer = async() => {
     const arr = []
@@ -200,7 +197,6 @@ const reverse = async () => {
       <DialogContent>
         <DialogTitle className={styles.reverseContainer_header}>
           <span>{t("history.reverse_products")}</span>
-          {/* <a ref={ref} target="_blank" href={goToReversePdf} rel="noreferrer"> </a> */}
           <CloseIcon onClick={()=>setOpendDialog(false)} />
         </DialogTitle>
         <Divider color="black" />
@@ -220,23 +216,14 @@ const reverse = async () => {
         ))}
         <Divider color="black" />
 
-        <ReverseAmountFields 
+        <ReverseConditions
           {...item}
           reverseTotal={reverseTotal}
           conditionState={conditionState}
           setConditionState={setConditionState}
-          totalCounter={totalCounter}
           receiptAmountForPrepayment={receiptAmountForPrepayment}
-          reverse={reverse}
           chooseFuncForSubmit={chooseFuncForSubmit}
           isAllSelected={isAllSelected}
-          setIsAllSelected={setIsAllSelected}
-          paymentInfo={paymentInfo}
-          setPaymentInfo={setPaymentInfo}
-          setToBasket={setToBasket}
-          setOpenBasket={setOpenBasket}
-          setOpenWindow={setOpenWindow}
-          deleteBasketGoods={deleteBasketGoods}
         />
 
         {ownMessage && 

@@ -5,12 +5,11 @@ import { useState } from "react";
 import { isUniqueNik, registrationNew } from "../../../services/auth/auth";
 import { Dialog, FormControl, FormHelperText, InputAdornment, TextField } from "@mui/material";
 import { mailValidate } from "../../../modules/mailValidate";
-import TermsConditionsLink from "../../registration/preRegistrate/TermsConditionsLink";
-import PreRegistrateAgreement from "../../registration/preRegistrate/PreRegistrateAgreement"
 import BackAndOk from "../buttonGroup/backAndOk";
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import validator from "validator";
 import SnackErr from "../../../Container2/dialogs/SnackErr";
+import PreRegistrateAgreement from "../preRegistrate/PreRegistrateAgreement";
+import TermsConditionsLink from "../preRegistrate/TermsConditionsLink";
 
 const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) => { 
 
@@ -63,9 +62,13 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
   };
 
   const limitChar = (e,val) => {
-    if (e.target.value.toString()?.length <= val) {
-      handleChange(e);
-    }
+    const text = e.target.value;  
+      const valid = /^[0-9]*$/;
+      if(valid.test(text) &&  text.length <= val) {
+        return handleChange(e)
+      }else {
+        e.preventDefault(); 
+      }
   };
 
    const reg = () => {
@@ -181,7 +184,6 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           }
         }}
         error={(!newUser?.tin && submitClick )|| (newUser?.tin && newUser?.tin?.length !==8)}
-        type="number"
         name="tin"
         value={newUser?.tin}
         placeholder={`${t("authorize.tin")} (8 ${t("productinputs.symb")}) *`} 
@@ -264,7 +266,6 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
         }}
           error={(!newUser?.phoneNumber && submitClick) ||(newUser?.phoneNumber && newUser?.phoneNumber?.length !==8)}
           name="phoneNumber"
-          type="number"
           value={newUser?.phoneNumber}
           label={`${t("authorize.phone")} *`}
           onChange={(e)=>{

@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import styles from "./index.module.scss";
 
 const LoginAuthContainer =({children}) => {
-const {t} = useTranslation();
 
   return (
     <div style={{display:"flex",justifyContent:"space-between",flexFlow:"column", color:"#3FB68A", padding:"0px 10px"}}>
@@ -16,7 +15,7 @@ const {t} = useTranslation();
           <div style={{height:"2px", backgroundColor:"#3FB68A", margin:"5px 1px"}}></div>
           {children}
         </div>
-        <NotificationComponent t={t} />
+        <NotificationComponent />
       </div>
       <div className={styles.regContent}>
         <Footer color="#3FB68A" />

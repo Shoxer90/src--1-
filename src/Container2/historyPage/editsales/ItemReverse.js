@@ -62,6 +62,8 @@ const ItemReverse = ({
     totalCounter()
   },[reverseContainer]);
 
+  // console.log(discountedPrice, count,discountedPrice*count, "RRRRR" )
+
   return(
     <label className={styles.radioDialog}>
       <span style={{display:"flex",alignItems:"center"}}>

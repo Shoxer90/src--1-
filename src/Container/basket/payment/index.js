@@ -58,7 +58,6 @@ const PaymentContainer = ({openWindow, setOpenWindow, setPaymentInfo, paymentInf
             onClick={comeBackBtnFunc}
             size="small"
           >
-            {/* {t("basket.useprepayment")} */}
            {t("buttons.back")}
           </Button>
           <h5>{t("basket.usepayment")}</h5>

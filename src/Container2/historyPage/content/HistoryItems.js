@@ -1,37 +1,35 @@
-import { Button, TableCell, TableRow } from "@mui/material";
 import { memo, useState,  useEffect } from "react";
-import HdmStatus from "../../../modules/hdmStatus";
+import { useTranslation } from "react-i18next";
+
+import { Button, TableCell, TableRow } from "@mui/material";
+
 import { hdm_generate } from "../../../services/user/hdm_query";
-import HistoryDetails from "../details/HistoryDetails";
-import Receipt from "../newHdm/receipt/index";
 import { taxCounting } from "../../../modules/modules";
+
+import HdmStatus from "../../../modules/hdmStatus";
 import ReverseDialog from "../editsales/index";
+import HistoryDetails from "../details/HistoryDetails";
+import Reciept from "../newHdm/receipt/index";
+
 const HistoryItems = ({
   item, 
-  t, 
   filterBody,
   setLoad,
   pageName,
   logOutFunc,
   date,
   messageAfterReverse,
-  setReverdLink,
-  paymentInfo,
-  setPaymentInfo,
-  setToBasket,
-  setOpenBasket,
-  setOpenWindow,
-  deleteBasketGoods
 }) => {
+  const {t} = useTranslation();
 
+  const [amountForPrePayment, setAmountForPrePayment] = useState({});
   const [openDetails, setOpenDetails] = useState(false);
   const [originTotal, setOriginTotal] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openHDM, setOpenHDM] = useState(false);
-  const [message, setMessage] = useState("");
   const [saleData, setSaleData] = useState({});
   const [taxCount,setTaxCount] = useState();
-  const [amountForPrePayment, setAmountForPrePayment] = useState({});
+  const [openHDM, setOpenHDM] = useState(false);
+  const [message, setMessage] = useState("");
 
   const reverseButton = true;
 
@@ -43,7 +41,7 @@ const HistoryItems = ({
     if(pageName?.status === "Unpaid") {
     return setOpenDetails(true)
     }else if(pageName?.status === "Canceled"){
-    return item?.link ? setReverdLink(item?.link) : setOpenDetails(true)
+    return item?.link ? window.open(item?.link, "_blank") : setOpenDetails(true)
     }else{
     setLoad(true)
       await hdm_generate(id).then((resp) => {
@@ -153,34 +151,26 @@ const HistoryItems = ({
     }
  
    { openHDM && (pageName?.status === "Paid"  || pageName?.status ==="Prepayment") &&
-     <Receipt
+     <Reciept
       setOpenHDM={setOpenHDM}
       taxCount={taxCount}
       saleData={saleData}
       openHDM={openHDM}
       date={item?.date}
       totalPrice={originTotal}
-      t={t}
-      id={item?.id}
-      reverseButton={reverseButton}
-      dialogManage={dialogManage}
       userName={item?.cashier?.fullName}
     />
    } 
   
-    { openDialog && <ReverseDialog
-      openDialog={openDialog}
-      setOpendDialog={setOpenDialog}
-      products={item?.products}
-      item={item}
-      messageAfterReverse={messageAfterReverse}
-      paymentInfo={paymentInfo}
-      setPaymentInfo={setPaymentInfo}
-      setToBasket={setToBasket}
-      setOpenBasket={setOpenBasket}
-      setOpenWindow={setOpenWindow}
-      deleteBasketGoods={deleteBasketGoods}
-    /> }
+    { openDialog &&
+      <ReverseDialog
+        openDialog={openDialog}
+        setOpendDialog={setOpenDialog}
+        products={item?.products}
+        item={item}
+        messageAfterReverse={messageAfterReverse}
+      /> 
+    }
     </TableRow>
   )
 };

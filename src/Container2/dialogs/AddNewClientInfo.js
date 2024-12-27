@@ -1,15 +1,16 @@
 import { Button, Dialog, DialogTitle, Divider, InputAdornment, TextField } from "@mui/material";
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { memo } from "react";
+import React, { useEffect, useState, memo } from "react";
 import { updateUserPassword } from "../../services/user/userInfoQuery";
 import ConfirmDialog from "./ConfirmDialog";
 import CloseIcon from '@mui/icons-material/Close';
-import styles from "./index.module.scss";
+import styles from "./index.module.scss"; 
 import validator from "validator";
 import SnackErr from "./SnackErr";
+import { useTranslation } from "react-i18next";
 
-const AddNewClientInfo = ({ setMessage, t, openAddDialog, setOpenAddDialog,logOutFunc}) => {
+const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutFunc}) => {
+  const {t} = useTranslation();
+  
   const [openConfirm, setOpenConfirm] = useState(false);
   const [newPass,setNewPass] = useState({password:"",confirmPass:""});
   const [errMessage,setErrMessage] = useState({m:"", t:""})

@@ -1,60 +1,44 @@
-import { Card } from "@mui/material";
-import React from "react";
 import { memo } from "react";
+import { Card } from "@mui/material";
 
-import HomeContentItem from "./HomeContentItem";
+import HomeContentItem from "./content/HomeContentItem";
 
 import styles from "./index.module.scss";
 
 const HomeContent = ({
-  t, i18n,
+  measure,
   setToBasket, 
   content, 
   deleteAndRefresh, 
-  changeStatus,
-  basketExist,
   deleteBasketItem,
-  dataGroup,
-  measure,
-  selectContent,
+  basketExist,
   getSelectData,
   typeCode,
   setTypeCode,
   setFetching,
-  user,
   setContent,
-  // content
 }) => {
-  
   return (
     <Card className={styles.productContent}>
      
       { content && content.map((product, index) => {
-        return <div key={index}>
-          <HomeContentItem
-            t={t} i18n={i18n} 
-            measure={measure}
-            setToBasket={setToBasket}
-            basketExist={basketExist}
-            deleteAndRefresh={deleteAndRefresh}
-            changeStatus={changeStatus}
-            deleteBasketItem={deleteBasketItem}
-            product={product} 
-            index={index}
-            dataGroup={dataGroup}
-            selectContent={selectContent}
-            getSelectData={getSelectData}
-            typeCode={typeCode}
-            setTypeCode={setTypeCode}
-            user={user}
-            setFetching={setFetching}
-            setContent={setContent}
-            content={content}
-          />
-        </div>
-      })
-      // :<h1 style={{color:"lightgray",margin:"40px auto",height:"70dvh"}}>{t("productinputs.nonProduct")}</h1>
-      }
+        return   <HomeContentItem
+          key={index}
+          setToBasket={setToBasket}
+          basketExist={basketExist}
+          deleteAndRefresh={deleteAndRefresh}
+          product={product} 
+          deleteBasketItem={deleteBasketItem}
+          measure={measure}
+          index={index}
+          getSelectData={getSelectData}
+          typeCode={typeCode}
+          setTypeCode={setTypeCode}
+          setFetching={setFetching}
+          setContent={setContent}
+          content={content}
+        />
+      })}
     </Card>
   )
 }

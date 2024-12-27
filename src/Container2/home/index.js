@@ -1,18 +1,31 @@
-import React from "react";
-import { memo } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import { memo , useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+
 import Loader from "../loading/Loader";
 import HomeContent from "./HomeContent";
-import styles from "./index.module.scss";
 import HomeNavigation from "./HomeNavigation";
 import AddNewProduct from "./product/AddNewProduct";
 import { getAdg, removeProduct } from "../../services/products/productsRequests";
 import { Dialog } from "@mui/material";
 import SnackErr from "../dialogs/SnackErr";
 
+import styles from "./index.module.scss";
+
+const initState = {
+  purchasePrice: "",
+    price: "",
+    type: "",
+    brand: "",
+    name: "",
+    discount: "",
+    remainder: "",
+    barCode: "",
+    photo:"",
+    measure:"",
+    pan: 0,
+    dep: 1
+}
 const HomePage = ({
-  t,
   isLogin,
   measure,
   dataGroup,
@@ -33,7 +46,7 @@ const HomePage = ({
   setFetching,
   fetching
 }) => {
-  
+  const {t} = useTranslation();
   const [openNewProd, setOpenNewProduct] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [snackMessage, setSnackMessage] = useState("");
@@ -41,43 +54,18 @@ const HomePage = ({
   const [selectContent, setSelectContent] = useState();
   const [type, setType] = useState();
 
-  const [newProduct,setProduct] = useState({
-    purchasePrice: "",
-    price: "",
-    type: "",
-    brand: "",
-    name: "",
-    discount: "",
-    remainder: "",
-    barCode: "",
-    photo:"",
-    measure:"",
-    pan: 0,
-    dep: 0
-  }); 
+  const [newProduct,setProduct] = useState(initState); 
 
   const changeStatus = async(str) => {
     await setCurrentPage(1)
     setDataGroup(str)
     setFetching(true)
-    setProduct({
-      measure: "",
-      purchasePrice: "",
-      price: "",
-      type: "",
-      brand: "",
-      name: "",
-      discount: 0,
-      remainder: "",
-      photo:"",
-      dep:0
-    })
+    setProduct(initState)
   };
   
   const deleteAndRefresh = async(id) => {
     await removeProduct(id).then((res) => {
       if(res?.status === 200) {
-        // setFetching(true)
         deleteBasketItem(id)
         const newArr = content.filter(item => item?.id !== id)
         setContent(newArr)
@@ -156,38 +144,29 @@ const HomePage = ({
     <div className={styles.productPage}>
       <HomeNavigation 
         byBarCodeSearching={byBarCodeSearching} 
-        t={t}
         setOpenNewProduct={setOpenNewProduct}
         setCurrentPage={setCurrentPage}
         setSearchValue={setSearchValue}
         changeStatus={changeStatus}
         searchValue={searchValue}
-        openNewProd={openNewProd}
         dataGroup={dataGroup}
-        setDataGroup={setDataGroup}
         setFrom={setFrom}
         setContent={setContent}
       />
       <HomeContent
-        t={t}
         measure={measure}
         setToBasket={setToBasket}
         content={content}
         deleteAndRefresh={deleteAndRefresh}
-        changeStatus={changeStatus} 
         deleteBasketItem={deleteBasketItem}
         basketExist={basketExist}
-        dataGroup={dataGroup}
-        selectContent={selectContent}
         getSelectData={getSelectData}         
         typeCode={typeCode}
         setTypeCode={setTypeCode}
-        setDataGroup={setDataGroup} 
         setFetching={setFetching} 
         setContent={setContent}
       />
       {openNewProd && <AddNewProduct 
-        t={t} 
         newProduct={newProduct}
         setProduct={setProduct}
         setOpenNewProduct={setOpenNewProduct}
@@ -198,26 +177,11 @@ const HomePage = ({
         typeCode={typeCode}
         setTypeCode={setTypeCode}
         selectContent={selectContent}
-        setSelectContent={setSelectContent}
-        globalMessage={snackMessage}
-        setGlobalMessage={setSnackMessage}
-        setGlobalType={setType}
         setFetching={setFetching}
         setContent={setContent}
-        content={content}
+        setGlobalMessage={setSnackMessage}
+        setGlobalType={setType}
       />}
-      {/* <ConfirmDialog
-        t={t}
-        func={}
-        open={notification}
-        title={notification[0]}
-        close={}
-        content={}
-        nobutton={}
-        buttonTitle={}
-        question={}
-      /> */}
-     
       <Dialog open={Boolean(type)}>
         <SnackErr open={snackMessage} type={type} close={setType} message={snackMessage}/>
       </Dialog>

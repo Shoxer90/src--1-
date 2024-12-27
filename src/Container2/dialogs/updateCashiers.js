@@ -1,15 +1,14 @@
-import React from "react";
-import { useState } from "react";
-import { memo } from "react";
+import { useState, memo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button,  Dialog, DialogTitle } from "@mui/material";
 
-import styles from "./index.module.scss";
 import SnackErr from "./SnackErr";
 import { updateCashiersData } from "../../services/user/userInfoQuery";
 
+import styles from "./index.module.scss";
+
 const UpdateCashiers = ({
-  t, 
   updateDial,
   setUpdateDial,
   updateContent, 
@@ -18,7 +17,9 @@ const UpdateCashiers = ({
   setRegister,
   register
   }) => {
- const [message, setMessage] = useState();
+  const {t} = useTranslation();
+    
+  const [message, setMessage] = useState();
 
  const handleUpdateCashier = async() => {
   if(updateContent?.email && updateContent?.firstName && updateContent?.password && updateContent?.userName) {

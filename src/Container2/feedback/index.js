@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { memo } from "react";
-import SnackErr from "../dialogs/SnackErr";
+import React, {  memo, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import { Button, Dialog, TextField } from "@mui/material";
+
+import SnackErr from "../dialogs/SnackErr";
+import Loader from "../loading/Loader";
 import { sendMail } from "../../services/user/hdm_query";
 
 import styles from "./index.module.scss";
-import Loader from "../loading/Loader";
 
-const FeedBackPage = ({t}) => {
+const FeedBackPage = () => {
+  const {t} = useTranslation();
+
   const [message,setMessage] =  useState({message:"",type:"info"});
   const [isSent, setIsSent] = useState(false);
   const [isLoad, setIsLoad] = useState(false);
@@ -17,7 +21,6 @@ const FeedBackPage = ({t}) => {
   });
  
   const handleChange = (e) => {
-    // setIsSent(false)
     setMailContent({
       ...mailContent,
       [e.target.name]: e.target.value

@@ -2,14 +2,16 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/
 import { memo, useEffect, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { cleanNotifications } from "../../services/user/getUser";
+import { useTranslation } from "react-i18next";
 
 const Notification = ({
-  t,
   func,
   data,
   setData,
   open,
 }) => {
+  const {t} = useTranslation();
+
    const [dataForNotification, setDataForNotification] = useState([]);
    const [openButtonSubmit, setOpenButtonSubmit] = useState("");
 

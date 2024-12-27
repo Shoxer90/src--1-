@@ -18,12 +18,10 @@ const CardForPrepayment = ({
   setPaymentInfo,
   paymentInfo,
 }) => {
-  const ref = useRef();
   const {t} = useTranslation();
   const [total, setTotal] = useState(0);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [isLoad, setIsLoad] = useState(false);
-  const [reverseLink, setReverseLink] = useState("");
   const [message, setMessage] = useState({message:"", type:""});
 
   const contentStyle = {
@@ -83,12 +81,11 @@ const CardForPrepayment = ({
   };
 
   const removePartReciept = (dataInput) => {
-    setReverseLink("")
     setOpenConfirm(false)
     setIsLoad(true)
     reverseProductNew(dataInput).then((res) => {
       if(res?.status === 200) {
-        setReverseLink(res?.data?.reverceLink)
+        window.open(res?.data?.reverceLink, '_blank');
         setMessage({message:t("dialogs.done"), type:"success"})
       }else {
         setMessage({message:t("dialogs.wrong"), type:"error"})
@@ -98,21 +95,16 @@ const CardForPrepayment = ({
 
   const closeDialog = () => {
     deleteBasketGoods()
-    setReverseLink("")
     setMessage({type:"",message:''})
   };
  
-  useEffect(() => {
+  useEffect(() => { 
     let totalCount = 0;
     item?.products.forEach((prod) => {
       totalCount += prod?.count * prod?.discountedPrice
     })
     setTotal(totalCount)
   },[]);
-
-  useEffect(()=> {
-    reverseLink && ref.current.click()
-  }, [reverseLink]);
 
   return (
     total ? <div className={styles.container_cards_item} style={{position:"relative"}}>
@@ -168,7 +160,6 @@ const CardForPrepayment = ({
           />
           <Dialog open={isLoad}><Loader /></Dialog>
           <Dialog open={message?.message}><SnackErr message={message?.message} type={message?.type} close={closeDialog}/></Dialog>
-          <a href={reverseLink} rel="noreferrer" target="_blank" ref={ref}></a>
       </div>
     </div>:""
   )

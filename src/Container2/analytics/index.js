@@ -1,33 +1,36 @@
-import React,{useEffect,useState} from 'react'
-import { productChangesHistory,getProductsSaleByDays } from '../../services/products/productsRequests';
+import { useEffect, useState, memo } from 'react'
 import { useNavigate, Routes, Route } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
+import { productChangesHistory,getProductsSaleByDays } from '../../services/products/productsRequests';
 import Updates from './Updates';
-import styles from "./index.module.scss"
-import { memo } from 'react';
-import { Button } from '@mui/material';
 import Sells from './Sells';
 import { dateFormat } from '../../modules/modules';
-import { useMemo } from 'react';
 
-const ProductChanges = ({logOutFunc, t}) => {
+import { Button } from '@mui/material';
+
+import styles from "./index.module.scss";
+
+const ProductChanges = ({logOutFunc}) => {
+  const {t} = useTranslation();
+  
   const navigate = useNavigate();
   const init = new Date().setMonth(new Date().getMonth()-1);
-  const [itemLastUpdates,setItemLastUpdates] = useState(false);
-  const [selectedItemId, setSelectedItemId]=useState(0);
-  const [active,setActive]=useState(false);
+  const [active, setActive]=useState(false);
   const [sells, setSells] = useState([]);
   const [titles,setTitles] = useState([]);
   const [dateArr, setDateArr] = useState([]);
   const [updates, setUpdates] = useState([]);
   const [longTitlePage,setLongTitlePage] = useState([]);
 
-  const productsSaleByDays = async (dateState,id="All") => {
+  const productsSaleByDays = (dateState,id="All") => {
     const generator = {
       date: [],
       title: []
     }
-    await getProductsSaleByDays(dateState,id).then(( res ) => {
-      const longTit = res.map(item =>item.productTitle)
+     getProductsSaleByDays(dateState,id).then((res) => {
+      console.log(res,"RES")
+      const longTit = res?.map(item => item.productTitle)
       setLongTitlePage(longTit)
       if(id !=="All"){
         const newAr = res.filter(item=>item.productId === id)
@@ -123,23 +126,14 @@ const ProductChanges = ({logOutFunc, t}) => {
         </Button>
       </div>
       <Routes>
-        <Route path="/updates" element={
-          <Updates 
-            t={t}
-            updates={updates}
-            setSelectedItemId={setSelectedItemId}
-            setItemLastUpdates={setItemLastUpdates}
-          />
-        }/>
+        <Route path="/updates" element={<Updates updates={updates} />} />
         <Route path="/sells" element={
           <Sells 
-            t={t}
-            longTitlePage={longTitlePage}
-            productsSaleByDays={productsSaleByDays}
             sells={sells} 
-            // 666666666
             titles={titles} 
             dateArr={dateArr}
+            longTitlePage={longTitlePage}
+            productsSaleByDays={productsSaleByDays}
           />
         }/>
       </Routes>

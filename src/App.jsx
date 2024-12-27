@@ -3,7 +3,6 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import Basket from "./Container/basket";
 import HistoryPage from "./Container2/historyPage";
 import Header from "./Container/Header/Header";
-import ProductChanges from "./Container2/analytics";
 import HomePage from "./Container2/home/index"
 import FeedBackPage from "./Container2/feedback";
 import CheckStatusArCa from "./Container2/settingsPage/serviceAmount/attachCard"
@@ -433,11 +432,9 @@ const App = () => {
         </Routes> :
         <>
           <Header
-            t={t}
             setOpenBasket={setOpenBasket}
             basketGoodsqty={basketGoodsqty}
             logOutFunc={logOutFunc} 
-            setIsLogIn={setIsLogIn}
             user={user}
             logo={user?.logo}
             active={user?.isEhdmStatus}
@@ -450,7 +447,6 @@ const App = () => {
               path="/"
               element={
                 <HomePage
-                  t={t}
                   isLogin={isLogin}
                   measure={measure}
                   dataGroup={dataGroup}
@@ -474,23 +470,11 @@ const App = () => {
               }  
             />
             <Route path="/excel" element={<PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} />} />
-            <Route path="/feedback" element={<FeedBackPage logOutFunc={logOutFunc} t={t} />} />
-            <Route path="/setting/cashiers" element={<Cashiers t={t} cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
-            <Route path="/setting/user" element={<SettingsUser user={user} t={t} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc}/>} />
-            <Route path="/history"
-              element={<HistoryPage 
-                logOutFunc={logOutFunc} 
-                t={t}  
-                measure={measure} 
-                paymentInfo={paymentInfo} 
-                setPaymentInfo={setPaymentInfo}
-                setToBasket={setToBasket}
-                setOpenBasket={setOpenBasket}
-                setOpenWindow={setOpenWindow}
-                deleteBasketGoods={deleteBasketGoods}
-              />}
-            />
-            <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} />
+            <Route path="/feedback" element={<FeedBackPage />} />
+            <Route path="/setting/cashiers" element={<Cashiers cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
+            <Route path="/setting/user" element={<SettingsUser user={user} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc}/>} />
+            <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} />} />
+            {/* <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} /> */}
             <Route path="/basket/*" element={<BasketList t={t} />} />
             <Route path="/prepayment" element={<PrePaymentList 
               setOpenBasket={setOpenBasket} 
@@ -513,7 +497,6 @@ const App = () => {
           </Routes>
         }
          {!isBlockedUser && openBasket && <Basket 
-            t={t}
             userName={user?.firstname + " " + user?.lastname}
             logOutFunc={logOutFunc}
             changeCountOfBasketItem={changeCountOfBasketItem}
@@ -541,7 +524,6 @@ const App = () => {
             setPaymentInfo={setPaymentInfo}
           />}
           {notification.length ? <Notification 
-            t={t}
             func={()=>setNotification([])}
             data={notification}
             setData={setNotification}

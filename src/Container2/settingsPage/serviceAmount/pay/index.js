@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogContent, Divider, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useState } from "react";
 import { t } from "i18next";
 import PrepaymentConfirmation from "../prepayment/PrepaymentConfirm";
 import PaymentConfirm from "../paymentDialog/PaymentConfirm";
@@ -25,10 +25,9 @@ const PayComponent = ({
     cardId: content?.autopayment?.defaultCard?.cardId
   });
   const [method,setMethod] = useState(1)
-  const ref = useRef();
-  const [responseUrl,setResponseUrl] = useState();
   const [openBankInfo,setOpenBankInfo] = useState();
   const [loader,setLoader] = useState(false);
+  
   const closeDialog = () => {
     setMethod(1)
     setBills({
@@ -66,16 +65,13 @@ const PayComponent = ({
       payUsingNewCard()
     }
   };
+
   const payUsingNewCard = () => {
     payForServiceWithNewCard(billsData).then((res) => {
       setLoader(false)
-        setResponseUrl(res?.formUrl)
+        window.open( res?.formUrl, '_blank');
       })
   }
-
-  useEffect(() => {
-    responseUrl && ref.current.click()
-  }, [responseUrl]);
 
   return(
     <Dialog open={openPay}>
@@ -118,8 +114,6 @@ const PayComponent = ({
 
       </DialogContent>
      
-      { responseUrl && <a ref={ref} href={responseUrl} target="_blank" rel="noreferrer">{""}</a> }
-
       <Button
         variant="contained"
         onClick={servicePay}  
