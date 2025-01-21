@@ -76,7 +76,7 @@ const Notification = ({
             window.location.reload(true);
           }}
           variant="contained" 
-          sx={{background:"#3FB68A",margin:"10px auto",width:"60%"}}
+          sx={{background:"#3FB68A",margin:"10px auto",width:"60%",textTransform: "capitalize"}}
         >
           {t("buttons.ok")}
         </Button>

@@ -50,7 +50,7 @@ const ExcelBurger = ({t,setOpenNewProduct}) => {
     <div style={{fontSize: "70%"}}>
       <Button
         variant="contained"
-        style={{color: "white",height: "35px" }}
+        style={{color: "white",height: "35px",textTransform: "capitalize"}}
         onClick={(event) => setAnchorEl(event.currentTarget)}
       >
         <ControlPointIcon style={{margin:"auto 1px"}}/>

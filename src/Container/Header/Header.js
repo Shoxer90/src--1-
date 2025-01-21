@@ -125,7 +125,12 @@ const Header = ({
             <Button
               className={styles.basketBTN}
               variant="contained"
-              style={{background:"#3FB68A",borderRadius:"8px"}}
+              style={
+                {background:"#3FB68A",
+                borderRadius:"8px",
+                textTransform: "capitalize",
+                // fontWeight: "bold",    
+              }}
               onClick={()=>setOpenBasket(true)}
             >
               <ShoppingCartIcon/>

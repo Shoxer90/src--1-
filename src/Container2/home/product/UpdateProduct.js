@@ -2,10 +2,9 @@ import React, { useEffect, memo, useState } from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { updateProduct } from "../../../services/products/productsRequests";
-import { Box } from "@mui/system";
+import { Box, display } from "@mui/system";
 import { Checkbox, Divider, FormControl, FormControlLabel, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -129,11 +128,14 @@ const UpdateProduct = ({
   };
 
   const handleDelete = async() => {
-    deleteAndRefresh(currentProduct.id).then(()=> {
-      // changeStatus(dataGroup)
-      setFlag(!flag)
-    })
-    handleClose()
+    if(currentProduct?.remainderPrePayment) {
+      return setMessage({message:t("productinputs.prodInPrepayment"), type:"info"})
+    }else{
+      deleteAndRefresh(currentProduct.id).then(()=> {
+        setFlag(!flag)
+      })
+      handleClose()
+    }
   };
 
   const productEmptyValidation = () => {
@@ -165,7 +167,6 @@ const UpdateProduct = ({
         setFlag(!flag)
         setMessage({message:t("dialogs.welldone"),type:"success"});
         setTimeout(() => {
-          // changeStatus("GetAvailableProducts")
           handleClose()  
         },2000)
       }else if(res === 400) {
@@ -218,7 +219,7 @@ const UpdateProduct = ({
       ...product,
     })
     priceValidate(product?.price, product?.discount, product?.discountType)
-    setTitleName(` ${product?.brand} ${product?.name} (${product?.type})`)
+    // setTitleName(` ${product?.brand} ${product?.name} (${product?.type})`)
     setNewPrice(product?.price - (product?.price * product?.discount / 100))
 
   }, [product?.discount, product?.price]);
@@ -232,29 +233,23 @@ const UpdateProduct = ({
     <Dialog
       open={!!openUpdateProd}
       TransitionComponent={Transition}
-      maxWidth="lg"
-      PaperProps={{
-        style: {
-          position: 'fixed'
-        }
-      }}
     >
-      <DialogTitle 
+      <Box 
         style={{
           display:"flex", 
           justifyContent:"space-between",
         }}
       >
-        <p>
+        <h3 style={{padding:"10px 25px"}}>
           {t("productinputs.updatetitle")} 
-          {titleName}
-        </p>
-        <Button onClick={handleClose}>
+        </h3>
+        <Button onClick={handleClose} sx={{textTransform: "capitalize"}}>
           <CloseIcon />
         </Button>
-      </DialogTitle>
-      <Divider style={{backgroundColor:"black",marginBottom:"5px"}}/>
+      </Box>
+      <Divider/>
       { metric && <DialogContent>
+        <h6>{t("productinputs.typeurl3")} {currentProduct?.type} </h6>
         <Box className={styles.update}>
         <TextField 
           autoComplete="off"
@@ -289,23 +284,18 @@ const UpdateProduct = ({
               error={isEmptyField && !currentProduct?.measure}
               size="small"
               autoComplete="off"
-
               name="measure"
               value={metric}
               label={t("productinputs.measure")}
               onChange={(e)=>handleChangeInput(e)}
             >
               {measure && measure.map((item, index) => (
-                <MenuItem 
-                  key={index} 
-                  value={index+1}
-                >
+                <MenuItem key={index} value={index+1}>
                   {item}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
-          {/* <Box style={{display:"flex",justifyContent:"space-between"}}> */}
             <TextField 
               autoComplete="off"
               size="small"
@@ -315,60 +305,58 @@ const UpdateProduct = ({
               label={t("productinputs.purchase")}
               onChange={(e)=> onlyNumberAndADot(e,2)} 
             />
-            
-          <TextField 
-            error={isEmptyField && !currentProduct?.price}
-            size="small"
-            autoComplete="off"
-            name="price" 
-            InputProps={{
-              inputProps: { 
-                min: 1,
-                step: 0.01
-              }
-            }}
-            value={currentProduct?.price}
-            label={t("productinputs.price")}
-            onChange={(e)=>{
-              onlyNumberAndADot(e,2)
-              priceValidate(e.target.value, currentProduct?.discount, currentProduct?.discountType ,e)
-            }}
-          />
-          <Box className={styles.inputGroup}>
-            <TextField 
-              error={isEmptyField && currentProduct?.discount === ""}
-              size="small"
-              autoComplete="off"
-              sx={{
-                "& fieldset": { border: 'none' },
-                width: "40%"
-              }}
-              name="discount" 
-              placeholder="0"
-              value={currentProduct?.discount || ""}
-              label={<div style={{backgroundColor:"white"}}>{t("productinputs.discount")}</div>}
-                onChange={(e)=>{
-                  if(+e.target.value > 99){
-                    return
+              <TextField 
+                error={isEmptyField && !currentProduct?.price}
+                size="small"
+                autoComplete="off"
+                name="price" 
+                InputProps={{
+                  inputProps: { 
+                    min: 1,
+                    step: 0.01
                   }
-                  onlyNumberAndADot(e,2)
-                  priceValidate(currentProduct?.price, e.target.value, currentProduct?.discountType ,e)
                 }}
-            />
-            <span style={{alignSelf:"center"}}><strong>{" %"}</strong></span> 
-            <span style={{fontSize:"80%",alignSelf:"center"}}> = {(currentProduct?.discount/100*currentProduct?.price).toFixed(2) }{t("units.amd")}</span> 
-            <Divider />
-          </Box>
-            {currentProduct?.barCode && 
-              <Barcode value={currentProduct?.barCode} height={25} width={1.5} margin={0} fontSize={12} alignSelf={"center"} />
-            }
-          <div></div>
+                value={currentProduct?.price}
+                label={t("productinputs.price")}
+                onChange={(e)=>{
+                  onlyNumberAndADot(e,2)
+                  priceValidate(e.target.value, currentProduct?.discount, currentProduct?.discountType ,e)
+                }}
+              />
+              <Box className={styles.inputGroup}>
+                <TextField 
+                  error={isEmptyField && currentProduct?.discount === ""}
+                  size="small"
+                  autoComplete="off"
+                  sx={{
+                    "& fieldset": { border: 'none' },
+                    width: "60%",
+                  }}
+                  name="discount" 
+                  value={currentProduct?.discount || ""}
+                  label={<div style={{backgroundColor:"white",paddingRight:"2px"}}>{t("productinputs.discount")} {"%"}</div>}
+                    onChange={(e)=>{
+                      if(+e.target.value > 99){
+                        return
+                      }
+                      onlyNumberAndADot(e,2)
+                      priceValidate(currentProduct?.price, e.target.value, currentProduct?.discountType ,e)
+                    }}
+                />
+                {currentProduct?.discount ? <span style={{alignSelf:"center",margin:"3px",fontSize:"80%",flexFlow:"nowrap",display:"flex"}}>{(currentProduct?.discount/100*currentProduct?.price).toFixed(2) } {t("units.amd")}</span> : ""}
+              </Box>
+          {currentProduct?.barCode && 
+            <Barcode value={currentProduct?.barCode} height={36} margin={1} fontSize={16} textAlign={"center"} />
+          }
           {message?.message && 
           <Dialog open={!!message.message}>
             <SnackErr 
-            message={message?.message} 
-            type={message?.type} 
-            close={()=>setMessage({message:"", type:""})} 
+              message={message?.message} 
+              type={message?.type} 
+              close={()=>{
+                setMessage({message:"", type:""})
+                setConfirmation(false)
+              }}
             />
           </Dialog>
           }
@@ -390,7 +378,7 @@ const UpdateProduct = ({
           <Box>
             <div style={{margin:"0px"}}>
               {t("productinputs.updatedate")} 
-              {moment(currentProduct?.lastUpdate).format('DD MMM YYYY')}{" / "} 
+              {moment(currentProduct?.lastUpdate).format('DD.MM.YYYY')}{"  "} 
               {moment(currentProduct?.lastUpdate).format('HH:mm:ss')}
             </div>
             <ImageLoad 
@@ -403,16 +391,16 @@ const UpdateProduct = ({
         <Box className={styles.update_btns}>
           <Button 
             variant="contained" 
-            style={{backgroundColor:"red"}} 
+            style={{backgroundColor:"red",textTransform: "capitalize"}}
             onClick={()=>setConfirmation(true)}
           >
             {t("productinputs.delete_btn")}
           </Button>
           <Button 
             variant="contained" 
-            style={{backgroundColor:"#FFA500"}} 
+            style={{backgroundColor:"#FFA500",textTransform: "capitalize"}} 
             onClick={handleClose}
-            >
+          >
             {t("buttons.close")}
           </Button>
           <Button 
@@ -421,7 +409,8 @@ const UpdateProduct = ({
             style={{
               backgroundColor:(
                 !validPrice || !currentProduct?.barCode ? "grey": "green"
-              )
+              ),
+              textTransform: "capitalize"
             }} 
             onClick={productEmptyValidation}
           >
@@ -442,6 +431,6 @@ const UpdateProduct = ({
       }
     </Dialog>
   );
-}
+};
 
 export default memo(UpdateProduct);

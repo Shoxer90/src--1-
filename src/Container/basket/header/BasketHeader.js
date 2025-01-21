@@ -25,7 +25,7 @@ const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent, setSi
           variant="contained" 
           onClick={()=>setOpenDialog(true)} 
           size="small"
-          style={{justifyContent:"space-end",margin:"5px",fontSize:"70%"}}
+          style={{justifyContent:"space-end",margin:"5px",fontSize:"70%", textTransform: "capitalize",}}
         >
           {t("basket.removeallprod").slice(0,-1)}
         </Button>: ""

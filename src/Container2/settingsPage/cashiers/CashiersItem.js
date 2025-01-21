@@ -10,6 +10,7 @@ const CashiersItem = ({
   updateCashiers, 
   isCashierReverse, 
   isCashierEhdm,
+  isCashierHdm
 }) => {
   const [seePsw, setSeePsw] = useState(false);
 
@@ -57,8 +58,8 @@ const CashiersItem = ({
          <FormControlLabel 
           control={
             <Switch  
-              checked={employee?.hdmStatus}
-              onChange={(e)=>isCashierEhdm(employee.id,e.target.checked)}
+              checked={employee?.physicalHdmStatus}
+              onChange={(e)=>isCashierHdm(employee.id,e.target.checked)}
               value={employee.ehdmStatus}
             />
           }
@@ -92,11 +93,14 @@ const CashiersItem = ({
         <Button 
           value="2"
           onClick={()=>confirmDelete(employee)}
+          sx={{textTransform: "capitalize"}}
         >
           {t("buttons.remove")}
         </Button>
         <Button 
           onClick={(e)=>updateCashiers(employee)}
+          sx={{textTransform: "capitalize"}}
+
         >
           {t("buttons.update")}
         </Button>

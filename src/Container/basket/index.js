@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useState, memo } from "react";
-import { AppBar, Dialog, DialogContent, Divider, IconButton, Slide } from "@mui/material";
+import { AppBar, Button, Dialog, DialogContent, Divider, IconButton, Slide } from "@mui/material";
 import { Box } from "@mui/system";
 import styles from "./index.module.scss"
 import { basketListUrl, payRequestQR, saleProductFromBasket, sendSmsForPay } from "../../services/pay/pay";
@@ -56,7 +56,6 @@ const Bascket = ({
 }) => {
   const {t} = useTranslation();
   const [screen, setScreen] = useState(window.innerWidth);
-
   const [saleData, setSaleData] = useState();
   const [loader, setLoader] = useState(false);
   const [totalPrice,setTotalPrice] = useState();
@@ -98,6 +97,7 @@ const Bascket = ({
       return item
     })
   };
+
   const createPaymentSales = async() => {
     setIsEmpty(false)
     createMessage("","")
@@ -123,6 +123,7 @@ const Bascket = ({
         cardAmount: 0,
         sales: salesArr,
       })
+      // 16.01.2025
       setTotalPrice(total)
     }else{
       setSingleClick({pointerEvents:"none"})
@@ -137,7 +138,6 @@ const Bascket = ({
       })
     }
   };
-
   const multiSaleProducts = async(saletype) => {
     setSeeBtn(JSON.parse(localStorage.getItem("fromQRpay")))
     setSingleClick({
@@ -372,13 +372,17 @@ const Bascket = ({
                 stringFrom="basket"
                 setFrom={setFrom}
               />
-              <IconButton 
-                href="/"
-                disableElevation
-                disableRipple
-              >
-                <ControlPointIcon fontSize="large" />
-              </IconButton>
+              { paymentInfo?.prePaymentSaleDetailId &&
+                <Button 
+                  variant="contained"
+                  startIcon={<ControlPointIcon fontSize="small" />}   
+                  href="/"
+                  disableElevation
+                  disableRipple
+                >
+                  <span style={{fontSize:"60%",fontWeight:700}}> {t("mainnavigation.newproduct")}</span>
+                </Button>
+              }
             </div>
             <DialogContent 
               className={styles.bask_container_body_content}  

@@ -106,14 +106,19 @@ const LogInFormNew = ({
           type="submit"
           variant="contained"
           style={{
-          width: "40%",
-          backgroundColor:"#3FB68A"
+            width: "40%",
+            backgroundColor:"#3FB68A",
+            textTransform: "capitalize",
           }}
         >
             {t("buttons.signIn")}
         </Button>
-        <Button variant="text" style={{width:"40%",color:"orange"}} onClick={()=> navigate("/registration")}>
-            {t("landing.registration")}
+        <Button 
+          variant="text" 
+          style={{width:"40%",color:"orange",textTransform: "capitalize",}} 
+          onClick={()=> navigate("/registration")}
+        >
+          {t("landing.registration")}
         </Button>
       </div>
 

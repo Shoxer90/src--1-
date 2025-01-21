@@ -56,7 +56,7 @@ export default function HistoryDetails({
       <div style={{fontSize:"80%", padding:"5px"}}>
         <DialogTitle style={{display:"flex", justifyContent:"space-between", padding:"0px",paddingLeft:"10px",position:"sticky"}}>
           <span>  {item?.id} {t("history.check_details")}</span>
-          <Button onClick={handleClose}> <CloseIcon /> </Button>
+          <Button onClick={handleClose} sx={{textTransform: "capitalize"}}> <CloseIcon /> </Button>
         </DialogTitle>
 
         <Divider color="black" />

@@ -70,7 +70,7 @@ const PhonePay = ({
       <DialogContent style={{display:"flex",flexDirection:"column",justifyContent:"center"}}>
         <Box style={{display:"flex", justifyContent:"space-between"}}>
           <h4>{t("basket.sms")}</h4>
-          <Button onClick={closePhoneDialog}>
+          <Button onClick={closePhoneDialog} sx={{textTransform: "capitalize"}}>
             <CloseIcon />
           </Button>
         </Box>
@@ -105,7 +105,7 @@ const PhonePay = ({
         </div>
         <Button
           variant="contained"
-          style={{background:"FFA500"}}
+          style={{background:"FFA500",textTransform: "capitalize"}}
           onClick={sendSms}
           disabled={isSent}
         >

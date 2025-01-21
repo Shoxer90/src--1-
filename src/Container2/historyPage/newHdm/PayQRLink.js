@@ -31,7 +31,7 @@ const PayQRLink = ({
               {t("basket.qrlink")} 
             </h5>
           </div>
-          <Button onClick={closeLinkQrAndRefresh} style={{margin:0}}>
+          <Button onClick={closeLinkQrAndRefresh} style={{margin:0,textTransform: "capitalize"}}>
             <CloseIcon />
           </Button>
         </Box>
@@ -43,7 +43,7 @@ const PayQRLink = ({
       { seeBtn &&
       <Button
         variant="disable"
-        sx={{margin:3, color:"green"}}
+        sx={{margin:3, color:"green",textTransform: "capitalize"}}
       >
        {t("dialogs.linkcopy")}
       </Button>
@@ -55,6 +55,7 @@ const PayQRLink = ({
       <Divider sx={{bgcolor:"black"}}/>
       <Button
         onClick={closeLinkQrAndRefresh}
+        sx={{textTransform: "capitalize"}}
       >
         {t("buttons.close")}
       </Button>

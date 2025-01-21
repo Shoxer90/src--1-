@@ -65,7 +65,7 @@ const ResetPassword = ({t}) => {
       <Button
         variant="contained"
         onClick={changePassword}
-        style={{margin:"60px auto", width:"60%",backgroundColor:"rgb(17, 46, 17)"}}
+        style={{margin:"60px auto", width:"60%",backgroundColor:"rgb(17, 46, 17)", textTransform: "capitalize",}}
       >
         {t("settings.changepassword")}
       </Button>

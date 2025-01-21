@@ -9,7 +9,7 @@ import ItemReverse from "./ItemReverse";
 import SelectAll from "./SelectAll";
 import { editOrReversePrepaymentReceipt, reverseProductNew } from "../../../services/user/userHistoryQuery";
 import Loader from "../../loading/Loader";
-import ReverseConditions from "./condition/ReverseConditions";
+import ReverseConditions from "./ReverseConditions";
 
 const ReverseDialog = ({
   openDialog,
@@ -54,6 +54,7 @@ const ReverseDialog = ({
     }
     setReverseContainer(
       reverseContainer.map((item,index) =>{
+        // if(item?.isChecked)
         if(index === i){
           return {
             ...item,
@@ -63,7 +64,9 @@ const ReverseDialog = ({
           return item
         }
       })
+
     )
+   
   };
 
 const handleOk = async(func, body) => {
@@ -136,8 +139,6 @@ const reverse = async () => {
       products: [...newArr],
       cashAmount: Math.round(+conditionState?.cashAmount*100) /100,
       cardAmount: Math.round(+conditionState?.cardAmount*100) /100,
-      // cashAmount: +conditionState?.cashAmount,
-      // cardAmount: +conditionState?.cardAmount
     })
  
 };
@@ -151,10 +152,6 @@ const reverse = async () => {
     })
     await setReverseTotal(total)
   };
-
-console.log(reverseTotal,"reverseTotal");
-console.log(conditionState.productscashAmount,"cashAmount");
-console.log(conditionState.cardAmount,"cardAmount");
 
   const fillReverseContainer = async() => {
     const arr = []
@@ -174,6 +171,17 @@ console.log(conditionState.cardAmount,"cardAmount");
     return setReceiptAmountForPrepayment(total)
   };
 
+  const checkAllAdd = () => {
+    const newArr =  reverseContainer.filter((item)=>  {
+      return item?.isChecked !==true
+     })
+     if (newArr?.length){
+       setIsAllSelected(false)
+     }else{
+       setIsAllSelected(true)
+     }
+  }
+
   useEffect(() => {
     openDialog && fillReverseContainer() 
     item?.saleType === 5 && createReceiptAmountForPrePayment()
@@ -181,6 +189,7 @@ console.log(conditionState.cardAmount,"cardAmount");
 
   
   useEffect(() => {
+    checkAllAdd()
     totalCounter()
   }, [reverseContainer]);
 
@@ -201,19 +210,23 @@ console.log(conditionState.cardAmount,"cardAmount");
         </DialogTitle>
         <Divider color="black" />
 
-        <SelectAll selectAllProducts={selectAllProducts} isAllSelected={isAllSelected} />
-        {products.map((prod,index)=>(
-          <ItemReverse
-            key={prod?.id}
-            {...prod}
-            reverseContainer={reverseContainer}
-            setReverseContainer={setReverseContainer}
-            checkedProduct={checkedProduct}
-            index={index}
-            totalCounter={totalCounter}
-
-          />
-        ))}
+        {products?.length ?
+          <>
+            <SelectAll selectAllProducts={selectAllProducts} isAllSelected={isAllSelected} />
+            { products.map((prod,index)=>(
+              <ItemReverse
+                key={prod?.id}
+                {...prod}
+                reverseContainer={reverseContainer}
+                setReverseContainer={setReverseContainer}
+                checkedProduct={checkedProduct}
+                index={index}
+                totalCounter={totalCounter}
+              />
+            ))}
+          
+          </>: <div style={{display:"flex",alignItems:"center", flexFlow:"column"}}>{t("basket.useprepayment")}</div>
+        }
         <Divider color="black" />
 
         <ReverseConditions

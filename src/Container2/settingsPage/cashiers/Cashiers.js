@@ -3,7 +3,7 @@ import  React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { memo } from "react";
-import { getCashiers, operationCashiers, setCashierEhdmStatus, setCashierReverseStatus } from "../../../services/user/userInfoQuery";
+import { getCashiers, operationCashiers, setCashierEhdmStatus,setCashierHdmStatus,  setCashierReverseStatus } from "../../../services/user/userInfoQuery";
 import styles from "./index.module.scss";
 import NewCashier from "../../dialogs/NewCashier";
 import UpdateCashiers from "../../dialogs/updateCashiers";
@@ -73,8 +73,23 @@ const Cashiers = ({logOutFunc, cashierLimit}) => {
       }
    })
     setRegister(!register)
-  }
+  };
 
+  const isCashierHdm = async(id, bool) => {
+    await setCashierHdmStatus(id, bool);
+    const handleArr = [];
+    cashiers.map((cashier) => {
+      if(id === cashier?.id){
+        return handleArr.push({
+          ...cashier,
+          physicalHdmStatus: bool
+        })
+      }else{
+        return handleArr.push(cashier)
+      }
+   })
+    setRegister(!register)
+  }
 
   const cashierStatus = (id, e) => {
     operationCashiers(id, e)
@@ -145,6 +160,7 @@ const Cashiers = ({logOutFunc, cashierLimit}) => {
             updateCashiers={updateCashiers}
             isCashierReverse={isCashierReverse}
             isCashierEhdm={isCashierEhdm}
+            isCashierHdm={isCashierHdm}
           />
         )
       )}

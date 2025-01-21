@@ -73,7 +73,9 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
         style={{
           color: "#383838",
           display:"flex",
-          flexDirection:"column"
+          flexDirection:"column",
+          textTransform: "capitalize",
+          // fontWeight: "bold",    
         }}
         onClick={(event) => {
           setAnchorEl(event.currentTarget);

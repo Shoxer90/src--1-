@@ -26,10 +26,10 @@ const ConfirmDialog = ({
         <strong>{content}</strong> 
       </DialogContent>
       <DialogActions>
-        <Button onClick={()=>close(false)}>
+        <Button onClick={()=>close(false)} sx={{textTransform: "capitalize"}}>
           {nobutton || t("buttons.close")}
         </Button>
-        <Button onClick={func}>{t("buttons.yes")}</Button>
+        <Button onClick={func} sx={{textTransform: "capitalize"}}>{t("buttons.yes")}</Button>
       </DialogActions>
     </Dialog>
   )

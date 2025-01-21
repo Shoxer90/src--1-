@@ -19,7 +19,7 @@ const CreditCardNewName = ({open, cardName, setCardName,close,func}) => {
       </div>
         <Divider sx={{m:1}} color="black" />
         <input type="text" value={cardName?.name} onChange={(e)=> setCardName({...cardName,name:e.target.value})}/>
-        <Button variant="contained" sx={{m:2}} onClick={func}>
+        <Button variant="contained" sx={{m:2,textTransform: "capitalize"}} onClick={func}>
           {t("buttons.update")}
         </Button>
       </DialogContent>

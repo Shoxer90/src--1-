@@ -11,6 +11,8 @@ const ReceiptItem = ({
   price,
   discount,
   unit,
+  totalWithTaxes,
+  additionalDiscount,
   quantity,
   i,
 }) => {
@@ -24,22 +26,19 @@ const ReceiptItem = ({
         {goodName}{ brand}
       </div>
       <div>Գին: { price} դրամ</div> 
-      {discount ?
-        <div > 
-          Զեղչված գին: {(price -  price *  discount / 100).toFixed(2)} դրամ
-        </div> :""
-      } 
+      <div> Զեղչ`  {discount?.toFixed(2) || 0} % </div>
+      <div> Լրացուցիչ զեղչ՝ {additionalDiscount || 0} %</div>
       <div>
         <div className={styles.contentName_info}>
           <span>
-            {(price -  price *  discount / 100).toFixed(2)}
+            {totalWithTaxes?.toFixed(2)}
           </span>
           <span> x </span>
-          <span> {quantity} 
+          <span> {quantity?.toFixed(2)} {unit}
           </span>
           <span> = </span>
           <span>
-          {Math.floor((price - price*discount/100)*quantity*100)/100} դրամ
+          {(totalWithTaxes*quantity)?.toFixed(2)} դրամ
           </span>
         </div>
         <Divider sx={{bgcolor:"black"}} />

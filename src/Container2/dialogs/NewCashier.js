@@ -104,7 +104,7 @@ const NewCashier = ({
       >
         <DialogTitle style={{display:"flex",justifyContent:"space-between"}}>
           {t("dialogs.newcashier")}
-          <Button onClick={()=>handleClose()}>
+          <Button onClick={()=>handleClose()} sx={{textTransform: "capitalize"}}>
             <CloseIcon />
           </Button>
         </DialogTitle>
@@ -186,7 +186,7 @@ const NewCashier = ({
         </DialogContent>
         <Button 
           variant="contained" 
-          style={{backgroundColor:"#FFA500", margin:"20px"}} 
+          style={{backgroundColor:"#FFA500", margin:"20px",textTransform: "capitalize"}}
           onClick={create}
         >
           {t("buttons.create")}

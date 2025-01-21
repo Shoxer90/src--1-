@@ -209,7 +209,7 @@ const AddNewProduct = ({
       photo:"",
       measure:"",
       pan: 0,
-      dep: 1
+      dep: 0
     })
     localStorage.removeItem("newProduct")
   };
@@ -269,6 +269,7 @@ const AddNewProduct = ({
             newProduct={newProduct}
             handleChangeInput={handleChangeInput}
             selectContent={selectContent}
+            emptyValidate={emptyValidate}
           />
           <TextField 
             error={emptyValidate && !newProduct?.name}
@@ -311,7 +312,7 @@ const AddNewProduct = ({
               onChange={(e)=>onlyNumberAndADot(e,3)} 
             />
             <FormControl sx={{ width: "50%"}}>
-              <InputLabel>{t("productinputs.measure")}</InputLabel>
+              <InputLabel>{`${t("productinputs.measure")}*`}</InputLabel>
               <Select
                 error={emptyValidate && !measureStr}
                 size="small"
@@ -417,7 +418,7 @@ const AddNewProduct = ({
       />
       <Button 
         variant="contained" 
-        style={{backgroundColor:"#FFA500",margin:"10px auto", width:"60%"}} 
+        style={{backgroundColor:"#FFA500",margin:"10px auto", width:"60%",textTransform: "capitalize"}}
         onClick={newProductEmptyValidation}
       >
         {t("buttons.create")}

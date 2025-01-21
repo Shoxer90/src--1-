@@ -11,7 +11,8 @@ const HistoryCard = ({setOpenHistory,t}) =>  {
       style={{
         background:"rgba(40,48,72,1)",
         margin:"21px",
-        alignSelf:"start"
+        alignSelf:"start",
+        textTransform: "capitalize"
       }}
       onClick={()=>setOpenHistory(true)}
     >

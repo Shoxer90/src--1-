@@ -59,7 +59,7 @@ const OrderListPayInfo = ({basketContent,t}) => {
 
           </h1>
           <a href={basketContent?.payXPaymentLink} style={{margin:"20px 0px",textDecoration:"none", color:"white", }} rel="noreferrer" >
-            <Button variant="contained" style={{color:"white",letterSpacing:"5px", background:"#63B48D",width:"200px"}}>
+            <Button variant="contained" style={{color:"white",letterSpacing:"5px", background:"#63B48D",width:"200px",textTransform: "capitalize"}}>
               {t("basket.linkPayment")} 
             </Button> 
           </a>

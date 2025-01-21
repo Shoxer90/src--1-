@@ -48,6 +48,15 @@ export async function getCashiers() {
   }
 };
 
+export async function setCashierHdmStatus(id, bool) {
+  try{
+    const  data = await axios.post(baseUrl + `Store/SetCashierPhysicalHdmStatus?cashierId=${id}&status=${bool}`,{}, option());
+    return data
+  }catch(err){
+    return err
+  }
+};
+
 export async function setCashierEhdmStatus(id, bool) {
   try{
     const  data = await axios.post(baseUrl + `Store/SetCashierEhdmStatus?cashierId=${id}&status=${bool}`,{}, option());
@@ -56,6 +65,7 @@ export async function setCashierEhdmStatus(id, bool) {
     return err
   }
 };
+
 export async function setCashierReverseStatus(id,bool) {
   try{
     const  data = await axios.post(baseUrl + `Store/SetCashierReverceStatus?cashierId=${id}&status=${bool}`,{} , option());

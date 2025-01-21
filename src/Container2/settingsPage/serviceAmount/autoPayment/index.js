@@ -40,7 +40,7 @@ const AutoPaymentSwitch = ({
   return (
     <Button 
       size="small"
-      style={{ backgroundColor: 'transparent' }}
+      style={{ backgroundColor: 'transparent' ,textTransform: "capitalize"}}
       onClick={() => {
         if(!isDefaultExist){
           switchSetBinding(false)

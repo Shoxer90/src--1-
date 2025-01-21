@@ -58,7 +58,7 @@ const QRPay = ({
               {t("basket.scan")} 
             </h5>
           </div>
-          <Button onClick={closeQr} style={{margin:0}}>
+          <Button onClick={closeQr} style={{margin:0,textTransform: "capitalize"}}>
             <CloseIcon   />
           </Button>
         </Box>

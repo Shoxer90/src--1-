@@ -82,7 +82,7 @@ const HistoryItems = ({
         <TableCell style={{padding:"0px 16px"}}>
           <strong>
             {item?.id}
-            <HdmStatus t={t} status={Boolean(item?.ehdmStatus)} mode={Boolean(item?.hdmMode)} />
+            <HdmStatus status={Boolean(item?.ehdmStatus)} mode={item?.hdmMode} />
           </strong>
         </TableCell>
       }
@@ -105,8 +105,8 @@ const HistoryItems = ({
 
       {filterBody.includes("operation") &&
         <TableCell  style={{display:"flex", padding:"3px",flexFlow:"column", justifyContent:"center", minHeight:"72px"}}>
-          <div>{<Button size="small" sx={{mb:.5,fontSize:"70%", background:'orange', width:"73.8px"}} onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>}</div>
-          <div>{pageName?.status  === "Paid" && item?.saleType !==5 ? <Button size="small" sx={{width:"73.8px", fontSize:"65%", background:'#3FB68A'}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}</div>
+          <div>{<Button size="small" sx={{mb:.5,fontSize:"70%", background:'orange', width:"73.8px",textTransform: "capitalize"}} onClick={()=> openCloseHDM(item?.id)} variant="contained">{t("buttons.view")}</Button>}</div>
+          <div>{pageName?.status  === "Paid" && item?.saleType !==5 ? <Button size="small" sx={{width:"73.8px", fontSize:"65%", background:'#3FB68A',textTransform: "capitalize"}} onClick={dialogManage} variant="contained" >{t("history.reverse")}</Button> :""}</div>
         </TableCell>
       }
 

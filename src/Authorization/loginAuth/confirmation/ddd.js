@@ -96,9 +96,9 @@ const {t} = useTranslation();
               <Button
                 type="submit"
                 variant="contained"
-                style={{background:"#3FB68A",alignSelf:"center", padding: "5px 15px", width:"60%"}}
+                style={{background:"#3FB68A",alignSelf:"center", padding: "5px 15px", width:"60%", textTransform: "capitalize",}}
                 onClick={handleSendData}
-                >
+              >
                 {t("buttons.submit")}
               </Button>
               <a onClick={resendCodeToPhone} style={{textDecoration:"underline",padding:"5px",fontSize:"80%",textAlign:"center",cursor:"pointer"}}>

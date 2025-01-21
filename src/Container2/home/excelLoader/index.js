@@ -58,7 +58,7 @@ const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
         "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"] || 0,
         "purchasePrice": +(prod?.["Ապրանքի ինքնարժեք / Purchase price / Закупочная цена"])?.toFixed(2) || 0,
         "price": +(prod?.["Վաճառքի գին / Product price / Цена продукта *"])?.toFixed(2)|| 0,
-        "discountedprice": 0,
+        "discountedPrice": 0,
         "discount": 0,
         "discountType": 0,
         "lastUpdate": new Date().toJSON(),

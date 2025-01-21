@@ -82,7 +82,7 @@ const ServiceItemSecond = ({
             <Button 
               variant="contained" 
               onClick={notAvailableService}
-              sx={{width:"150px",height:"30px",background:"#3FB68A"}}
+              sx={{width:"150px",height:"30px",background:"#3FB68A",textTransform: "capitalize"}}
             >
               {t("basket.linkPayment")} 
             </Button>

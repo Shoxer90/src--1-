@@ -108,6 +108,10 @@ function Sells({
               marginLeft:5,
               padding:0,
             }}
+            sx={{
+              textTransform: "capitalize",
+              // fontWeight: "bold",    
+            }}
           >
             {t("history.filterbydate")}
           </Button>

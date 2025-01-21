@@ -60,7 +60,7 @@ const Reciept = ({
       },
     }
     saleData?.res?.printResponseInfo?.items.forEach((item) => {
-      if(item?.dep === 1) {
+      if(item?.dep === 1 || item?.dep === 0) {
         synthData = {
           ...synthData,
           dep1:{
@@ -126,7 +126,7 @@ const Reciept = ({
           setMessage={setMessage}
           t={t}
         />
-        <Button  variant="text" onClick={()=>setOpenHDM(false)}  sx={ { borderRadius: 38,width: 5 } }>
+        <Button  variant="text" onClick={()=>setOpenHDM(false)}  sx={{borderRadius: 38,width: 5,textTransform: "capitalize"}}>
           <CloseIcon />
         </Button>
       </DialogActions>

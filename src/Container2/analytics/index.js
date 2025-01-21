@@ -29,7 +29,6 @@ const ProductChanges = ({logOutFunc}) => {
       title: []
     }
      getProductsSaleByDays(dateState,id).then((res) => {
-      console.log(res,"RES")
       const longTit = res?.map(item => item.productTitle)
       setLongTitlePage(longTit)
       if(id !=="All"){

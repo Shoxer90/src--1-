@@ -5,7 +5,12 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import styles from "./index.module.scss";
 
-const PaymentContainer = ({openWindow, setOpenWindow, setPaymentInfo, paymentInfo}) => {
+const PaymentContainer = ({
+  openWindow, 
+  setOpenWindow, 
+  setPaymentInfo, 
+  paymentInfo
+}) => {
   const {t} = useTranslation();
   
   const comeBackBtnFunc = () => {
@@ -33,7 +38,11 @@ const PaymentContainer = ({openWindow, setOpenWindow, setPaymentInfo, paymentInf
               prepayment: true,
               isOpen: true
             })}
-            sx={{background:"orange"}}
+            sx={{
+              background:"orange",
+              textTransform: "capitalize",
+              fontWeight: "bold",
+            }}
           >
             {t("basket.useprepayment")}
           </Button>
@@ -44,7 +53,11 @@ const PaymentContainer = ({openWindow, setOpenWindow, setPaymentInfo, paymentInf
               payment: true,
               isOpen: true
             })}
-            sx={{background:"#3FB68A"}}
+            sx={{
+              background:"#3FB68A",
+              textTransform: "capitalize",
+              fontWeight: "bold",
+            }}
           >
             {t("basket.usepayment")}
           </Button>
@@ -54,11 +67,13 @@ const PaymentContainer = ({openWindow, setOpenWindow, setPaymentInfo, paymentInf
       {openWindow?.isOpen && openWindow?.payment &&
         <div className={styles.buttonGroup_2}>
           <Button 
-            startIcon={<ArrowBackIcon fontSize="small" />} 
+            startIcon={<ArrowBackIcon fontSize="large" />} 
             onClick={comeBackBtnFunc}
-            size="small"
+            sx={{
+              textTransform: "capitalize",
+              fontWeight: 800,    
+            }}
           >
-           {t("buttons.back")}
           </Button>
           <h5>{t("basket.usepayment")}</h5>
         </div>
@@ -66,12 +81,15 @@ const PaymentContainer = ({openWindow, setOpenWindow, setPaymentInfo, paymentInf
       {openWindow?.isOpen && openWindow?.prepayment &&
          <div className={styles.buttonGroup_2}>
          <Button 
-           startIcon={<ArrowBackIcon />} 
+           startIcon={<ArrowBackIcon fontSize="large" />} 
            onClick={comeBackBtnFunc}
-           size="small"
+           sx={{
+            textTransform: "capitalize",
+            fontWeight: "bold",    
+          }}
          >
-           {t("buttons.back")}
          </Button>
+         
          <h5>{t("basket.useprepayment")}</h5>
        </div>
       }

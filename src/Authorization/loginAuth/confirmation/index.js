@@ -95,7 +95,7 @@ const {t} = useTranslation();
         <Button
           type="submit"
           variant="contained"
-          style={{backgroundColor:"rgb(17, 46, 17)", padding: "5px 15px", width:"60%"}}
+          style={{backgroundColor:"rgb(17, 46, 17)", padding: "5px 15px", width:"60%",textTransform: "capitalize",}}
           onClick={handleSendData}
         >
           {t("buttons.submit")}

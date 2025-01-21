@@ -37,6 +37,8 @@ import ForgotPassword from "./Authorization/loginAuth/forgotPass";
 import ResetPassword from "./Authorization/loginAuth/resetpass/ResetPassword";
 import Confirmation from "./Authorization/loginAuth/confirmation";
 import PrePaymentList from "./Container2/prepayment/";
+import { QrSoccet } from "./QrSoccet";
+import ConfirmDialog from "./Container2/dialogs/ConfirmDialog";
 
 const App = () => {
 
@@ -67,6 +69,7 @@ const App = () => {
   const [fetching, setFetching] = useState(true);
   const [notification, setNotification] = useState([]);
   const [count, setCount] = useState(0);
+  const [searchedNotAvailableProd, setSearchedNotAvailableProd] = useState();
   const [openWindow, setOpenWindow] = useState({
     prepayment: false,
     payment: false,
@@ -91,7 +94,7 @@ const App = () => {
   });
  
   const whereIsMyUs = async() => {
-    console.log("16․12.24 new")
+    console.log("21.01.2025 ")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -102,9 +105,10 @@ const App = () => {
       localStorage.setItem("reverse", JSON.stringify(res?.payload?.reverceStatus))
       localStorage.setItem("taxRegime", JSON.stringify(res?.payload?.taxRegime))
       checkUserStatus()
-      if(res?.error?.message === "Rejected"){
-        logOutFunc()
-      }else if(res?.payload?.isInDate === false && !res?.payload?.days && res?.payload?.showPaymentPage){
+      // if(res?.error?.message === "Rejected"){
+      //   logOutFunc()
+      // }else 
+      if(res?.payload?.isInDate === false && !res?.payload?.days && res?.payload?.showPaymentPage){
         navigate("/setting/services")
         setBlockedUser(true)
       }
@@ -168,7 +172,12 @@ const App = () => {
         }else if(from === "main") {
           return res?.length ? setContent(res) : (
             setContent([]) ,
-            setMessage({message: t("mainnavigation.searchconcl"), type: "error"})
+            byBarCode("GetNotAvailableProducts", barcode).then((res) => {
+              setSearchedNotAvailableProd(res)
+              res?.length ? 
+              setMessage({confirmMessage: t("mainnavigation.searchconclOutOfStock"), type: "success"}):
+              setMessage({message: t("mainnavigation.searchconcl"), type: "error"})
+            })
           )
         }
       })
@@ -287,9 +296,8 @@ const App = () => {
      
       basket.unshift({
         ...wishProduct,
-        discountPrice: wishProduct?.discountType === 2? 
-        wishProduct?.price - wishProduct.discount :
-        wishProduct?.price - (wishProduct.price * wishProduct.discount/100) ,
+        discountPrice: wishProduct?.discountedPrice,
+        // discountPrice: wishProduct?.discountedprice,
         count:+(quantity ? quantity: 1)
       })
     }
@@ -345,7 +353,7 @@ const App = () => {
 
   
   const getMeasure = async() => {
-    const str = localStorage.getItem("lang")
+    const str = await localStorage.getItem("lang")
     switch(str){
       case "en":
         await measureTranslate(2).then((res) => {
@@ -474,6 +482,7 @@ const App = () => {
             <Route path="/setting/cashiers" element={<Cashiers cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
             <Route path="/setting/user" element={<SettingsUser user={user} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc}/>} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} />} />
+            <Route path="/qrsoccet" element={<QrSoccet />} />
             {/* <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} /> */}
             <Route path="/basket/*" element={<BasketList t={t} />} />
             <Route path="/prepayment" element={<PrePaymentList 
@@ -543,6 +552,16 @@ const App = () => {
               <strong style={{fontSize:"150%"}}>{message?.message}</strong>
             </Alert>
           </Snackbar>
+          <ConfirmDialog
+            func={()=>{
+              setDataGroup("GetNotAvailableProducts")
+              setContent(searchedNotAvailableProd)
+              setMessage({type:"",message:""})
+            }}
+            open={message?.confirmMessage}
+            close={()=>setMessage({type:"",message:""})}
+            content={message?.confirmMessage}
+          />
         </>
       }
     </div>

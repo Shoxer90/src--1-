@@ -28,14 +28,9 @@ const SearchHistory = ({
   setColumns,
 }) => {
 
-  // depends excel loader the "value" state can removed
-  const [value, setValue] = useState({
-    endDate: coordinator?.endDate ? coordinator?.endDate : new Date(),
-    startDate: coordinator?.startDate ? coordinator?.startDate : new Date()
-  });
+
   const [ownDate, setOwnDate] = useState({});
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  
   const [openDatePicker, setOpenDatePicker] = useState(false)
 
   const fileReader = async(argument) => {
@@ -44,11 +39,7 @@ const SearchHistory = ({
     })
   };
 
-  const clearDatePicker = () => {
-    setEndDate("")
-    setStartDate("")
-    initialDateCreator()
-  };
+// Combine into desired format
 
   return (
     <div className={styles.history_searchBar}>
@@ -66,7 +57,9 @@ const SearchHistory = ({
     <div style={{position :"relative", padding:"0px 5px"}}>
       <div style={{display:"flex",justifyContent:"space-between",minWidth:"100%", fontWeight: 700, margin:"2px 0px"}}>
         <span style={{margin:"0px 10px"}}> 
-        {initDate?.startDate && initDate?.endDate && <span> {initDate?.startDate.slice(0,10)} - {initDate?.endDate.slice(0,10)} </span>}
+          {initDate?.startDate && initDate?.endDate && 
+           <span> {new Date(initDate?.startDate).toLocaleDateString("en-GB")} - {new Date(initDate?.endDate).toLocaleDateString("en-GB")} </span>
+          }
         </span>
       </div>  
       
@@ -82,7 +75,7 @@ const SearchHistory = ({
       />  
         <div style={{display:"flex", justifyContent:"space-between"}}>
           <Button
-            style={{margin:"0px 5px"}}
+            style={{margin:"0px 5px",textTransform: "capitalize"}}
             variant="contained"
             size='small'
 

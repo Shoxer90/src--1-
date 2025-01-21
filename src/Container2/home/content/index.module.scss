@@ -62,14 +62,15 @@
   .productContent_item_addBasket{
     margin-bottom: 5px;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     >input{
       width:100px;
+      height: 35px;
       border-radius: 8px;
       font-weight: 700;
       border: solid orange 1px;
       padding-left: 10px;
-      margin-right:  5px;
+      margin-right: 5px;
       font-size: large;
     }
   }

@@ -30,6 +30,7 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc}) => {
     }else {
       setMessage({m:t("settings.isregistrehdm"), t:"error"})
     }
+    setIsLoad(false)
     setConfirmSwitch(false)
   };
 
@@ -60,14 +61,13 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc}) => {
           type="radio"
           name="sale type"
           checked={!user?.isEhdmStatus}
-          
           onClick={()=>setConfirmSwitch(true)}
         />
        <span style={{marginLeft:"10px"}}>{t("history.receiptNoHmd")}</span> 
       </label>
     </h6>
     {user && <ClientInfo />}
-    <Button onClick={()=>setOpenAddDialog(true)}>
+    <Button onClick={()=>setOpenAddDialog(true)} variant="contained"  sx={{textTransform: "capitalize",m:2}}>
       {t("settings.changepassword")} 
     </Button>
     <ConfirmDialog

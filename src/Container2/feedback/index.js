@@ -77,7 +77,7 @@ const FeedBackPage = () => {
           variant="contained"
           disabled={isSent}
           onClick={handleSend}
-          style={{background:isSent ? "grey":"" }}
+          style={{background:isSent ? "grey":"" ,textTransform: "capitalize"}}
         >
           {t("buttons.send")}
         </Button>

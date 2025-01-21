@@ -69,6 +69,10 @@ const DateBar = ({
             // margin: "auto",
             padding: "4px"
           }}
+          sx={{
+            textTransform: "capitalize",
+            // fontWeight: "bold",    
+          }}
         >
           {t("history.filterbydate")}
         </Button>

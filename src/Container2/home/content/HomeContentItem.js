@@ -12,6 +12,30 @@ import ModeIcon from '@mui/icons-material/Mode';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import { useTranslation } from "react-i18next";
 
+const style = {
+  display:"flex",
+  justifyContent:"flex-start",
+  alignItems:"center",
+  padding:"5px",
+  height:"135px",
+  width:"300px",
+  picture:{
+    height:"125px",
+    width:"110px",
+    border:"solid lightgray 2px"
+  },
+  info:{
+    margin:"20px 5px",
+    fontSize:"80%",
+    textAlign:"start",
+    fontWeight: 600,
+    item:{
+      display:"flex",
+      justifyContent:"space-between"
+    }
+  }
+};
+
 const HomeContentItem = ({
   setToBasket,
   basketExist,
@@ -36,9 +60,9 @@ const HomeContentItem = ({
   const [openConfirm, setOpenConfirm] = useState(false);
   const [newPrice, setNewPrice] = useState(product?.price - (product?.price * product?.discount / 100));
   
-  const handleStarChange = () => {
-    setStarSynth(!starSynth)
-    updateIsFavorite(product?.id, !product?.isFavorite)
+  const handleStarChange = (bool) => {
+    setStarSynth(bool)
+    updateIsFavorite(product?.id, bool)
   };
  
   const clickToBascket = () => {
@@ -53,7 +77,7 @@ const HomeContentItem = ({
   const addToBasketWithPrep = () => {
     setToBasket(product, quantity, false)
     setOpenConfirm(false)
-  }
+  };
 
   const onlyNumberAndADot = (event) => {
     let isValid = false;
@@ -84,51 +108,27 @@ const HomeContentItem = ({
   useEffect(() => {
     setStarSynth(product?.isFavorite)
   },[]);
-  const style = {
-    display:"flex",
-    justifyContent:"flex-start",
-    alignItems:"center",
-    padding:"5px",
-    height:"125px",
-    width:"300px",
-    picture:{
-      height:"110px",
-      width:"110px",
-      border:"solid lightgray 2px"
-    },
-    info:{
-      paddingLeft:"5px",
-      fontSize:"80%",
-      textAlign:"start",
-      fontWeight: 600,
-      item:{
-        display:"flex",
-        justifyContent:"space-between"
-      }
-    }
-  }
+
 
   return (
-    <>
-    
-    <div style={{position:"relative", border:"solid orange 2px",borderRadius:"5px", margin:"5px", cursor:"pointer"}}>
-      <Card>
-        <div style={{display:"flex", justifyContent:"space-between", padding:"2px 5px", }}>
-        <span 
-          className={product?.name?.length > 5 ? styles.hovertext : undefined}
-          style={{fontSize:"90%",fontWeight:700}}
-          data-hover={product?.name}
+    <Card style={{ border:"solid orange 2px",padding:"7px", cursor:"pointer"}}>
+        <div style={{display:"flex", justifyContent:"space-between", padding:"2px 5px"}}>
+        <div 
+          className={product?.name?.length > 22 ? styles.hovertext : undefined}
+          style={{fontSize:"90%", fontWeight:700}}
+          data-hover={`${product?.name} ${product?.brand}`}
         >
-          {product?.name?.length > 25 ? `${product?.name.slice(0,24)}...` : product?.name}
-        </span>
+          {product?.name?.length > 25 ? `${product?.name.slice(0,24)}...` : `${product?.name}`} {" "}
+          {product?.name?.length+product?.brand?.length < 25 && product?.brand ?`"${product?.brand}"`:""}
+        </div>
         <span className={styles.productContent_item_icons}>
         {starSynth ?
           <StarIcon 
-            onClick = {handleStarChange}
+            onClick = {()=>handleStarChange(false)}
             fontSize="medium" 
             sx={{color:"orangered"}}
           /> : <StarOutlineIcon 
-            onClick = {handleStarChange}
+            onClick = {()=>handleStarChange(true)}
             fontSize="small"
             sx={{color:"orange"}}/>
           }
@@ -146,86 +146,79 @@ const HomeContentItem = ({
           {/* <img style={style?.picture} src= "https://thefreshandnatural.com/wp-content/uploads/2020/05/APPLE-GREEN.jpg" alt={index} /> */}
           <img style={style?.picture} src={product?.photo ? product?.photo : "/default-placeholder.png"} alt={index} />
           <Box style={style.info}>
-            <div> 
+            <div style={{marginTop:"10px"}}> 
               {t("updates.price")}:  {product.price } {t("units.amd")}
-              <span style={{fontSize:"90%", color:"orangered"}}>
-                {product?.discount > 0 && 
-                  <span>
-                    / {t("productcard.newprice")}
-                    <strong>
-                      { (Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice) }
-                      {/* { t("units.amd") } */}
-                    </strong>
-                  </span>
+              </div>
+              <div>
+                {product?.discount > 0 ? 
+                  <div style={{color:"red", fontWeight:800}}>
+                    {t("productcard.newprice")}
+                    { (Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice) } { t("units.amd") }
+                  </div>: <div style={{height:"18px"}}>{""}</div>
                 }
-              </span>
             </div>
 
-            {product?.remainder ?
-        <>
-          <div style={{ margin:"1px", color: quantity > product?.remainder && "red",fontWeight: quantity > product?.remainder && "700"}}>
-            {t("productcard.remainder")} {product?.remainder%1 ? product?.remainder.toFixed(3) : product?.remainder } {t(`units.${product?.measure}`)}
-          </div>
+            {product?.remainder || product?.remainderPrePayment ?
+              <>
+                <div style={{ margin:"1px", color: quantity > product?.remainder && "red",fontWeight: quantity > product?.remainder && "700"}}>
+                  {t("productcard.remainder")} {product?.remainder%1 ? product?.remainder.toFixed(3) : product?.remainder } {t(`units.${product?.measure}`)}
+                </div>
 
-          <div style={{margin:"1px", color:"blue",fontWeight:"700", minHeight:"17px"}}>
-            { product?.remainderPrePayment ?
-             <span>
-              {t("productcard.remainderPrePayment")} {product?.remainderPrePayment%1 ? product?.remainderPrePayment.toFixed(3) : product?.remainderPrePayment } {t(`units.${product?.measure}`) }
-             </span>: " "}
-          </div>
-          <div>code {product?.barCode} </div>
-          <div className={styles.productContent_item_addBasket}>
-            <input 
-              max={`${product.remainder}`}
-              placeholder="1"
-              value={quantity}  
-              onChange={(e)=>onlyNumberAndADot(e,3)} 
-              disabled={basketExist.includes(product?.id)}
-            />
-            <ShoppingBasketIcon 
-              style={{color: basketExist?.length && basketExist.includes(product?.id) ? "green" : "orange"}}
-              fontSize="large" 
-              onClick={clickToBascket}
-            />
-          </div> 
-        </>: <>
-          <div> code : {product?.barCode}</div>
-          <div style={{marginBottom:"14px",color:"red"}}>{t("productcard.outofstock")}</div>
-        </>
-      }
-
+                  { product?.remainderPrePayment ?
+                    <div style={{margin:"1px", color:"#3FB68A",fontWeight:"700",minHeight:"17px"}}>
+                      {t("productcard.remainderPrePayment")} {product?.remainderPrePayment%1 ? product?.remainderPrePayment.toFixed(3) : product?.remainderPrePayment } {t(`units.${product?.measure}`) }
+                    </div>: <div style={{height:"18px"}}>{""}</div>
+                  }
+                <div> {t("productinputs.code2")} {product?.barCode} </div>
+                {product?.remainder ? <div className={styles.productContent_item_addBasket}>
+                  <input 
+                    max={`${product.remainder}`}
+                    placeholder="1"
+                    value={quantity}  
+                    onChange={(e)=>onlyNumberAndADot(e,3)} 
+                    disabled={basketExist.includes(product?.id)}
+                  />
+                  <ShoppingBasketIcon 
+                    style={{color: basketExist?.length && basketExist.includes(product?.id) ? "green" : "orange"}}
+                    fontSize="large" 
+                    onClick={clickToBascket}
+                  />
+                </div> :<div style={{height:"35px"}}>{""}</div>}
+              </>: <>
+                <div> {t("productinputs.code2")} : {product?.barCode}</div>
+                <div style={{marginBottom:"14px",color:"red"}}>{t("productcard.outofstock")}</div>
+              </>
+            }
           </Box>
         </Box>
-      </Card>
-    </div>
-    {openUpdateProd && <UpdateProduct 
-      openUpdateProd={openUpdateProd} 
-      measure={measure}
-      setOpenUpdateProduct={setOpenUpdateProduct}   
-      product={product} 
-      deleteAndRefresh={deleteAndRefresh}
-      setNewPrice={setNewPrice}
-      deleteBasketItem={deleteBasketItem}
-      setFetching={setFetching}
-      setContent={setContent}
-      content={content}
-      getSelectData={getSelectData}
-      typeCode={typeCode}
-      setTypeCode={setTypeCode}
-    />}
-    {message ? 
-      <Dialog open={Boolean(message)}>
-        <SnackErr message={message} type="info" close={setMessage} />
-      </Dialog>
-    :""}
-    <ConfirmDialog
-      func={addToBasketWithPrep}
-      open={openConfirm}
-      title={t("mainnavigation.newproduct")}
-      close={setOpenConfirm}
-      question={t("basket.add_to_prep")}
-    />
-  </>
+      {openUpdateProd && <UpdateProduct 
+        openUpdateProd={openUpdateProd} 
+        measure={measure}
+        setOpenUpdateProduct={setOpenUpdateProduct}   
+        product={product} 
+        deleteAndRefresh={deleteAndRefresh}
+        setNewPrice={setNewPrice}
+        deleteBasketItem={deleteBasketItem}
+        setFetching={setFetching}
+        setContent={setContent}
+        content={content}
+        getSelectData={getSelectData}
+        typeCode={typeCode}
+        setTypeCode={setTypeCode}
+      />}
+      {message ? 
+        <Dialog open={Boolean(message)}>
+          <SnackErr message={message} type="info" close={setMessage} />
+        </Dialog>
+      :""}
+      <ConfirmDialog
+        func={addToBasketWithPrep}
+        open={openConfirm}
+        title={t("mainnavigation.newproduct")}
+        close={setOpenConfirm}
+        question={t("basket.add_to_prep")}
+      />
+    </Card>
   )
 };
 

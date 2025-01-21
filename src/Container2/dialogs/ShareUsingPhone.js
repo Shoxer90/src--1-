@@ -76,14 +76,14 @@ const ShareUsingPhone = ({
         <Button 
           variant="contained" 
           onClick={handleClose} 
-          style={{backgroundColor: "grey", margin:"0px 15px"}}
+          style={{backgroundColor: "grey", margin:"0px 15px",textTransform: "capitalize"}}
         >
           {t("buttons.cancel")}
         </Button>
         <Button 
           variant="contained"
           onClick={sendLink} 
-          style={{backgroundColor: "#4caf50", margin:"0px 15px"}}
+          style={{backgroundColor: "#4caf50", margin:"0px 15px",textTransform: "capitalize"}}
         >
           {t("buttons.send")}
         </Button>

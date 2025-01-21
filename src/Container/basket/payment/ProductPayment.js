@@ -32,11 +32,12 @@ const ProductPayment = ({
     }
   };
 
+
   const handleChangeInput = (e) => {
-    const valid =/^\d+(\.\d{1,2})?$/;
+    const valid =/^\d*\.?(?:\d{1,2})?$/
     const text = e.target.value;  
     const isValid = valid.test(text);
-    if(e.target.value[e.target.value.length-1] === "." ||
+    if(e.target.value[e.target.value.length-1] === "." || e.target.value === 0 ||
      (e.target.value[e.target.value.length-1] === "0" && e.target.value[e.target.value.length-2] === ".")
     ){
       setBlockTheButton(true)
@@ -55,14 +56,20 @@ const ProductPayment = ({
     if(e.target.name === "cashAmount") {
       setPaymentInfo({
         ...paymentInfo,
-        cashAmount: +e.target.value,
+        cashAmount: e.target.value === 0  ||
+        e.target.value === "0" || 
+        e.target.value[e.target.value.length -1]==="." 
+      ? e.target.value : +e.target.value ,
         cardAmount: Math.round((val-e.target.value)*100)/100
       })
     }else {
     if(e.target.name === "cardAmount")
       setPaymentInfo({
         ...paymentInfo,
-        cardAmount: +e.target.value,
+        cardAmount: e.target.value === 0  ||
+                e.target.value === "0" || 
+                e.target.value[e.target.value.length -1]==="." 
+              ? e.target.value : +e.target.value ,
         cashAmount: Math.floor((val-e.target.value)*100)/100
       })
     }
@@ -99,26 +106,20 @@ const ProductPayment = ({
       </div>
 
       {prepayment ?
-        <div style={{color:"orange", fontSize:"95%"}}>
-          <span>
-            {t("basket.prepaymentTitle")}
+        <div>
+          <span style={{fontSize:"95%"}}>
+            {t("history.combo")}
           </span>
           <input
-            value={`${prepayment.toFixed(2)} ${t("units.amd")}`}
+            value={prepayment.toFixed(2)}
             readOnly
-            style={{color:"orange",fontWeight: 600}}
           />
         </div>:""
       }
-      {paymentInfo?.prePaymentAmount ? <div style={{color:'orange',fontSize:"95%", marginBottom:"20px"}}>
+      {paymentInfo?.prePaymentAmount ? <div style={{color:'orangered',fontSize:"100%",fontWeight:"800", marginTop:"10px"}}>
         <span>
-          {t("basket.remainder")} 
+          {t("basket.amount")} {`${( totalPrice - paymentInfo?.prePaymentAmount).toFixed(2)}  ${t("units.amd")}`}
         </span>
-        <input
-          value={`${( totalPrice- paymentInfo?.prePaymentAmount).toFixed(2)}  ${t("units.amd")}`}
-          readOnly
-          style={{color:"orange",fontWeight: 600}}
-        />
       </div>:""}
       <div>
         <span>

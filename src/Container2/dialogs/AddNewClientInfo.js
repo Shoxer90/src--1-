@@ -172,7 +172,11 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
         <div className={styles.newInfo_btn}>
           <Button
             variant="contained"
-            style={{background:"#bdbdbd"}}
+            style={{
+              background:"#bdbdbd",
+              textTransform: "capitalize",
+              // fontWeight: "bold",    
+            }}
             onClick={()=>setOpenAddDialog(false)}
             >
             {t("buttons.cancel")}
@@ -181,6 +185,7 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
             variant="contained"
             onClick={()=>setOpenConfirm(true)}
             disabled={!newPass?.confirmPass || !newPass?.password}
+            sx={{textTransform: "capitalize"}}
           >
             {t("buttons.save")}
           </Button>
@@ -194,7 +199,7 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
           close={setOpenConfirm}
           func={createNewPass}
           content={" "}
-        />;
+        />
          {infoDialog?.message &&
         <Dialog open={infoDialog?.isOpen} onClose={()=>setInfoDialog({isOpen: false, message:"",type:"info"})}>
           <SnackErr type={infoDialog?.type} message={infoDialog?.message}  close={()=> closeConfirmDialog({isOpen: false, message:"",type:"info"})}/>

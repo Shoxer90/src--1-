@@ -19,7 +19,7 @@ const HomeContent = ({
   setContent,
 }) => {
   return (
-    <Card className={styles.productContent}>
+    <div className={styles.productContent} style={{marginLeft:"25px"}}>
      
       { content && content.map((product, index) => {
         return   <HomeContentItem
@@ -39,7 +39,7 @@ const HomeContent = ({
           content={content}
         />
       })}
-    </Card>
+    </div>
   )
 }
 

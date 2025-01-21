@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from "../index.module.scss";
 
@@ -7,10 +8,10 @@ const ImageLoad = ({func,setProduct, newProduct, content}) => (
 
   <div className={styles.imageUpload_avatar}>
      <div className={styles.imageUpload_avatar_removeImg}>
-      <CloseIcon 
-          sx={{":hover":{background:"#d6d3d3",borderRadius:"5px"}}}
-          onClick={()=>setProduct({...newProduct, photo:""})}
-        /> 
+      <DeleteIcon 
+        sx={{":hover":{background:"#d6d3d3",borderRadius:"2px"}}}
+        onClick={()=>setProduct({...newProduct, photo:""})}
+       />
       <input 
         id="file-input" 
         type="file" 
@@ -37,3 +38,5 @@ const ImageLoad = ({func,setProduct, newProduct, content}) => (
 );
 
 export default memo(ImageLoad);
+
+

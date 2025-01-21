@@ -2,6 +2,7 @@ import React, { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from "../index.module.scss";
+import { TextField } from '@mui/material';
 
 const ProductAdg2 = ({
   typeCode,
@@ -9,19 +10,38 @@ const ProductAdg2 = ({
   newProduct,
   handleChangeInput,
   selectContent,
+  emptyValidate
 }) => {
   const {t} = useTranslation();
   const [isOpenDrop, setIsOpenDrop] = useState(false);
   const [typeString,setTypeString] = useState("");
 
+  // const onlyNumberAndADot = (event) => {
+  //   let isValid = false;
+  //   const needSymb = /^\d+(\.\d{0,2})?$/
+  //   isValid = needSymb.test(event.target.value)
+    
+  //   if(isValid || event.target.value=== "") {
+  //     // setTypeCode(event.target.value)
+  //     setTypeString("")
+  //     setIsOpenDrop(true)
+  //     setTypeCode()
+  //     setTypeCode(event.target.value)
+  //   }else{
+  //     return
+  //   }
+  // }
+
   return (
     <div style={{width:"90%"}}>
       <div style={{position:"relative",margin:"10px 0px 0px 0px"}}>
-        <input 
-          style={{width:"100%",padding:"2px 5px", border:!newProduct?.type && typeCode ? "solid red 2px": null}}
-          type="text"
+        <TextField 
+          size="small"
+          label={`${t("productinputs.typeurl1")} *`}
+          style={{width:"100%"}}
           placeholder={`${t("productinputs.typeurl1")} *`}
           value={typeCode}
+          error={emptyValidate && !newProduct?.type}
           onChange={(e)=>{
             setTypeString("")
             setIsOpenDrop(true)

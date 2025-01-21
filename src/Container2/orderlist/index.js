@@ -19,8 +19,12 @@ const BasketList = ({t}) => {
   const getBasketList = async() => {
     await basketListCreator(new URLSearchParams(search).get('saleId'))
     .then((res) => {
-      setBasketContent(res?.data)
       setLoad(true)
+      if(res?.data?.status === 1 && res?.data?.receiptLink) {
+        return window.location.href = res?.data?.receiptLink
+      }else{
+        setBasketContent(res?.data)
+      }
    })
   };
 

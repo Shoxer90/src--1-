@@ -4,7 +4,13 @@ import { t } from "i18next";
 import styles from "./index.module.scss";
 
 const ItemReverse = ({
-  photo, brand, name, count, discountedPrice, unit, index,
+  photo, 
+  brand, 
+  name, 
+  count, 
+  discountedPrice,
+  unit,
+  index,
   reverseContainer,
   setReverseContainer,
   checkedProduct,
@@ -38,10 +44,8 @@ const ItemReverse = ({
               }
             }else{ 
               return{
-              ...item,
-              // [e.target.name]: +e.target.value
-              [e.target.name]: Math.round(+e.target.value * 100) / 100
-
+                ...item,
+                [e.target.name]: Math.round(+e.target.value * 100) / 100
               }
             }
           }else if (e.target.value === "0" || e.target.value === "."){
@@ -61,8 +65,6 @@ const ItemReverse = ({
   useEffect(() => {
     totalCounter()
   },[reverseContainer]);
-
-  // console.log(discountedPrice, count,discountedPrice*count, "RRRRR" )
 
   return(
     <label className={styles.radioDialog}>

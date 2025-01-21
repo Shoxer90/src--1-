@@ -106,7 +106,7 @@ const PayComponent = ({
           color="success" 
           variant="outlined" 
           startIcon={<HomeRepairServiceIcon color="success" />}
-          sx={{width:"100%"}}
+          sx={{width:"100%",textTransform: "capitalize"}}
           onClick={()=>setOpenBankInfo(true)}
         >
           {t("cardService.bankTransfer")}
@@ -117,7 +117,7 @@ const PayComponent = ({
       <Button
         variant="contained"
         onClick={servicePay}  
-        sx={{m:2,background:"#3FB68A"}}
+        sx={{m:2,background:"#3FB68A",textTransform: "capitalize"}}
         disabled={billsData?.attach === undefined && billsData?.cardId === undefined }
       >
         {t("basket.totalndiscount")} {billsData?.daysEnum * price} ֏ 

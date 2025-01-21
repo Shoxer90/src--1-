@@ -48,7 +48,8 @@ const HomeNavigation = ({
           color:"white",
           height:"33px",
           fontSize:"small",
-          margin:"5px"
+          margin:"5px",
+          textTransform: "capitalize"
         }}
       >
         {t("mainnavigation.available")}
@@ -56,15 +57,13 @@ const HomeNavigation = ({
       </Button>
         <Button 
           variant="contained" 
-          onClick={()=>{
-            handleSendQuery("GetNotAvailableProducts",1)
-          
-          }} 
+          onClick={()=>handleSendQuery("GetNotAvailableProducts",1)} 
           style={{
             background:(dataGroup === "GetNotAvailableProducts"? "#FFA500" : "gray"),
             height:"33px",
             fontSize:"small",
-            margin:"5px"
+            margin:"5px",
+            textTransform: "capitalize"
           }}
         >
           {t("mainnavigation.notavailable")}
@@ -77,7 +76,8 @@ const HomeNavigation = ({
             background:(dataGroup === "GetFavoriteProducts"? "#FFA500" : "gray"),
             height:"33px",
             fontSize:"small",
-            margin:"5px"
+            margin:"5px",
+            textTransform: "capitalize"
           }}
         >
          {t("mainnavigation.favourite")}

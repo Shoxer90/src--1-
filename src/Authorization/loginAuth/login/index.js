@@ -43,7 +43,7 @@ const Login = ({whereIsMyUs,setIsLogIn}) => {
         </div>
         <div>
           {t("authorize.infoInLoginPage2")}
-          <a href="www.storex.am" style={{color:"#3FB68A"}}>www.storex.am</a> :</div>
+          <a href="https://storex.am" style={{color:"#3FB68A"}}>www.storex.am</a> :</div>
       </span>
       <div style={{display:"flex",flexFlow:"column",alignItems:"center"}}>
         <SocialMediaGroup w={170}/>

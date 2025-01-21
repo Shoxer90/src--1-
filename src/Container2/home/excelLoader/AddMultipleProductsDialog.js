@@ -47,7 +47,7 @@ const AddMultipleProductsDialog = ({
             <MeasureCorrect t={t}/>
             <BarCodeCorrect t={t}/>
             <VatCorrect t={t} />
-            <Button variant="contained" sx={{backgroundColor:"green",fontSize:"70%"}} onClick={fileReader} >
+            <Button variant="contained" sx={{backgroundColor:"green",fontSize:"70%",textTransform: "capitalize"}} onClick={fileReader} >
               <GetAppIcon />
               {t("mainnavigation.downloadform")}
             </Button>
@@ -56,7 +56,7 @@ const AddMultipleProductsDialog = ({
             <p>{t("mainnavigation.multipleProductText2")}</p>
             <Button
               variant="contained" 
-              sx={{backgroundColor:"green",fontSize:"60%"}} 
+              sx={{backgroundColor:"green",fontSize:"60%",textTransform: "capitalize"}}
             >
               <label htmlFor="file-input" style={{cursor:"pointer"}}>
                 <FileUploadIcon />
@@ -77,7 +77,7 @@ const AddMultipleProductsDialog = ({
         {uploadFile && 
           <Button 
             variant="contained" 
-            style={{margin:"2px 20px",background:"green"}} 
+            style={{margin:"2px 20px",background:"green",textTransform: "capitalize"}} 
             onClickCapture={()=> setOpenConfirm(1)}
           >
             {t("buttons.createMultiProds")}
@@ -85,7 +85,7 @@ const AddMultipleProductsDialog = ({
         }
         <Button 
           variant="contained"
-          style={{margin:"2px 20px"}} 
+          style={{margin:"2px 20px",textTransform: "capitalize"}} 
           onClickCapture={()=> setOpenConfirm(2)}
         >
           {t("buttons.cancel")}

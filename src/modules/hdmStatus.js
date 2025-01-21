@@ -1,14 +1,17 @@
 import React, { memo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // 
-const HdmStatus = ({t,status,mode}) => {
+const HdmStatus = ({status,mode}) => {
+  const {t} = useTranslation();
   const [screen, setScreenWidth] = useState(window.innerWidth);
 
   const styling={
       width:screen<600 ? "10px":"auto",
       height:screen<600? "10px" : "20px",
       borderRadius:"4px",
-      backgroundColor: (status || mode) ? "green": "orangered",
+      // backgroundColor: (status || mode !== 1) ? "green": "orangered",
+      backgroundColor: mode === 0 ? "green":mode === 1 ? "orangered":mode === 2 && "orange",
       fontSize:"75%",
       color:"white",
       border:"none",
@@ -22,9 +25,17 @@ const HdmStatus = ({t,status,mode}) => {
 
   return(
      <button style={styling}>
-      {screen > 600 ? mode ?  t("history.hdm"): status ? t("settings.switcher") :t("history.receiptNoHmd"): ""}
+      {screen > 600 ?
+        <>
+          {mode === 0 && t("settings.ETRM")}
+          {mode === 1 && t("history.receiptNoHmd")}
+          {mode === 2 && t("history.hdm")}
+        </>: ""
+      }
+      {/*some changes */}
+      {/* {screen > 600 ? mode ?  t("history.hdm"): status ? t("settings.switcher") :t("history.receiptNoHmd"): ""} */}
       </button>
- 
+
   )
 };
 

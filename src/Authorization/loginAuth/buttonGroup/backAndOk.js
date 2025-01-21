@@ -13,15 +13,18 @@ const BackAndOkBtnGrp = ({link, func, btnName}) => {
     <div style={{display:"flex",justifyContent:"space-between"}}>
       <Button 
         variant="contained" 
-        style={{background:"orange"}}
+        style={{background:"orange", textTransform: "capitalize",}}
         onClick={()=>navigate(link)} 
         startIcon={<ArrowBackIcon  fontSize="small"/>}
       >
         {t("buttons.back")} 
       </Button> 
       <Button 
+        sx={{
+          textTransform: "capitalize",
+          // fontWeight: "bold",    
+        }}
         variant="contained" 
-        style={{}} 
         onClick={()=>func()}
       >
        {btnName}    

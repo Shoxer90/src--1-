@@ -12,7 +12,8 @@ const ReverseBtn = ({dialogManage,t}) => (
 			color:"white",
 			margin:"0px 0px 4px 15px",
 			width:"120px",
-			alignSelf:"start"
+			alignSelf:"start",
+			textTransform: "capitalize"
 		}}>
 		<LowPriorityIcon />
 		<p style={{fontSize:"80%",alignSelf:"center", margin:0}}>

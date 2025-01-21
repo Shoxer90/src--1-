@@ -13,17 +13,17 @@ import styles from "./index.module.scss";
 
 const initState = {
   purchasePrice: "",
-    price: "",
-    type: "",
-    brand: "",
-    name: "",
-    discount: "",
-    remainder: "",
-    barCode: "",
-    photo:"",
-    measure:"",
-    pan: 0,
-    dep: 1
+  price: "",
+  type: "",
+  brand: "",
+  name: "",
+  discount: "",
+  remainder: "",
+  barCode: "",
+  photo:"",
+  measure:"",
+  pan: 0,
+  dep: 0
 }
 const HomePage = ({
   isLogin,

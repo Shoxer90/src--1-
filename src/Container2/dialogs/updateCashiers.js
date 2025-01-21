@@ -120,11 +120,13 @@ const UpdateCashiers = ({
           <div className={styles.update_item}>
             <Button
               onClick={()=>setUpdateDial(false)}
+              sx={{textTransform: "capitalize"}}
             >
               {t("buttons.cancel")}
             </Button>
             <Button
               onClick={handleUpdateCashier}
+              sx={{textTransform: "capitalize"}}
             >
               {t("buttons.update")}
             </Button>
