@@ -12,7 +12,7 @@ export default function LangSelect({ size }) {
   const { i18n} = useTranslation();
 
   useEffect(() => {
-    setLang(localStorage.getItem("lang") === "am" || localStorage.getItem("lang") === "en" || localStorage.getItem("lang") === "ru" ? localStorage.getItem("lang"): "am")
+    setLang(localStorage.getItem("lang") === "hy" || localStorage.getItem("lang") === "eng" || localStorage.getItem("lang") === "ru" ? localStorage.getItem("lang"): "hy")
   }, [localStorage.getItem("lang")]);
 
   const changeLanguage = (str) => {
@@ -28,10 +28,10 @@ export default function LangSelect({ size }) {
         sx={{minWidth: 70}} size="small"
         onChange={(e)=>changeLanguage(e.target.value)}
       >
-        <MenuItem value={"am"} select>
+        <MenuItem value={"hy"} select>
           <img alt="" src="/am (2).png" style={{height:size}} />
         </MenuItem>
-        <MenuItem value={"en"} >
+        <MenuItem value={"eng"} >
          <img alt="" src="/en.png" style={{height:size}} />
         </MenuItem>
         <MenuItem value={"ru"}>

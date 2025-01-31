@@ -15,8 +15,11 @@ import styles from "./index.module.scss";
 						src={item?.photo || "/default-placeholder.png"} 
 						alt=""
 					/>
-					<span>
+					<span style={{marginRight:"5px"}}>
 						{item.name}
+					</span>
+					<span>
+					&#171; {item.brand} &#187;
 					</span>
 				</span>
 			</TableCell>

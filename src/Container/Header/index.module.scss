@@ -30,18 +30,17 @@
 
 .containerXX{
   width: 100%;
-  // box-sizing: border-box;
   height: 70px;
+  background-color:  white;
   position: fixed;
   top: 0;
   z-index: 2;
   display: flex;
   max-height: fit-content;
   justify-content: space-between; 
-  background-color: #d5ede4;
   box-shadow: 0 1px 6px 0px darkseagreen;
   align-items: center;
-  padding: 10px;
+  padding: 20px;
   padding-bottom: 20px;
 }
 
@@ -75,6 +74,7 @@
 }
 
 .headerLogo {
+
   display: flex;
   margin-left: 200px;
   text-align: center;
@@ -97,15 +97,18 @@
     align-items: center;
 
   }
-  &_title{
-    margin:0px;
-    color: #3FB68A;
-  }
-  >img{
-    height: 60px;
-    width: 60px;
-    padding: 0px;
-  }
+  // &_title{
+  //   margin:0px;
+  //   color: #3FB68A;
+  //   font-weight: 800;
+  //   margin-right: 20px;
+
+  // }
+  // >img{
+  //   height: 60px;
+  //   width: 60px;
+  //   padding: 0px;
+  // }
 }
 .userAvatar{
   >img{ 

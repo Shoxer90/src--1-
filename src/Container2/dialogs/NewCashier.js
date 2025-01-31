@@ -28,10 +28,11 @@ const NewCashier = ({
   setOpenCashierDail,
   openCashierDial,
   logOutFunc,
+  createMessage,
   limitOver
 }) => {
 
-	const [cashierUserName, setCashierUserName] = useState("");
+	// const [cashierUserName, setCashierUserName] = useState("");
   const [load, setLoad] = useState(false);
   const [message, setMessage] = useState();
   const [errorMail, setErrorMail] = useState();
@@ -68,7 +69,11 @@ const NewCashier = ({
         }else if(user?.response?.status === 408){
           limitOver()
         }else if(user?.status === 200){
-          setCashierUserName(user.data)
+          createMessage({
+            type:"success",
+            message: t("dialogs.newcashierSuccess"),
+          })
+          // setCashierUserName(user.data)
           setRegister(!register)
         }
       })
@@ -195,7 +200,7 @@ const NewCashier = ({
       <Dialog open={!!load}>
         <Loader />
       </Dialog>
-        <InfoDialog 
+        {/* <InfoDialog 
           t={t}
           name={userInfo[t("authorize.first")]}
           surname={userInfo[t("authorize.last")]} 
@@ -203,7 +208,7 @@ const NewCashier = ({
           password={userInfo[t("authorize.password")]}
           setCashierUserName={setCashierUserName}
           handleClose={handleClose}
-        />
+        /> */}
     </>
   );
 }

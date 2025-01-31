@@ -16,6 +16,7 @@ import styles from "./index.module.scss";
 
 import UserInfo from "./userAvatar/index"
 import { useTranslation } from "react-i18next";
+import BasicNotification from "../../notification";
 
 const Header = ({
   setOpenBasket,
@@ -25,7 +26,7 @@ const Header = ({
   logo,
   active,
   activeBtn,
-  setActiveBtn
+  setActiveBtn,
 }) => {
   const {t} = useTranslation();
   const location = useLocation();
@@ -62,7 +63,12 @@ const Header = ({
                 }
               }}
             >
-              <HomeIcon fontSize="large" />
+              <HomeIcon 
+                fontSize="large" 
+                sx={{
+                  color:(activeBtn === "/"? "#FFA500": "#3FB68A"),
+                }}
+              />
               <span className={styles.routeName}>{t("menubar.home")}</span>
             </h6>
             <h6 
@@ -75,7 +81,11 @@ const Header = ({
                 setActiveBtn("/history")
               }}
             >
-              <HistoryIcon fontSize="large"/>
+              <HistoryIcon fontSize="large"
+                sx={{
+                  color:(activeBtn === "/history"? "#FFA500": "#3FB68A"),
+                }}
+              />
               <span className={styles.routeName}>{t("menubar.history")}</span>
             </h6>
             {/* {!limitedUsing && <h6 
@@ -101,16 +111,23 @@ const Header = ({
                 setActiveBtn("/prepayment")
               }}
             >
-              <ProductionQuantityLimitsIcon fontSize="large"/>
+              <ProductionQuantityLimitsIcon 
+                fontSize="large"  
+                
+                sx={{
+                  color:(activeBtn === "/prepayment"? "#FFA500": "#3FB68A"),
+                }} 
+              />
               <span className={styles.routeName}>{t("basket.useprepayment")}</span>
             </h6>
           </div>
         </div>
 
-        
+        {/* <BasicNotification /> */}
+
         <div className={styles.contentX}>
           { user?.firstname === undefined ? "":  
-            <UserInfo user={user?.firstname+ " " + user?.lastname} logo={logo} active={active} t={t} limitedUsing={limitedUsing}/>
+                <UserInfo setActiveBtn={setActiveBtn} user={user?.firstname+ " " + user?.lastname} logo={logo} mode={user?.ehdmMode} t={t}  limitedUsing={limitedUsing}/>
           }
           <div style={{width:"120px"}} className={styles.routeName}></div>
           <Badge

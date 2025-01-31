@@ -164,9 +164,9 @@ const HomeContentItem = ({
                   {t("productcard.remainder")} {product?.remainder%1 ? product?.remainder.toFixed(3) : product?.remainder } {t(`units.${product?.measure}`)}
                 </div>
 
-                  { product?.remainderPrePayment ?
+                  { product?.remainderPrePayment > 0 ?
                     <div style={{margin:"1px", color:"#3FB68A",fontWeight:"700",minHeight:"17px"}}>
-                      {t("productcard.remainderPrePayment")} {product?.remainderPrePayment%1 ? product?.remainderPrePayment.toFixed(3) : product?.remainderPrePayment } {t(`units.${product?.measure}`) }
+                      {t("productcard.remainderPrePayment")} {product?.remainderPrePayment%1  ? product?.remainderPrePayment.toFixed(3) : product?.remainderPrePayment } {t(`units.${product?.measure}`) }
                     </div>: <div style={{height:"18px"}}>{""}</div>
                   }
                 <div> {t("productinputs.code2")} {product?.barCode} </div>

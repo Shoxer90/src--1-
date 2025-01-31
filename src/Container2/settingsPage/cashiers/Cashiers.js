@@ -18,14 +18,19 @@ const Cashiers = ({logOutFunc, cashierLimit}) => {
 
   const [cashiers, setCashiers] = useState([]);
   const [openCashierDial, setOpenCashierDail] = useState(false);
-  const [newCashierSuccess, setCashierSuccess] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openLimitOver, setOpenLimitOver] = useState(false);
   const [register, setRegister] = useState(false);
   const [updateDial, setUpdateDial] = useState(false);
   const [updateContent, setUpdateContent] = useState({});
   const [data, setData] = useState();
-	
+  const [message, setMessage] = useState({type:"", message:""});
+
+
+  const createMessage = (obj) => {
+    setMessage(obj)
+  }
+
   const openAddNewCashier = () => {
       if(cashierLimit > cashiers?.length) {
       setOpenCashierDail(true)     
@@ -41,6 +46,15 @@ const Cashiers = ({logOutFunc, cashierLimit}) => {
   const closeAddDialog = () => {
     setOpenCashierDail(false)
     setOpenLimitOver(false)
+  }
+
+
+  const closeSnack = () => {
+    if(message?.type ==="success") {
+      setRegister(!register)
+    }
+    return setMessage({})
+  
   }
 
   const isCashierReverse = async(id,bool) => {
@@ -174,13 +188,15 @@ const Cashiers = ({logOutFunc, cashierLimit}) => {
         openCashierDial={openCashierDial}
         logOutFunc={logOutFunc}
         limitOver={limitOver}
+        createMessage={createMessage}
+
       />
     }
-    {newCashierSuccess &&
-      <Dialog open={!!newCashierSuccess}>
-        <SnackErr message={t("")} type="success" close={setCashierSuccess(false)}/>
-      </Dialog>
-    }
+
+    <Dialog open={!!message?.message}>
+      <SnackErr message={message?.message} type={message?.type} close={closeSnack}/>
+    </Dialog>
+
     <UpdateCashiers
       updateDial={updateDial}
       setUpdateDial={setUpdateDial}
@@ -189,6 +205,7 @@ const Cashiers = ({logOutFunc, cashierLimit}) => {
       setRegister={setRegister}
       register={register}
       logOutFunc={logOutFunc}
+      createMessage={createMessage}
     />
     <ConfirmDialog
       t={t}

@@ -116,16 +116,23 @@ const AddNewProduct = ({
             return
           }else{
             setContent([])
-           setFetching(true)
-
-            setEmptyValidate(false)
-            setMessage(t("productinputs.productadded"))
-            setType("success")
+            setFetching(true)
             changeStatus("GetAvailableProducts")
-            setTimeout(() => {
-              handleClose()
-              setType()
-            },3000)
+            handleClose()
+            setGlobalMessage(t("productinputs.productadded"))
+            setGlobalType("success")
+
+
+            // setContent([])
+            // setFetching(true)
+            // setEmptyValidate(false)
+            // setMessage(t("productinputs.productadded"))
+            // setType("success")
+            // changeStatus("GetAvailableProducts")
+            // setTimeout(() => {
+            //   handleClose()
+            //   setType()
+            // },3000)
           }
         })
       }else if(!res){
@@ -345,7 +352,7 @@ const AddNewProduct = ({
                 }
               }}
               value={newProduct?.purchasePrice}
-              label={t("productinputs.purchase")}
+              label={t("productinputs.purchase1")}
               onChange={(e)=>onlyNumberAndADot(e,2)}
             />
 

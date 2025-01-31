@@ -19,16 +19,16 @@ const Language = () => {
         <NativeSelect
           disableUnderline={true}
           sx={{paddinTop: 0}}
-          defaultValue={localStorage.getItem("lang") || "am"}
+          defaultValue={localStorage.getItem("lang") || "hy"}
           inputProps={{
             name: 'age',
             id: 'uncontrolled-native',
           }}
           onChange={(e)=>{changeLanguage(e.target.value)}}
         >
-         <option value={"en"}>ENG</option>
+         <option value={"eng"}>ENG</option>
           <option value={"ru"}>РУ</option>
-          <option value={"am"}>ՀԱՅ</option>
+          <option value={"hy"}>ՀԱՅ</option>
         </NativeSelect>
       </Box>
     </FormControl>

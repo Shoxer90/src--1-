@@ -32,17 +32,15 @@ const LogInFormNew = ({
   
   const signInToAccount = async(userData) => {
     setLoading(true)
-  
-    // const token = await loginAPI( userData?.username, userData?.password);
     loginAPI( userData?.username, userData?.password).then((token) => {
       setLoading(false)
-      if(token === 402){
+      if(token?.response?.status === 402){
         setMessage(t("authorize.blockremove"))
-      }else if(token === 400) {
-        setMessage(t("authorize.incorrect"))
-      }else if(token === 419){
+      }else if(token?.response?.status === 400) {
+        setMessage(token?.response?.data?.message)
+      }else if(token?.response?.status === 419){
         return  setMessage(t("authorize.errors.loginLimit419"))
-      }else if(token === 415 || token === 500){
+      }else if(token?.response?.status === 415 ||token?.response?.status === 500){
         return  setMessage(t("dialogs.wrong"))
       }
       return !token?.data?.token ? ( 

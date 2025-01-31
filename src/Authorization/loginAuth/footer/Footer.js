@@ -19,7 +19,7 @@ const Footer = ({color}) => {
         // display:"flex",
         // justifyContent: "center"
     }}>
-      <div style={{height:"2px", backgroundColor:"#3FB68A", margin:"10px 0px"}}></div>
+      <div style={{height:"2px", backgroundColor:"#3FB68A", margin:"5px 0px"}}></div>
       
       <div className={styles.payxInfo}> 
         <p style={{color:{color}}}>PayX LLC</p>

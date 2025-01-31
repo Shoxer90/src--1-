@@ -8,7 +8,8 @@ const rowStyle = {
   padding:"3px 2px",
   justifyContent:"space-between",
   alignItems:"center",
-  marginRight: "20px"
+  marginRight: "20px",
+  fontWeight:700
 };
 
 const rowStyleGreen = {
@@ -56,6 +57,10 @@ const ReverceConditionsPrepayment = ({
       </div>
 
       <div style={{display:"flex",flexFlow:"column",textAlign:"center"}}>
+      <span style={rowStyle}>
+            {t("history.forReverse")} 
+            {reverseData?.cashAmount + reverseData?.cardAmount ? ` ${+reverseData?.cashAmount + reverseData?.cardAmount} ${t("units.amd")}`: ""}
+          </span>
        {item?.cashAmount ?
             <label style={rowStyle}>
               <span>{t("history.cash")} </span>
@@ -83,12 +88,8 @@ const ReverceConditionsPrepayment = ({
             </label>: ""
           }
 
-          <span style={rowStyleGreen}>
-            {t("basket.remainder1")} {`(${t("history.afterReverse")}) `}
-            {(+item?.prePaymentAmount - (+reverseData?.cashAmount + reverseData?.cardAmount))?.toFixed(2)} {t("units.amd")}
-          </span>
+        
       </div>
-
     </div>
     
   )

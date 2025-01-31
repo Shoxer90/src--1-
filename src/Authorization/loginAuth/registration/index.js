@@ -53,17 +53,29 @@ const Registration = ({logOutFunc}) => {
         "userName": "+374",
         "password": ""
       })
-    }else if (res === 405) {
+    }else if(res?.response?.data?.message){
       setRegisterMessage({
-        m: t("authorize.dublicate"),
+        m: res?.response?.data?.message,
         t:"error"
       })
-    }else if(res === 400) {
-      setRegisterMessage({
-        m: t("authorize.dublicate"),
+    }else{
+        setRegisterMessage({
+        m: t("dialogs.wrong"),
         t:"error"
       })
     }
+    // }
+    // else if (res === 405) {
+    //   setRegisterMessage({
+    //     m: t("authorize.dublicate"),
+    //     t:"error"
+    //   })
+    // }else if(res === 400) {
+    //   setRegisterMessage({
+    //     m: t("authorize.dublicate"),
+    //     t:"error"
+    //   })
+    // }
   }
 
   useEffect(() => {

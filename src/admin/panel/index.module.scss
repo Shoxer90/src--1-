@@ -1,0 +1,11 @@
+.admin_page{
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row nowrap;
+   
+    &_right{
+        width:80%;
+        padding: 20px;
+        background: lightgrey;
+    }
+}

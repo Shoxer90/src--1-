@@ -5,7 +5,7 @@ import { baseUrl, option } from "../baseUrl";
 export  async function changeEHDM(status) {
   try{
     const  data = await axios.post(baseUrl + `User/SetEhdmStatus?Status=${status}`, status, option());
-    return data.config.data
+    return data
   }catch(err){
     return err
   }

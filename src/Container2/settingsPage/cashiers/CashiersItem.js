@@ -31,17 +31,17 @@ const CashiersItem = ({
         <span><strong>{t("authorize.email")}</strong></span>
         <span style={{fontSize:"80%"}}> {employee.email}</span>
       </div>
-      <div className={styles.cashier_item_info}>
+       <div className={styles.cashier_item_info}>
         <span><strong>{t("settings.login")}</strong></span>
         <span>{employee.userName} </span>
       </div>
-      <div className={styles.cashier_item_info} style={{cursor:"pointer"}}>
+      {/* <div className={styles.cashier_item_info} style={{cursor:"pointer"}}>
         <span><strong>{t("settings.password")}</strong></span>
         <span onClick={()=>setSeePsw(!seePsw)}>
           {seePsw ? employee.password : "*********************".slice(0,employee.password?.length)}
         </span>
-      </div>
-        <span><strong>{t("settings.status")} </strong></span>
+      </div> */} 
+      <span><strong>{t("settings.status")} </strong></span>
         <div style={{textAlign:"start",display:"flex",flexFlow:"column"}}>
         <FormControlLabel 
           control={

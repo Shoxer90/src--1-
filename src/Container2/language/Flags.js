@@ -17,7 +17,7 @@ const Flags = () => {
 
   const changeLanguage = (str) => {
     if(str === "null"|| str === "undefined" || str === null || str === undefined){
-      return localStorage.setItem("lang", "en" )
+      return localStorage.setItem("lang", "eng" )
      }
     localStorage.setItem("lang", str )
     i18n.changeLanguage(str)
@@ -27,12 +27,12 @@ const Flags = () => {
   return(
     <div className={styles.flags}>
       <div className={styles.flags_block}>
-        <div className={lang === "am" ? styles.active: null}
-        onClick={()=>changeLanguage("am")}>
+        <div className={lang === "hy" ? styles.active: null}
+        onClick={()=>changeLanguage("hy")}>
           <img alt="" src="/am (2).png" />
         </div>
-        <div className={lang === "en" ? styles.active: null}
-        onClick={()=>changeLanguage("en")}>
+        <div className={lang === "eng" ? styles.active: null}
+        onClick={()=>changeLanguage("eng")}>
          <img alt="" src="/en.png" />
         </div>
         <div className={lang === "ru" ? styles.active: null}

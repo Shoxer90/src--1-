@@ -119,6 +119,10 @@ const HomePage = ({
   },[]);
 
   useEffect(() => {
+    changeStatus(dataGroup)
+  },[dataGroup]);
+
+  useEffect(() => {
     if(searchValue)return
     fetching && queryFunction(dataGroup, currentPage).then((res) => { 
       setTotalCount(res?.headers["count"])
@@ -181,6 +185,7 @@ const HomePage = ({
         setContent={setContent}
         setGlobalMessage={setSnackMessage}
         setGlobalType={setType}
+        
       />}
       <Dialog open={Boolean(type)}>
         <SnackErr open={snackMessage} type={type} close={setType} message={snackMessage}/>

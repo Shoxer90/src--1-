@@ -4,7 +4,7 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import styles from "./index.module.scss";
 import { updateLogo } from "../../../services/user/getUser";
 
-const ClientShopAvatar = ({client}) => {
+const ClientShopAvatar = ({client, limitedUsing}) => {
 
   const handlePutPhoto = async(e) => {
     let reader = new FileReader();
@@ -19,9 +19,11 @@ const ClientShopAvatar = ({client}) => {
     <div className={styles.settingsCont_avatar}>
       <img src={client?.logo || "/defaultAvatar.png"} alt="shop avatar" />
       <div className={styles.settingsCont_avatar_input}>
-        <label htmlFor="file-input">
-          <AddAPhotoIcon />
-        </label>
+       {!limitedUsing && 
+          <label htmlFor="file-input">
+            <AddAPhotoIcon />
+          </label>
+        }
         <input 
           id="file-input" 
           type="file" 

@@ -6,6 +6,8 @@ import Header from "./Container/Header/Header";
 import HomePage from "./Container2/home/index"
 import FeedBackPage from "./Container2/feedback";
 import CheckStatusArCa from "./Container2/settingsPage/serviceAmount/attachCard"
+import AdminPanel from "./admin/panel";
+import UsersContainer from "./admin/panel/users";
 
 import { byBarCode, productQuery } from "./services/products/productsRequests";
 import { getBasketContent } from "./modules/modules";
@@ -39,6 +41,9 @@ import Confirmation from "./Authorization/loginAuth/confirmation";
 import PrePaymentList from "./Container2/prepayment/";
 import { QrSoccet } from "./QrSoccet";
 import ConfirmDialog from "./Container2/dialogs/ConfirmDialog";
+import PrivacyPayx from "./payxPrivacyRemove/PrivacyPayx";
+import AdminPage from "./admin/index";
+import AdminLogin from "./admin/auth/AdminLogin";
 
 const App = () => {
 
@@ -94,7 +99,7 @@ const App = () => {
   });
  
   const whereIsMyUs = async() => {
-    console.log("21.01.2025 ")
+    console.log("29.01.2025 tin zero")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -297,7 +302,6 @@ const App = () => {
       basket.unshift({
         ...wishProduct,
         discountPrice: wishProduct?.discountedPrice,
-        // discountPrice: wishProduct?.discountedprice,
         count:+(quantity ? quantity: 1)
       })
     }
@@ -355,12 +359,12 @@ const App = () => {
   const getMeasure = async() => {
     const str = await localStorage.getItem("lang")
     switch(str){
-      case "en":
+      case "eng":
         await measureTranslate(2).then((res) => {
           setMeasure(res?.data)
         })
       break;
-      case "am":
+      case "hy":
         await measureTranslate(1).then((res) => {
           setMeasure(res?.data)
         })
@@ -436,7 +440,18 @@ const App = () => {
           <Route path="/reset-password/*" element={<LoginAuthContainer children={<ResetPassword />} />} />
           <Route path="/confirmation/*" element={<LoginAuthContainer children={<Confirmation />} />} />
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+          <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
           <Route path="/basket/*" element={<BasketList t={t} />} />
+{/* ADMIN PAGE */}
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/authorized" element={<AdminPanel children={<UsersContainer />} />} />
+          <Route path="/admin/customers" element={<AdminPanel />} />
+          <Route path="/admin/customers2" element={<AdminPanel />} />
+          {/* <Route path="/admin/customers" element={<AdminCustomers />} />
+          <Route path="/admin/customer" element={<AdminCustomer />} />
+          <Route path="/admin/customer/history" element={<AdminCustomerHistory />} /> */}
+
+
         </Routes> :
         <>
           <Header
@@ -448,8 +463,8 @@ const App = () => {
             active={user?.isEhdmStatus}
             activeBtn={activeBtn}
             setActiveBtn={setActiveBtn}
+            setDataGroup={setDataGroup}
           />
-          {/* <button style={{marginTop:"175px"}} onClick={hardReloadWithBypassCache}>Полная перезагрузка с обходом кеша</button> */}
           {!isBlockedUser ? <Routes>
             <Route
               path="/"
@@ -480,7 +495,7 @@ const App = () => {
             <Route path="/excel" element={<PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} />} />
             <Route path="/feedback" element={<FeedBackPage />} />
             <Route path="/setting/cashiers" element={<Cashiers cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
-            <Route path="/setting/user" element={<SettingsUser user={user} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc}/>} />
+            <Route path="/setting/user" element={<SettingsUser user={user} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc} limitedUsing={limitedUsing}/>} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} />} />
             <Route path="/qrsoccet" element={<QrSoccet />} />
             {/* <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} /> */}

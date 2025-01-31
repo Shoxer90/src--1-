@@ -1,0 +1,26 @@
+.loginPage{
+  display: flex;
+  flex-flow: column;
+  background-color: hsl(158, 49%, 48%);
+align-items: center;
+  &_content{
+    width: 60dvw;
+    height: 60dvh;
+    margin: 40px;
+    
+  }
+}
+.form{
+  display: flex;
+  width:  60dvw;
+  height:  60dvh;
+  flex-flow: column nowrap;
+  // justify-content: space-around;
+  margin-top: 20px;
+  &_item{
+    color:  white;
+    padding: 5px;
+    
+    margin: 20px;
+  }
+}

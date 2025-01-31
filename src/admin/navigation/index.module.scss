@@ -1,0 +1,25 @@
+.navigation{
+  background-color: #3FB68A;
+  color: white;
+  height: 100dvh;
+  width:20%;
+  font-size: 120%;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;
+
+  padding: 10px;
+  &_container{
+    margin-top: 40px;
+    display:flex;
+    flex-flow: column;
+    justify-content: space-around;
+
+    &_item{
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin: 10px;
+
+
+    }
+    
+  }
+}

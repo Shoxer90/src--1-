@@ -12,7 +12,7 @@ import Loader from "../../loading/Loader";
 
 import styles from "./index.module.scss";
 
-const SettingsUser = ({user, whereIsMyUs, logOutFunc}) => {
+const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
 
   const {t} = useTranslation();
   
@@ -23,9 +23,10 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc}) => {
   
   const switchStatus = async(newStatus) => {
     setIsLoad(true)
-    if( user?.isRegisteredInEhdm){
+    if(user?.isRegisteredInEhdm){
       changeEHDM(newStatus).then((res)=>{
-        setIsLoad(false)
+        whereIsMyUs()
+        setMessage({m: res?.data?.message, t:"success"})
       })
     }else {
       setMessage({m:t("settings.isregistrehdm"), t:"error"})
@@ -40,7 +41,7 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc}) => {
 
   return(
   <div className={styles.settings_user}>
-    <ClientShopAvatar client={user} />
+    <ClientShopAvatar client={user} limitedUsing={limitedUsing}/>
     <h4 className={styles.settings_user_name}>
       {user?.firstname} {user?.lastname}  
     </h4>
@@ -62,14 +63,28 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc}) => {
           name="sale type"
           checked={!user?.isEhdmStatus}
           onClick={()=>setConfirmSwitch(true)}
+          style={{cursor:"pointer"}}
         />
        <span style={{marginLeft:"10px"}}>{t("history.receiptNoHmd")}</span> 
       </label>
+      <label style={{marginLeft:"20px"}}>
+        <input 
+          type="radio"
+          name="sale type"
+          readOnly
+          style={{color:"darkgrey"}}
+          checked={user?.ehdmMode === 2}
+        />
+       <span style={{marginLeft:"10px"}}>{t("history.hdm")}</span> 
+       <span style={{marginLeft:"2px", color:"green",fontSize:"80%"}}>({t("settings.notAvailableInWeb")})</span> 
+      </label>
     </h6>
     {user && <ClientInfo />}
-    <Button onClick={()=>setOpenAddDialog(true)} variant="contained"  sx={{textTransform: "capitalize",m:2}}>
+
+    {!limitedUsing && <Button onClick={()=>setOpenAddDialog(true)} variant="contained"  sx={{textTransform: "capitalize",m:2}}>
       {t("settings.changepassword")} 
-    </Button>
+    </Button>}
+
     <ConfirmDialog
       question={user?.isEhdmStatus ? 
       <p>{t("dialogs.deactivateEhdm")}</p>:

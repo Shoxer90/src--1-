@@ -86,7 +86,9 @@ const ReversePrepaymentDialog = ({open, close, item, biteRev, allRev}) => {
         <div>
         {t("history.prepaymentReverse")}
         </div>
-        <CloseIcon onClick={close} />
+        <Button>
+          <CloseIcon onClick={close} />
+        </Button>
       </DialogTitle>
       <Divider color="black" />
       <DialogContent style={{display:"flex", flexFlow:"column",alignItems:"center", width:"100%"}}>
@@ -103,17 +105,7 @@ const ReversePrepaymentDialog = ({open, close, item, biteRev, allRev}) => {
         <div style={{color:"red",fontSize:"85%",height:"30px", padding:"10px", margin:"10px 5px"}}>
          {message}
         </div>
-        <h6>
-          {t("history.forReverse")} {+reverseData?.cashAmount + reverseData?.cardAmount} {t("units.amd")}
-        </h6>
         <div>
-          <Button 
-            variant="contained"
-            onClick={close}
-            sx={{m:1,textTransform: "capitalize", background:"grey"}}
-          >
-            {t("buttons.cancel")}
-          </Button>
           <Button
           variant="contained"
           style={{

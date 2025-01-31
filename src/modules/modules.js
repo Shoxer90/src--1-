@@ -17,9 +17,9 @@ export const dateTitleLang = () => {
   switch(localStorage.getItem("lang")){
     case "ru":
       return moment.locale('ru',ru)
-    case "am":
+    case "hy":
       return moment.locale('hy-am',hyAm)
-    case "en":
+    case "eng":
       return moment.locale('en',enGB)
     default:
       return moment.locale('en',enGB)

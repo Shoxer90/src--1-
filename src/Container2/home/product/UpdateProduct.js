@@ -232,7 +232,8 @@ const UpdateProduct = ({
   return (
     <Dialog
       open={!!openUpdateProd}
-      TransitionComponent={Transition}
+      fullWidth
+      // TransitionComponent={Transition}
     >
       <Box 
         style={{
@@ -343,7 +344,9 @@ const UpdateProduct = ({
                       priceValidate(currentProduct?.price, e.target.value, currentProduct?.discountType ,e)
                     }}
                 />
-                {currentProduct?.discount ? <span style={{alignSelf:"center",margin:"3px",fontSize:"80%",flexFlow:"nowrap",display:"flex"}}>{(currentProduct?.discount/100*currentProduct?.price).toFixed(2) } {t("units.amd")}</span> : ""}
+                <span style={{alignSelf:"center",margin:"3px",fontSize:"80%",flexFlow:"nowrap",display:"flex", width:"60px"}}>
+                  {currentProduct?.discount ? `${(currentProduct?.discount/100*currentProduct?.price).toFixed(2)} ${t("units.amd")}`: ""}
+                </span> 
               </Box>
           {currentProduct?.barCode && 
             <Barcode value={currentProduct?.barCode} height={36} margin={1} fontSize={16} textAlign={"center"} />
@@ -361,8 +364,8 @@ const UpdateProduct = ({
           </Dialog>
           }
         </Box>
-          <div style={{height:"40px",width:"98%",color:"red",fontSize:"80%"}}>
-           {fixMessage && <p>{fixMessage}</p>}
+          <div style={{height:"60px",color:"red",fontSize:"80%", width:"100%"}}>
+           {fixMessage && fixMessage}
           </div>
           <Box>
             {currentProduct?.dep === 2 && 
@@ -395,13 +398,6 @@ const UpdateProduct = ({
             onClick={()=>setConfirmation(true)}
           >
             {t("productinputs.delete_btn")}
-          </Button>
-          <Button 
-            variant="contained" 
-            style={{backgroundColor:"#FFA500",textTransform: "capitalize"}} 
-            onClick={handleClose}
-          >
-            {t("buttons.close")}
           </Button>
           <Button 
             disabled={!validPrice || !currentProduct?.barCode}

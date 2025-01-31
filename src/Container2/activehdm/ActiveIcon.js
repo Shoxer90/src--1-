@@ -5,7 +5,7 @@ const ActiveIcon = ({isEhdm, t}) => {
   const [screen,setScreenWidth] = useState(window.innerWidth);
 
   const styleDiv = {
-    background: isEhdm? "#3FB68A" : "grey",
+    background: isEhdm === 0 ? "#3FB68A" : isEhdm === 1? "grey" : "orange",
     minWidth: "90px",
     color:"white",
     borderRadius:"5px",
@@ -21,7 +21,8 @@ const ActiveIcon = ({isEhdm, t}) => {
   return(
     <span style={styleDiv}>
       <span style={{display: screen < 600 ?"none": "inline", }} >
-        {isEhdm ? t("settings.hdmstatus1"): t("settings.hdmstatus0")}
+        {/* {isEhdm ? t("settings.hdmstatus1"): t("settings.hdmstatus0")} */}
+        { isEhdm === 0 ? t("settings.hdmstatus1") : isEhdm === 1? t("settings.hdmstatus0") : t("settings.hdmstatus2")}
       </span>
     </span>
   )

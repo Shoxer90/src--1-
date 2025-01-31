@@ -6,7 +6,6 @@ import { Divider } from "@mui/material";
 const ProductPrePayment = ({
   t, 
   totalPrice,
-  checkDiscountVsProdPrice, 
   paymentInfo, 
   setPaymentInfo,
   setBlockTheButton,
@@ -14,29 +13,12 @@ const ProductPrePayment = ({
   const [val, setVal] = useState(totalPrice);
   const [flag, setFlag] = useState();
 
-  const discountChange = (e) => {
-    checkDiscountVsProdPrice(e.target.value)
-    if(e.target.value > 99) {
-      return setPaymentInfo({
-        ...paymentInfo,
-        [e.target.name]:99,
-        cardAmount: 0,
-        prePaymentAmount: 0,
-      }) 
-    }else{
-      setPaymentInfo({
-        ...paymentInfo,
-        [e.target.name]: +Math.round(e.target.value)
-      })
-    }
-  };
-
   const handleChangeInput = (e) => {
   const valid =/^\d+(\.\d{1,2})?$/;
     const text = e.target.value;  
     const isValid = valid.test(text);
     
-    if(e.target.value[e.target.value.length-1] === "." ||
+    if(e.target.value[e.target.value.length-1] === "." || e.target.value === 0 ||
      (e.target.value[e.target.value.length-1] === "0" && e.target.value[e.target.value.length-2] === ".")
     ){
       setBlockTheButton(true)
@@ -47,11 +29,44 @@ const ProductPrePayment = ({
     }else if(isValid || e.target.value === ""){
       
       setBlockTheButton(false)
-      setPaymentInfo({
-        ...paymentInfo,
-        [e.target.name]:Math.floor(+e.target.value*100)/100,
-      })
+      payChanges(e)
       setFlag(e.target.value)
+    }
+};
+const payChanges = (e) => {
+  if(e.target.name === "cashAmount") {
+    setPaymentInfo({
+      ...paymentInfo,
+      cashAmount: 
+      e.target.value === 0  ||
+      e.target.value === "0" || 
+      e.target.value[e.target.value.length -1]==="." ?
+      e.target.value : 
+      + e.target.value ,
+    })
+  }else {
+  if(e.target.name === "cardAmount")
+    setPaymentInfo({
+      ...paymentInfo,
+      cardAmount:
+       e.target.value === 0  ||
+      e.target.value === "0" || 
+      e.target.value[e.target.value.length -1]==="." ?
+      e.target.value :
+       + e.target.value ,
+    })
+  }
+}; 
+const limitChar = (e,val) => {
+  const text = e.target.value;  
+    const valid = /^[0-9]*$/;
+    if(valid.test(text) &&  text.length <= val) {
+      return setPaymentInfo({
+        ...paymentInfo,
+        [e.target.name]:e.target.value
+      })
+    }else {
+      e.preventDefault(); 
     }
 };
 
@@ -64,7 +79,7 @@ const ProductPrePayment = ({
     paymentInfo && <div className={styles.saleInfoInputs}>
       <div>
         <span>{t("history.total")}</span>
-        <input value={numberSpacing(totalPrice.toFixed(2))} readOnly />
+        <input value={numberSpacing(totalPrice?.toFixed(2))} readOnly />
       </div>
       <div style={{margin:"10px 0px", color:'orange', fontWeight:700}}>
         <span>
@@ -110,14 +125,7 @@ const ProductPrePayment = ({
           autoComplete="off"
           name="partnerTin"
           placeholder={`8 ${t('productinputs.symb')}`}
-          onChange={(e)=> {
-            if(`${e.target.value}`?.length <= 8){
-              setPaymentInfo({
-                ...paymentInfo,
-                [e.target.name]:e.target.value.replace(/[^1-9]+/g,"")
-              })
-            }
-          }}
+          onChange={(e)=>limitChar(e,8)}
         />
       </div>
 
@@ -134,28 +142,8 @@ const ProductPrePayment = ({
             })
           }}
         />
-      </div>
-      {/* <div>
-        <span >
-        {t('authorize.phone')}
-        </span>
-        <input
-          value={paymentInfo?.customer_Phone}
-          autoComplete="off"
-          name="customer_Phone"
-          onChange={(e)=> {
-            setPaymentInfo({
-              ...paymentInfo,
-              [e.target.name]:e.target.value.replace(/[^0-9]+/g,"")
-            })
-          }}
-        />
-      </div> */}
-{/* PHONE AND NAME  IS OVER*/}
-     
-     
+      </div>     
       <Divider flexItem sx={{bgcolor:"black"}} />
-
     </div>
   )
 };

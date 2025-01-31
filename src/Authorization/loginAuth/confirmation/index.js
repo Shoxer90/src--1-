@@ -21,7 +21,9 @@ const {t} = useTranslation();
   const [load,setLoad] = useState(false);
 
   const handleSendData = async() => {
+    setLoad(true)
     await finishRegistration(tokenBase64, confirmCode).then((res) => {
+      setLoad(false)
       if(res === 200) {
         return setRedirectMessage({type: "success", message: t("authorize.successLogin")})
       }else{

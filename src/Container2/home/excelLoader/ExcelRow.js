@@ -1,9 +1,10 @@
 
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { allLanguageMeasures, takeMeMeasureArr } from '../../../modules/modules';
+import { useTranslation } from "react-i18next";
 
 import styles from "./index.module.scss";
-import { adgValidation, barcodeValidation, measureValidation, nameLimitValidation, priceValidation, priceValidationNum } from '../../../modules/excelCeilValidation';
+import { barcodeValidation, measureValidation, nameLimitValidation, priceValidation, priceValidationNum } from '../../../modules/excelCeilValidation';
 
 const ExcelRow = ({
   prod,
@@ -11,11 +12,11 @@ const ExcelRow = ({
   setInputValue,
   checkRowStatus,
   row, 
-  t,
   allAdgs,
   setBarCodes,
   barCodes
 }) => {
+  const {t} = useTranslation()
   const [measureLangArr,setMeasureLangArr] = useState([]);
   const [isValidCurrentProd, setIsValidCurrentProd] = useState({});
   const [ceilName, setCeilName] = useState("");
@@ -95,7 +96,6 @@ const ExcelRow = ({
         }else if(res === "notValid"){
           setErrorName("Ներքին կոդի/բառկոդի սխալ ֆորմատ")
           return false
-
         }
           return res
         
@@ -278,7 +278,7 @@ const ExcelRow = ({
               name="measure"
               style={{
                 border: !allLanguageMeasures.includes(prod?.measure) && "solid red 2px", 
-                color: !allLanguageMeasures.includes(prod?.measure) && "white"
+                color:  !allLanguageMeasures.includes(prod?.measure) && "white"
               }}
             >
               {allLanguageMeasures.includes(prod?.measure) && <option hidden selected>{t(`units.${prod?.measure}`)}</option>}

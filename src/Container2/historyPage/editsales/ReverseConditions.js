@@ -111,7 +111,18 @@ const ReverseConditions = ({
          
         </div>
         <div style={{width:"60%"}}>
-        <div style={{display:"flex", justifyContent:"space-between", marginTop:"2px"}}>
+        <div style={{display:"flex", justifyContent:"space-between", marginTop:"5px"}}>
+          <span>{t("history.forReverse")}</span>
+          {reverseTotal ? <span>
+            <span style={{marginRight:"10px"}}>
+              {reverseTotal ? reverseTotal.toFixed(2) : ""} 
+
+            </span>
+            {t("units.amd")}
+          </span>: ""}
+      
+        </div>
+        <div style={{display:"flex", justifyContent:"space-between"}}>
           <span>{t("history.getCash")}</span>
           <span>
             <input 
@@ -157,9 +168,6 @@ const ReverseConditions = ({
         {(conditionState?.cardAmount > cardAmount) 
         }
       </div> 
-        <h6>
-          {t("history.forReverse")} {reverseTotal.toFixed(2)} {t("units.amd")}
-        </h6>
         <Button 
           variant="contained" 
           sx={{background: "#3FB68A", width:"70%",textTransform: "capitalize"}}

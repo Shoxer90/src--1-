@@ -9,13 +9,13 @@ const NotificationComponent = () => {
   const [notification, setNotification] = useState([]);
 
   useEffect(() => {
-    if(localStorage.getItem("lang")=== "am" ||
+    if(localStorage.getItem("lang")=== "hy" ||
       localStorage.getItem("lang")=== "ru" ||
-      localStorage.getItem("lang")=== "en" 
+      localStorage.getItem("lang")=== "eng" 
     ){getNews(localStorage.getItem("lang")).then((res) => {
       setNotification(res?.news)
     })}else{
-      getNews("am").then((res) => {
+      getNews().then((res) => {
       setNotification(res?.news)
     })}
   }, [localStorage.getItem("lang")]);

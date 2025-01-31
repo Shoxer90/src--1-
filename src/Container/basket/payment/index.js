@@ -79,7 +79,7 @@ const PaymentContainer = ({
         </div>
       }
       {openWindow?.isOpen && openWindow?.prepayment &&
-         <div className={styles.buttonGroup_2}>
+        <div className={styles.buttonGroup_2}>
          <Button 
            startIcon={<ArrowBackIcon fontSize="large" />} 
            onClick={comeBackBtnFunc}

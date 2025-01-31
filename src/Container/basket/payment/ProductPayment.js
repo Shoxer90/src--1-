@@ -6,7 +6,6 @@ import { Divider } from "@mui/material";
 const ProductPayment = ({
   t, 
   totalPrice,
-  checkDiscountVsProdPrice, 
   paymentInfo, 
   setPaymentInfo,
   setBlockTheButton,
@@ -15,25 +14,9 @@ const ProductPayment = ({
   const [val, setVal] = useState(totalPrice);
   const [flag, setFlag] = useState();
 
-  const discountChange = (e) => {
-    checkDiscountVsProdPrice(e.target.value)
-    if(e.target.value > 99) {
-      return setPaymentInfo({
-        ...paymentInfo,
-        [e.target.name]:99,
-        cardAmount: 0,
-        prePaymentAmount: 0,
-      }) 
-    }else{
-      setPaymentInfo({
-        ...paymentInfo,
-        [e.target.name]: +Math.round(e.target.value)
-      })
-    }
-  };
-
-
   const handleChangeInput = (e) => {
+    setBlockTheButton(false)
+
     const valid =/^\d*\.?(?:\d{1,2})?$/
     const text = e.target.value;  
     const isValid = valid.test(text);
@@ -56,21 +39,26 @@ const ProductPayment = ({
     if(e.target.name === "cashAmount") {
       setPaymentInfo({
         ...paymentInfo,
-        cashAmount: e.target.value === 0  ||
+        cashAmount: 
+        e.target.value === 0  ||
         e.target.value === "0" || 
-        e.target.value[e.target.value.length -1]==="." 
-      ? e.target.value : +e.target.value ,
-        cardAmount: Math.round((val-e.target.value)*100)/100
+        e.target.value[e.target.value.length -1]==="." ?
+        e.target.value : 
+        + e.target.value ,
+
+        cardAmount: +(val - e.target.value)?.toFixed(2)
       })
     }else {
     if(e.target.name === "cardAmount")
       setPaymentInfo({
         ...paymentInfo,
-        cardAmount: e.target.value === 0  ||
-                e.target.value === "0" || 
-                e.target.value[e.target.value.length -1]==="." 
-              ? e.target.value : +e.target.value ,
-        cashAmount: Math.floor((val-e.target.value)*100)/100
+        cardAmount:
+         e.target.value === 0  ||
+        e.target.value === "0" || 
+        e.target.value[e.target.value.length -1]==="." ?
+        e.target.value :
+         + e.target.value ,
+        cashAmount: +(val - e.target.value).toFixed(2)
       })
     }
   }; 
@@ -90,7 +78,6 @@ const ProductPayment = ({
 
   useEffect(() => {
     setVal(totalPrice - prepayment)
-    setBlockTheButton(false)
   }, [totalPrice, flag, paymentInfo?.discount, paymentInfo?.cardAmount, paymentInfo?.prePaymentAmount]);
 
   return(

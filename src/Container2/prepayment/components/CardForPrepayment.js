@@ -84,9 +84,11 @@ const CardForPrepayment = ({
     setOpenConfirm(false)
     setIsLoad(true)
     reverseProductNew(dataInput).then((res) => {
+    setIsLoad(false)
+    console.log(res,"res")
       if(res?.status === 200) {
+        console.log("mtela")
         window.open(res?.data?.reverceLink, '_blank');
-        setMessage({message:t("dialogs.done"), type:"success"})
       }else {
         setMessage({message:t("dialogs.wrong"), type:"error"})
       }

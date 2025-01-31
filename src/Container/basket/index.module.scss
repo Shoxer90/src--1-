@@ -207,11 +207,24 @@
         display: flex;
         justify-content: space-between;
         padding-top: 10px;
-        >img{
-          width: 11%;
+        >span{
+          display:flex;
+          flex-direction: column;
+          align-items: center;
+          :hover{
+            scale: 1.2;
+            transition-duration: 1s;
+          }
+        div{
+          font-weight: 700;
+          font-size: 70%;
+        }
+        img{
+          width: 51%;
           contain: content;
         }
       }
+    }
     }
 
   }

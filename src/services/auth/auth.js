@@ -3,7 +3,9 @@ import axios from "axios";
 
 export async function loginAPI (username, password){
   const option = {
-    headers: {},
+    headers: {
+      accept_language: localStorage.getItem("i18nextLng") ||localStorage.getItem("lang")
+    },
   };
 
   const body = { username: username, password: password, isLastVersion:true };
@@ -13,7 +15,7 @@ export async function loginAPI (username, password){
         localStorage.setItem("token", res.headers["token"]);
         return res;
     } catch(err) {
-      return err?.response?.status;
+      return err;
     }
   };
 
@@ -70,7 +72,7 @@ export async function registrationNew(user) {
     const  data = await axios.post(baseUrl + `Registration/RegistrationNew`,newUser, option);
     return data.status
   }catch(err){
-    return err.request.status
+    return err
   }
 };
 

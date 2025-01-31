@@ -76,7 +76,6 @@ const Bascket = ({
   const [taxCount, setTaxCount] = useState(0);
   const [seeBtn,setSeeBtn] = useState();
   const [freezeCount, setFreezeCount] = useState([]);
-
   const closePhoneDialog = () => {
     setOpenPhonePay(false)
     setOpenBasket(false)
@@ -237,7 +236,7 @@ const Bascket = ({
       setDataQr(result?.data?.message);
       setOpenLinkQr(true)
     }
-    deleteBasketGoods()
+    // deleteBasketGoods()
     setFetching(true)
   };
 
