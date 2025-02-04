@@ -17,7 +17,7 @@ const LoginAuthContainer =({children}) => {
         </div>
         <NotificationComponent />
       </div>
-      <div className={styles.regContent}>
+      <div>
         <Footer color="#3FB68A" />
         <div></div>
       </div>

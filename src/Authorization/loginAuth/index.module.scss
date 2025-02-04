@@ -11,7 +11,14 @@
   width: 48dvw;
   font-weight: 600;
   align-self: center;
-  
+}
+.footerStyle{
+  background:white;
+  position:fixed;
+  bottom:0;
+  width:50dvw;
+  z-index:1000;
+  font-size:80%;
 }
 
 .notifications {
@@ -25,11 +32,13 @@
 .regContent{
   display: flex;
   width: 98dvw;
+  
   justify-content: space-between;
 
    &_content{
   width: 50dvw;
-  // height:82dvh;
+  margin-bottom: 10px;
+
    }
 } 
 
@@ -42,22 +51,14 @@
     font-size: 90%;
     width: 98dvw;
   }
+  .footerStyle{
+    width: 98dvw;
+  }
   .regContent{
     flex-flow: column;
     &_content{
-      width:96dvw;
+      width:94dvw;
+      margin-bottom: 10px;
     }
   }
-}
-@media screen and (max-width: 1040px) {
- 
-  .payxInfo{
-    font-size: 70%;
-    margin-top: 5px;
-
-  }
-  .regContent_content{
-    height: auto;
-  }
-
 }

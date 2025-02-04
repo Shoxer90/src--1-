@@ -122,7 +122,8 @@ const ReverseConditions = ({
           </span>: ""}
       
         </div>
-        <div style={{display:"flex", justifyContent:"space-between"}}>
+        {cashAmount ?
+          <div style={{display:"flex", justifyContent:"space-between"}}>
           <span>{t("history.getCash")}</span>
           <span>
             <input 
@@ -134,7 +135,8 @@ const ReverseConditions = ({
             />
             {t("units.amd")}
           </span>
-        </div>
+        </div>: ""}
+        {cardAmount ?
         <div style={{display:"flex", justifyContent:"space-between"}}>
           <span>{t("history.getCard")}</span>
           <span>
@@ -153,7 +155,7 @@ const ReverseConditions = ({
             /> 
             {t("units.amd")}
           </span>
-        </div>
+        </div>:""}
       </div>
 
       </div>

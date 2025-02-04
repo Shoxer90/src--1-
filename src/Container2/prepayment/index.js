@@ -17,7 +17,8 @@ const PrePaymentList = ({
   deleteBasketGoods, 
   setPaymentInfo,
   paymentInfo,
-  flag
+  flag,
+  logOutFunc
 }) => {
   const search = useLocation().search;
   const currentPage = + (new URLSearchParams(search).get("page")) || 1 ;
@@ -34,9 +35,13 @@ const PrePaymentList = ({
 
   const getPrepaymentList = () => {
     getPrepayment({page: currentPage, count: 24, searchString: "", isPayd:false}).then((res) =>{
-      setList(res?.data)
-      setCount(res?.count)
-      setLoad(false)
+      if(res?.data) {
+        setList(res?.data)
+        setCount(res?.count)
+        setLoad(false)
+      }else if(res === 401){
+        logOutFunc()
+      }
     })
   };
 

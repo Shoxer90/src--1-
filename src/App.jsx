@@ -357,6 +357,7 @@ const App = () => {
 
   
   const getMeasure = async() => {
+    console.log("mtav")
     const str = await localStorage.getItem("lang")
     switch(str){
       case "eng":
@@ -393,11 +394,11 @@ const App = () => {
   };
   
   useEffect(() => { 
-    getMeasure()
+    isLogin && getMeasure()
   },[t]);
 
   useEffect(() => {
-    getMeasure()
+    isLogin && getMeasure()
     setDataGroup("GetAvailableProducts")
     setCurrentPage(1)
     loadBasket()
@@ -508,6 +509,7 @@ const App = () => {
               setPaymentInfo={setPaymentInfo}
               paymentInfo={paymentInfo}
               flag={flag}
+              logOutFunc={logOutFunc}
             />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
             {user?.showPaymentPage &&<Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}

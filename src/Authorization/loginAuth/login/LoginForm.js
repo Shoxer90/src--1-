@@ -37,7 +37,8 @@ const LogInFormNew = ({
       if(token?.response?.status === 402){
         setMessage(t("authorize.blockremove"))
       }else if(token?.response?.status === 400) {
-        setMessage(token?.response?.data?.message)
+        console.log(token, "TOKEN")
+        return setMessage(token?.response?.data?.message)
       }else if(token?.response?.status === 419){
         return  setMessage(t("authorize.errors.loginLimit419"))
       }else if(token?.response?.status === 415 ||token?.response?.status === 500){

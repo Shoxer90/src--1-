@@ -80,7 +80,8 @@ const BasketContentItem = ({
     }
     if(+val > (+count?.count + el?.remainder)) {
       return setErrRed(true)
-    }else {
+    }
+    else {
       newFunction(val)
     }
   };
@@ -93,6 +94,9 @@ const BasketContentItem = ({
           count = {count:0}
         }
       }
+      console.log(val, +val, "VAL")
+      console.log(count?.count, "count?.count")
+      console.log(+val>count?.count, "is count")
       if(+val > count?.count) {
       cheackProductCountnPrice([{
         "id": el?.productId || el?.id,
@@ -180,7 +184,9 @@ const BasketContentItem = ({
                   fontWeight:!el?.remainder || errRed ? 700: null
                 }}
               > 
-                {`${t("productcard.remainder")} ${el?.remainder}`}{ownCount ? ` + ${ownCount}` : ""} {el?.measure ? t(`units.${el?.measure}`): t(`units.${el?.unit}`)}
+                <div>
+                  {t("basket.maxCount")} {el?.remainder + ownCount} {t(`units.${el?.unit || el?.measure}`)}
+                </div>
               </span>
         
             </div>

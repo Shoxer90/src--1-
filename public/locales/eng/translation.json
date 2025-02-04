@@ -311,9 +311,8 @@
     "reverseAll2": "Prepayment and product complete return",
     "reverseProd": "Refund from advance payment",
     "reversePrep": "Return from product list",
-    "prepLimit": "If you want to make a full payment, go to the Payment section"
-
-
+    "prepLimit": "If you want to make a full payment, go to the Payment section",
+    "maxCount":"Max count"
   },
   "history": {
     "start_date": "Start date",
