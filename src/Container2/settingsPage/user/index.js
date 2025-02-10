@@ -6,7 +6,7 @@ import { Button, Dialog } from "@mui/material";
 import ClientInfo from "./ClientInfo";
 import AddNewClientInfo from "../../dialogs/AddNewClientInfo";
 import ConfirmDialog from "../../dialogs/ConfirmDialog";
-import { changeEHDM } from "../../../services/user/userInfoQuery";
+import { changeEHDM, changeToPhysicalHDM } from "../../../services/user/userInfoQuery";
 import SnackErr from "../../dialogs/SnackErr";
 import Loader from "../../loading/Loader";
 
@@ -18,12 +18,43 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
   
   const [confirmSwitch, setConfirmSwitch] = useState(false);
   const [openAddDialog, setOpenAddDialog] = useState(false)
+  const [question, setQuestion] = useState("")
+  const [operation, setOperation] = useState("")
   const [isLoad, setIsLoad] = useState(false);
   const [message,setMessage] = useState({m:"", t:""});
-  
+
+  const questionForConfirmText = (num) => {
+    switch (num){
+      case 0:
+      setQuestion(t("dialogs.activateEhdm"))
+      setOperation({a:switchStatus,b:true})
+      break;
+      case 1:
+        setQuestion(t("dialogs.activateEhdm3"))
+      setOperation({a:switchStatus,b:false})
+      break;
+      case 2:
+        setQuestion(t("dialogs.activateEhdm2"))
+        setOperation({a:switchToHDM,b:2})
+      break;
+    }
+    setConfirmSwitch(true)
+  }
+  const switchToHDM = (num) => {
+    setIsLoad(true)
+    changeToPhysicalHDM(num).then((res) => {
+    setIsLoad(false)
+      if(res?.status=== 200) {
+        whereIsMyUs()
+        setMessage({m: res?.data?.message, t:"success"})
+      }
+    })
+    setConfirmSwitch(false)
+  };
+
   const switchStatus = async(newStatus) => {
     setIsLoad(true)
-    if(user?.isRegisteredInEhdm){
+    if(user?.isRegisteredInEhdm || !newStatus){
       changeEHDM(newStatus).then((res)=>{
         whereIsMyUs()
         setMessage({m: res?.data?.message, t:"success"})
@@ -38,7 +69,6 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
   useEffect(() => {
     whereIsMyUs()
   }, [isLoad]);
-
   return(
   <div className={styles.settings_user}>
     <ClientShopAvatar client={user} limitedUsing={limitedUsing}/>
@@ -52,7 +82,8 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
           type="radio"
           name="sale type"
           checked={user?.isEhdmStatus}
-          onClick={()=>setConfirmSwitch(true)}
+          // onClick={()=>setConfirmSwitch(true)}
+          onClick={()=>questionForConfirmText(0)}
           style={{cursor:"pointer"}}
         />
         <span style={{marginLeft:"10px"}}>{t("settings.ETRM")}</span>
@@ -62,7 +93,9 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
           type="radio"
           name="sale type"
           checked={!user?.isEhdmStatus}
-          onClick={()=>setConfirmSwitch(true)}
+          // onClick={setConfirmSwitch(true)}
+          onClick={()=>questionForConfirmText(1)}
+
           style={{cursor:"pointer"}}
         />
        <span style={{marginLeft:"10px"}}>{t("history.receiptNoHmd")}</span> 
@@ -71,12 +104,11 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
         <input 
           type="radio"
           name="sale type"
-          readOnly
           style={{color:"darkgrey"}}
           checked={user?.ehdmMode === 2}
+          onClick={()=>questionForConfirmText(2)}
         />
        <span style={{marginLeft:"10px"}}>{t("history.hdm")}</span> 
-       <span style={{marginLeft:"2px", color:"green",fontSize:"80%"}}>({t("settings.notAvailableInWeb")})</span> 
       </label>
     </h6>
     {user && <ClientInfo />}
@@ -86,11 +118,8 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
     </Button>}
 
     <ConfirmDialog
-      question={user?.isEhdmStatus ? 
-      <p>{t("dialogs.deactivateEhdm")}</p>:
-      <p>{t("dialogs.activateEhdm")}</p>
-      }
-      func={()=>switchStatus(!user?.isEhdmStatus)}
+      question={question}
+      func={()=>operation?.a(operation?.b)}
       title={t("settings.status")}
       open={confirmSwitch}
       close={setConfirmSwitch}

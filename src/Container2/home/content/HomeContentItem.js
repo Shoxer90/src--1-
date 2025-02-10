@@ -160,7 +160,7 @@ const HomeContentItem = ({
 
             {product?.remainder || product?.remainderPrePayment ?
               <>
-                <div style={{ margin:"1px", color: quantity > product?.remainder && "red",fontWeight: quantity > product?.remainder && "700"}}>
+                <div style={{ margin:"1px", color: (quantity > product?.remainder  || !product?.remainder) && "red",fontWeight: quantity > product?.remainder && "700"}}>
                   {t("productcard.remainder")} {product?.remainder%1 ? product?.remainder.toFixed(3) : product?.remainder } {t(`units.${product?.measure}`)}
                 </div>
 
@@ -169,7 +169,12 @@ const HomeContentItem = ({
                       {t("productcard.remainderPrePayment")} {product?.remainderPrePayment%1  ? product?.remainderPrePayment.toFixed(3) : product?.remainderPrePayment } {t(`units.${product?.measure}`) }
                     </div>: <div style={{height:"18px"}}>{""}</div>
                   }
-                <div> {t("productinputs.code2")} {product?.barCode} </div>
+                  <div
+                    className={product?.barCode?.length > 17 ? styles.hovertext : null }
+                    data-hover={`${product?.barCode}`}
+                  > 
+                    {t("productinputs.code2")} : {product?.barCode?.length > 17 ? `${product?.barCode.slice(0,17)}...`: product?.barCode }
+                  </div>
                 {product?.remainder ? <div className={styles.productContent_item_addBasket}>
                   <input 
                     max={`${product.remainder}`}
@@ -185,7 +190,8 @@ const HomeContentItem = ({
                   />
                 </div> :<div style={{height:"35px"}}>{""}</div>}
               </>: <>
-                <div> {t("productinputs.code2")} : {product?.barCode}</div>
+                <div> {t("productinputs.code2")} {product?.barCode} </div>
+                {/* <div> {t("productinputs.code2")} : {product?.barCode?.length > 20 ? `${product?.barCode.slice(20)}...`: product?.barCode }</div> */}
                 <div style={{marginBottom:"14px",color:"red"}}>{t("productcard.outofstock")}</div>
               </>
             }

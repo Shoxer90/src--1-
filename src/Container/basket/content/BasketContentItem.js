@@ -94,9 +94,6 @@ const BasketContentItem = ({
           count = {count:0}
         }
       }
-      console.log(val, +val, "VAL")
-      console.log(count?.count, "count?.count")
-      console.log(+val>count?.count, "is count")
       if(+val > count?.count) {
       cheackProductCountnPrice([{
         "id": el?.productId || el?.id,

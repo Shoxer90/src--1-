@@ -35,6 +35,7 @@ const PrePaymentList = ({
 
   const getPrepaymentList = () => {
     getPrepayment({page: currentPage, count: 24, searchString: "", isPayd:false}).then((res) =>{
+      console.log(res,"ress")
       if(res?.data) {
         setList(res?.data)
         setCount(res?.count)
@@ -52,6 +53,7 @@ const PrePaymentList = ({
     getPrepaymentList()
   },[currentPage, flag]);
 
+console.log(list, "list")
   return (
     <div className={styles.container}>
       { list.length ? <>
@@ -70,7 +72,8 @@ const PrePaymentList = ({
             />
           )}
         </div>
-      </>: <h4 style={{color:"lightgrey", marginTop:"50px"}}>{t("history.noPrepaymentReciepts")}</h4> }
+      </>:
+      <h4 style={{color:"lightgrey", marginTop:"50px"}}>{t("history.noPrepaymentReciepts")}</h4> }
       <div style={{display:"flex", justifyContent:"center"}}>
         {count ? <Pagination
           style={{

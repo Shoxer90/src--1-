@@ -1,8 +1,8 @@
 import React, { memo, useEffect, useState } from "react";
 import { Slide } from "@mui/material";
-import { t } from "i18next";
 import styles from "../index.module.scss";
 import PrepaymentItem from "./PrepaymentItem";
+import { useTranslation } from "react-i18next";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -16,6 +16,7 @@ const activeStyle = {
 
 const PrepaymentConfirmation = ({setBills, billsData, price }) => {
   const [activeRow,setActiveRow] = useState(0);
+  const {t} = useTranslation();
 
   const subscriptionData = [
     {

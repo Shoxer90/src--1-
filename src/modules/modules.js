@@ -13,6 +13,7 @@ export const getBasketContent = async() => {
   const data = await JSON.parse(localStorage.getItem("bascket1"))
   return data
 }
+
 export const dateTitleLang = () => {
   switch(localStorage.getItem("lang")){
     case "ru":

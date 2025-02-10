@@ -53,6 +53,7 @@ const Bascket = ({
   openWindow,
   setOpenWindow,
   paymentInfo, setPaymentInfo,
+  limitedUsing
 }) => {
   const {t} = useTranslation();
   const [screen, setScreen] = useState(window.innerWidth);
@@ -80,6 +81,7 @@ const Bascket = ({
     setOpenPhonePay(false)
     setOpenBasket(false)
   };
+  const [isChanged, setIsChanged] = useState(false)
   
   const closeQr = () => {
     closeRecieptAndRefresh()
@@ -361,6 +363,9 @@ const Bascket = ({
               setPaymentInfo={setPaymentInfo}
               paymentInfo={paymentInfo}
               setSingleClick={setSingleClick}
+              freezeCount={freezeCount}
+              isChanged={isChanged}
+              setIsChanged={setIsChanged}
             />
             <Divider sx={{mt:2}}/>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -481,6 +486,8 @@ const Bascket = ({
                   setSingleClick={setSingleClick}
                   setOpenBasket={setOpenBasket}
                   openWindow={openWindow}
+                  saleMode={user?.ehdmMode}
+                  limitedUsing={limitedUsing}
                 />
               </div>: ""}
           </Box>

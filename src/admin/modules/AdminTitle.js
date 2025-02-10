@@ -1,10 +1,12 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 
 const AdminTitle = ({title, subTitle}) => {
+	const {t} = useTranslation();
 	return(
 		<div>
-			<h1>{title}</h1>
-			<h3>{subTitle}</h3>
+			{title ? <h3>{t(`${title}`).toUpperCase()}</h3>:""}
+			{subTitle ? <h5>{t(`${subTitle}`).toUpperCase()}</h5>: ""}
 		</div>
 	)
 };

@@ -10,6 +10,7 @@ import HdmStatus from "../../../modules/hdmStatus";
 import ReverseDialog from "../editsales/index";
 import HistoryDetails from "../details/HistoryDetails";
 import Reciept from "../newHdm/receipt/index";
+import { useNavigate } from "react-router-dom";
 
 const HistoryItems = ({
   item, 
@@ -21,6 +22,7 @@ const HistoryItems = ({
   messageAfterReverse,
 }) => {
   const {t} = useTranslation();
+  const navigate = useNavigate();
 
   const [amountForPrePayment, setAmountForPrePayment] = useState({});
   const [openDetails, setOpenDetails] = useState(false);
@@ -44,6 +46,11 @@ const HistoryItems = ({
     return item?.link ? window.open(item?.link, "_blank") : setOpenDetails(true)
     }else{
     setLoad(true)
+      // it can be physical HDM
+      if(item?.hdmMode === 2) {
+        setLoad(false)
+       return item?.link ? window.open(item?.link, "_blank") : setOpenDetails(true)
+      }
       await hdm_generate(id).then((resp) => {
         setLoad(false)
         if(resp?.res?.printResponse){

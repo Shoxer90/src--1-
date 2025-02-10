@@ -4,10 +4,11 @@ import axios from "axios";
 export async function loginAPI (username, password){
   const option = {
     headers: {
-      accept_language: localStorage.getItem("i18nextLng") ||localStorage.getItem("lang")
+      // accept_language: "ru"
+      accept_language:  localStorage.getItem("lang") !==null ? localStorage.getItem("lang"): "hy"
+
     },
   };
-
   const body = { username: username, password: password, isLastVersion:true };
     try {
       const res = await axios.post(baseUrl + "Login/Login", body, option);

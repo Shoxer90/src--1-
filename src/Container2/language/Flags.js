@@ -17,7 +17,7 @@ const Flags = () => {
 
   const changeLanguage = (str) => {
     if(str === "null"|| str === "undefined" || str === null || str === undefined){
-      return localStorage.setItem("lang", "eng" )
+      return localStorage.setItem("lang", "hy" )
      }
     localStorage.setItem("lang", str )
     i18n.changeLanguage(str)

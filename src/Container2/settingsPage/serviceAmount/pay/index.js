@@ -1,13 +1,13 @@
 import { Button, Dialog, DialogContent, Divider, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { memo, useState } from "react";
-import { t } from "i18next";
 import PrepaymentConfirmation from "../prepayment/PrepaymentConfirm";
 import PaymentConfirm from "../paymentDialog/PaymentConfirm";
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import { payForServiceWithAttachedCard, payForServiceWithNewCard } from "../../../../services/internal/InternalPayments";
 import Loader from "../../../loading/Loader";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog";
+import { useTranslation } from "react-i18next";
 
 const PayComponent = ({
   openPay,
@@ -17,6 +17,8 @@ const PayComponent = ({
   serviceType,
   setMessage,
 }) => {
+  const {t} = useTranslation();
+
   const [billsData, setBills] = useState({
     web: true,
     daysEnum: 1,

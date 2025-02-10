@@ -6,7 +6,8 @@ import { initReactI18next } from "react-i18next";
 
 i18n.use(Backend).use(LanguageDetector).use(initReactI18next).init({
   // fallbackLng: localStorage.getItem("lang") || "hy",
-  fallbackLng: (localStorage.getItem("lang") === "hy" || localStorage.getItem("lang") === "eng" || localStorage.getItem("lang") === "ru" ? localStorage.getItem("lang"): "hy"),
+  fallbackLng: (localStorage.getItem("lang") || "hy"),
+  // fallbackLng: (localStorage.getItem("lang") === "hy" || localStorage.getItem("lang") === "eng" || localStorage.getItem("lang") === "ru" ? localStorage.getItem("lang"): "hy"),
   debug:"true",
   detection: {
     order: ["queryString", "cookie"],

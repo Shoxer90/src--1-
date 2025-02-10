@@ -1,7 +1,7 @@
 import React, { memo, useEffect } from "react";
-import { t } from "i18next";
 
 import styles from "./index.module.scss";
+import { useTranslation } from "react-i18next";
 
 const ItemReverse = ({
   photo, 
@@ -16,6 +16,7 @@ const ItemReverse = ({
   checkedProduct,
   totalCounter,
 }) => {
+ const {t} = useTranslation();
 
   const handleChange = (e) => {
     let isValid = false;

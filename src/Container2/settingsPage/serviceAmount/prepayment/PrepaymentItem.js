@@ -1,7 +1,7 @@
 import React, { memo } from "react" ;
 
-import styles from "../paymentDialog/index.module.scss"
-import { t } from "i18next";
+import styles from "../paymentDialog/index.module.scss";
+import { useTranslation } from "react-i18next";
 
 const PrepaymentItem = ({
   index, 
@@ -12,6 +12,7 @@ const PrepaymentItem = ({
   paymentData,
   activeStyle
 }) => {
+     const {t} = useTranslation();
    
   const handleClick = (e) => {
      setPaymentData({

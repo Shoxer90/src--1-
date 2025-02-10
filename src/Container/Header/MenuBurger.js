@@ -78,7 +78,7 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
           // fontWeight: "bold",    
         }}
         onClick={(event) => {
-          setAnchorEl(event.currentTarget);
+          setAnchorEl(event?.currentTarget);
         }}
       >
         <MenuIcon fontSize="large" />

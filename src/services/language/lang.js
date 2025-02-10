@@ -1,5 +1,6 @@
 import axios from "axios";
 import { baseUrl } from "../baseUrl";
+import i18n from "../../i18next/i18n";
 
 export const measureTranslate = async(unit) => {
     const option = {

@@ -2,8 +2,8 @@ import React, { memo } from "react";
 import { Dialog, DialogContent, DialogTitle,} from "@mui/material";
 import styles from "./index.module.scss";
 import CloseIcon from '@mui/icons-material/Close';
-import { t } from "i18next";
 import Divider from '@mui/material/Divider';
+import { useTranslation } from "react-i18next";
 
 const PayHistoryDetails = ({
   open, 
@@ -15,6 +15,8 @@ const PayHistoryDetails = ({
   cardPan,
   cardName
 }) => {
+  const {t} = useTranslation();
+  
   return(
     <Dialog 
       open={open} 

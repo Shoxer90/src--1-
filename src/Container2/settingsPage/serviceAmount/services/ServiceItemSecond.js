@@ -6,7 +6,8 @@ import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 import PayXInfo from "../../../social/PayXInfo";
 import SnackErr from "../../../dialogs/SnackErr";
 import PayComponent from "../pay";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+
 
 const ServiceItemSecond = ({
   service,
@@ -22,6 +23,8 @@ const ServiceItemSecond = ({
   const [openPay, setOpenPay] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const disableStyle={opacity: 0.3};
+    const {t} = useTranslation();
+  
 
   const closeMessage = () => {
     setRefresh(!refresh)

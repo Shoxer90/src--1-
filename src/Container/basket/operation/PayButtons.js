@@ -1,20 +1,49 @@
 import React, { memo, useState } from "react";
 
 import styles from "../index.module.scss";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import SnackErr from "../../../Container2/dialogs/SnackErr";
+import ConfirmDialog from "../../../Container2/dialogs/ConfirmDialog";
+import { useNavigate } from "react-router-dom";
+import { Dialog } from "@mui/material";
 
 const PayButtons = ({
   paymentInfo, 
   handleOpenPhoneDialog,
   multiSaleProducts, 
-  closePrePaymentSale,
   blockTheButton,
   totalPrice,
   singleClick,
   setSingleClick,
-  openWindow,
-  someIssue
+  setOpenBasket,
+  saleMode,
+  someIssue,limitedUsing
 }) => {
+  const {t} = useTranslation()
+  const navigate = useNavigate()
+  const [message, setMessage] = useState();
+  const [openConfirm, setOpenConfirm] = useState();
+
+  const checkSaleMode = (type) => {
+    // console.log(saleMode,"SALEMODE")
+    // if(saleMode === 2){
+    //   if(limitedUsing) {
+    //     setMessage(t("dialogs.changeEhdmModeForCashiere"))
+    //   }else{
+    //     setMessage(t("dialogs.changeEhdmMode"))
+    //     setOpenConfirm(true)
+    //   }
+    // }else{
+      multiSaleProducts(type)
+    // }
+  };
+
+  const confirmForNavigate = () => {
+    setOpenBasket(false)
+    setMessage("")
+    setOpenConfirm(false)
+    return navigate("/setting/user")
+  }
   // ete kanxavjari chek enq pakum 
   // prePaymentAmount-@ galis a voch zro
   const buttonBlock = {
@@ -39,7 +68,7 @@ const PayButtons = ({
           onClick={()=>{
           if(!singleClick?.pointerEvents) {
             setSingleClick(buttonBlock)
-              multiSaleProducts(1)
+            checkSaleMode(1)
             } 
           }}
         />
@@ -60,7 +89,7 @@ const PayButtons = ({
           onClick={()=>{
             if(!singleClick?.pointerEvents) {
               setSingleClick(buttonBlock)
-              multiSaleProducts(1)
+              checkSaleMode(1)
             }
           }}
           
@@ -79,7 +108,7 @@ const PayButtons = ({
               setSingleClick(buttonBlock)
               // multiSaleProducts(2)
               localStorage.setItem("fromQRpay", false)
-              multiSaleProducts(4)
+              checkSaleMode(4)
             }
           }}
           
@@ -112,7 +141,7 @@ const PayButtons = ({
             if(!singleClick?.pointerEvents) {
               setSingleClick(buttonBlock)
               localStorage.setItem("fromQRpay", true)
-              multiSaleProducts(4)
+              checkSaleMode(4)
             }
           }}
         />
@@ -120,6 +149,19 @@ const PayButtons = ({
           Link
         </div>
       </span>
+      <Dialog open={!openConfirm && !!message}>
+          <SnackErr type="error" message={message} close={setMessage} />
+      </Dialog>
+      <ConfirmDialog
+        func={confirmForNavigate}
+        open={openConfirm}
+        close={()=>{
+          setSingleClick({})
+          setOpenConfirm(false)
+          setMessage("")
+        }}
+        content={message}
+      />
 
     </div>
   )

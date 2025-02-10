@@ -232,8 +232,10 @@ const UpdateProduct = ({
   return (
     <Dialog
       open={!!openUpdateProd}
-      fullWidth
-      // TransitionComponent={Transition}
+      TransitionComponent={Transition}
+      keepMounted
+      width="lg"
+      id="live" aria-live="polite" 
     >
       <Box 
         style={{
@@ -348,9 +350,9 @@ const UpdateProduct = ({
                   {currentProduct?.discount ? `${(currentProduct?.discount/100*currentProduct?.price).toFixed(2)} ${t("units.amd")}`: ""}
                 </span> 
               </Box>
-          {currentProduct?.barCode && 
-            <Barcode value={currentProduct?.barCode} height={36} margin={1} fontSize={16} textAlign={"center"} />
-          }
+                {currentProduct?.barCode && 
+                  <Barcode value={currentProduct?.barCode} height={30} width={1} margin={1} fontSize={12} textAlign={"center"} />
+                }
           {message?.message && 
           <Dialog open={!!message.message}>
             <SnackErr 

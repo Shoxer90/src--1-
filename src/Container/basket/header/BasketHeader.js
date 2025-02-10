@@ -7,7 +7,14 @@ import styles from "../index.module.scss";
 import ConfirmDialog from "../../../Container2/dialogs/ConfirmDialog";
 import { useState } from "react";
 
-const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent, setSingleClick}) => {
+const BasketHeader = ({t, 
+  setOpenBasket,
+  deleteBasketGoods, 
+  basketContent, 
+  setSingleClick,
+  freezeCount,
+  isChanged, 
+  setIsChanged}) => {
 
   const [openDialog,setOpenDialog] = useState(false);
 
@@ -17,19 +24,34 @@ const BasketHeader = ({t, setOpenBasket, deleteBasketGoods, basketContent, setSi
     setOpenDialog(false)
   };
 
+  console.log(freezeCount, "FREEZE COUNT");
+
   return(
     <div className={styles.bask_container_header}>
       <span style={{fontSize:"130%"}}>{t("basket.title")}</span>
+      <>
+      {/* { freezeCount?.length  ?
+        <Button 
+          variant="contained" 
+          disabled={!isChanged}
+          onClick={()=>setIsChanged(false)} 
+          size="small"
+          style={{justifyContent:"space-end",fontSize:"70%", textTransform: "capitalize",}}
+        >
+          {t("buttons.save")}
+        </Button>: ""
+      } */}
       { basketContent?.length  ?
         <Button 
           variant="contained" 
           onClick={()=>setOpenDialog(true)} 
           size="small"
-          style={{justifyContent:"space-end",margin:"5px",fontSize:"70%", textTransform: "capitalize",}}
+          style={{justifyContent:"space-end",fontSize:"70%", textTransform: "capitalize",}}
         >
           {t("basket.removeallprod").slice(0,-1)}
         </Button>: ""
       }
+      </>
       <IconButton
         onClick={()=>{
           setOpenBasket(false)

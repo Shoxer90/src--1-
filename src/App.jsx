@@ -7,7 +7,7 @@ import HomePage from "./Container2/home/index"
 import FeedBackPage from "./Container2/feedback";
 import CheckStatusArCa from "./Container2/settingsPage/serviceAmount/attachCard"
 import AdminPanel from "./admin/panel";
-import UsersContainer from "./admin/panel/users";
+import UsersContainer from "./admin/panel/stores";
 
 import { byBarCode, productQuery } from "./services/products/productsRequests";
 import { getBasketContent } from "./modules/modules";
@@ -44,6 +44,7 @@ import ConfirmDialog from "./Container2/dialogs/ConfirmDialog";
 import PrivacyPayx from "./payxPrivacyRemove/PrivacyPayx";
 import AdminPage from "./admin/index";
 import AdminLogin from "./admin/auth/AdminLogin";
+import i18n from "./i18next/i18n";
 
 const App = () => {
 
@@ -99,7 +100,7 @@ const App = () => {
   });
  
   const whereIsMyUs = async() => {
-    console.log("29.01.2025 tin zero")
+    console.log("06.02.2025")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -222,7 +223,6 @@ const App = () => {
       return setBasketExist(JSON.parse(localStorage.getItem("basketExistId")))
     })
   };
-
 
   const changeCountOfBasketItem = async(id,value) => {
     let handleArr = [] 
@@ -357,7 +357,6 @@ const App = () => {
 
   
   const getMeasure = async() => {
-    console.log("mtav")
     const str = await localStorage.getItem("lang")
     switch(str){
       case "eng":
@@ -395,19 +394,19 @@ const App = () => {
   
   useEffect(() => { 
     isLogin && getMeasure()
-  },[t]);
+  },[t,isLogin]);
 
   useEffect(() => {
-    isLogin && getMeasure()
-    setDataGroup("GetAvailableProducts")
-    setCurrentPage(1)
+    // isLogin && getMeasure()
+    // setDataGroup("GetAvailableProducts")
+    // setCurrentPage(1)
     loadBasket()
   },[isLogin]);
 
   useEffect(() => {
     setCount(false)
     whereIsMyUs() 
-    setDataGroup("GetAvailableProducts")
+    // setDataGroup("GetAvailableProducts")
   },[]);
 
  useEffect(() => {
@@ -445,14 +444,9 @@ const App = () => {
           <Route path="/basket/*" element={<BasketList t={t} />} />
 {/* ADMIN PAGE */}
           <Route path="/admin" element={<AdminPage />} />
-          <Route path="/admin/authorized" element={<AdminPanel children={<UsersContainer />} />} />
+          <Route path="/admin/stores" element={<AdminPanel children={<UsersContainer />} />} />
           <Route path="/admin/customers" element={<AdminPanel />} />
           <Route path="/admin/customers2" element={<AdminPanel />} />
-          {/* <Route path="/admin/customers" element={<AdminCustomers />} />
-          <Route path="/admin/customer" element={<AdminCustomer />} />
-          <Route path="/admin/customer/history" element={<AdminCustomerHistory />} /> */}
-
-
         </Routes> :
         <>
           <Header
@@ -461,10 +455,8 @@ const App = () => {
             logOutFunc={logOutFunc} 
             user={user}
             logo={user?.logo}
-            active={user?.isEhdmStatus}
             activeBtn={activeBtn}
             setActiveBtn={setActiveBtn}
-            setDataGroup={setDataGroup}
           />
           {!isBlockedUser ? <Routes>
             <Route
@@ -548,6 +540,7 @@ const App = () => {
             setOpenWindow={setOpenWindow}
             paymentInfo={paymentInfo}
             setPaymentInfo={setPaymentInfo}
+            limitedUsing={limitedUsing}
           />}
           {notification.length ? <Notification 
             func={()=>setNotification([])}

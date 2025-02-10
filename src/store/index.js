@@ -1,14 +1,21 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
-
-import { adminApi } from "./adminApi";
 import authReducer from "./tokenSlice";
+import countReducer from "./contentCountSlice";
+
+import { storesApi } from "./storesUsers/storesApi";
+import { adminApi } from "./admin/adminApi";
 
 export default configureStore({
   reducer: {
     user: userReducer,        
     auth: authReducer,
-    [adminApi.reducerPath]:adminApi.reducer
+    count: countReducer,
+    [adminApi.reducerPath]:adminApi.reducer,
+    [storesApi.reducerPath]:storesApi.reducer
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(adminApi.middleware),
+  middleware: (getDefaultMiddleware) =>
+     getDefaultMiddleware()
+      .concat(adminApi.middleware)
+      .concat(storesApi.middleware),
 })

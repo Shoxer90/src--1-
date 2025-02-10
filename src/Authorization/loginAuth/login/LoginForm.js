@@ -32,12 +32,12 @@ const LogInFormNew = ({
   
   const signInToAccount = async(userData) => {
     setLoading(true)
+
     loginAPI( userData?.username, userData?.password).then((token) => {
       setLoading(false)
       if(token?.response?.status === 402){
         setMessage(t("authorize.blockremove"))
       }else if(token?.response?.status === 400) {
-        console.log(token, "TOKEN")
         return setMessage(token?.response?.data?.message)
       }else if(token?.response?.status === 419){
         return  setMessage(t("authorize.errors.loginLimit419"))

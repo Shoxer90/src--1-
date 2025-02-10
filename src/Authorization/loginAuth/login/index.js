@@ -17,9 +17,9 @@ const Login = ({whereIsMyUs,setIsLogIn}) => {
     setScreenWidth(window.innerWidth)
   }, true);
  
-  useEffect(() => {
-    setScreenWidth(window.innerWidth)
-  }, []);
+  // useEffect(() => {
+  //   setScreenWidth(window.innerWidth)
+  // }, []);
 
   return(
     <div  style={{color:"#3FB68A"}}>

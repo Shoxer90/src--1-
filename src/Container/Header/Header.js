@@ -24,7 +24,6 @@ const Header = ({
   logOutFunc,
   user,
   logo,
-  active,
   activeBtn,
   setActiveBtn,
 }) => {
@@ -127,9 +126,8 @@ const Header = ({
 
         <div className={styles.contentX}>
           { user?.firstname === undefined ? "":  
-                <UserInfo setActiveBtn={setActiveBtn} user={user?.firstname+ " " + user?.lastname} logo={logo} mode={user?.ehdmMode} t={t}  limitedUsing={limitedUsing}/>
+            <UserInfo setActiveBtn={setActiveBtn} user={user?.firstname+ " " + user?.lastname} logo={logo} mode={user?.ehdmMode} t={t}  limitedUsing={limitedUsing}/>
           }
-          <div style={{width:"120px"}} className={styles.routeName}></div>
           <Badge
             anchorOrigin={{
               vertical: 'top',

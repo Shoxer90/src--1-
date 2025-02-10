@@ -1,16 +1,23 @@
-import { memo, useEffect, useState } from "react";
+import {  forwardRef, memo, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { NAV_TITLES } from "../modules/variables";
 
-import styles from "./index.module.scss";
 import NavigationItem from "./NavigationItem";
-import { useNavigate } from "react-router-dom";
-import { useGetAdminUserQuery } from "../../store/adminApi";
+import { useGetAdminUserQuery } from "../../store/admin/adminApi";
 
-const LeftNavigation = ({setTitle}) => {
+import styles from "./index.module.scss";
+import { AppBar, Slide } from "@mui/material";
+
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="right" ref={ref} {...props} />;
+});
+
+const Navigation = ({setTitle}) => {
+  
   const navigate = useNavigate();
   const [navDirect, setNavDirect] = useState();
-  const {admin={}, isError, isLoading} = useGetAdminUserQuery()
-  console.log(admin, "admin")
+  const {data: admin, isFetching} = useGetAdminUserQuery()
 
   const changeNavigation = (id) => {
     let path = ""
@@ -40,23 +47,26 @@ const LeftNavigation = ({setTitle}) => {
     setNavDirect(NAV_TITLES)
   }, []);
   
-  if(isLoading){
+  if(isFetching){
    <div>"...Loading"</div>
   }
 
   return (
-    <div className={styles.navigation}>
-      <nav className={styles.navigation_container}>
-        {navDirect && navDirect.map((navItem)=>(
-          <NavigationItem 
-            key={navItem?.path}
-            changeNavigation={changeNavigation}
-            {...navItem}
-          />
-        ))}
-      </nav>
-    </div>
+    <AppBar>
+      <div className={styles.navigation}>
+        <nav className={styles.navigation_container}>
+        <span>{admin?.firstname} {admin?.lastname}</span>
+          {navDirect && navDirect.map((navItem)=>(
+            <NavigationItem 
+              key={navItem?.path}
+              changeNavigation={changeNavigation}
+              {...navItem}
+            />
+          ))}
+        </nav>
+      </div>
+      </AppBar>
   )
 };
 
-export default memo(LeftNavigation);
+export default memo(Navigation);

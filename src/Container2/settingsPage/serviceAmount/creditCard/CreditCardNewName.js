@@ -1,10 +1,12 @@
 import { Button, Dialog, DialogContent, Divider, IconButton } from "@mui/material";
-import { t } from "i18next";
 import React, { memo } from "react";
 import CloseIcon from '@mui/icons-material/Close';
+import { useTranslation } from "react-i18next";
 
 
 const CreditCardNewName = ({open, cardName, setCardName,close,func}) => {
+
+  const {t} = useTranslation();
   return (
     <Dialog open={open} width="lg">
       <DialogContent style={{display:"flex",flexFlow:"column"}}>

@@ -10,6 +10,21 @@ export  async function changeEHDM(status) {
     return err
   }
 };
+
+export  async function changeToPhysicalHDM(status) {
+  const  option = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      accept_language: localStorage.getItem("i18nextLng") ||localStorage.getItem("lang") 
+    }}
+
+  try{
+    const  data = await axios.post(baseUrl + `User/SetEhdmMode?Mode=${status}`,status, option);
+    return data
+  }catch(err){
+    return err
+  }
+};
 // new number
 export async function eddUserNumber(newNumber) {
   try{

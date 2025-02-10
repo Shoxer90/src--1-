@@ -1,22 +1,29 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import { setAuthToken } from "./tokenSlice";
+import { setAuthToken } from "../tokenSlice";
 import { setAuthAdmin } from "./adminSlice";
 
  export const adminApi = createApi({
   reducerPath:"adminApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://storextest.payx.am/api/Admin",
-    prepareHeaders: (headers, { getState }) => {
-      console.log('prepareHeaders is called');
-      const token = getState().auth.token;
+
+   prepareHeaders: (headers) => {
+      const token = localStorage.getItem("authAdmin"); // Get token from localStorage
       if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
+        headers.set("Authorization", `Bearer ${token}`); // Set token in headers
       }
       return headers;
     },
-  }),
+    // prepareHeaders: (headers, { getState }) => {
+    //   const token = getState().auth.token;
+    //   if (token) {
+    //     headers.set('Authorization', `Bearer ${token}`);
+    //     localStorage.setItem("authAdmin", token)
 
- 
+    //   }
+    //   return headers;
+    // },
+  }),
 
  
   endpoints: (builder) => ({
@@ -30,6 +37,7 @@ import { setAuthAdmin } from "./adminSlice";
       onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          localStorage.setItem("authAdmin", data.token)
           dispatch(setAuthToken(data.token));
         } catch(error) {
           dispatch(setAuthToken(null));
@@ -51,7 +59,7 @@ import { setAuthAdmin } from "./adminSlice";
           dispatch(setAuthToken(null));
         }
       },
-    })
+    }),
   })
 });
 // get=> query

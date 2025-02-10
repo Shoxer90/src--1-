@@ -85,9 +85,7 @@ const CardForPrepayment = ({
     setIsLoad(true)
     reverseProductNew(dataInput).then((res) => {
     setIsLoad(false)
-    console.log(res,"res")
       if(res?.status === 200) {
-        console.log("mtela")
         window.open(res?.data?.reverceLink, '_blank');
       }else {
         setMessage({message:t("dialogs.wrong"), type:"error"})
@@ -140,7 +138,6 @@ const CardForPrepayment = ({
                 </a>
             </Button>
             }
-            {/* {item?.hdmMode !== 2 && */}
               <Button
                 sx={{
                   textTransform: "capitalize",
@@ -152,8 +149,6 @@ const CardForPrepayment = ({
               >
                 {t("history.canceled")}
               </Button>
-            {/* } */}
-            {item?.hdmMode !== 2 &&
               <Button 
                 variant="contained" 
                 sx={{background:"#6C757D", fontSize:"80%",textTransform: "capitalize"}}
@@ -163,7 +158,6 @@ const CardForPrepayment = ({
               >
                 {t("basket.completeSale")}
               </Button>
-            }
           </div>
           <ReversePrepaymentDialog 
             biteRev={removePartReciept}

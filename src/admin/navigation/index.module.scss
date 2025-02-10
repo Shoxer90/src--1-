@@ -1,25 +1,17 @@
 .navigation{
-  background-color: #3FB68A;
+  background-color: black;
   color: white;
-  height: 100dvh;
-  width:20%;
-  font-size: 120%;
+  height: 12dvh;
   box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;
-
   padding: 10px;
   &_container{
-    margin-top: 40px;
     display:flex;
-    flex-flow: column;
+    flex-flow: row nowrap;
     justify-content: space-around;
-
+    font-weight: 700;
     &_item{
-      font-weight: 800;
-      letter-spacing: 1px;
+      padding: 5px;
       margin: 10px;
-
-
     }
-    
   }
 }

@@ -1,5 +1,6 @@
 import { memo } from "react";
 import styles from "./index.module.scss";
+import { useTranslation } from "react-i18next";
 
 
 const NavigationItem = ({
@@ -9,20 +10,20 @@ const NavigationItem = ({
   id,
   changeNavigation
 }) => {
+  const {t} = useTranslation();
   
   const linkStyle = {
     color: isActive && "orange",
-    // fontSize: "160%"
   };
 
   return (
-    <div 
-      className={styles.navigation_container_item} 
+    <span 
+      // className={styles.navigation_container_item} 
       onClick={()=>changeNavigation(id)} 
       style={linkStyle}
     >
-      {title.toUpperCase()}
-    </div>
+      {t(`${title}`)?.toUpperCase()}
+    </span>
   )
 };
 

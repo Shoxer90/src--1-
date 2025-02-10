@@ -5,7 +5,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import CreditScoreIcon from '@mui/icons-material/CreditScore';
 import { Tooltip } from '@mui/material';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 const CreditCardWrapper = ({
   element, 
   cardId, 
@@ -13,6 +13,7 @@ const CreditCardWrapper = ({
   isMain,
   handleOperation, 
 }) => {
+  const {t} = useTranslation();
   
   return (
     <div>
