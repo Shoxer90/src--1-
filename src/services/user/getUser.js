@@ -47,3 +47,12 @@ export  async function cleanNotifications(bool) {
         return err.response.status
     }
 };
+
+export  async function SignNewContract() {
+    try{
+        const  data = await axios.get(baseUrl + "User/SignNewContract", option());
+        return data.data
+    }catch(err){
+        return err.response
+    }
+};

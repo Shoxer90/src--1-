@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import styles from "../index.module.scss";
 import { useTranslation } from "react-i18next";
@@ -17,7 +17,7 @@ const PayButtons = ({
   setSingleClick,
   setOpenBasket,
   saleMode,
-  someIssue,limitedUsing
+  limitedUsing
 }) => {
   const {t} = useTranslation()
   const navigate = useNavigate()
@@ -25,17 +25,16 @@ const PayButtons = ({
   const [openConfirm, setOpenConfirm] = useState();
 
   const checkSaleMode = (type) => {
-    // console.log(saleMode,"SALEMODE")
-    // if(saleMode === 2){
-    //   if(limitedUsing) {
-    //     setMessage(t("dialogs.changeEhdmModeForCashiere"))
-    //   }else{
-    //     setMessage(t("dialogs.changeEhdmMode"))
-    //     setOpenConfirm(true)
-    //   }
-    // }else{
+    if(saleMode === 2){
+      if(limitedUsing) {
+        setMessage(t("dialogs.changeEhdmModeForCashiere"))
+      }else{
+        setMessage(t("dialogs.changeEhdmMode"))
+        setOpenConfirm(true)
+      }
+    }else{
       multiSaleProducts(type)
-    // }
+    }
   };
 
   const confirmForNavigate = () => {
@@ -43,18 +42,18 @@ const PayButtons = ({
     setMessage("")
     setOpenConfirm(false)
     return navigate("/setting/user")
-  }
-  // ete kanxavjari chek enq pakum 
-  // prePaymentAmount-@ galis a voch zro
+  };
+
   const buttonBlock = {
     opacity: "0.3",
     border:"red",
     pointerEvents:"none"
   };
+
   return(
     <div 
       className={styles.bask_container_body_footer_icons}
-      style={blockTheButton || someIssue?.status ? buttonBlock : null}
+      style={blockTheButton ? buttonBlock : null}
     >
       <span
         style={
@@ -79,8 +78,9 @@ const PayButtons = ({
       <span
         style={
         // (!paymentInfo?.cardAmount && !openWindow?.prePaymentAmount) ? buttonBlock : null
-        (totalPrice && paymentInfo?.cardAmount) ||
-        (totalPrice === paymentInfo?.prePaymentAmount && paymentInfo?.prePaymentAmount) ? null :buttonBlock}
+        (totalPrice && paymentInfo?.cardAmount) 
+        // || (totalPrice === paymentInfo?.prePaymentAmount && paymentInfo?.prePaymentAmount) 
+        ? null :buttonBlock}
       >
 
         <img
@@ -92,9 +92,7 @@ const PayButtons = ({
               checkSaleMode(1)
             }
           }}
-          
-            // style={paymentInfo?.cardAmount ? null: buttonBlock}
-          />  
+        />  
         <div>
           {t("history.card")}
         </div>

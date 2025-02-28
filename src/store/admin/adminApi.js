@@ -14,15 +14,6 @@ import { setAuthAdmin } from "./adminSlice";
       }
       return headers;
     },
-    // prepareHeaders: (headers, { getState }) => {
-    //   const token = getState().auth.token;
-    //   if (token) {
-    //     headers.set('Authorization', `Bearer ${token}`);
-    //     localStorage.setItem("authAdmin", token)
-
-    //   }
-    //   return headers;
-    // },
   }),
 
  
@@ -33,7 +24,7 @@ import { setAuthAdmin } from "./adminSlice";
         method: "POST",
         body: credentials 
       }),
-// for prepare token to header
+      // for prepare token to header
       onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
@@ -53,7 +44,6 @@ import { setAuthAdmin } from "./adminSlice";
       onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          console.log(data, "DATA ADMIN")
           dispatch(setAuthAdmin(data));
         } catch(error) {
           dispatch(setAuthToken(null));

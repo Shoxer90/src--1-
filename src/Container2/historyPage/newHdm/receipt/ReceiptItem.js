@@ -31,14 +31,15 @@ const ReceiptItem = ({
       <div>
         <div className={styles.contentName_info}>
           <span>
-            {totalWithTaxes?.toFixed(2)}
+            {price?.toFixed(2)}
+            {/* {totalWithTaxes?.toFixed(2)} */}
           </span>
           <span> x </span>
           <span> {quantity?.toFixed(2)} {unit}
           </span>
           <span> = </span>
           <span>
-          {(totalWithTaxes*quantity)?.toFixed(2)} դրամ
+          {(totalWithTaxes)?.toFixed(2)} դրամ
           </span>
         </div>
         <Divider sx={{bgcolor:"black"}} />

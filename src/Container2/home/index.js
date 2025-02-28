@@ -2,7 +2,7 @@ import { memo , useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import Loader from "../loading/Loader";
-import HomeContent from "./HomeContent";
+// import HomeContent from "./HomeContent";
 import HomeNavigation from "./HomeNavigation";
 import AddNewProduct from "./product/AddNewProduct";
 import { getAdg, removeProduct } from "../../services/products/productsRequests";
@@ -10,6 +10,7 @@ import { Dialog } from "@mui/material";
 import SnackErr from "../dialogs/SnackErr";
 
 import styles from "./index.module.scss";
+import HomeContent from "./content/HomeContent";
 
 const initState = {
   purchasePrice: "",
@@ -142,7 +143,7 @@ const HomePage = ({
       } 
     }
     
-  }, [fetching, dataGroup, isLogin, openNewProd, content, flag]);
+  }, [fetching, dataGroup, isLogin, openNewProd, content, flag,currentPage]);
 
   return(
     <div className={styles.productPage}>
@@ -169,6 +170,7 @@ const HomePage = ({
         setTypeCode={setTypeCode}
         setFetching={setFetching} 
         setContent={setContent}
+        setCurrentPage={setCurrentPage}
       />
       {openNewProd && <AddNewProduct 
         newProduct={newProduct}

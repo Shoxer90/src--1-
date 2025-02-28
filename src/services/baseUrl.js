@@ -50,7 +50,8 @@ export const columnNames = [{
   key: "cardAmount",
   checked:  true
 },{
-  title: "basket.useprepayment",
+  // title: "basket.useprepayment",
+  title: "basket.prepaymentTitle",
   id: 7,
   key: "prepaymentAmount",
   checked:  true

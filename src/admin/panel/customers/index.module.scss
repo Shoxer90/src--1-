@@ -1,0 +1,11 @@
+.customer{
+
+  &_filterPanel{
+    display: flex;
+    justify-content: flex-start;
+    margin: 2px 15px;
+    &_collumnSelect{
+      margin-left: 5px;
+    }
+  }
+}

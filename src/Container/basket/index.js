@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useState, memo } from "react";
-import { AppBar, Button, Dialog, DialogContent, Divider, IconButton, Slide } from "@mui/material";
+import { AppBar, Button, Dialog, DialogContent, Divider, Slide } from "@mui/material";
 import { Box } from "@mui/system";
 import styles from "./index.module.scss"
 import { basketListUrl, payRequestQR, saleProductFromBasket, sendSmsForPay } from "../../services/pay/pay";
@@ -11,7 +11,7 @@ import moment from "moment";
 import PaymentContainer from "./payment";
 
 import PayQRLink from "../../Container2/historyPage/newHdm/PayQRLink";
-import { cheackProductCount } from "../../services/products/productsRequests";
+import { cheackProductCount, SavePrePaymentBasket } from "../../services/products/productsRequests";
 import Receipt from "../../Container2/historyPage/newHdm/receipt";
 import BasketHeader from "./header/BasketHeader";
 import BasketContent from "./content/BasketContent";
@@ -22,6 +22,7 @@ import { taxCounting } from "../../modules/modules.js";
 import ProductPrePayment from "./payment/ProductPrePayment.js";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -39,8 +40,8 @@ const Bascket = ({
   deleteBasketGoods,
   setDataGroup,
   deleteBasketItem,
-  setFlag,
   flag,
+  setFlag,
   setContent,
   byBarCodeSearching,
   setFrom,
@@ -55,6 +56,7 @@ const Bascket = ({
   paymentInfo, setPaymentInfo,
   limitedUsing
 }) => {
+  const navigate = useNavigate()
   const {t} = useTranslation();
   const [screen, setScreen] = useState(window.innerWidth);
   const [saleData, setSaleData] = useState();
@@ -73,16 +75,38 @@ const Bascket = ({
   const [singleClick,setSingleClick] = useState({});
   const [isEmpty,setIsEmpty] = useState(false);
   const [avail,setAvail] = useState([]);
-  const [blockTheButton, setBlockTheButton] = useState(true);
+  const [blockTheButton, setBlockTheButton] = useState(false);
   const [taxCount, setTaxCount] = useState(0);
   const [seeBtn,setSeeBtn] = useState();
   const [freezeCount, setFreezeCount] = useState([]);
+
+  // #editprepayment
+  const saveChanges = async() => {
+    const changedData = JSON.parse(localStorage.getItem("isEditPrepayment"))
+    if(changedData?.sales.length) {
+      setLoader(true)
+      await SavePrePaymentBasket(changedData).then((res) => {
+        setLoader(false)
+        if(res?.status === 200) {
+          setMesFromHead({message: t("dialogs.done"), type:"success"})
+          setOpenBasket(false)
+          setFlag(flag => flag+=1)
+          deleteBasketGoods()
+        } else {
+          setMesFromHead({message: res?.data?.message, type:"error"})
+        }
+      })
+    }else{
+      setMesFromHead({message:t("dialogs.noChanges"), type:"info"})
+    }
+  };
+  // 
+
   const closePhoneDialog = () => {
     setOpenPhonePay(false)
     setOpenBasket(false)
   };
-  const [isChanged, setIsChanged] = useState(false)
-  
+
   const closeQr = () => {
     closeRecieptAndRefresh()
     setMessageWithRefresh()
@@ -360,12 +384,8 @@ const Bascket = ({
               setOpenBasket={setOpenBasket} 
               deleteBasketGoods={deleteBasketGoods}
               basketContent={basketContent}
-              setPaymentInfo={setPaymentInfo}
-              paymentInfo={paymentInfo}
               setSingleClick={setSingleClick}
               freezeCount={freezeCount}
-              isChanged={isChanged}
-              setIsChanged={setIsChanged}
             />
             <Divider sx={{mt:2}}/>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -397,21 +417,21 @@ const Bascket = ({
                 basketContent={basketContent}
                 changeCountOfBasketItem={changeCountOfBasketItem}
                 deleteBasketItem={deleteBasketItem}
-                loadBasket={loadBasket}
                 screen={screen}
-                setFlag={setFlag}
-                flag={flag}
-                setSingleClick={setSingleClick}
-                singleClick={singleClick}
                 avail={avail}
                 setAvail={setAvail}
-                paymentInfo={paymentInfo}
+                flag={flag}
                 createMessage={createMessage}
-                setIsEmpty={setIsEmpty}
-                totalPrice={totalPrice}
                 freezeCount={freezeCount}
-                message={message}
-                setBlockTheButton={setBlockTheButton}
+                // loadBasket={loadBasket}
+                // setFlag={setFlag}
+                // setSingleClick={setSingleClick}
+                // singleClick={singleClick}
+                // paymentInfo={paymentInfo}
+                // setIsEmpty={setIsEmpty}
+                // totalPrice={totalPrice}
+                // message={message}
+                // setBlockTheButton={setBlockTheButton}
               />
             </DialogContent>
             <Divider style={{margin:2,height:"2px", backgroundColor:"black"}}/>
@@ -430,7 +450,7 @@ const Bascket = ({
 
             {/* you choose prepayment or sell */}
 {/* if sell */}
-            {((openWindow?.isOpen && openWindow?.payment) || localStorage.getItem("endPrePayment")) &&
+            {((openWindow?.isOpen && openWindow?.payment  ) || localStorage.getItem("endPrePayment")) &&
               <ProductPayment  
                 t={t} 
                 totalPrice={totalPrice}
@@ -464,32 +484,32 @@ const Bascket = ({
                 setMessage={setMessage}
                 setType={setType}
              />}
-
-            {message && <Dialog open={Boolean(message)}>
-                <SnackErr message={message} type={type} close={closeDialog} />
-            </Dialog>}
-            { messageWithRefresh && 
-              <Dialog open={Boolean(message)}>
-                <SnackErr message={message} type="success" close={closeQr} />
-              </Dialog>
-            }
-              { basketContent?.length ? <div className={styles.bask_container_body_footer}>
-                <Divider flexItem  sx={{bgcolor:"black"}} />
+          {/* #editprepayment */}
+            {localStorage.getItem("isEditPrepayment") ?
+              <Button
+                onClick={saveChanges}
+                variant="contained"
+                style={{width:"60%", alignSelf:"center", margin:"2px"}}
+              >
+                Save
+              </Button>
+            : basketContent?.length ? 
+              <div className={styles.bask_container_body_footer}>
+              <Divider flexItem  sx={{bgcolor:"black"}} />
                 <PayButtons
                   paymentInfo={paymentInfo}
                   handleOpenPhoneDialog={handleOpenPhoneDialog}
                   multiSaleProducts={multiSaleProducts}
                   blockTheButton={blockTheButton}
                   totalPrice={totalPrice}
-                  setOpenPhonePay={setOpenPhonePay}
                   singleClick={singleClick}
                   setSingleClick={setSingleClick}
                   setOpenBasket={setOpenBasket}
-                  openWindow={openWindow}
                   saleMode={user?.ehdmMode}
                   limitedUsing={limitedUsing}
                 />
-              </div>: ""}
+              </div>
+            :""}
           </Box>
           <Receipt
             taxCount={taxCount}
@@ -538,6 +558,17 @@ const Bascket = ({
             closeLinkQrAndRefresh={closeLinkQrAndRefresh}
             seeBtn={seeBtn}
           />
+        }
+
+        {message && 
+          <Dialog open={Boolean(message)}>
+            <SnackErr message={message} type={type} close={closeDialog} />
+          </Dialog>
+        }
+        {messageWithRefresh && 
+          <Dialog open={Boolean(message)}>
+            <SnackErr message={message} type="success" close={closeQr} />
+          </Dialog>
         }
       </AppBar>}
     </Dialog>

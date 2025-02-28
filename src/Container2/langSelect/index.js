@@ -7,19 +7,25 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 
 export default function LangSelect({ size }) {
- 
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { i18n} = useTranslation();
 
-  useEffect(() => {
-    setLang(localStorage.getItem("lang") === "hy" || localStorage.getItem("lang") === "eng" || localStorage.getItem("lang") === "ru" ? localStorage.getItem("lang"): "hy")
-  }, [localStorage.getItem("lang")]);
-
   const changeLanguage = (str) => {
-    localStorage.setItem("lang", str )
-    i18n.changeLanguage(str)
-   setLang(localStorage.getItem("lang"))
+    if(lang === "hy" || lang === "ru" || lang === "eng"){
+      localStorage.setItem("lang", str )
+      i18n.changeLanguage(str)
+      setLang(str)
+    }else{
+      localStorage.setItem("lang", "hy" )
+      i18n.changeLanguage("hy")
+      setLang("hy")
+    }
   };
+
+  useEffect(() => {
+    changeLanguage(lang)
+  }, []);
+
 
   return (
     <FormControl >

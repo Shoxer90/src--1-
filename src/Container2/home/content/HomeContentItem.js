@@ -11,6 +11,7 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import ModeIcon from '@mui/icons-material/Mode';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import { useTranslation } from "react-i18next";
+import { editPrepaymentCountsModule } from "../../../modules/editPrepayment";
 
 const style = {
   display:"flex",
@@ -50,6 +51,7 @@ const HomeContentItem = ({
   setFetching,
   setContent,
   content,
+  setCurrentPage
 }) => {
   const {t} = useTranslation();
   const {limitedUsing} = useContext(LimitContext);
@@ -74,10 +76,14 @@ const HomeContentItem = ({
     setQuantity("")
   };
 
-  const addToBasketWithPrep = () => {
+  const addToBasketWithPrep = async() => {
+    if(localStorage.getItem("isEditPrepayment")){
+      await editPrepaymentCountsModule(product?.id,quantity || 1)
+    }
     setToBasket(product, quantity, false)
     setOpenConfirm(false)
   };
+
 
   const onlyNumberAndADot = (event) => {
     let isValid = false;
@@ -211,6 +217,7 @@ const HomeContentItem = ({
         getSelectData={getSelectData}
         typeCode={typeCode}
         setTypeCode={setTypeCode}
+        setCurrentPage={setCurrentPage}
       />}
       {message ? 
         <Dialog open={Boolean(message)}>

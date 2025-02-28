@@ -27,6 +27,7 @@ const BasketContentItem = ({
 
   const removeOneProduct = async() => {
     notAvailable && setAvail(avail.filter(item => item !== el.id))
+    editRemovePrepaymentItem(el?.productId || el?.id)
     deleteBasketItem(el.id)
     setOpenDialog(false)
   };
@@ -87,14 +88,14 @@ const BasketContentItem = ({
   };
   
   const checkPriceChangeV2 = async(val) => {
-      let count = {count:0}
-      if(freezeCount?.length) {
-        count = freezeCount.find(item => item?.productId === el?.productId)
-        if(count === undefined) {
-          count = {count:0}
-        }
+    let count = {count:0}
+    if(freezeCount?.length) {
+      count = freezeCount.find(item => item?.productId === el?.productId)
+      if(count === undefined) {
+        count = {count:0}
       }
-      if(+val > count?.count) {
+    }
+    if(+val > count?.count) {
       cheackProductCountnPrice([{
         "id": el?.productId || el?.id,
         "count": val - count?.count,
@@ -102,19 +103,77 @@ const BasketContentItem = ({
       }]).then((result) => {
         if(!result[0]?.countStatus) {
           getErrorStyle(true)
-          return createMessage("error", `${t("dialogs.havenot")} ${el?.name} ${ val - count?.count} ${t(`${el?.measure}`)}`)
+          return createMessage("error", ` ${el?.name} ${t("dialogs.havenot")} ${result[0]?.existCount} ${t(`${el?.measure}`)}`)
         }else if(!result[0]?.priceStatus) {
           getErrorStyle(true)
           return createMessage("error", t("basket.price_change"))
         }
         else{
+          if(localStorage.getItem("isEditPrepayment")) {
+            editPrepaymentCounts(el?.productId || el?.id, val)
+          }
           changeCountOfBasketItem( el?.id, val)
         }
       })
     }else {
+      if(localStorage.getItem("isEditPrepayment")) {
+        editPrepaymentCounts(el?.productId, val)
+      }
       changeCountOfBasketItem( el?.id, val)
     }
   };
+
+  const editRemovePrepaymentItem= async(id) => {
+    let editedData = await (JSON.parse(localStorage.getItem("isEditPrepayment")))
+    let flag=0
+    let newDataForEdit = editedData?.sales.map((item) => {
+      if(item?.id === id){
+        flag+=1
+        return {
+          ...item,
+          count: 0
+        }  
+      }else {
+        return item
+      }
+    })
+    if(!flag) {
+      newDataForEdit.push({
+        id:id,
+        count:0
+      })
+    }
+    localStorage.setItem("isEditPrepayment", JSON.stringify({
+      ...editedData,
+      sales: newDataForEdit
+    }))
+  }
+
+const editPrepaymentCounts = async(id,value) => {
+  let infuncData = await JSON.parse(localStorage.getItem("isEditPrepayment"))
+  if(infuncData) {
+      let flag = 0
+      let arr = infuncData?.sales.map((item) => {
+        if(item?.id === id) {
+          flag+=1
+          return {
+            ...item,
+            count: value
+          }
+        }else {
+          return item
+        }
+      })
+      if(!flag) {
+        arr?.push({
+          id: id,
+          count: value
+        })
+      }
+      localStorage.setItem("isEditPrepayment",JSON.stringify({...infuncData, sales:arr}))
+  }
+}
+
   
   useEffect(() => {  
     setNotAvailable(false)

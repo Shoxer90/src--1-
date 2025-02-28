@@ -33,13 +33,13 @@ const HistoryContent = ({
 
   const handleCloseMessage = () => {
     setMessage({m:"",t:""})
-    window.open(flag, '_blank');
+    window.open(flag, '_blank', 'noopener,noreferrer');
   }
 
   useEffect(() => {
     filterBodyFill()
   }, [columns]);
-
+  
   return (
     <div>
         <TableContainer style={{fontSize:"120%"}}component={Paper}>

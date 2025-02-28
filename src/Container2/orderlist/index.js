@@ -42,11 +42,10 @@ const BasketList = ({t}) => {
         <img src={basketContent?.storeLogo || "/defaultAvatar.png"}  alt="" className={styles.orderContainer_img}/>
         <h5>{basketContent?.storeName}</h5>
       </div>
-      {!basketContent?.isPrepayment && <h5>{t("basket.useprepayment")}</h5>}
+      {basketContent?.isPrepayment && <h5>{t("basket.useprepayment")}</h5>}
       <div style={{display:"flex", justifyContent:"center", margin:"5px auto",fontSize:"110%"}}>
         <span>
           {t("productinputs.orderList")}
-
         </span>
         <span style={{margin: "0 5px", fontWeight:600}}>&#8470;  {basketContent?.saleId}</span>
         

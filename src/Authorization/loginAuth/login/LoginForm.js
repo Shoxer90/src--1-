@@ -3,11 +3,12 @@ import { memo } from 'react';
 import styles from "../index.module.scss";
 import { useForm } from 'react-hook-form';
 // import loginAPI from '../../../services/auth/auth';
-import { Alert, Button, Dialog} from '@mui/material';
+import { Alert, Button, Dialog, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput} from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import loginAPI from '../../../services/auth/auth';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const LogInFormNew = ({
   screenWidth, 
@@ -49,6 +50,7 @@ const LogInFormNew = ({
         setMessage()
       },6000)
       ): (
+        localStorage.setItem("notificOk", false),
         whereIsMyUs(),
         setIsLogIn(true),
         navigate("/"),
@@ -61,9 +63,10 @@ const LogInFormNew = ({
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(signInToAccount)}>
-      <input 
+      {/* <input 
         style={{
-          width:screenWidth > 768 ? "60%": "100%",
+          // width:screenWidth > 768 ? "60%": "100%",
+          width: "60%",
           fontSize:"120%",
           marginBottom:"10px",
           border: errors?.username || message? "red solid 2px": "grey solid",
@@ -76,12 +79,24 @@ const LogInFormNew = ({
             required: t("authorize.errors.allInputEmpty"),
           }
         )} 
-      />
-                
-      <span style={{position:"relative",height:"fit-content", fontSize:"100%",padding:"0px", width: screenWidth>768 ?"60%": "100%"}}>
+      /> */}
+        <FormControl sx={{width: '60%', m:1}} variant="outlined">
+          <InputLabel>{t("authorize.username")}</InputLabel>
+          <OutlinedInput
+            size="small"
+            error={errors?.password || message}
+            {...register("username", {
+              required: t("authorize.errors.allInputEmpty"),
+            })}
+            label={t("authorize.username")}
+          />
+        </FormControl>
+          
+      {/* <span style={{position:"relative",height:"fit-content",alignContent:"flex-start", fontSize:"100%",padding:"0px"}}>
         <input 
           style={{
-            width:"100%",
+            // width:"100%",
+            width: "60%",
             fontSize:"120%",
             marginBottom:"10px",
             padding:"2px 10px",
@@ -94,10 +109,35 @@ const LogInFormNew = ({
             required: t("authorize.empty")
           })}
         />
-        <span style={{position:"absolute",zIndex:9999,top:"8%",left:"90%",color:"black"}} onClick={()=>setSeePass(!seePass)}>
+        <span style={{position:"absolute",zIndex:9999,top:"8%",left:"40%",color:"black"}} onClick={()=>setSeePass(!seePass)}>
           {!seePass ? <VisibilityIcon style={{padding:2}}/> : <VisibilityOffIcon style={{padding:2}}/>} 
         </span>
-      </span>
+
+      </span> */}
+        <FormControl sx={{width: '60%', m:1}} variant="outlined">
+          <InputLabel>{t("authorize.password")}</InputLabel>
+          <OutlinedInput
+            type={seePass ? 'text' : 'password'}
+            // style={{border: errors?.password || message && "red solid 2px"}}
+            size="small"
+            error={errors?.password || message}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton onClick={()=>setSeePass(!seePass)}>
+                  {seePass ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            {...register("password", {
+              required: t("authorize.empty"),
+              minLength: {
+                value: 8,
+                // message: t("authorize.password_too_short"),
+              },
+            })}
+            label={t("authorize.password")}
+          />
+        </FormControl>
       
      
       <div style={{width:"80%",display:"flex"}}>

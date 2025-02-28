@@ -5,19 +5,16 @@ import styles from "../index.module.scss";
 import BasketContentItem from "./BasketContentItem";
 
 const BasketContent = ({
-  avail,
-  paymentInfo, 
-  setAvail,
   basketContent, 
   changeCountOfBasketItem, 
   deleteBasketItem,
   screen,
+  avail,
+  setAvail,
   flag,
-  setSingleClick,
   createMessage,
   freezeCount,
 }) => {
-
   return (
   <div className={styles.bask_container_body}>
     <Divider style={{margin:1,backgroundColor:"gray"}} />
@@ -29,12 +26,9 @@ const BasketContent = ({
           setAvail={setAvail}
           deleteBasketItem={deleteBasketItem}
           changeCountOfBasketItem={changeCountOfBasketItem}
-          paymentInfo={paymentInfo}
           screen={screen}
           flag={flag}
           createMessage={createMessage}
-          //unused props
-          setSingleClick={setSingleClick}
           freezeCount={freezeCount}
         />
         <Divider sx={{backgroundColor:"gray"}} color="black" />

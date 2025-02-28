@@ -65,7 +65,7 @@ const CashiersItem = ({
           }
           label={t("settings.hdmAuth")} 
         />
-        {/* <span style={{fontSize:'65%',color:"green"}}>({t("settings.notAvailableInWeb")})</span> */}
+        <span style={{fontSize:'65%',color:"green"}}>({t("settings.notAvailableInWeb")})</span>
         </div>
         {/*  */}
         <FormControlLabel 

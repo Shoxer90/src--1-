@@ -2,11 +2,10 @@ import { baseUrl, option } from "../baseUrl";
 import axios from "axios";
 
 export async function loginAPI (username, password){
+  const lang = localStorage.getItem("lang")
   const option = {
     headers: {
-      // accept_language: "ru"
-      accept_language:  localStorage.getItem("lang") !==null ? localStorage.getItem("lang"): "hy"
-
+      accept_language: lang === "hy" || lang === "ru" || lang === "eng" ? lang : "hy"
     },
   };
   const body = { username: username, password: password, isLastVersion:true };

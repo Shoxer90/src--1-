@@ -49,7 +49,7 @@ const HistoryPage = ({logOutFunc}) => {
     }else if(data === "Canceled") {
       response = await getSaleProducts("GetReveredHistoryByPage", {page: page, count: perPage, byDate: date})
     }else if(data === "Prepayment") {
-      response = await getPrepayment({page: page, count: perPage, searchString:"", isPayd: false})
+      response = await getPrepayment({page: page, count: perPage, searchString:"", isPayd: true})
     }else if(data === "EndPrepayment") {
       response = await getPrepayment({page: page, count: perPage, searchString:"", isPayd: true})
     }

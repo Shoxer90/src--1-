@@ -1,5 +1,5 @@
 import { Box, FormControl, NativeSelect } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { memo } from "react";
 import LanguageIcon from '@mui/icons-material/Language';
 import { useTranslation } from "react-i18next";
@@ -7,10 +7,14 @@ import { useTranslation } from "react-i18next";
 const Language = () => {
   const { i18n} = useTranslation();
 
-  const changeLanguage = (lang) => {
+  const changeLanguage = (lang="hy") => {
     localStorage.setItem("lang", lang )
    return i18n.changeLanguage(lang)
   };
+
+  useEffect(()=> {
+    changeLanguage(lang)
+  }, [])
 
   return(
     <FormControl variant="standard" sx={{ minWidth:120,m:1,"&:hover":{color:"orange"} }}>

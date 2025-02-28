@@ -71,7 +71,7 @@ const PayComponent = ({
   const payUsingNewCard = () => {
     payForServiceWithNewCard(billsData).then((res) => {
       setLoader(false)
-        window.open( res?.formUrl, '_blank');
+        window.open( res?.formUrl, '_blank', 'noopener,noreferrer');
       })
   }
 

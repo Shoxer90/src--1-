@@ -43,13 +43,13 @@ const HistoryItems = ({
     if(pageName?.status === "Unpaid") {
     return setOpenDetails(true)
     }else if(pageName?.status === "Canceled"){
-    return item?.link ? window.open(item?.link, "_blank") : setOpenDetails(true)
+    return item?.link ? window.open(item?.link, "_blank", 'noopener,noreferrer') : setOpenDetails(true)
     }else{
     setLoad(true)
       // it can be physical HDM
       if(item?.hdmMode === 2) {
         setLoad(false)
-       return item?.link ? window.open(item?.link, "_blank") : setOpenDetails(true)
+       return item?.link ? window.open(item?.link, "_blank",  'noopener,noreferrer') : setOpenDetails(true)
       }
       await hdm_generate(id).then((resp) => {
         setLoad(false)
@@ -124,15 +124,19 @@ const HistoryItems = ({
           </span>
         </TableCell>
       }
-      {pageName?.status !=="Prepayment" ? filterBody.includes("total") && <TableCell style={{padding:"0px"}}>{item?.total} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>:<TableCell> - </TableCell>}
+      {pageName?.status !=="Prepayment" ? filterBody.includes("total") && <TableCell style={{padding:"0px"}}>{item?.total} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>:<TableCell>{item?.prePaymentAmount} </TableCell>}
      
       {filterBody.includes("cashAmount") && <TableCell>{item?.cashAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
       {filterBody.includes("cardAmount") && <TableCell>{item?.cardAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
-      {filterBody.includes("prepaymentAmount") && <TableCell>{item?.saleType === 5 ? item?.total: item?.prePaymentAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
+      
+      {pageName?.status !=="Prepayment" ?  
+        filterBody.includes("prepaymentAmount") && <TableCell>{ item?.prePaymentAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>:
+        <TableCell>-</TableCell>
+      }
+      
       {filterBody.includes("additionalDiscount") && <TableCell style={{padding:"0px 16px"}}>{item?.additionalDiscount} </TableCell>}
       {filterBody.includes("saleType") && 
         <TableCell style={{padding:"0px 16px",fontSize:"85%"}}>
-          {/* {item?.hdmMode === 2 &&  "fizikakan"} */}
           {item?.saleType === 1 && t("history.cash")}
           {item?.saleType === 2 && t("history.card")}
           {item?.saleType === 3 && t("history.qr")}

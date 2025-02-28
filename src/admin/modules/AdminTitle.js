@@ -1,12 +1,21 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
-const AdminTitle = ({title, subTitle}) => {
+const AdminTitle = ({notrans}) => {
+	const titleData = useSelector((state) => state?.title)
+
 	const {t} = useTranslation();
 	return(
 		<div>
-			{title ? <h3>{t(`${title}`).toUpperCase()}</h3>:""}
-			{subTitle ? <h5>{t(`${subTitle}`).toUpperCase()}</h5>: ""}
+			{notrans ?
+			<h5>{titleData?.title}</h5>:
+				<>
+				{titleData?.title ? <h4>{t(`${titleData?.title}`).toUpperCase()}</h4>:""}
+				
+				{titleData?.subTitle ? <h5>{t(`${titleData?.subTitle}`).toUpperCase()}</h5>: ""}
+				</> 
+			}
 		</div>
 	)
 };

@@ -106,9 +106,11 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
           name="sale type"
           style={{color:"darkgrey"}}
           checked={user?.ehdmMode === 2}
-          onClick={()=>questionForConfirmText(2)}
+          readOnly
+          // onClick={()=>questionForConfirmText(2)}
         />
-       <span style={{marginLeft:"10px"}}>{t("history.hdm")}</span> 
+    {/* "notAvailableInWeb": "Недоступно", */}
+    <span style={{marginLeft:"10px"}}>{t("history.hdm")} <span style={{fontSize:"70%", color:"green"}}> ({t("settings.notAvailableInWeb")})</span> </span> 
       </label>
     </h6>
     {user && <ClientInfo />}

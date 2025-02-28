@@ -1,5 +1,5 @@
 .navigation{
-  background-color: black;
+  background-color: #171A1C;
   color: white;
   height: 12dvh;
   box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;
@@ -8,10 +8,21 @@
     display:flex;
     flex-flow: row nowrap;
     justify-content: space-around;
-    font-weight: 700;
     &_item{
       padding: 5px;
       margin: 10px;
     }
+  }
+  &_main_nav{
+    
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  &_user_logo{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
   }
 }

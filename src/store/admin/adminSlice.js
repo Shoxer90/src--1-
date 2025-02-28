@@ -2,12 +2,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    id: 1,
-    firstname: "",
-    lastname: "",
-    username: "",
-    password: "",
-    role: 2
+  id: 1,
+  firstname: "",
+  lastname: "",
+  username: "",
+  password: "",
+  role: 2
 }
 
 const adminSlice = createSlice({

@@ -1,8 +1,7 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import { setAuthToken } from "../tokenSlice";
-import { setAuthAdmin } from "../admin/adminSlice";
 import { setStores } from "./storesUsersSlice";
-import { setCount } from "../contentCountSlice";
+import { setPagination } from "../pagination/paginationSlice";
 
  export const storesApi = createApi({
   reducerPath:"storesApi",
@@ -29,7 +28,7 @@ import { setCount } from "../contentCountSlice";
         try {
           const { data, meta } = await queryFulfilled;
           const count = meta.response.headers.get("count")
-          dispatch(setCount(count))
+          dispatch(setPagination({length:count, perPage: credentials?.count}))
           dispatch(setStores(data));
         } catch(error) {
           dispatch(setAuthToken(null));
@@ -40,4 +39,4 @@ import { setCount } from "../contentCountSlice";
 });
 // get=> query
 // post=> builder
-export const {useStoresByPageQuery} = storesApi
+export const {useStoresByPageQuery, useLazyStoresByPageQuery} = storesApi

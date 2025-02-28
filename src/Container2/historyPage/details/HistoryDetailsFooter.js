@@ -19,7 +19,7 @@ const HistoryDetailsFooter = ({
             </strong>
           </div>
           <span>
-            {t("history.prepaymentRedemption")}
+            {t("history.prepaymentRedemption1")}
             <span style={{margin:"0 5px"}}> 
               {item?.cashAmount+ item?.cardAmount+item?.prePaymentAmount} {t("units.amd")}/</span> 
           </span>

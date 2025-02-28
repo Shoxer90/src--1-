@@ -8,9 +8,11 @@ const ItemReverse = ({
   brand, 
   name, 
   count, 
+  recieptId,
   discountedPrice,
   unit,
-  index,
+  isChecked,
+  quantity,
   reverseContainer,
   setReverseContainer,
   checkedProduct,
@@ -21,8 +23,8 @@ const ItemReverse = ({
   const handleChange = (e) => {
     let isValid = false;
     const data = e.target.value;
-    setReverseContainer(reverseContainer.map((item ,i) => {
-      if(i === index && +e.target.value <= +count){
+    setReverseContainer(reverseContainer.map((item) => {
+        if(item?.recieptId === recieptId && +e.target.value <= +count){
         if(unit === "հատ"){
           const needSymb = /^[0-9]*$/;
           isValid = needSymb.test(data)
@@ -73,8 +75,9 @@ const ItemReverse = ({
         <input 
           type="checkbox"
           name="isChecked"
-          onChange={(e)=>checkedProduct(index, e.target.name,e.target.checked)}
-          checked={reverseContainer[index]?.isChecked || false}
+          onChange={(e)=>checkedProduct(recieptId, e.target.name,e.target.checked)}
+          checked={isChecked || false}
+          // checked={reverseContainer[index]?.isChecked || false}
         />
         <img src={photo || "/default-placeholder.png"} alt="prod" />
         <span style={{fontWeight:600}}>{brand} {name}</span>
@@ -85,7 +88,9 @@ const ItemReverse = ({
           className={styles.reverse_quantity_input}
           autoComplete="off"
           name="quantity"
-          value={reverseContainer[index]?.quantity}
+          value={quantity}
+          // value={reverseContainer[index]?.quantity}
+          // value={reverseContainer[index]?.quantity}
           onChange={(e)=>handleChange(e)}
         />
         <span style={{minWidth:"60px"}}>

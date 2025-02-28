@@ -4,7 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import Slide from '@mui/material/Slide';
 import { updateProduct } from "../../../services/products/productsRequests";
-import { Box, display } from "@mui/system";
+import { Box } from "@mui/system";
 import { Checkbox, Divider, FormControl, FormControlLabel, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -37,7 +37,8 @@ const UpdateProduct = ({
   content,
   getSelectData,
   typeCode,
-  setTypeCode
+  setTypeCode,
+  setCurrentPage
 }) => {
   const {t} = useTranslation();
 
@@ -149,7 +150,6 @@ const UpdateProduct = ({
   };
 
   const handleUpdate = async() => {
-    // setContent([])
      const newArr = await content.map((item) => {
       if(item?.id === currentProduct?.id){
            return currentProduct
@@ -160,8 +160,9 @@ const UpdateProduct = ({
     setContent(newArr)
 
     updateProduct(currentProduct).then((res) => {
-      setFetching(true)
       if(res === 200) {
+        setCurrentPage(1)
+        setFetching(true)
         deleteBasketItem(currentProduct?.id)
 
         setFlag(!flag)

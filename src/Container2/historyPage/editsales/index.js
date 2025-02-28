@@ -53,9 +53,8 @@ const ReverseDialog = ({
       setIsAllSelected(false)
     }
     setReverseContainer(
-      reverseContainer.map((item,index) =>{
-        // if(item?.isChecked)
-        if(index === i){
+      reverseContainer.map((item) =>{
+        if(item?.recieptId === i){
           return {
             ...item,
             [name]: value
@@ -64,9 +63,7 @@ const ReverseDialog = ({
           return item
         }
       })
-
     )
-   
   };
 
 const handleOk = async(func, body) => {
@@ -156,7 +153,7 @@ const reverse = async () => {
   const fillReverseContainer = async() => {
     const arr = []
     await products && products.map((item) => arr.push({
-      recieptId: item?.recieptId, 
+      ...item,
       quantity: item?.count, 
       isChecked: false
     }))
@@ -213,14 +210,13 @@ const reverse = async () => {
         {products?.length ?
           <>
             <SelectAll selectAllProducts={selectAllProducts} isAllSelected={isAllSelected} />
-            { products.map((prod,index)=>(
+            { reverseContainer.map((prod)=>(
               <ItemReverse
                 key={prod?.id}
                 {...prod}
                 reverseContainer={reverseContainer}
                 setReverseContainer={setReverseContainer}
                 checkedProduct={checkedProduct}
-                index={index}
                 totalCounter={totalCounter}
               />
             ))}

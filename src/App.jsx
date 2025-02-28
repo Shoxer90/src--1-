@@ -8,6 +8,8 @@ import FeedBackPage from "./Container2/feedback";
 import CheckStatusArCa from "./Container2/settingsPage/serviceAmount/attachCard"
 import AdminPanel from "./admin/panel";
 import UsersContainer from "./admin/panel/stores";
+import CustomerPage from "./admin/panel/customers"
+import CustomerPayments from "./admin/panel/payments";
 
 import { byBarCode, productQuery } from "./services/products/productsRequests";
 import { getBasketContent } from "./modules/modules";
@@ -43,8 +45,8 @@ import { QrSoccet } from "./QrSoccet";
 import ConfirmDialog from "./Container2/dialogs/ConfirmDialog";
 import PrivacyPayx from "./payxPrivacyRemove/PrivacyPayx";
 import AdminPage from "./admin/index";
-import AdminLogin from "./admin/auth/AdminLogin";
-import i18n from "./i18next/i18n";
+import NewContract from "./Container2/dialogs/notifications/NewContract";
+import CustomerSaleHistory from "./admin/panel/customers/CustomerSaleHistory";
 
 const App = () => {
 
@@ -80,6 +82,7 @@ const App = () => {
     prepayment: false,
     payment: false,
     isOpen: false,
+    isEdit: false,
     prePaymentAmount: JSON.parse(localStorage.getItem("endPrePayment"))?.prepayment || 0,
     isPrepayment: localStorage.getItem("endPrePayment") ? true : false
   });
@@ -100,7 +103,7 @@ const App = () => {
   });
  
   const whereIsMyUs = async() => {
-    console.log("06.02.2025")
+    console.log("27.02.2025")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -111,22 +114,11 @@ const App = () => {
       localStorage.setItem("reverse", JSON.stringify(res?.payload?.reverceStatus))
       localStorage.setItem("taxRegime", JSON.stringify(res?.payload?.taxRegime))
       checkUserStatus()
-      // if(res?.error?.message === "Rejected"){
-      //   logOutFunc()
-      // }else 
       if(res?.payload?.isInDate === false && !res?.payload?.days && res?.payload?.showPaymentPage){
         navigate("/setting/services")
         setBlockedUser(true)
-      }
-      else if(res?.payload?.isInDate === true && res?.payload?.days &&  res?.payload?.showPaymentPage){
-        setMessage({
-          type:"error",
-          message:`${t("cardService.notInDateTrueDays")} ${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}  ${t("cardService.notInDateTrueDays2")}`
-        })
-      }
-      else if(res?.payload?.isInDate === true){
+      } else if(res?.payload?.isInDate === true){
         setBlockedUser(false)
-        !res?.payload?.confirmation && res?.payload?.showPaymentPage && !count && checkForNewNotification()
         setCount(true)
       }
     })
@@ -153,7 +145,6 @@ const App = () => {
     if(barcode === "" || barcode === " "){
       await queryFunction(dataGroup, 1).then((res) => {
         setContent(res?.data)
-        setMessage("")
       })
       setCurrentPage(2)
       return
@@ -225,10 +216,12 @@ const App = () => {
   };
 
   const changeCountOfBasketItem = async(id,value) => {
+   
     let handleArr = [] 
     await  getBasketContent().then((res) => {
       res.map((prod) => {
         if(prod.id === id) {
+          
           return handleArr.push({...prod, count: value})
         }else{
          return handleArr.push(prod)
@@ -241,6 +234,7 @@ const App = () => {
 
   const deleteBasketItem = async(id) => {
     let handleArr = await basketContent.filter(prod => prod.id !== id)
+   
 // handling freze prods when you want to close prepayment transaction
       let freeze = await JSON.parse(localStorage.getItem("freezeBasketCounts"))
       if(freeze?.length){
@@ -250,6 +244,7 @@ const App = () => {
 // 
     if(!handleArr?.length) {
       localStorage.removeItem("endPrePayment")
+      localStorage.removeItem("isEditPrepayment")
       setOpenWindow({
         prepayment: false ,
         payment: false,
@@ -265,7 +260,9 @@ const App = () => {
   const deleteBasketGoods = async() => {
     !localStorage.getItem("endPrePayment") && setFlag(flag+1);
     localStorage.removeItem("endPrePayment")
+    localStorage.removeItem("isEditPrepayment")
     localStorage.removeItem("freezeBasketCounts")
+    localStorage.removeItem("isEditPrepayment")
     setPaymentInfo({
       discountType: 0,
       cashAmount: 0,
@@ -394,19 +391,32 @@ const App = () => {
   
   useEffect(() => { 
     isLogin && getMeasure()
+    !user?.confirmation && user?.showPaymentPage && !count && checkForNewNotification()
+   
   },[t,isLogin]);
 
   useEffect(() => {
-    // isLogin && getMeasure()
-    // setDataGroup("GetAvailableProducts")
-    // setCurrentPage(1)
+    if(user?.isInDate === true &&
+      user?.days && 
+      user?.showPaymentPage &&
+      !(JSON.parse(localStorage.getItem("notificOk")))
+    ){
+      const date = new Date(user?.nextPaymentDate);
+      setMessage({
+        type:"error",
+        message:`${t("cardService.notInDateTrueDays")} 
+        ${date.getDate().toString().padStart(2, '0')}.
+        ${(date.getMonth() + 1).toString().padStart(2, '0')}.
+        ${date.getFullYear()}  ${t("cardService.notInDateTrueDays2")}`
+      })
+      localStorage.setItem("notificOk", true)
+    }
     loadBasket()
-  },[isLogin]);
+  },[user ]);
 
   useEffect(() => {
     setCount(false)
     whereIsMyUs() 
-    // setDataGroup("GetAvailableProducts")
   },[]);
 
  useEffect(() => {
@@ -443,10 +453,11 @@ const App = () => {
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
           <Route path="/basket/*" element={<BasketList t={t} />} />
 {/* ADMIN PAGE */}
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/*" element={<AdminPage />} />
           <Route path="/admin/stores" element={<AdminPanel children={<UsersContainer />} />} />
-          <Route path="/admin/customers" element={<AdminPanel />} />
-          <Route path="/admin/customers2" element={<AdminPanel />} />
+          <Route path="/admin/transactions/customer" element={<AdminPanel children={<CustomerPage children={<CustomerSaleHistory />} />} />} />
+          <Route path="/admin/invoices/customer" element={<AdminPanel children={<CustomerPage children={<div>INVOICES</div>} />} />} />
+          <Route path="/admin/payments/customer" element={<AdminPanel children={<CustomerPage children={<CustomerPayments />} />} />} />
         </Routes> :
         <>
           <Header
@@ -548,6 +559,15 @@ const App = () => {
             setData={setNotification}
             open={notification.length}
           /> : ""}
+
+          {(!user?.hasAgreement && user?.newTerms) ?
+            <NewContract 
+              func={whereIsMyUs}
+              data={user?.newTerms}
+              open={!user?.hasAgreement}
+              contractLink={user?.contractLink}
+            /> : ""
+          }
           <Snackbar  
             sx={{ height: "100%" }}
             anchorOrigin={{   

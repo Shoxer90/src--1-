@@ -11,10 +11,8 @@ const Notification = ({
   open,
 }) => {
   const {t} = useTranslation();
-
-   const [dataForNotification, setDataForNotification] = useState([]);
-   const [openButtonSubmit, setOpenButtonSubmit] = useState("");
-
+  const [dataForNotification, setDataForNotification] = useState([]);
+  const [openButtonSubmit, setOpenButtonSubmit] = useState("");
 
   const langEnum = () => {
     let lang = localStorage.getItem("lang") || localStorage.getItem("i18nextLng")
@@ -22,7 +20,7 @@ const Notification = ({
     case 'ru':
       setContent("rus");
       break;
-    case 'en':
+    case 'eng':
       setContent("eng");
       break;
     default:
@@ -31,11 +29,16 @@ const Notification = ({
   };
 
   const setContent = (str) => {
-    const arrTitle = ["title", "text", "button"];
     let obj = {};
-    data.forEach((item, index) => (
-      obj[arrTitle[index]] = item[`${str}`]
-    ))
+    data.forEach((item) => {
+      if(item?.id === 1) {
+        return obj.title = item[`${str}`]
+      }else  if(item?.id === 2) {
+        return obj.text = item[`${str}`]
+      }else  if(item?.id === 3) {
+        return obj.button = item[`${str}`]
+      }
+    })
     setDataForNotification(obj)
   };
 

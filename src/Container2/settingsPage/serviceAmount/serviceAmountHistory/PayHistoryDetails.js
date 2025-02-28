@@ -41,7 +41,7 @@ const PayHistoryDetails = ({
         <Divider sx={{m:1,backgroundColor:"gray"}} color="black" />
         <div className={styles.history}>
           <div className={styles.history_item}>
-            <span>{t("cardService.service")}</span>
+            <span>{t("cardService.service")}</span>jhkgvhk
             <span>{t(`settings.${service}`)}</span>
           </div>
           <div className={styles.history_item}>

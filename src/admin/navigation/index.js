@@ -1,71 +1,56 @@
-import {  forwardRef, memo, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { NAV_TITLES } from "../modules/variables";
+import { memo } from "react";
+import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import { AppBar } from "@mui/material";
 
 import NavigationItem from "./NavigationItem";
 import { useGetAdminUserQuery } from "../../store/admin/adminApi";
+import LangSelect from "../../Container2/langSelect";
 
 import styles from "./index.module.scss";
-import { AppBar, Slide } from "@mui/material";
 
-
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="right" ref={ref} {...props} />;
-});
-
-const Navigation = ({setTitle}) => {
+const Navigation = ({ currentNavigation, changeNavigation }) => {
+  const search = useLocation().search;
+  const storeId = new URLSearchParams(search).get("id");
+  const userName = useSelector((state) => state?.title?.userName)
+  const {data: admin, isFetching} = useGetAdminUserQuery(); 
   
-  const navigate = useNavigate();
-  const [navDirect, setNavDirect] = useState();
-  const {data: admin, isFetching} = useGetAdminUserQuery()
-
-  const changeNavigation = (id) => {
-    let path = ""
-    let newNav = navDirect.map((navItem) => {
-      if(navItem?.id === id){
-        setTitle({
-          subtitle: navItem?.subtitle || "",
-          title: navItem?.title
-        })
-        path = navItem?.path
-        return {
-          ...navItem,
-          isActive: true
-        }
-      }else {
-        return {
-          ...navItem,
-          isActive: false
-        }
-      }
-    })
-    setNavDirect(newNav)
-    navigate(path)
-  }
-
-  useEffect(() => {
-    setNavDirect(NAV_TITLES)
-  }, []);
-  
-  if(isFetching){
-   <div>"...Loading"</div>
-  }
+  if(isFetching) {<div>Loading...</div>};
 
   return (
-    <AppBar>
+    <AppBar sx={{background:"#171A1C"}}>
       <div className={styles.navigation}>
+        <div className={styles.navigation_main_nav}>
+          <NavigationItem 
+            changeNavigation={changeNavigation}
+            {...currentNavigation[0]}
+          />
+          <span className={styles.navigation_user_logo}>
+            <span>{admin?.firstname} {admin?.lastname}</span>
+            <LangSelect size={"22px"} />
+          </span>
+        </div>
+
         <nav className={styles.navigation_container}>
-        <span>{admin?.firstname} {admin?.lastname}</span>
-          {navDirect && navDirect.map((navItem)=>(
-            <NavigationItem 
-              key={navItem?.path}
-              changeNavigation={changeNavigation}
-              {...navItem}
-            />
-          ))}
+          {!currentNavigation[0].isActive && storeId &&
+            <span style={{fontSize:"110%", fontWeight:"600", color:"#3FB68A"}}>
+              {userName || ""}
+            </span>
+          }
+          
+          {!currentNavigation[0].isActive && currentNavigation.map((navItem, index)=>{
+            if(index !==0){
+              return <NavigationItem 
+                key={navItem?.path}
+                changeNavigation={changeNavigation}
+                {...navItem}
+              />
+            }
+          })}
         </nav>
       </div>
-      </AppBar>
+    </AppBar>
   )
 };
 

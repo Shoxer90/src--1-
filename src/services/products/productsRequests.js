@@ -324,18 +324,28 @@ export const getPrepayment = async(body) => {
   }
 };
 
-// export const removeItemFromPrepayment = async(id) => {
-//   const option = {
-//     headers: {
-//       Authorization: localStorage.getItem("token"),
-//     },
-//   }
-//   try{
-//     const data =  await axios.post(baseUrl + `PrePayment/GetPrepaymentsHistory`, body, option)
-//     let newData = {data:data?.data, count: +data?.headers?.count}
-//     return newData
-//   }catch(err){
-//     return err?.response?.status
-//   }
-// };
+export const SavePrePaymentBasket = async(obj) => {
+  // model={
+  //   "prePaymentSaleDetailId": 0,
+  //   "sales": [
+  //     {
+  //       "id": 0,
+  //       "count": 0
+  //     }--+ 
+  //   ]
+  // };
+
+  const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+      "Access_language": localStorage.getItem("lang") || "hy"
+    },
+  }
+  try{
+    const data =  await axios.put(baseUrl + `Sale/SavePrePaymentBasket`, obj, option)
+    return data
+  }catch(err){
+    return err?.response
+  }
+};
 

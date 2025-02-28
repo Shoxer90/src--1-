@@ -35,7 +35,6 @@ const PrePaymentList = ({
 
   const getPrepaymentList = () => {
     getPrepayment({page: currentPage, count: 24, searchString: "", isPayd:false}).then((res) =>{
-      console.log(res,"ress")
       if(res?.data) {
         setList(res?.data)
         setCount(res?.count)
@@ -53,7 +52,6 @@ const PrePaymentList = ({
     getPrepaymentList()
   },[currentPage, flag]);
 
-console.log(list, "list")
   return (
     <div className={styles.container}>
       { list.length ? <>
@@ -69,6 +67,7 @@ console.log(list, "list")
               setOpenWindow={setOpenWindow} 
               setPaymentInfo={setPaymentInfo}
               paymentInfo={paymentInfo}
+              getPrepaymentList={getPrepaymentList}
             />
           )}
         </div>

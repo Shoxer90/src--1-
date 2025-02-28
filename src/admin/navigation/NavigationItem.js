@@ -1,26 +1,17 @@
 import { memo } from "react";
-import styles from "./index.module.scss";
 import { useTranslation } from "react-i18next";
 
-
-const NavigationItem = ({
-  title,
-  path,
-  isActive,
-  id,
-  changeNavigation
-}) => {
+const NavigationItem = ({ title, isActive, id, changeNavigation}) => {
   const {t} = useTranslation();
-  
-  const linkStyle = {
-    color: isActive && "orange",
-  };
 
   return (
     <span 
-      // className={styles.navigation_container_item} 
-      onClick={()=>changeNavigation(id)} 
-      style={linkStyle}
+      onClick={()=>{
+        if(!isActive){
+          changeNavigation(id)
+        }
+      }} 
+      style={{color: isActive && "orange"}}
     >
       {t(`${title}`)?.toUpperCase()}
     </span>

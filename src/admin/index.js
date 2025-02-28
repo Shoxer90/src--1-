@@ -1,6 +1,5 @@
 import { memo } from "react";
 import AdminLogin from "./auth/AdminLogin";
-
 const AdminPage = () => {
 
   return(

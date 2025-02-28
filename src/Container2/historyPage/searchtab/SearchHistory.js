@@ -30,8 +30,7 @@ const SearchHistory = ({
 
 
   const [ownDate, setOwnDate] = useState({});
-  
-  const [openDatePicker, setOpenDatePicker] = useState(false)
+  const [openDatePicker, setOpenDatePicker] = useState(false);
 
   const fileReader = async(argument) => {
     await generateToExcel(argument).then((resp) => {
