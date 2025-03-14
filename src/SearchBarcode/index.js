@@ -1,8 +1,9 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
-import { IconButton, InputBase, Paper } from '@mui/material';
+import { Button, IconButton, InputBase, Paper } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';
+import useDebonce from "../../../../hooks/useDebonce";
 
 
 const SearchBarcode = ({
@@ -13,11 +14,42 @@ const SearchBarcode = ({
   stringFrom,
   dataGroup
 }) => {
+  
+  const debounceEmark = useDebonce(searchValue, 20);
+  const [ synthVal,setSynthVal] = useState("")
 
   const handleChangeSearch = (e) => {
+    let decoded = encodeURIComponent(e.target.value)
+    // let decoded = encodeURIComponent("0104850025780021211B%DRtFbVH&Qr93JYSC")
+    // console.log(encodeURIComponent("0104850025780021 211B%DRtFbVH&Qr93JYSC"));
+    setSynthVal(e.target.value)
     setFrom(stringFrom)
     setSearchValue(e.target.value)
+    // setSearchValue(e.target.value)
   };
+  useEffect(() =>{
+    setSearchValue(synthVal)
+  }, [debounceEmark])
+
+	const connectSerial = async () => {
+    try {
+      const port = await navigator.serial.requestPort();
+      await port.open({ baudRate: 9600 });
+
+      const reader = port.readable.getReader();
+      let decoder = new TextDecoder();
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        // setSearchValue((prev) => prev + decoder.decode(e.target.value))
+      }
+      reader.releaseLock();
+    } catch (error) {
+      alert("error")
+    }
+  };
+
+
 
   const {t} = useTranslation();
 
@@ -48,6 +80,7 @@ const SearchBarcode = ({
       <IconButton type="button" sx={{p: '10px'}} onClick={()=>byBarCodeSearching(dataGroup, searchValue)}>
        <SearchIcon fontSize="medium" />
       </IconButton>
+      <Button onClick={connectSerial}>connect</Button>
    </Paper> 
   )
 }
