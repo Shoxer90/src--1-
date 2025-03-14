@@ -14,33 +14,10 @@ const SearchBarcode = ({
   dataGroup
 }) => {
   
-  const [ synthVal,setSynthVal] = useState("")
-  const [ decoded,setDecoded] = useState("")
-
   const handleChangeSearch = (e) => {
-    // let decoded = encodeURIComponent(e.target.value)
-    // let decoded = encodeURIComponent("0104850025780021211B%DRtFbVH&Qr93JYSC")
-    // console.log(encodeURIComponent("0104850025780021 211B%DRtFbVH&Qr93JYSC"));
-    setSynthVal(e.target.value)
+    setSearchValue(e.target.value)
     setFrom(stringFrom)
-    // setSearchValue(e.target.value)
-    // setSearchValue(e.target.value)
   };
-
-
-
-  useEffect(() =>{
-    const handler = setTimeout(() => {
-      setDecoded(decodeURIComponent(synthVal))
-    },500)
-    return () =>{
-      clearTimeout(handler)
-    }
-    
-  }, [synthVal])
-  useEffect(() => {
-    setSearchValue(decoded)
-  },[decoded])
 
 	const connectSerial = async () => {
     try {

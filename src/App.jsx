@@ -145,6 +145,7 @@ const App = () => {
   };
 
   const byBarCodeSearching = async(group,barcode) => {
+    const bb = encodeURIComponent(barcode)
     if(barcode === "" || barcode === " "){
       await queryFunction(dataGroup, 1).then((res) => {
         setContent(res?.data)
@@ -153,18 +154,19 @@ const App = () => {
       return
     }else{
       setMessage("")
-      await byBarCode(group, barcode).then((res) => {
+      await byBarCode(group, bb).then((res) => {
+        // await byBarCode(group, barcode).then((res) => {
         if(from === "basket"){
           if(res?.length) {
             res.forEach((item) =>{
-              if(item?.barCode === barcode){
+              // if(item?.barCode === barcode){
                 if(item?.remainder){
                   setSearchValue("")
                   setToBasketFromSearchInput(item, 1)
                 }else{
                   return setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
                 }
-              }
+              // }
             })
           }else(
            setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
