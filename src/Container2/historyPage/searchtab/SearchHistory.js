@@ -1,14 +1,9 @@
-import React from "react";
-import { useState } from "react";
-import { memo } from "react";
-import { Button, TextField } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { useState, memo } from "react";
+import { Button } from "@mui/material";
 import { saveAs } from 'file-saver';
-import CloseIcon from '@mui/icons-material/Close';
 
 import { generateToExcel } from "../../../services/user/userHistoryQuery";
 import HistoryFilter from "../filter/index";
-import { format } from "date-fns";
 import HistoryExcelBurger from "../searchtab/burgerExcelLoader"
 import DateRangeIcon from '@mui/icons-material/DateRange';
 
@@ -17,11 +12,9 @@ import StartEndDatePicker from "./DatePicker";
 
 const SearchHistory = ({
   getHistoryByStartAndEndDates,
-  coordinator,
   t, 
   initDate,
   setInitDate,
-  initialDateCreator,
   status, 
   setStatus,
   columns,

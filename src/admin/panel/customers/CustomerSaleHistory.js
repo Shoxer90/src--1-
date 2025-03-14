@@ -77,7 +77,7 @@ const CustomerSaleHistory = () => {
       collSlice?.collTitle.includes("total") ? item?.total: null,
       collSlice?.collTitle.includes("cashAmount") ? item?.cashAmount: null ,
       collSlice?.collTitle.includes("cardAmount") ? item?.cardAmount: null ,
-      collSlice?.collTitle.includes("prepaymentAmount") ? item?.prepaymentAmount : null,
+      collSlice?.collTitle.includes("prepaymentAmount") && item?.saleType !== 5 ? item?.prePaymentAmount : null,
       collSlice?.collTitle.includes("additionalDiscount") ? item?.additionalDiscount: null,
       collSlice?.collTitle.includes("saleType") ?
       item?.saleType === 1 ? t("history.cash") :
@@ -109,13 +109,9 @@ const CustomerSaleHistory = () => {
   },[page]);
 
   useEffect(() => {
-    if(!JSON.parse(localStorage.getItem("historyColumn"))){
-      dispatch(setCollumns(columnNames))
-      localStorage.setItem("historyColumn", JSON.stringify(columnNames))
-    }
-    else{
-      dispatch(setCollumns(JSON.parse(localStorage.getItem("historyColumn"))))
-    }
+    dispatch(setCollumns(columnNames))
+    localStorage.setItem("historyColumn", JSON.stringify(columnNames))
+    createCollumnBody()
   },[]);
 
 
@@ -123,12 +119,11 @@ const CustomerSaleHistory = () => {
 
   return (
     <div>
-      {customerHistory &&
+  {customerHistory &&
         <UniversalTable 
           rows={rows}
-          // key={rows[0]}
-          collumns={collSlice?.collTitles}
-          clickToRow={()=>console.log("click to paymtransaction row")} 
+          collumns={collSlice?.collumns}
+          // clickToRow={()=>console.log("click to paymtransaction row")} 
         />
       }
       {/* Ռեվերսի ֆոեւնկցիանգրված չէ,ուղղակի սթորիքսի ռեվերսն ա դրած */}

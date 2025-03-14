@@ -132,9 +132,9 @@ const CardForPrepayment = ({
             {t("basket.remainder")} {item?.remainderOfTheTotalPrice} {t("units.amd")}
           </div>
         </div>
-        <div style={{display:"flex", justifyContent:"space-between"}}>
+        <ButtonGroup >
           {item?.link && 
-            <Button variant="contained" sx={{fontSize:"70%",textTransform: "capitalize", background:"#28A745"}} size="small" >
+            <Button variant="contained" sx={{width:"30%",fontSize:"80%",textTransform: "capitalize", background:"#28A745"}}  >
               <a 
                 style={{padding:"0px", textDecoration:"none", color:"white"}} 
                 href={item?.link?.trim() ? item?.link : null} 
@@ -149,15 +149,16 @@ const CardForPrepayment = ({
             sx={{
               textTransform: "capitalize",
               background:"#F4A261", 
-              fontSize:"70%"
+              width:"34%",
+              fontSize:"80%"
             }}
             variant="contained" 
-            size="small"
+            // size="small"
             onClick={()=>setOpenConfirm(true)}
           >
             {t("history.reverse")}
           </Button>
-          <Button 
+          {/* <Button 
             variant="contained" 
             size="small"
             sx={{
@@ -175,20 +176,21 @@ const CardForPrepayment = ({
             }}
           >
             {t("buttons.edit")}
-          </Button>
+          </Button> */}
           <Button 
             variant="contained" 
             onClick={()=>createBasketContent(0)}
-            size="small"
+            // size="small"
             sx={{
               background:"#6C757D",
-                fontSize:"70%",
+              width:"34%",
+                fontSize:"80%",
               textTransform: "capitalize"
             }}
           >
             {t("basket.completeSale")}
           </Button>
-        </div>
+        </ButtonGroup>
         <ReversePrepaymentDialog 
           biteRev={removePartReciept}
           allRev={removeAllReciept}

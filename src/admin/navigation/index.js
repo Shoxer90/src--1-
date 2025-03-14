@@ -1,7 +1,5 @@
 import { memo } from "react";
 import { useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
-
 import { AppBar } from "@mui/material";
 
 import NavigationItem from "./NavigationItem";
@@ -11,19 +9,25 @@ import LangSelect from "../../Container2/langSelect";
 import styles from "./index.module.scss";
 
 const Navigation = ({ currentNavigation, changeNavigation }) => {
+  const customer = JSON.parse(localStorage.getItem('customer'))
   const search = useLocation().search;
   const storeId = new URLSearchParams(search).get("id");
-  const userName = useSelector((state) => state?.title?.userName)
   const {data: admin, isFetching} = useGetAdminUserQuery(); 
+
+  const goToStorePage = (id) => {
+    localStorage.removeItem("customer")
+    changeNavigation(id)
+  }
   
   if(isFetching) {<div>Loading...</div>};
 
   return (
     <AppBar sx={{background:"#171A1C"}}>
       <div className={styles.navigation}>
+
         <div className={styles.navigation_main_nav}>
           <NavigationItem 
-            changeNavigation={changeNavigation}
+            changeNavigation={goToStorePage}
             {...currentNavigation[0]}
           />
           <span className={styles.navigation_user_logo}>
@@ -33,13 +37,13 @@ const Navigation = ({ currentNavigation, changeNavigation }) => {
         </div>
 
         <nav className={styles.navigation_container}>
-          {!currentNavigation[0].isActive && storeId &&
-            <span style={{fontSize:"110%", fontWeight:"600", color:"#3FB68A"}}>
-              {userName || ""}
+          {/* {!currentNavigation[0].isActive && storeId &&
+            <span style={{ fontWeight:"600", color:"#3FB68A"}}>
+              {customer?.store?.legalName|| ""}
             </span>
           }
-          
-          {!currentNavigation[0].isActive && currentNavigation.map((navItem, index)=>{
+           */}
+          {customer?.store?.legalName && currentNavigation.map((navItem, index)=>{
             if(index !==0){
               return <NavigationItem 
                 key={navItem?.path}

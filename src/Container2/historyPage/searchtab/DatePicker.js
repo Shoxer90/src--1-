@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { addDays } from "date-fns";
 
@@ -17,8 +17,6 @@ const StartEndDatePicker  = ({
   ownDate,
   setOwnDate
 }) => {
-
-  // const [ownDate, setOwnDate] = useState({});
 
   const onChange = (dates) => {
     const [start, end] = dates;

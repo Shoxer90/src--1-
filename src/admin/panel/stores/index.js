@@ -13,6 +13,7 @@ import { useBlockCustomerMutation } from "../../../store/customer/customerApi";
 import UpdateCustomer from "../customers/update"
 import AdminTitle from "../../modules/AdminTitle";
 import { setNavigation } from "../../../store/navigation/NavigationSlice";
+import { setCustomerInfo } from "../../../store/customer/customeSlice";
 
 const UsersContainer = () => {
   const [blockCustomer] = useBlockCustomerMutation();
@@ -66,10 +67,16 @@ const UsersContainer = () => {
     dispatch(setUserName({
       userName:rowData[1]
     }))
+    stores.forEach((item) => {
+      if(item?.store?.id === rowData[0]) {
+        dispatch(setCustomerInfo(item))
+      }
+    })
     dispatch(setPaginationPath({
-      path:`/admin/transactions/customer?id=${rowData[0]}&type=1&page=1`
+      path:`/admin/info/customer?id=${rowData[0]}`
+      // path:`/admin/transactions/customer?id=${rowData[0]}&type=1&page=1`
     }))
-    dispatch(setNavigation({id:"1"}))
+    dispatch(setNavigation({id:"01"}))
   };
 
   useEffect(()=> {

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setCustomerHistory, setCustomerPayments } from "./customeSlice";
+import { setCustomerCashiers, setCustomerHistory, setCustomerInvoices, setCustomerPayments } from "./customeSlice";
 import { setPagination } from "../pagination/paginationSlice";
 import { setMessage } from "../messages/messageSlice";
 
@@ -55,6 +55,44 @@ export const customerApi = createApi({
       },
     }),
 
+    invoicesDetails: builder.query({
+      query: (credentials) => ({
+        // url:`/Admin/GetInvoicesByPage?storeId=${credentials?.id}`,
+        url:`/GetInvoicesByPage?storeId=1`,
+        method: "POST",
+        body: credentials 
+      }),
+      onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
+        try {
+          const { data, meta } = await queryFulfilled;
+          const count = meta.response.headers.get("count")
+          dispatch(setPagination({length:count, perPage: credentials?.count}))
+          dispatch(setCustomerInvoices(data));
+        } catch(error) {
+          console.log(error,"error from customerApi")
+        }
+      },
+    }),
+
+    cashiersDetails: builder.query({
+      query: (credentials) => ({
+        // url:`/GetCashiersByStore?storeId=${credentials?.id}`,
+        url:`/GetCashiersByStore?storeId=1`,
+        method: "POST",
+        body: credentials 
+      }),
+      onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
+        try {
+          const { data, meta } = await queryFulfilled;
+          const count = meta.response.headers.get("count")
+          dispatch(setPagination({length:count, perPage: credentials?.count}))
+          dispatch(setCustomerCashiers(data));
+        } catch(error) {
+          console.log(error,"error from customerApi")
+        }
+      },
+    }),
+
     blockCustomer: builder.mutation({
       query:(credentials) => ({
         url:`/BlockDirector?status=${credentials?.status}&directorId=${credentials?.directorId}`,
@@ -73,6 +111,7 @@ export const customerApi = createApi({
         }
       },
     }),
+
     updateCustomer: builder.mutation({
       query:(credentials) => ({
         url:`/UpdateStore`,
@@ -90,7 +129,9 @@ export const customerApi = createApi({
           console.log(error,"error in update user")
         }
       },
-    })
+    }),
+
+
   })
 });
 
@@ -98,6 +139,9 @@ export const {
   useSaleDetailsQuery, 
   usePaymentsDetailsQuery,
   useLazySaleDetailsQuery , 
+  useInvoicesDetailsQuery,
+  useCashiersDetailsQuery,
+  useLazyInvoicesDetailsQuery,
   useBlockCustomerMutation,
   useUpdateCustomerMutation,
 

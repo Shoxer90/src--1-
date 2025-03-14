@@ -15,6 +15,8 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 
 import styles from "../index.module.scss";
 import { useTranslation } from 'react-i18next';
+import EmarkSingleInput from './emark/EmarkSingleInput';
+import PopUpButton from './emark/PopUpButton';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -381,14 +383,17 @@ const AddNewProduct = ({
               setProduct={setProduct} 
               content={newProduct?.photo}
              />
-            <BarcodeInput
-              emptyValidate={emptyValidate}
-              newProduct={newProduct}
-              isUniqBarCode={isUniqBarCode}
-              setIsUniqBarcode={setIsUniqBarcode}
-              setProduct={setProduct}
-            />
+                <BarcodeInput
+                  emptyValidate={emptyValidate}
+                  newProduct={newProduct}
+                  isUniqBarCode={isUniqBarCode}
+                  setIsUniqBarcode={setIsUniqBarcode}
+                  setProduct={setProduct}
+                />
+
           </Box>
+          {/* emark popup */}
+            <PopUpButton />
           {(regime !== "3" || regime !== "7")  &&
             <div className={styles.duoInput}>
               <FormControlLabel 

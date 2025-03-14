@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { Button, Card, Dialog, FormControlLabel } from "@mui/material";
+import { Button, Card, Dialog } from "@mui/material";
 
 import styles from "./index.module.scss";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog";
@@ -17,7 +17,7 @@ const ServiceItemSecond = ({
   setPayData,
   serviceType,
   refresh,
-  setRefresh
+  setRefresh,
 }) => {
   const [message, setMessage] = useState({message:"",type:""});
   const [openPay, setOpenPay] = useState(false);
@@ -60,27 +60,6 @@ const ServiceItemSecond = ({
       >
         <div style={{display:"flex",justifyContent:"space-between"}}>
           <h6 style={{margin:"4px"}}>{t(`settings.${service?.name}`)}</h6>
-          {/* {!service?.isActive && service?.id === 3 ? "":
-            <Button 
-              variant="contained" 
-              onClick={notAvailableService}
-              sx={{width:"150px",height:"30px",background:"#3FB68A"}}
-            >
-              {service?.isActive  ? t("basket.linkPayment") : ""} 
-              {!service?.isActive && service?.id === 1 ? t("settings.free") : ""}
-            </Button>
-          } */}
-
-          {/* {!service?.isActive && service?.id === 3 ? "":
-            <Button 
-              variant="contained" 
-              onClick={notAvailableService}
-              sx={{width:"150px",height:"30px",background:"#3FB68A"}}
-            >
-              {service?.isActive  ? t("basket.linkPayment") : ""} 
-              {!service?.isActive && service?.id === 1 ? t("settings.free") : ""}
-            </Button>
-          } */}
           {service?.isActive && 
             <Button 
               variant="contained" 
@@ -128,10 +107,7 @@ const ServiceItemSecond = ({
         price={service?.price}
         content={content}
         serviceType={serviceType}
-        message={message}
         setMessage={setMessage}
-        setRefresh={setRefresh}
-        refresh={refresh}
       />
     </>
   );

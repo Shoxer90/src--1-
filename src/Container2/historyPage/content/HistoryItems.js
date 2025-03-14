@@ -124,13 +124,13 @@ const HistoryItems = ({
           </span>
         </TableCell>
       }
-      {pageName?.status !=="Prepayment" ? filterBody.includes("total") && <TableCell style={{padding:"0px"}}>{item?.total} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>:<TableCell>{item?.prePaymentAmount} </TableCell>}
+      {pageName?.status !=="Prepayment" ? filterBody.includes("total") && <TableCell style={{padding:"0px"}}> { item?.saleType !== 5? item?.total :item?.cashAmount+item?.cardAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>:<TableCell>{item?.prePaymentAmount} </TableCell>}
      
       {filterBody.includes("cashAmount") && <TableCell>{item?.cashAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
       {filterBody.includes("cardAmount") && <TableCell>{item?.cardAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>}
       
-      {pageName?.status !=="Prepayment" ?  
-        filterBody.includes("prepaymentAmount") && <TableCell>{ item?.prePaymentAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>:
+      {pageName?.status !=="Prepayment" && filterBody.includes("prepaymentAmount") ?
+        <TableCell>{ item?.saleType === 5 ? "0": item?.prePaymentAmount} <span style={{fontSize:"70%"}}>{t("units.amd")}</span></TableCell>:
         <TableCell>-</TableCell>
       }
       

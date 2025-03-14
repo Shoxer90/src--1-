@@ -125,6 +125,8 @@
     "usernamePassword": "Username and password",
     "newpassword": "New password",
     "password": "Password",
+    "passwordConform": "Enter your password",
+
     "create": "Create an account",
     "company": "Company name",
     "first": "First name",
@@ -267,6 +269,9 @@
     "discount": "Discount",
     "barcode": "Internal code/ Barcode",
     "ndsNone": "Excluding VAT",
+    "nds": "Տaxable with VAT",
+    "tax3": "Turnover Tax",
+    "tax7": "Micro manual",
     "description": "Description",
     "delete_btn": "Delete",
     "measure": "Measure",
@@ -566,6 +571,13 @@
     "changeEhdmMode":"The cash register device is connected (soon it will also be available on the website). To complete the sale, change the sale type.",
     "changeEhdmModeForCashiere":"The cash register device is connected (soon it will also be available on the website)."
   },
+
+  "emark":{
+    "popBtn1" : "Add E-mark via scans",
+    "popBtn2" : "Download E-mark Excel list",
+    "mainBtn" : "E-Mark marking",
+    "availableQr": "Available"
+    },
   "admin":{
     "stores": "Customs, Stores",
     "invoices": "Invoices",

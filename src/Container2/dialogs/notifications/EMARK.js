@@ -17,7 +17,7 @@ export const  EMARK = () => {
 
         if (done) break;
         setBarcode((prev) => prev + decoder.decode(value));
-        console.log( String.fromCharCode(...value),"BARCODE")
+        // console.log( String.fromCharCode(...value),"BARCODE")
       }
 
       reader.releaseLock();
@@ -25,7 +25,6 @@ export const  EMARK = () => {
       console.error("Serial connection error:", error);
     }
   };
-  console.log(barcode,"BARCODE")
 
   return (
     <Button variant="contained" size="large" onClick={connectSerial} sx={{m:5}}>

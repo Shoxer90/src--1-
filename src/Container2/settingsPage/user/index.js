@@ -69,6 +69,7 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
   useEffect(() => {
     whereIsMyUs()
   }, [isLoad]);
+  
   return(
   <div className={styles.settings_user}>
     <ClientShopAvatar client={user} limitedUsing={limitedUsing}/>

@@ -10,6 +10,7 @@ import AdminPanel from "./admin/panel";
 import UsersContainer from "./admin/panel/stores";
 import CustomerPage from "./admin/panel/customers"
 import CustomerPayments from "./admin/panel/payments";
+import CustomerInfo from "./admin/panel/info";
 
 import { byBarCode, productQuery } from "./services/products/productsRequests";
 import { getBasketContent } from "./modules/modules";
@@ -47,6 +48,8 @@ import PrivacyPayx from "./payxPrivacyRemove/PrivacyPayx";
 import AdminPage from "./admin/index";
 import NewContract from "./Container2/dialogs/notifications/NewContract";
 import CustomerSaleHistory from "./admin/panel/customers/CustomerSaleHistory";
+import CustomerCashiers from "./admin/panel/cashiers";
+import AdminInvoices from "./admin/panel/invoices";
 
 const App = () => {
 
@@ -103,7 +106,7 @@ const App = () => {
   });
  
   const whereIsMyUs = async() => {
-    console.log("27.02.2025")
+    console.log("13.03.2025 update")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -453,11 +456,13 @@ const App = () => {
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
           <Route path="/basket/*" element={<BasketList t={t} />} />
 {/* ADMIN PAGE */}
-          <Route path="/admin/*" element={<AdminPage />} />
+          {/* <Route path="/admin/*" element={<AdminPage />} />
+          <Route path="/admin/info/customer" element={<AdminPanel children={<CustomerInfo />} />} />
           <Route path="/admin/stores" element={<AdminPanel children={<UsersContainer />} />} />
           <Route path="/admin/transactions/customer" element={<AdminPanel children={<CustomerPage children={<CustomerSaleHistory />} />} />} />
-          <Route path="/admin/invoices/customer" element={<AdminPanel children={<CustomerPage children={<div>INVOICES</div>} />} />} />
+          <Route path="/admin/invoices/customer" element={<AdminPanel children={<CustomerPage children={<AdminInvoices />} />} />} />
           <Route path="/admin/payments/customer" element={<AdminPanel children={<CustomerPage children={<CustomerPayments />} />} />} />
+          <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} /> */}
         </Routes> :
         <>
           <Header
@@ -565,7 +570,9 @@ const App = () => {
               func={whereIsMyUs}
               data={user?.newTerms}
               open={!user?.hasAgreement}
-              contractLink={user?.contractLink}
+              contractLink="https://storextest.payx.am/Contract-EHDM-30or-Arm-12.02.25.pdf"
+              logOutFunc={logOutFunc}
+              role={user?.role}
             /> : ""
           }
           <Snackbar  

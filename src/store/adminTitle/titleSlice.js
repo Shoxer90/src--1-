@@ -16,6 +16,9 @@ const adminTitleSlice = createSlice({
     },
     setUserName: (state, action) => {
       state.userName = action.payload.userName;
+      localStorage.setItem("customer",JSON.stringify({
+        name: action.payload.userName
+      }))
     }
   },
 });

@@ -299,7 +299,8 @@ const UpdateForm = ({data, setNewData, newData}) => {
               color:"orange",
               fontWeight:700,
               textDecoration:"underline",
-              textAlign:"start"
+              textAlign:"flex-start",
+              // textAlign:"start"
             }}>
             {`Login (${t("authorize.tin")}): ${newData?.userName} `}
           </span>

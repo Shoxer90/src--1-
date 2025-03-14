@@ -135,7 +135,8 @@ const Bascket = ({
     if(salesArr?.length) {
       setSingleClick({})
       basketContent.forEach((item) => {
-        total += (item?.discountPrice * item?.count)
+        total += (item?.discountedPrice ? item?.discountedPrice* item?.count: item?.price * item?.count )
+        // total += (item?.discountPrice * item?.count)
         if(item?.count === "" || item?.count == 0){
           return setIsEmpty(true)
         }
@@ -163,6 +164,7 @@ const Bascket = ({
       })
     }
   };
+  
   const multiSaleProducts = async(saletype) => {
     setSeeBtn(JSON.parse(localStorage.getItem("fromQRpay")))
     setSingleClick({

@@ -5,11 +5,18 @@ export const OUR_ORANGE = "#FFA500";
 
 
 export const NAV_TITLES = [
+ 
   {
     id: "0",
     isActive: true,
     title: "admin.stores",
     path:"/admin/stores"
+  },
+  {
+    id: "01",
+    isActive: false,
+    title: "admin.info",
+    path:"/admin/info/customer"
   },
   {
     id: "1",
@@ -30,6 +37,13 @@ export const NAV_TITLES = [
     isActive: false,
     title:"admin.payments",
     path:"/admin/payments/customer"
+
+  },
+  {
+    ID: "4",
+    isActive: false,
+    title:"settings.cashiers",
+    path:"/admin/cashiers/customer"
 
   }
 ];

@@ -7,10 +7,10 @@ const Services = ({
   content,
   isDelete,
   payData, 
-  logOutFunc,
   setPayData,
   serviceType,
-  refresh, setRefresh
+  refresh, 
+  setRefresh,
 }) => {
 
   return(
@@ -22,7 +22,6 @@ const Services = ({
           content={content}
           isDelete={isDelete}
           payData={payData}
-          logOutFunc={logOutFunc}
           setPayData={setPayData}
           serviceType={serviceType}
           refresh={refresh}

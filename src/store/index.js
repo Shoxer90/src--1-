@@ -7,6 +7,7 @@ import customerReducer from "./customer/customeSlice";
 import collumnReducer from "./filter/collumnFilterSlice";
 import messageReducer from "./messages/messageSlice";
 import navigationReducer from "./navigation/NavigationSlice";
+import startEndDateReducer from "./filter/startEndDateSlice";
 
 import { storesApi } from "./storesUsers/storesApi";
 import { adminApi } from "./admin/adminApi";
@@ -22,6 +23,7 @@ export default configureStore({
     collumnFilter: collumnReducer,
     message: messageReducer,
     navigation: navigationReducer,
+    startEndDate: startEndDateReducer,
     [adminApi.reducerPath]:adminApi.reducer,
     [storesApi.reducerPath]:storesApi.reducer,
     [customerApi.reducerPath]:customerApi.reducer

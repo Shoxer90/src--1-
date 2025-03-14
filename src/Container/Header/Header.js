@@ -8,7 +8,6 @@ import {LimitContext} from "../../context/Context";
 import { Badge, Button } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import HistoryIcon from '@mui/icons-material/History';
-import InventorySharpIcon from '@mui/icons-material/InventorySharp';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 
@@ -16,7 +15,7 @@ import styles from "./index.module.scss";
 
 import UserInfo from "./userAvatar/index"
 import { useTranslation } from "react-i18next";
-import BasicNotification from "../../notification";
+import NotificationBell from "../../notification/NotificationBell";
 
 const Header = ({
   setOpenBasket,
@@ -122,9 +121,9 @@ const Header = ({
           </div>
         </div>
 
-        {/* <BasicNotification /> */}
-
         <div className={styles.contentX}>
+          {/* <NotificationBell /> */}
+
           { user?.firstname === undefined ? "":  
             <UserInfo setActiveBtn={setActiveBtn} user={user?.firstname+ " " + user?.lastname} logo={logo} mode={user?.ehdmMode} t={t}  limitedUsing={limitedUsing}/>
           }
@@ -135,7 +134,7 @@ const Header = ({
             }}
             badgeContent={basketGoodsqty}
             color="warning"
-            style={{height:"40px" }}
+            style={{height:"40px"}}
           >
             <Button
               className={styles.basketBTN}

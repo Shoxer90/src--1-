@@ -60,26 +60,9 @@ const LogInFormNew = ({
   }
 
    
-
   return (
     <form className={styles.form} onSubmit={handleSubmit(signInToAccount)}>
-      {/* <input 
-        style={{
-          // width:screenWidth > 768 ? "60%": "100%",
-          width: "60%",
-          fontSize:"120%",
-          marginBottom:"10px",
-          border: errors?.username || message? "red solid 2px": "grey solid",
-          borderRadius:"6px",
-          padding:"2px 10px"
-        }}
-        placeholder={t("authorize.username")}
-        {...register(
-          "username", {
-            required: t("authorize.errors.allInputEmpty"),
-          }
-        )} 
-      /> */}
+    
         <FormControl sx={{width: '60%', m:1}} variant="outlined">
           <InputLabel>{t("authorize.username")}</InputLabel>
           <OutlinedInput
@@ -92,28 +75,7 @@ const LogInFormNew = ({
           />
         </FormControl>
           
-      {/* <span style={{position:"relative",height:"fit-content",alignContent:"flex-start", fontSize:"100%",padding:"0px"}}>
-        <input 
-          style={{
-            // width:"100%",
-            width: "60%",
-            fontSize:"120%",
-            marginBottom:"10px",
-            padding:"2px 10px",
-            border: errors?.password || message? "red solid 2px": "grey solid",
-            borderRadius:"6px",
-          }}
-          placeholder={t("authorize.password")}
-          type={seePass ? "text" :"password"}
-          {...register( "password" , {
-            required: t("authorize.empty")
-          })}
-        />
-        <span style={{position:"absolute",zIndex:9999,top:"8%",left:"40%",color:"black"}} onClick={()=>setSeePass(!seePass)}>
-          {!seePass ? <VisibilityIcon style={{padding:2}}/> : <VisibilityOffIcon style={{padding:2}}/>} 
-        </span>
-
-      </span> */}
+      
         <FormControl sx={{width: '60%', m:1}} variant="outlined">
           <InputLabel>{t("authorize.password")}</InputLabel>
           <OutlinedInput
@@ -130,10 +92,10 @@ const LogInFormNew = ({
             }
             {...register("password", {
               required: t("authorize.empty"),
-              minLength: {
-                value: 8,
-                // message: t("authorize.password_too_short"),
-              },
+              // minLength: {
+              //   value: 8,
+              //   message: t("authorize.password_too_short"),
+              // },
             })}
             label={t("authorize.password")}
           />

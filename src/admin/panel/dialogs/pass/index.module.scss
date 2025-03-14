@@ -1,0 +1,16 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row;
+    align-items: center;
+
+}
+.component{
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    width:600px;
+
+}

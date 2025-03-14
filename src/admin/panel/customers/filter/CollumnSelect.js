@@ -1,7 +1,6 @@
 import { memo, useEffect } from "react";
 import { Checkbox, FormControl, ListItemText, MenuItem, OutlinedInput, Select } from "@mui/material";
 import styles from "../index.module.scss";
-import { columnNames } from "../../../../services/baseUrl";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {setCollTitle, setCollumns} from "../../../../store/filter/collumnFilterSlice";

@@ -46,50 +46,43 @@ const CustomerPayments = () => {
   const rows = payments?.map((item, index) => {
     return createRowModel(
       `${index+1}.`,
-      item?.id, 
-      item?.store, 
-      item?.serviceType, 
-      createDateFormat(item?.paymentDate),
-      <span 
+      collSlice?.collTitle.includes("id") && item?.id, 
+      collSlice?.collTitle.includes("store") && item?.store, 
+      collSlice?.collTitle.includes("serviceType") && item?.serviceType, 
+      collSlice?.collTitle.includes("paymentDate") && createDateFormat(item?.paymentDate),
+      collSlice?.collTitle.includes("pxNumber") && <span 
         className={styles.hovertext}
         onClick={()=>navigator.clipboard.writeText(item?.pxNumber)}
         data-hover={item?.pxNumber}
       >
         {`${item?.pxNumber.slice(0,7)}...`} 
       </span>,
-      item?.price, 
-      item?.status, 
-      item?.cardId, 
-      item?.currentRemainderCredit, 
-      item?.credit,
-      `${item?.attach}`,
-      `${item?.attachProcess}`,
-      `${item?.activePayment}`,
-      `${item?.paidStatus}`,
-      `${item?.bindingPay}`,
-      `${item?.web}`,
-      `${item?.send}`,
-      item?.months, 
-      createDateFormat(item?.paymentRealDate),
-      item?.realMonths, 
-      item?.cardPan.trim() || "-", 
-      `${item?.draftSend}`, 
-      item?.sendDraftMounts || "-",
-      createDateFormat(item?.lastDraftDate), 
-      item?.cashierId
+      collSlice?.collTitle.includes("price") && item?.price, 
+      collSlice?.collTitle.includes("status") && item?.status, 
+      collSlice?.collTitle.includes("cardId") && item?.cardId, 
+      collSlice?.collTitle.includes("currentRemainderCredit") && item?.currentRemainderCredit, 
+      collSlice?.collTitle.includes("recieptId") && item?.credit,
+      collSlice?.collTitle.includes("credit") && `${item?.attach}`,
+      collSlice?.collTitle.includes("attachProcess") && `${item?.attachProcess}`,
+      collSlice?.collTitle.includes("activePayment") && `${item?.activePayment}`,
+      collSlice?.collTitle.includes("paidStatus") && `${item?.paidStatus}`,
+      collSlice?.collTitle.includes("bindingPay") && `${item?.bindingPay}`,
+      collSlice?.collTitle.includes("web") && `${item?.web}`,
+      collSlice?.collTitle.includes("send") && `${item?.send}`,
+      collSlice?.collTitle.includes("months") && item?.months, 
+      collSlice?.collTitle.includes("paymentRealDate") && createDateFormat(item?.paymentRealDate),
+      collSlice?.collTitle.includes("realMonths") && item?.realMonths, 
+      collSlice?.collTitle.includes("cardPan") && item?.cardPan.trim() || "-", 
+      collSlice?.collTitle.includes("cardPan") && `${item?.draftSend}`, 
+      collSlice?.collTitle.includes("sendDraftMounts") && item?.sendDraftMounts || "-",
+      collSlice?.collTitle.includes("lastDraftDate") && createDateFormat(item?.lastDraftDate), 
+      collSlice?.collTitle.includes("cashierId") && item?.cashierId
     )  
   });
-  console.log(paymentsCollNames,"paymentsCollNames")
-  console.log(collSlice,"collSlice")
 
    useEffect(() => {
-      if(!JSON.parse(localStorage.getItem("historyColumn"))){
         dispatch(setCollumns(paymentsCollNames))
         localStorage.setItem("historyColumn", JSON.stringify(paymentsCollNames))
-      }
-      else{
-        dispatch(setCollumns(JSON.parse(localStorage.getItem("historyColumn"))))
-      }
     },[]);
 
   if(isLoading){<div>Loading...</div>}
@@ -97,16 +90,11 @@ const CustomerPayments = () => {
 
   return (
     <div>
-      {!payments?.length ? 
-      <div style={{color:"lightgrey",display:"flex",alignItems:"center"}}>
-        <h1> NO CONTENT </h1> 
-      </div>:
-        <UniversalTable 
-          rows={rows} 
-          collumns={collSlice?.collTitles} 
-          clickToRow={()=>console.log("click to payment row")} 
-        />
-      }
+      <UniversalTable 
+        rows={rows} 
+        collumns={collSlice?.collumns} 
+        // clickToRow={()=>console.log("click to payment row")} 
+      />
     </div>
   )
 };

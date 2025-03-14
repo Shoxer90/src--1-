@@ -6,18 +6,25 @@ import { setMessage } from "../../../store/messages/messageSlice";
 import { useDispatch, useSelector } from "react-redux";
 import SnackErr from "../SnackErr";
 import Loader from "../../loading/Loader";
+import LogoutIcon from '@mui/icons-material/Logout';
+import ConfirmDialog from "../ConfirmDialog";
+
 
 const NewContract = ({
   func,
   data,
   open,
   contractLink,
+  logOutFunc,
+  role
 }) => {
 
   const {t} = useTranslation();
 	const dispatch = useDispatch()
 	
+  const [logoutConfirm, setOpenLogoutConfirm] = useState(false);
   const [isLoad, setIsLoad] = useState(false);
+  const [isConfirm, setIsConfirm] = useState(false);
   const [dataForNotification, setDataForNotification] = useState([]);
 	const message = useSelector((state) => state?.message)
 
@@ -74,22 +81,45 @@ const NewContract = ({
     >
       <DialogTitle style={{justifyContent:"space-between",display:"flex",padding:"10px 10px",alignItems:"center"}}>
         <span>{dataForNotification?.title}</span>
+        
+        <Button 
+          onClick={()=>setOpenLogoutConfirm(true)}
+          variant="contained" 
+          sx={{background:"#3FB68A",margin:"10px"}}
+        >
+           <LogoutIcon style={{margin: "0px 10px"}} />
+           {t("menuburger.logout")}
+        </Button>
       </DialogTitle>
 
       <DialogContent dividers>
         <div>{dataForNotification?.text}</div> 
-        {/* <div>{dataForNotification?.text}</div>  */}
-				<a href={contractLink}>{t("updates.seeContract")}</a>
+        <a href={contractLink}>{t("updates.seeContract")}</a>
+        <div>
+          <label>
+            <input 
+              style={{margin:"15px 10px 0 0"}}
+              type="checkbox" 
+              onChange={(e)=>setIsConfirm(e.target.checked)} 
+              value={isConfirm}
+            />
+            <span onClick={(e)=>setIsConfirm(e.target.checked)} >{dataForNotification?.button}</span>
+          </label>
+        </div>
+
       </DialogContent>
 
       <DialogActions>
-        <Button 
-          onClick={submitNewContract}
-          variant="contained" 
-          sx={{background:"#3FB68A",margin:"10px auto",width:"60%",textTransform: "capitalize"}}
-        >
-          {dataForNotification?.button}
-        </Button>
+        {role === 1 ? 
+          <Button 
+            disabled={!isConfirm}
+            onClick={submitNewContract}
+            variant="contained" 
+            sx={{background:"#3FB68A",margin:"10px auto",width:"60%",textTransform: "capitalize"}}
+          >
+            {t("buttons.submit")}
+          </Button>: ""
+        }
 
 				<Dialog open={!!message?.text}>
 					<SnackErr message={message?.text} type={message?.type} close={()=>dispatch(setMessage({text:"",type:""}))}/>
@@ -99,6 +129,13 @@ const NewContract = ({
 					<Loader open={isLoad}/>
 				</Dialog>
       </DialogActions>
+       <ConfirmDialog
+          t={t}
+          open={logoutConfirm}
+          close={setOpenLogoutConfirm}
+          func={logOutFunc}
+          content={t("dialogs.logoutQuestion")}
+         />
     </Dialog>
   )
 };

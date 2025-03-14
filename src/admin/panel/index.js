@@ -43,6 +43,8 @@ const AdminPanel = ({children}) => {
   const navOrientation = () => {
     if(pathname.includes("stores")){
     dispatch(setNavigation({id:"0"}))
+    }else if(pathname.includes("info")){
+    dispatch(setNavigation({id:"01"}))
     }else if(pathname.includes("transactions")){
     dispatch(setNavigation({id:"1"}))
     }else if(pathname.includes("invoices")){

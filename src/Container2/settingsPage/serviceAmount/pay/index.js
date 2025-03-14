@@ -8,6 +8,19 @@ import { payForServiceWithAttachedCard, payForServiceWithNewCard } from "../../.
 import Loader from "../../../loading/Loader";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+
+const langEnum = () => {
+  let lang = localStorage.getItem("lang") || localStorage.getItem("i18nextLng")
+  switch(lang) {
+  case 'ru':
+    return "rus"
+  case 'eng':
+    return "eng"
+  default:
+    return "arm"
+  }
+};
 
 const PayComponent = ({
   openPay,
@@ -18,7 +31,7 @@ const PayComponent = ({
   setMessage,
 }) => {
   const {t} = useTranslation();
-
+  const user = useSelector(state => state?.user?.user)
   const [billsData, setBills] = useState({
     web: true,
     daysEnum: 1,
@@ -136,7 +149,8 @@ const PayComponent = ({
         func={()=>setOpenBankInfo(false)} 
         open={openBankInfo}
         close={setOpenBankInfo}
-        question={<strong>{t("cardService.bankMessage")}</strong>}
+        question={<strong>{user?.paymentMessage[langEnum()]}</strong>}
+        // question={<strong>{t("cardService.bankMessage")}</strong>}
         nobutton={true}
       />
     </Dialog>

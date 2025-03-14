@@ -4,18 +4,30 @@ const initialState = {
   history: [],
   cashiers: [],
   payments: [],
-  invoices: []
+  invoices: [],
+  info: {},
+  fullName: ""
 }
 
 const customerSlice =  createSlice({
   name: "customer",
   initialState,
   reducers: {
+    setCustomerInfo: (state,action) => {
+      localStorage.setItem("customer",JSON.stringify(action.payload))
+      state.info = action.payload
+    },
     setCustomerHistory: (state,action) => {
       state.history = action.payload
     },
     setCustomerPayments: (state,action) => {
       state.payments = action.payload
+    },
+    setCustomerInvoices: (state,action) => {
+      state.invoices = action.payload
+    },
+    setCustomerFullName: (state,action) => {
+      state.fullName = action.payload
     },
     setCustomerCashiers: (state,action) => {
       state.cashiers = action.payload
@@ -23,5 +35,5 @@ const customerSlice =  createSlice({
   }
 });
 
-export const {setCustomerCashiers, setCustomerHistory, setCustomerPayments } = customerSlice.actions;
+export const {setCustomerCashiers, setCustomerHistory, setCustomerPayments, setCustomerFullName,setCustomerInvoices, setCustomerInfo } = customerSlice.actions;
 export default customerSlice.reducer;
