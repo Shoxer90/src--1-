@@ -3,7 +3,6 @@ import React, { memo, useEffect, useState } from 'react';
 import { Button, IconButton, InputBase, Paper } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';
-import useDebonce from "../../../../hooks/useDebonce";
 
 
 const SearchBarcode = ({
@@ -15,21 +14,33 @@ const SearchBarcode = ({
   dataGroup
 }) => {
   
-  const debounceEmark = useDebonce(searchValue, 20);
   const [ synthVal,setSynthVal] = useState("")
+  const [ decoded,setDecoded] = useState("")
 
   const handleChangeSearch = (e) => {
-    let decoded = encodeURIComponent(e.target.value)
+    // let decoded = encodeURIComponent(e.target.value)
     // let decoded = encodeURIComponent("0104850025780021211B%DRtFbVH&Qr93JYSC")
     // console.log(encodeURIComponent("0104850025780021 211B%DRtFbVH&Qr93JYSC"));
     setSynthVal(e.target.value)
     setFrom(stringFrom)
-    setSearchValue(e.target.value)
+    // setSearchValue(e.target.value)
     // setSearchValue(e.target.value)
   };
+
+
+
   useEffect(() =>{
-    setSearchValue(synthVal)
-  }, [debounceEmark])
+    const handler = setTimeout(() => {
+      setDecoded(decodeURIComponent(synthVal))
+    },500)
+    return () =>{
+      clearTimeout(handler)
+    }
+    
+  }, [synthVal])
+  useEffect(() => {
+    setSearchValue(decoded)
+  },[decoded])
 
 	const connectSerial = async () => {
     try {
