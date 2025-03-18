@@ -50,6 +50,7 @@ import NewContract from "./Container2/dialogs/notifications/NewContract";
 import CustomerSaleHistory from "./admin/panel/customers/CustomerSaleHistory";
 import CustomerCashiers from "./admin/panel/cashiers";
 import AdminInvoices from "./admin/panel/invoices";
+// import { listenForNotifications, requestFirebaseNotificationPermission } from "./firebase/firebase";
 
 const App = () => {
 
@@ -145,6 +146,7 @@ const App = () => {
   };
 
   const byBarCodeSearching = async(group,barcode) => {
+    console.log(barcode,"barcode in hight func")
     const bb = encodeURIComponent(barcode)
     if(barcode === "" || barcode === " "){
       await queryFunction(dataGroup, 1).then((res) => {
@@ -438,6 +440,11 @@ const App = () => {
   useEffect(() => {
     barcodeScanValue &&  debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
   },[debounceBasket]);
+
+  // useEffect(() => {
+  //   requestFirebaseNotificationPermission();
+  //   listenForNotifications();
+  // }, []);
 
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>

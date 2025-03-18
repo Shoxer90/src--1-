@@ -19,6 +19,8 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import ImageLoad from "./ImageLoad";
 import Barcode from "react-barcode";
 import { useTranslation } from "react-i18next";
+import { EmarkFileUploader } from "./emark/Emark";
+import { sendEmarkCSV } from "../../../services/excel/excel";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -41,6 +43,8 @@ const UpdateProduct = ({
   setCurrentPage
 }) => {
   const {t} = useTranslation();
+
+  const [csvData, setCsvData] = useState();
 
   const [currentProduct,setCurrentProduct] = useState();
   const [confirmation, setConfirmation] = useState(false);
@@ -158,7 +162,9 @@ const UpdateProduct = ({
       }
     });
     setContent(newArr)
-
+    if(csvData){
+      sendEmarkCSV(currentProduct?.id, csvData)
+    }
     updateProduct(currentProduct).then((res) => {
       if(res === 200) {
         setCurrentPage(1)
@@ -387,12 +393,14 @@ const UpdateProduct = ({
               {moment(currentProduct?.lastUpdate).format('DD.MM.YYYY')}{"  "} 
               {moment(currentProduct?.lastUpdate).format('HH:mm:ss')}
             </div>
+
             <ImageLoad 
             setProduct={setCurrentProduct}
             newProduct={currentProduct}
             func={updateImage} 
             content={currentProduct?.photo} 
             />
+             <EmarkFileUploader setCsvData={setCsvData}/>
           </Box>
         <Box className={styles.update_btns}>
           <Button 

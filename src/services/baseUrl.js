@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const baseUrl = "https://storex.payx.am/api/";
+// export const baseUrl = "https://storex.payx.am/api/";
+export const baseUrl = "https://storextest.payx.am/api/";
 
 export const option = () => {
   const  option = {

@@ -75,7 +75,7 @@ export const byBarCode = async(status, barcode) =>{
     },
   };
   try{
-    const query = await axios.get(baseUrl + `Products/SearchByBarCode?q=${barcode}&productType=${statusCount}`, option);
+    const query = await axios.post(baseUrl + `Products/SearchByBarCode`,{q:barcode,productType:statusCount}, option);
     return query.data
   }catch(err) {
     return err.response.status

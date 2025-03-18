@@ -22,6 +22,7 @@ const SearchBarcode = ({
 	const connectSerial = async () => {
     try {
       const port = await navigator.serial.requestPort();
+      console.log(port, "port")
       await port.open({ baudRate: 9600 });
 
       const reader = port.readable.getReader();
@@ -33,7 +34,7 @@ const SearchBarcode = ({
       }
       reader.releaseLock();
     } catch (error) {
-      alert("error")
+      console.log("error")
     }
   };
 

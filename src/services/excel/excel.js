@@ -16,3 +16,20 @@ export const getExcelEmptyForm = async() => {
       return err
     }
   };
+
+   export const sendEmarkCSV = async(prodId, file) => {
+      const option = {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          contentType: 'multipart/form-data', 
+        },
+      }
+
+      try{
+      const data = await axios.post(baseUrl + `Products/AddEmarks?productId=${prodId}`,file, option)
+      console.log(data,"CSV response")
+      }catch(err){
+        console.log(err,"CSV response")
+
+      }
+   }

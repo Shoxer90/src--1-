@@ -11,54 +11,8 @@ const EmarkInput = () => {
   const ref = useRef();
 	const [barcode, setBarcode] = useState("");
   const [barcodeARR, setBarcodeARR] = useState([
-    // "skizb",
 		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
 		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg",
-		// "0104850008980752211a_Lxm:2Em2i?\u001d93nlwg","verj"	
   ]);
   // const [barcodeARR, setBarcodeARR] = useState("");
   const debounceEmark = useDebonce(barcode, 20);
@@ -83,10 +37,10 @@ const EmarkInput = () => {
   };
 
   const replaceGS = (code) => {
-    // const input = code ; 
-    // const output = input.replace(/\x1d/g, "\\u001d");  
+    const input = code ; 
+    const output = input.replace(/\x1d/g, "\\u001d");  
     setBarcodeARR([
-      code,
+      output,
       ...barcodeARR,
       // output,
     ])

@@ -9,7 +9,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const EmarkDialog = ({isExcel,open,setOpen}) => {
+const EmarkAddDialog = ({isExcel,open,setOpen}) => {
   
   
   const handleClose = () => {
@@ -20,7 +20,6 @@ const EmarkDialog = ({isExcel,open,setOpen}) => {
     <Dialog
       open={open}
       fullScreen
-      // onClose={handleClose}
       TransitionComponent={Transition}
     >
       <AppBar sx={{ position: 'relative',background:"#171A1C"}}>
@@ -45,4 +44,4 @@ const EmarkDialog = ({isExcel,open,setOpen}) => {
   )
 };
 
-export default memo(EmarkDialog);
+export default memo(EmarkAddDialog);
