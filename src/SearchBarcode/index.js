@@ -69,7 +69,7 @@ const SearchBarcode = ({
       <IconButton type="button" sx={{p: '10px'}} onClick={()=>byBarCodeSearching(dataGroup, searchValue)}>
        <SearchIcon fontSize="medium" />
       </IconButton>
-      <Button onClick={connectSerial}>connect</Button>
+      {/* <Button onClick={connectSerial}>connect</Button> */}
    </Paper> 
   )
 }

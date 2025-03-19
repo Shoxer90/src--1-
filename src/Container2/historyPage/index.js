@@ -66,7 +66,7 @@ const HistoryPage = ({logOutFunc}) => {
     let currentDate = new Date();
     let previousDate = new Date(currentDate)
     previousDate.setMonth(currentDate.getMonth()-1)
-    if(searchParams.get("endDate") !== null && searchParams.get("startDate") !== null) {
+    if(searchParams.get("endDate") && searchParams.get("startDate")) {
       currentDate = new Date(searchParams.get("endDate"));
       previousDate = new Date(searchParams.get("startDate"))
     }
@@ -83,7 +83,7 @@ const HistoryPage = ({logOutFunc}) => {
 
   useEffect(() => {
     initialDateCreator()
-  }, [page, flag]);
+  }, [page,flag]);
 
   useEffect(() => {
     if(!localStorage.getItem("historyColumn")){
@@ -135,7 +135,7 @@ const HistoryPage = ({logOutFunc}) => {
             justifyContent:"center"
           }}
           page={page}
-          navig_Name={`history?status=${status?.status}`}
+          navig_Name={`history?status=${status?.status}&startDate=${searchParams.get("startDate")}&endDate=${searchParams.get("endDate")}`}
           loader={loadResources}
           pageCount={historyContent?.count}
           perPage={perPage}
