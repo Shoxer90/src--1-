@@ -38,6 +38,7 @@ import Notification from "./Container2/dialogs/Notification";
 import LoginAuthContainer from "./Authorization/loginAuth";
 import Login from "./Authorization/loginAuth/login";
 import Registration from "./Authorization/loginAuth/registration";
+// import NewSimpleRegistration from "./Authorization/newReg";
 import ForgotPassword from "./Authorization/loginAuth/forgotPass";
 import ResetPassword from "./Authorization/loginAuth/resetpass/ResetPassword";
 import Confirmation from "./Authorization/loginAuth/confirmation";
@@ -295,6 +296,7 @@ const App = () => {
   };
   
   const setToBasket = (wishProduct, quantity, isFromPrepaymentPage) => {
+    console.log(wishProduct?.discountedPrice,"WISHPROD DISKOUNTEDPRICE")
     const basket = basketContent
     if(quantity && quantity > wishProduct?.remainder && !isFromPrepaymentPage){
       setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
@@ -306,7 +308,8 @@ const App = () => {
      
       basket.unshift({
         ...wishProduct,
-        discountPrice: wishProduct?.discountedPrice,
+        discountedPrice: wishProduct?.discountedPrice,
+        // discountPrice: wishProduct?.discountedPrice,
         count:+(quantity ? quantity: 1)
       })
     }
@@ -315,6 +318,7 @@ const App = () => {
   };
 
   const setToBasketFromSearchInput = (wishProduct, quantity) => {
+    console.log(wishProduct?.discountedPrice,"WISHPROD DISKOUNTEDPRICE")
     const basket = basketContent
       if(quantity && quantity > wishProduct?.remainder){
       setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
@@ -325,9 +329,11 @@ const App = () => {
           return {
             ...prod,
             count:prod?.count + 1,
-            discountPrice: wishProduct?.discountType === 2? 
-            wishProduct?.price - wishProduct?.discount :
-            wishProduct?.price - (wishProduct?.price * wishProduct?.discount/100),
+            discountedPrice:wishProduct?.discountedPrice,
+
+            // discountedPrice: wishProduct?.discountType === 2? 
+            // wishProduct?.price - wishProduct?.discount :
+            // wishProduct?.price - (wishProduct?.price * wishProduct?.discount/100),
           }
         }else{
           return prod
@@ -339,9 +345,10 @@ const App = () => {
     }else{
       basket.unshift({
         ...wishProduct,
-        discountPrice: wishProduct?.discountType === 2? 
-        wishProduct?.price - wishProduct.discount :
-        wishProduct?.price - (wishProduct.price * wishProduct.discount/100) ,
+        discountedPrice:wishProduct?.discountedPrice,
+        // discountedPrice: wishProduct?.discountType === 2? 
+        // wishProduct?.price - wishProduct.discount :
+        // wishProduct?.price - (wishProduct.price * wishProduct.discount/100) ,
         count:+(quantity  ? quantity: 1)
       })
     }
@@ -458,6 +465,7 @@ const App = () => {
             element={<LoginAuthContainer children={
             <Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />}
           />
+          {/* <Route path="/registration" element={<LoginAuthContainer children={<NewSimpleRegistration logOutFunc={logOutFunc} />} />} /> */}
           <Route path="/registration" element={<LoginAuthContainer children={<Registration logOutFunc={logOutFunc} />} />} />
           <Route path="/forgot-password" element={<LoginAuthContainer children={<ForgotPassword />} />} />
           <Route path="/reset-password/*" element={<LoginAuthContainer children={<ResetPassword />} />} />

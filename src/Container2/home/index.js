@@ -126,18 +126,18 @@ const HomePage = ({
   useEffect(() => {
     if(searchValue)return
     fetching && queryFunction(dataGroup, currentPage).then((res) => { 
-      setTotalCount(res?.headers["count"])
+    setTotalCount(res?.headers["count"])
       setFetching(false)
       if(res?.data?.length === 0){
-       return 
+    return 
       }else{
-        setContent([...content, ...res?.data])
+        setContent([...res?.data, ...content])
       }
       setCurrentPage(currentPage + 1) 
     })
 
     if(totalCount && totalCount > content?.length){
-      document.addEventListener("scroll", scrollHandler)
+    document.addEventListener("scroll", scrollHandler)
       return function () {
         document.removeEventListener("scroll", scrollHandler)
       } 

@@ -72,6 +72,7 @@ const HomeContentItem = ({
       setOpenConfirm(true)
       return
     }
+    console.log(product,"product")
     setToBasket(product, quantity, false)
     setQuantity("")
   };

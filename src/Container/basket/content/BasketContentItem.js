@@ -227,7 +227,7 @@ const editPrepaymentCounts = async(id,value) => {
                 <span>{el?.price} {t("units.amd")} </span> 
                 { el?.discount > 0 &&  
                   <span style={{color:"red"}}> 
-                    /{(el?.discountPrice)?.toFixed(2)} {t("units.amd")}
+                    /{(el?.discountedPrice)?.toFixed(2)} {t("units.amd")}
                   </span>
                 }
               </div>

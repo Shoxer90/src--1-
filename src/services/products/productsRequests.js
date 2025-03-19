@@ -58,6 +58,30 @@ export const productQuery = async(type,page) =>{
   }
 };
 // Search Products by date and barcode
+// export const byBarCode = async(status, barcode) =>{
+//   let statusCount = 0;
+//   if (status === "GetAvailableProducts") {
+//     statusCount = 0
+//   }else if(status === "GetNotAvailableProducts") {
+//     statusCount = 1
+//   }else if(status === "GetFavoriteProducts") {
+//     statusCount = 2
+//   }else {
+//     return
+//   }
+//   const option = {
+//     headers: {
+//       Authorization: localStorage.getItem("token"),
+//     },
+//   };
+//   try{
+//     const query = await axios.post(baseUrl + `Products/SearchByBarCode`,{q:barcode,productType:statusCount}, option);
+//     return query.data
+//   }catch(err) {
+//     return err.response.status
+//   }
+// };
+
 export const byBarCode = async(status, barcode) =>{
   let statusCount = 0;
   if (status === "GetAvailableProducts") {
@@ -75,12 +99,13 @@ export const byBarCode = async(status, barcode) =>{
     },
   };
   try{
-    const query = await axios.post(baseUrl + `Products/SearchByBarCode`,{q:barcode,productType:statusCount}, option);
+    const query = await axios.get(baseUrl + `Products/SearchByBarCode?q=${barcode}&productType=${statusCount}`, option);
     return query.data
   }catch(err) {
     return err.response.status
   }
 };
+
 //check isAvailable basket products
 export const cheackProductCount = async(body) => {
   try{
