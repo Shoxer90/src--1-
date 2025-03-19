@@ -60,7 +60,8 @@ const HomeContentItem = ({
   const [starSynth,setStarSynth] = useState();
   const [message,setMessage] = useState();
   const [openConfirm, setOpenConfirm] = useState(false);
-  const [newPrice, setNewPrice] = useState(product?.price - (product?.price * product?.discount / 100));
+  const [newPrice, setNewPrice] = useState(product?.discountedPrice);
+  // const [newPrice, setNewPrice] = useState(product?.price - (product?.price * product?.discount / 100));
   
   const handleStarChange = (bool) => {
     setStarSynth(bool)
@@ -114,8 +115,7 @@ const HomeContentItem = ({
   useEffect(() => {
     setStarSynth(product?.isFavorite)
   },[]);
-
-
+  
   return (
     <Card style={{ border:"solid orange 2px",padding:"7px", cursor:"pointer"}}>
         <div style={{display:"flex", justifyContent:"space-between", padding:"2px 5px"}}>

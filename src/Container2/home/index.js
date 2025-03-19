@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import Loader from "../loading/Loader";
 // import HomeContent from "./HomeContent";
 import HomeNavigation from "./HomeNavigation";
+import PaginationSnip from "../pagination";
 import AddNewProduct from "./product/AddNewProduct";
 import { getAdg, removeProduct } from "../../services/products/productsRequests";
 import { Dialog } from "@mui/material";
@@ -11,6 +12,8 @@ import SnackErr from "../dialogs/SnackErr";
 
 import styles from "./index.module.scss";
 import HomeContent from "./content/HomeContent";
+import { useLocation } from "react-router-dom";
+import { loadResources } from "i18next";
 
 const initState = {
   purchasePrice: "",
@@ -50,6 +53,10 @@ const HomePage = ({
   const {t} = useTranslation();
   const [openNewProd, setOpenNewProduct] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
+  const perPage = 20;
+  const search = useLocation().search;
+  const status = new URLSearchParams(search).get("status") || "GetAvailableProducts";
+  const page = +new URLSearchParams(search).get("page") || 1;
   const [snackMessage, setSnackMessage] = useState("");
 	const [typeCode, setTypeCode] = useState();
   const [selectContent, setSelectContent] = useState();
@@ -58,7 +65,7 @@ const HomePage = ({
   const [newProduct,setProduct] = useState(initState); 
 
   const changeStatus = async(str) => {
-    await setCurrentPage(1)
+    await setCurrentPage(page || 1)
     setDataGroup(str)
     setFetching(true)
     setProduct(initState)
@@ -103,47 +110,65 @@ const HomePage = ({
     })
   };
 
-  const scrollHandler = (e) => { 
-    setFetching(false)
-    if(content?.length <= +totalCount){
-      if(e.target.documentElement.scrollHeight - (
-        e.target.documentElement.scrollTop + window.innerHeight) < 100) {
-        setFetching(true)
-      }
-    }else{
-      document.removeEventListener("scroll",scrollHandler)
-    }
-  };
+  // const scrollHandler = (e) => { 
+  //   setFetching(false)
+  //   if(content?.length <= +totalCount){
+  //     if(e.target.documentElement.scrollHeight - (
+  //       e.target.documentElement.scrollTop + window.innerHeight) < 100) {
+  //       setFetching(true)
+  //     }
+  //   }else{
+  //     document.removeEventListener("scroll",scrollHandler)
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   setFetching(true)
+  // },[]);
+
+  // useEffect(() => {
+  //   changeStatus(dataGroup)
+  // },[dataGroup]);
+
+  // useEffect(() => {
+  //   if(searchValue)return
+  //   fetching && queryFunction(dataGroup, currentPage).then((res) => { 
+  //     setTotalCount(res?.headers["count"])
+  //     setFetching(false)
+  //     if(res?.data?.length === 0){
+  //      return 
+  //     }else{
+  //       setContent([...content, ...res?.data])
+  //     }
+  //     setCurrentPage(currentPage + 1) 
+  //   })
+
+  //   if(totalCount && totalCount > content?.length){
+  //     document.addEventListener("scroll", scrollHandler)
+  //     return function () {
+  //       document.removeEventListener("scroll", scrollHandler)
+  //     } 
+  //   }
+    
+  // }, [c, dataGroup, isLogin, openNewProd, content, flag,currentPage]);
 
   useEffect(() => {
     setFetching(true)
-  },[]);
-
-  useEffect(() => {
-    changeStatus(dataGroup)
-  },[dataGroup]);
-
-  useEffect(() => {
-    if(searchValue)return
-    fetching && queryFunction(dataGroup, currentPage).then((res) => { 
+    queryFunction(status, page).then((res) => { 
+    setFetching(false)
       setTotalCount(res?.headers["count"])
-      setFetching(false)
-      if(res?.data?.length === 0){
-       return 
-      }else{
-        setContent([...content, ...res?.data])
-      }
-      setCurrentPage(currentPage + 1) 
+      setContent(res?.data)
     })
+  }, [page, flag, status]);
 
-    if(totalCount && totalCount > content?.length){
-      document.addEventListener("scroll", scrollHandler)
-      return function () {
-        document.removeEventListener("scroll", scrollHandler)
-      } 
-    }
-    
-  }, [fetching, dataGroup, isLogin, openNewProd, content, flag,currentPage]);
+  // useEffect(() => {
+  //   setFetching(true)
+  //   queryFunction(status, page).then((res) => { 
+  //   setFetching(false)
+  //     setTotalCount(res?.headers["count"])
+  //     setContent(res?.data)
+  //   })
+  // }, [status])
 
   return(
     <div className={styles.productPage}>
@@ -155,6 +180,7 @@ const HomePage = ({
         changeStatus={changeStatus}
         searchValue={searchValue}
         dataGroup={dataGroup}
+        status={status}
         setFrom={setFrom}
         setContent={setContent}
       />
@@ -172,6 +198,22 @@ const HomePage = ({
         setContent={setContent}
         setCurrentPage={setCurrentPage}
       />
+      { totalCount/perPage > 1 &&
+        <PaginationSnip 
+          style={{
+            position:"fixed", 
+            bottom:0, 
+            width:"100dvw",  
+            display:"flex",
+            justifyContent:"center"
+          }}
+          page={page}
+          navig_Name={`prods?status=${status}`}
+          loader={loadResources}
+          pageCount={totalCount}
+          perPage={perPage}
+        />
+      }
       {openNewProd && <AddNewProduct 
         newProduct={newProduct}
         setProduct={setProduct}

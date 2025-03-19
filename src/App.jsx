@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Basket from "./Container/basket";
 import HistoryPage from "./Container2/historyPage";
 import Header from "./Container/Header/Header";
@@ -53,14 +53,15 @@ import AdminInvoices from "./admin/panel/invoices";
 // import { listenForNotifications, requestFirebaseNotificationPermission } from "./firebase/firebase";
 
 const App = () => {
-
+ const search = useLocation().search;
+  const status = new URLSearchParams(search).get("status") || "GetAvailableProducts";
   const [limitedUsing, setLimitedUsing] = useState();
   const [basketGoodsqty, setBasketGoodsqty] = useState();
   const [basketContent, setBasketContent]=useState([]);
   const [openBasket, setOpenBasket] = useState(false);
   const [isLogin, setIsLogIn] = useState(Boolean(localStorage.getItem("token")));
   const [content, setContent] = useState([]);
-  const [dataGroup, setDataGroup] = useState("GetAvailableProducts");
+  const [dataGroup, setDataGroup] = useState(status);
   const [basketExist, setBasketExist] = useState([]);
   const [flag, setFlag] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,7 +108,7 @@ const App = () => {
   });
  
   const whereIsMyUs = async() => {
-    console.log("13.03.2025 update")
+    console.log("19.03.2025 update")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -150,7 +151,7 @@ const App = () => {
     // console.log(barcode.split(""),"barcode in split")
     // const bb = encodeURIComponent(barcode)
     if(barcode === "" || barcode === " "){
-      await queryFunction(dataGroup, 1).then((res) => {
+      await queryFunction(status, 1).then((res) => {
         setContent(res?.data)
       })
       setCurrentPage(2)
@@ -486,7 +487,33 @@ const App = () => {
           />
           {!isBlockedUser ? <Routes>
             <Route
-              path="/"
+              path="/" 
+              element={
+                <HomePage
+                  isLogin={isLogin}
+                  measure={measure}
+                  dataGroup={dataGroup}
+                  setDataGroup={setDataGroup}
+                  setContent={setContent}
+                  content={content}
+                  setToBasket={setToBasket}
+                  deleteBasketItem={deleteBasketItem}
+                  basketExist={basketExist}
+                  queryFunction={queryFunction}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  setFrom={setFrom}
+                  searchValue={searchValue}
+                  setSearchValue={setSearchValue}
+                  byBarCodeSearching={byBarCodeSearching}
+                  flag={flag}
+                  setFetching={setFetching}
+                  fetching={fetching}
+                />
+              }  
+            />
+            <Route
+              path="/prods" 
               element={
                 <HomePage
                   isLogin={isLogin}

@@ -400,7 +400,7 @@ const UpdateProduct = ({
             func={updateImage} 
             content={currentProduct?.photo} 
             />
-             <EmarkFileUploader setCsvData={setCsvData}/>
+             {/* <EmarkFileUploader setCsvData={setCsvData}/> */}
           </Box>
         <Box className={styles.update_btns}>
           <Button 
