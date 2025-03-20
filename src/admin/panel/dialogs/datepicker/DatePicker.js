@@ -15,7 +15,6 @@ const DatePickerRTK  = () => {
   const search = useLocation().search;
   const startDate = new URLSearchParams(search).get('startDate')
   const endDate = new URLSearchParams(search).get('endDate') 
-
   const location = useLocation();
   const dispatch = useDispatch();
   const [ownDate, setOwnDate] = useState(dateState)

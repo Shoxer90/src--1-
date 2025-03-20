@@ -30,7 +30,6 @@ const initState = {
   dep: 0
 }
 const HomePage = ({
-  isLogin,
   measure,
   dataGroup,
   setDataGroup,
@@ -40,13 +39,13 @@ const HomePage = ({
   deleteBasketItem,
   basketExist,
   queryFunction,
-  currentPage,
   setCurrentPage,
   setFrom,
   searchValue, 
   setSearchValue, 
   byBarCodeSearching,
   flag,
+  setFlag,
   setFetching,
   fetching
 }) => {
@@ -65,9 +64,12 @@ const HomePage = ({
   const [newProduct,setProduct] = useState(initState); 
 
   const changeStatus = async(str) => {
+    setFlag(!flag)
+    const newSearchParams = new URLSearchParams(search);
     await setCurrentPage(page || 1)
     setDataGroup(str)
-    setFetching(true)
+    newSearchParams.set("status", str);
+    
     setProduct(initState)
   };
   
@@ -161,15 +163,6 @@ const HomePage = ({
     })
   }, [page, flag, status]);
 
-  // useEffect(() => {
-  //   setFetching(true)
-  //   queryFunction(status, page).then((res) => { 
-  //   setFetching(false)
-  //     setTotalCount(res?.headers["count"])
-  //     setContent(res?.data)
-  //   })
-  // }, [status])
-
   return(
     <div className={styles.productPage}>
       <HomeNavigation 
@@ -229,7 +222,8 @@ const HomePage = ({
         setContent={setContent}
         setGlobalMessage={setSnackMessage}
         setGlobalType={setType}
-        
+        setFlag={setFlag}
+        flag={flag}
       />}
       <Dialog open={Boolean(type)}>
         <SnackErr open={snackMessage} type={type} close={setType} message={snackMessage}/>

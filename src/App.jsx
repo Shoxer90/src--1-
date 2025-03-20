@@ -509,6 +509,7 @@ const App = () => {
                   setSearchValue={setSearchValue}
                   byBarCodeSearching={byBarCodeSearching}
                   flag={flag}
+                  setFlag={setFlag}
                   setFetching={setFetching}
                   fetching={fetching}
                 />

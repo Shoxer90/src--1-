@@ -169,6 +169,7 @@ const UpdateProduct = ({
       if(res === 200) {
         setCurrentPage(1)
         setFetching(true)
+        
         deleteBasketItem(currentProduct?.id)
 
         setFlag(!flag)

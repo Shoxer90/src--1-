@@ -36,7 +36,9 @@ const AddNewProduct = ({
   setFetching,
   setContent,
   setGlobalMessage,
-  setGlobalType
+  setGlobalType,
+  flag,
+  setFlag
 }) => {
   const {t} = useTranslation();
   const [type, setType] = useState("success");
@@ -102,7 +104,8 @@ const AddNewProduct = ({
     }
     setFetching(true)
     await uniqueBarCode(newProduct?.barCode).then((res) => {
-      if(res){
+    setFetching(false)
+    if(res){
         setIsUniqBarcode(true)
         createProduct(newProduct).then((res)=> {
           setEmptyValidate(true)
@@ -117,24 +120,10 @@ const AddNewProduct = ({
             setMessage(t("dialogs.pricezero")) 
             return
           }else{
-            setContent([])
-            setFetching(true)
-            changeStatus("GetAvailableProducts")
             handleClose()
+            changeStatus("GetAvailableProducts")
             setGlobalMessage(t("productinputs.productadded"))
             setGlobalType("success")
-
-
-            // setContent([])
-            // setFetching(true)
-            // setEmptyValidate(false)
-            // setMessage(t("productinputs.productadded"))
-            // setType("success")
-            // changeStatus("GetAvailableProducts")
-            // setTimeout(() => {
-            //   handleClose()
-            //   setType()
-            // },3000)
           }
         })
       }else if(!res){
@@ -187,7 +176,6 @@ const AddNewProduct = ({
 
   const handleClose = async() => {
     setTypeCode("")
-    setFetching(true)
     setOpenNewProduct(!openNewProd);
   };
 
@@ -393,7 +381,7 @@ const AddNewProduct = ({
 
           </Box>
           {/* emark popup */}
-            <PopUpButton />
+            {/* <PopUpButton /> */}
           {(regime !== "3" || regime !== "7")  &&
             <div className={styles.duoInput}>
               <FormControlLabel 

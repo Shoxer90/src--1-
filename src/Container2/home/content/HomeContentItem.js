@@ -23,7 +23,8 @@ const style = {
   picture:{
     height:"125px",
     width:"110px",
-    border:"solid lightgray 2px"
+    border:"solid lightgray 2px",
+    objectFit: "contain",
   },
   info:{
     margin:"20px 5px",
