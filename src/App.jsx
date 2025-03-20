@@ -37,8 +37,8 @@ import { getNewNotifications } from "./services/user/getUser";
 import Notification from "./Container2/dialogs/Notification";
 import LoginAuthContainer from "./Authorization/loginAuth";
 import Login from "./Authorization/loginAuth/login";
-import Registration from "./Authorization/loginAuth/registration";
-// import NewSimpleRegistration from "./Authorization/newReg";
+// import Registration from "./Authorization/loginAuth/registration";
+import NewSimpleRegistration from "./Authorization/newReg";
 // import NewSimpleRegistration from "./Authorization/newReg";
 import ForgotPassword from "./Authorization/loginAuth/forgotPass";
 import ResetPassword from "./Authorization/loginAuth/resetpass/ResetPassword";
@@ -479,8 +479,8 @@ const App = () => {
             element={<LoginAuthContainer children={
             <Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />}
           />
-          {/* <Route path="/registration" element={<LoginAuthContainer children={<NewSimpleRegistration logOutFunc={logOutFunc} />} />} /> */}
-          <Route path="/registration" element={<LoginAuthContainer children={<Registration logOutFunc={logOutFunc} />} />} />
+          <Route path="/registration" element={<LoginAuthContainer children={<NewSimpleRegistration logOutFunc={logOutFunc} />} />} />
+          {/* <Route path="/registration" element={<LoginAuthContainer children={<Registration logOutFunc={logOutFunc} />} />} /> */}
           <Route path="/forgot-password" element={<LoginAuthContainer children={<ForgotPassword />} />} />
           <Route path="/reset-password/*" element={<LoginAuthContainer children={<ResetPassword />} />} />
           <Route path="/confirmation/*" element={<LoginAuthContainer children={<Confirmation />} />} />

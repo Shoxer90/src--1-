@@ -240,10 +240,23 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           placeholder={`${t("authorize.tradeName")} *`}
           onChange={(e)=>handleChange(e)}
         />
+        <TextField sx={{m:.6}} 
+        inputProps={{
+          style: {
+            height: "26px",
+            padding:"1px 10px"
+          }
+        }}
+        name="businessAddress"
+        value={newUser?.businessAddress}
+        placeholder={t("authorize.businessAddress")}
+        onChange={(e)=>handleChange(e)}
+      />
+
 
 ??????????????????
         <FormControlLabel
-          value={newUser}
+          value={newUser?.isRegisteredForEhdm}
           name="isRegisteredForEhdm"
           control={<Checkbox />}
           label="ETRM"
@@ -255,8 +268,22 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
             })
           }}
         />
-
-      <TextField sx={{m:.6,w:"100%"}} 
+        {newUser?.isRegisteredForEhdm &&
+        <>
+         <TextField sx={{m:.6}} 
+          inputProps={{
+            style: {
+              height: "26px",
+              padding:"1px 10px"
+            }
+          }}
+          error={(!newUser?.tin && submitClick)|| (newUser?.tin && newUser?.tin?.length !==8) || (newUser?.tin && !unique)}
+          name="tin"
+          value={newUser?.tin}
+          placeholder={`${t("authorize.tin")} (8 ${t("productinputs.symb")}) *`} 
+          onChange={(e)=>limitChar(e,8)}     
+          />
+            <TextField sx={{m:.6,w:"100%"}} 
         autoComplete="off"
         inputProps={{
           style: {
@@ -284,7 +311,14 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
         placeholder={`${t("authorize.legalAddress")} *`} 
         onChange={(e)=>handleChange(e)}
       />
+    </>
+    }
+
+
+    
       <>
+      <PreRegistrateAgreement agree={agree} setAgree={setAgree} t={t} title={<TermsConditionsLink t={t} />} />
+
         <TextField sx={{m:.6}} 
           inputProps={{
             style: {
@@ -305,18 +339,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
       </>
 
      
-      <TextField sx={{m:.6}} 
-        inputProps={{
-          style: {
-            height: "26px",
-            padding:"1px 10px"
-          }
-        }}
-        name="businessAddress"
-        value={newUser?.businessAddress}
-        placeholder={t("authorize.businessAddress")}
-        onChange={(e)=>handleChange(e)}
-      />
+      
       <span style={{margin:"3px 10px",textAlign:"start", color:"orange",fontWeight:600}}> {t("authorize.director")}</span>
       <div className={styles.reg_form_div}>
         <TextField sx={{m:.6}} 
@@ -483,7 +506,6 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           <span className={styles.errorMessage} >
             {message?.message &&  message?.message}
           </span>
-        <PreRegistrateAgreement agree={agree} setAgree={setAgree} t={t} title={<TermsConditionsLink t={t} />}/>
       </div>
       
       <BackAndOk func={reg} btnName={t("authorize.register")} link={"/login"} />
