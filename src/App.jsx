@@ -459,6 +459,8 @@ const App = () => {
             element={<LoginAuthContainer children={
             <Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />}
           />
+          {/* new! */}
+          <Route path="/registrationNew" element={<LoginAuthContainer children={<Registration logOutFunc={logOutFunc} />} />} />
           <Route path="/registration" element={<LoginAuthContainer children={<Registration logOutFunc={logOutFunc} />} />} />
           <Route path="/forgot-password" element={<LoginAuthContainer children={<ForgotPassword />} />} />
           <Route path="/reset-password/*" element={<LoginAuthContainer children={<ResetPassword />} />} />
