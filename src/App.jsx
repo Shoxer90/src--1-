@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Basket from "./Container/basket";
 import HistoryPage from "./Container2/historyPage";
 import Header from "./Container/Header/Header";
@@ -56,14 +56,15 @@ import AdminInvoices from "./admin/panel/invoices";
 import AddNewClientInfo from "./Container2/dialogs/AddNewClientInfo";
 
 const App = () => {
-
+ const search = useLocation().search;
+  const status = new URLSearchParams(search).get("status") || "GetAvailableProducts";
   const [limitedUsing, setLimitedUsing] = useState();
   const [basketGoodsqty, setBasketGoodsqty] = useState();
   const [basketContent, setBasketContent]=useState([]);
   const [openBasket, setOpenBasket] = useState(false);
   const [isLogin, setIsLogIn] = useState(Boolean(localStorage.getItem("token")));
   const [content, setContent] = useState([]);
-  const [dataGroup, setDataGroup] = useState("GetAvailableProducts");
+  const [dataGroup, setDataGroup] = useState(status);
   const [basketExist, setBasketExist] = useState([]);
   const [flag, setFlag] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -157,7 +158,7 @@ const App = () => {
   const byBarCodeSearching = async(group,barcode) => {
   
     if(barcode === "" || barcode === " "){
-      await queryFunction(dataGroup, 1).then((res) => {
+      await queryFunction(status, 1).then((res) => {
         setContent(res?.data)
       })
       setCurrentPage(2)
@@ -491,7 +492,34 @@ const App = () => {
           />
           {!isBlockedUser  && user ? <Routes>
             <Route
-              path="/"
+              path="/" 
+              element={
+                <HomePage
+                  isLogin={isLogin}
+                  measure={measure}
+                  dataGroup={dataGroup}
+                  setDataGroup={setDataGroup}
+                  setContent={setContent}
+                  content={content}
+                  setToBasket={setToBasket}
+                  deleteBasketItem={deleteBasketItem}
+                  basketExist={basketExist}
+                  queryFunction={queryFunction}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  setFrom={setFrom}
+                  searchValue={searchValue}
+                  setSearchValue={setSearchValue}
+                  byBarCodeSearching={byBarCodeSearching}
+                  flag={flag}
+                  setFlag={setFlag}
+                  setFetching={setFetching}
+                  fetching={fetching}
+                />
+              }  
+            />
+            <Route
+              path="/prods" 
               element={
                 <HomePage
                   isLogin={isLogin}

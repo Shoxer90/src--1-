@@ -26,6 +26,8 @@
         >img{
           border: solid rgb(173, 173, 173) 1px;
           border-radius: 8px;
+          object-fit: contain;
+
         }
       }
       &_card_info{

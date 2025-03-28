@@ -7,6 +7,7 @@ import styles from "./index.module.scss";
 import ExcelBurger from "./excelLoader/buttonForAdd"
 import SearchBarcode from "../../SearchBarcode";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const HomeNavigation = ({
   byBarCodeSearching, 
@@ -16,14 +17,17 @@ const HomeNavigation = ({
   changeStatus,
   searchValue,
   dataGroup,
+  status,
   setFrom,
   setContent,
 }) => {
   const {t} = useTranslation();
+  const navigate = useNavigate();
   
   const {limitedUsing} = useContext(LimitContext);
   
   const  handleSendQuery = async(str, index) => {
+    navigate(`/prods?status=${str}&page=1`)
     setSearchValue("")
     setContent([])
     await setCurrentPage(1)
@@ -44,7 +48,7 @@ const HomeNavigation = ({
         variant="contained" 
         onClick={()=>handleSendQuery("GetAvailableProducts", 0)} 
         style={{
-          background:(dataGroup === "GetAvailableProducts"? "#FFA500" : "gray"),
+          background:(status === "GetAvailableProducts"? "#FFA500" : "gray"),
           color:"white",
           height:"33px",
           fontSize:"small",
@@ -59,7 +63,7 @@ const HomeNavigation = ({
           variant="contained" 
           onClick={()=>handleSendQuery("GetNotAvailableProducts",1)} 
           style={{
-            background:(dataGroup === "GetNotAvailableProducts"? "#FFA500" : "gray"),
+            background:(status === "GetNotAvailableProducts"? "#FFA500" : "gray"),
             height:"33px",
             fontSize:"small",
             margin:"5px",
@@ -73,7 +77,7 @@ const HomeNavigation = ({
           variant="contained" 
           onClick={()=>handleSendQuery("GetFavoriteProducts", 2)} 
           style={{
-            background:(dataGroup === "GetFavoriteProducts"? "#FFA500" : "gray"),
+            background:(status === "GetFavoriteProducts"? "#FFA500" : "gray"),
             height:"33px",
             fontSize:"small",
             margin:"5px",
@@ -90,7 +94,7 @@ const HomeNavigation = ({
         byBarCodeSearching={byBarCodeSearching}
         setFrom={setFrom}
         stringFrom="main"
-        dataGroup={dataGroup}
+        dataGroup={status}
       />
       { !limitedUsing && <ExcelBurger t={t} setOpenNewProduct={setOpenNewProduct}/> }
     </div>

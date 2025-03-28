@@ -1,3 +1,5 @@
+
+
 import { memo } from "react";
 import { Card } from "@mui/material";
 
@@ -22,7 +24,7 @@ const HomeContent = ({
   return (
     <div className={styles.productContent} style={{marginLeft:"25px"}}>
      
-      { content && content.map((product, index) => {
+      { content && content?.map((product, index) => {
         return   <HomeContentItem
           key={index}
           setToBasket={setToBasket}
