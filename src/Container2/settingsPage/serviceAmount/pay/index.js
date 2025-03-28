@@ -9,6 +9,9 @@ import Loader from "../../../loading/Loader";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import CompleteUserDataForEhdm from "../../updates/CompleteUserDataForEhdm";
+import { payForEhdm, payForEhdmWithUsingCard } from "../../../../services/auth/auth";
+import { formatNumberWithSpaces } from "../../../../modules/modules";
 
 const langEnum = () => {
   let lang = localStorage.getItem("lang") || localStorage.getItem("i18nextLng")
@@ -29,8 +32,11 @@ const PayComponent = ({
   content,
   serviceType,
   setMessage,
+  activateEhdm
 }) => {
   const {t} = useTranslation();
+  const [openCompleteUserInfo,setOpenCompleteUserInfo] = useState(false);
+
   const user = useSelector(state => state?.user?.user)
   const [billsData, setBills] = useState({
     web: true,
@@ -55,13 +61,54 @@ const PayComponent = ({
     setOpenPay(false)
   };
 
+  const payForCompleteEhdmRegistration = () => {
+    setLoader(true)
+    if(billsData?.cardId) {
+      payForEhdmWithUsingCard(billsData?.cardId).then((res) => {
+        setLoader(false)
+        if(res?.status !== 200) {
+          console.log(res,"err res in component")
+        }else{
+          console.log(res?.data?.formUrl,"res?.data?.formUrl")
+          window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
+        }
+      })
+    }else{
+      if(billsData?.attach) {
+        console.log("attach")
+      }else{
+        console.log("no attach")
+      }
+      payForEhdm().then((res) => {
+        setLoader(false)
+        if(res?.status !== 200) {
+          console.log(res,"err res in component")
+        }else{
+          console.log(res?.data?.formUrl,"res?.data?.formUrl")
+          window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
+        }
+      })
+
+    }
+  }
+  console.log(billsData, "billsData")
+
   const servicePay = async() => {
+    console.log(activateEhdm ,!user?.isRegisteredForEhdm, "payman" )
+    if(activateEhdm) {
+      // if(user?.isRegisteredForEhdm){
+        if(!user?.isRegisteredForEhdm){
+        return setOpenCompleteUserInfo(true)
+      }else{
+       return payForCompleteEhdmRegistration()
+      }
+    }
     setLoader(true)
     if(method === 1) {
       payForServiceWithAttachedCard(billsData).then((res) => {
         setLoader(false)
         if(res?.status === 200) {
-          setMessage({toStringype:"success", message:t("dialogs.checkCardStatus200")})
+          setMessage({type:"success", message:t("dialogs.checkCardStatus200")})
         }else if(res?.status === 201) {
           setMessage({type:"success", message:t("dialogs.checkCardStatus201")})
         }else if(res?.status === 410) {
@@ -98,12 +145,17 @@ const PayComponent = ({
       </div>      
       <Divider color="black" />
       <DialogContent style={{margin:"auto", paddingTop:"4px"}}>
-      <h6 style={{marginTop:"0px"}}>{t("cardService.dialogTitle")}</h6>
+      {activateEhdm ?  
+        <h6 style={{marginTop:"0px"}}>{`${t("settings.activate")} ${t("settings.ETRM")}`}</h6>
+
+        :<h6 style={{marginTop:"0px"}}>{t("cardService.dialogTitle")}</h6>
+      } 
        
       <PrepaymentConfirmation 
         setBills={setBills}
         billsData={billsData}
         price={price}
+        activateEhdm={activateEhdm}
       />
       <Divider sx={{m:1}} color="black" />
 
@@ -114,6 +166,7 @@ const PayComponent = ({
         content={content}
         method={method}
         setMethod={setMethod}
+        activateEhdm={activateEhdm}
       />
         <Divider sx={{m:1}} color="black" />
 
@@ -135,7 +188,7 @@ const PayComponent = ({
         sx={{m:2,background:"#3FB68A",textTransform: "capitalize"}}
         disabled={billsData?.attach === undefined && billsData?.cardId === undefined }
       >
-        {t("basket.totalndiscount")} {billsData?.daysEnum * price} ֏ 
+        {t("basket.totalndiscount")} {formatNumberWithSpaces(billsData?.daysEnum * price)} ֏ 
       </Button>
      
       {loader && 
@@ -153,6 +206,15 @@ const PayComponent = ({
         // question={<strong>{t("cardService.bankMessage")}</strong>}
         nobutton={true}
       />
+      {/* {openCompleteUserInfo &&
+        <CompleteUserDataForEhdm 
+          open={openCompleteUserInfo}
+          close={()=>setOpenCompleteUserInfo(false)}
+          setMessage={setMessage}
+          func={()=>console.log("user new data for ehdm")}
+          setIsLoad={setLoader}        
+        />
+      } */}
     </Dialog>
   )
 };

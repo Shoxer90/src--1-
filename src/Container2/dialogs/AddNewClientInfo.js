@@ -7,10 +7,20 @@ import styles from "./index.module.scss";
 import validator from "validator";
 import SnackErr from "./SnackErr";
 import { useTranslation } from "react-i18next";
+import LogoutIcon from '@mui/icons-material/Logout';
 
-const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutFunc}) => {
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import Loader from "../loading/Loader";
+
+const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutFunc, noWay}) => {
   const {t} = useTranslation();
+
+  const [isLoad,setSetIsLoad] = useState(false);
   
+  const [seePass, setSeePass] = useState(false);
+  const [seeConfirmPass, setSeeConfirmPass] = useState(false);
+  const [logoutConfirm, setOpenLogoutConfirm] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [newPass,setNewPass] = useState({password:"",confirmPass:""});
   const [errMessage,setErrMessage] = useState({m:"", t:""})
@@ -30,53 +40,50 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
     })
   };
   
-  const passValidator = (value) => {
-    if (validator.isStrongPassword(value, { 
-      minLength: 8, minLowercase: 1, 
-      minUppercase: 1, minNumbers: 1, minSymbols: 1 
-    })) { 
-      setIsValid(true)
-      setErrMessage({t:"success", m: <div style={{color:"green"}}>{t("dialogs.validatepass")}</div>}) 
-    } else { 
-      setIsValid(false)
-      setErrMessage({t:"error", m: <div style={{color:"red"}}>{t("dialogs.novalidatepass")}</div>}) 
-    } 
-  };
+  // const passValidator = (value) => {
+  //   if (validator.isStrongPassword(value, { 
+  //     minLength: 8, minLowercase: 1, 
+  //     minUppercase: 1, minNumbers: 1, minSymbols: 1 
+  //   })) { 
+  //     setIsValid(true)
+  //     setErrMessage({t:"success", m: <div style={{color:"green"}}>{t("dialogs.validatepass")}</div>}) 
+  //   } else { 
+  //     setIsValid(false)
+  //     setErrMessage({t:"error", m: <div style={{color:"red"}}>{t("dialogs.novalidatepass")}</div>}) 
+  //   } 
+  // };
 
   const createNewPass = async() => {
     setSubmitClick(true)
     setOpenConfirm(false)
-    setMessage({m:"", t:""})
+    setMessage({m:"", t:"", message:"", type:""})
       if(!newPass?.password || !newPass?.confirmPass){
+
         return setInfoDialog({
           isOpen:true,
           message: t("dialogs.empty"),
           type: "error"
         })
-      }else if(!isValid){
-        return setInfoDialog({
-          isOpen:true,
-          message: t("dialogs.novalidatepass"),
-          type: "error"
-        })
       }
+      
       else if(newPass?.password !== newPass?.confirmPass){
         return setInfoDialog({
           isOpen:true,
-          message:`${t("dialogs.mismatch")} \n\n ${ t("dialogs.passSuccess")} `,
+          message:t("dialogs.mismatch"),
           type: "error"
         })
       }
+      setSetIsLoad(true)
       await updateUserPassword({password: newPass?.password}).then((resp) => {
+        setSetIsLoad(false)
         if(resp === 200) {
-          setMessage({m: t("dialogs.done"), t: "success"})
-          setTimeout(() => [
-            logOutFunc()
-          ],2500)
+          logOutFunc()
+          setMessage({m: t("dialogs.done"), t: "success",message:`${t("dialogs.done")}`, type:"success"})
+          setOpenAddDialog(!openAddDialog)
         }else if(resp === 401){
           logOutFunc()
         }else {
-          setMessage({m: t("dialogs.wrong"), t: "error"})
+          setMessage({m: t("dialogs.wrong"), t: "error", message:`${t("dialogs.wrong")}`, type:"error"})
         }
         setOpenAddDialog(false)
       })
@@ -93,9 +100,9 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
  };
 
 
- useEffect(() => {
-  passValidator(newPass?.password)
-}, [newPass?.password]);
+//  useEffect(() => {
+//   passValidator(newPass?.password)
+// }, [newPass?.password]);
 
   return (
     <Dialog
@@ -103,38 +110,45 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
       width="lg"
     >
      <DialogTitle className={styles.dialogHeader}>
-        {t("settings.changepassword")}
-        <CloseIcon onClick={closeMainDialog} />
+        <span>{t("settings.changepassword")}</span>
+
+        {!noWay && <CloseIcon onClick={closeMainDialog} />}
       </DialogTitle>
       <Divider />
       <div className={styles.newInfo}>
       <TextField sx={{m:.6}}
           inputProps={{
             style: {
-              height: "26px",
+              height: "36px",
               padding:"1px 10px"
             },
           }}
           InputProps={{
-            endAdornment: <InputAdornment position="end">
-              <span 
-                onClick={()=>setInfoDialog({
-                  isOpen:true,
-                  message: t("dialogs.passSuccess"),
-                  type: "success"
-                })} 
-                style={{fontWeight:700,color:"green", fontSize:"130%", cursor:"pointer"}}
-              >
-                ?
-              </span>
-            </InputAdornment>,
+            endAdornment: 
+              <InputAdornment position="end">
+                {!seePass ?
+                  <VisibilityIcon style={{padding:2}} onClick={()=>setSeePass(true)} /> :
+                  <VisibilityOffIcon style={{padding:2}} onClick={()=>setSeePass(false)} />
+                } 
+                 <span style={{width:"9px"}}></span>
+
+                {/* <span 
+                  onClick={()=>setInfoDialog({
+                    isOpen:true,
+                    message: t("dialogs.passSuccess"),
+                    type: "success"
+                  })} 
+                  style={{fontWeight:700,color:"green", fontSize:"130%", cursor:"pointer"}}
+                >
+                  ?
+                </span> */}
+              </InputAdornment>,
           }}
           helperText={newPass?.password?.length ? errMessage?.m : ""}
           error={!newPass?.password && submitClick}
           autoComplete="off"
-          // autoComplete="new-password"
           name="password"
-          type="password"
+          type={seePass ? "text":"password"}
           value={newPass?.password}
           placeholder={`${t("authorize.password")} *`} 
           onChange={(e)=>handleAddInfo(e)}
@@ -143,49 +157,65 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
         <TextField sx={{m:.6}} 
           inputProps={{
             style: {
-              height: "26px",
+              height: "36px",
               padding:"1px 10px"
             }
           }}
+          InputProps={{
+            endAdornment: 
+              <InputAdornment position="end">
+                {!seeConfirmPass ?
+                  <VisibilityIcon style={{padding:2}} onClick={()=>setSeeConfirmPass(true)} /> :
+                  <VisibilityOffIcon style={{padding:2}} onClick={()=>setSeeConfirmPass(false)} />
+                } 
+                 <span style={{width:"9px"}}></span>
+              </InputAdornment>,
+          }}
           error={(!newPass?.confirmPass && submitClick) || newPass?.password !== newPass?.confirmPass}
           helperText={newPass?.confirmPass?.length && newPass?.password !== newPass?.confirmPass ? 
-            <div style={{fontSize:"90%"}}>
+            <div>
               {t("dialogs.mismatch")} 
             </div> 
           : ""}
           autoComplete="off"
           name="confirmPass"
-          type="password"
+          type={seeConfirmPass ? "text":"password"}
           value={newPass?.confirmPass}
           placeholder={`${t("settings.confirmpassword")} *`}
           onChange={(e)=>{
             setMessage("")
             handleAddInfo(e)
           }}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">
-              <span style={{width:"9px"}}>
-              </span>
-            </InputAdornment>,
-          }}
         />    
         <div className={styles.newInfo_btn}>
+          {
+            noWay ?
+            <Button 
+            onClick={()=>setOpenLogoutConfirm(true)}
+            variant="contained" 
+            sx={{background:"#3FB68A",margin:"10px"}}
+          >
+             <LogoutIcon style={{margin: "0px 10px"}} />
+             {t("menuburger.logout")}
+          </Button>:
           <Button
             variant="contained"
             style={{
               background:"#bdbdbd",
               textTransform: "capitalize",
-              // fontWeight: "bold",    
+              margin: "8px"   
             }}
             onClick={()=>setOpenAddDialog(false)}
             >
             {t("buttons.cancel")}
           </Button>
+
+          }
           <Button
             variant="contained"
             onClick={()=>setOpenConfirm(true)}
             disabled={!newPass?.confirmPass || !newPass?.password}
-            sx={{textTransform: "capitalize"}}
+            sx={{textTransform: "capitalize", margin:"8px"}}
           >
             {t("buttons.save")}
           </Button>
@@ -200,11 +230,21 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
           func={createNewPass}
           content={" "}
         />
+        <ConfirmDialog
+          t={t}
+          open={logoutConfirm}
+          close={setOpenLogoutConfirm}
+          func={logOutFunc}
+          content={t("dialogs.logoutQuestion")}
+        />
          {infoDialog?.message &&
         <Dialog open={infoDialog?.isOpen} onClose={()=>setInfoDialog({isOpen: false, message:"",type:"info"})}>
           <SnackErr type={infoDialog?.type} message={infoDialog?.message}  close={()=> closeConfirmDialog({isOpen: false, message:"",type:"info"})}/>
         </Dialog>
       }
+        <Dialog open={Boolean(isLoad)} >
+          <Loader />
+        </Dialog>
       </div>
     </Dialog>
   )

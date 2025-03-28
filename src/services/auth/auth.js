@@ -51,30 +51,47 @@ export async function updateUserPassword (password, token){
 
 
 export async function registrationNew(user) {
-  
-  const newUser = {
-    "legalName":  user?.legalName,
-    "legalAddress":  user?.legalAddress,
-    "tin":  user?.tin,
-    "tradeName":  user?.tradeName,
-    "country":  user?.country,
-    "city":  user?.city,
-    "businessAddress":  user?.businessAddress,
-    "firstName":  user?.firstName,
-    "lastName":  user?.lastName,
-    "email":  user?.email,
-    "phoneNumber": `0${user?.phoneNumber}`,
-    "zipCode":  user?.zipCode,
-    "userName":  user?.userName,
-    "password":  user?.password
-  }
+
   try{
-    const  data = await axios.post(baseUrl + `Registration/RegistrationNew`,newUser, option);
+    const  data = await axios.post(baseUrl + `Registration/RegistrationNew`,user, option);
     return data.status
   }catch(err){
     return err
   }
 };
+
+export const completeEhdmRegistration = async(newUserData) => {
+  try{
+    const  data = await axios.post(baseUrl + `Registration/RegisterEhdmFromStoreX`,newUserData, option());
+    return data
+  }catch(err) {
+    return err?.request?.status
+  }
+};
+
+export const payForEhdm = async(bool) => {
+  try{
+    const  data = await axios.get(baseUrl + `Registration/PayForEhdm?isFromWeb=true&attach=${bool}`, option());
+    console.log(data?.status)
+    return data
+  }catch(err){
+    console.log(err,"err")
+    return err?.request?.status
+  }
+};
+
+export const payForEhdmWithUsingCard = async(cardId) => {
+  try{
+    const  data = await axios.get(baseUrl + `Registration/PayForEhdmWithCard?isFromWeb=true&cardId=${cardId}`, option());
+    console.log(data?.status)
+    return data
+  }catch(err){
+    console.log(err,"err")
+    return err?.request?.status
+  }
+};
+
+
 
 export async function newConfirmCode(tkn) {
   const  token = {
@@ -128,9 +145,20 @@ export async function createNewCashier(inputs) {
 
 export const getNews = async(lang) => {
   try{
-    const  data = await axios.get(baseUrl + `Login/GetNews?language=${lang}`, {});
+    const data = await axios.get(baseUrl + `Login/GetNews?language=${lang}`, {});
     return data.data
   }catch(err){
+    return err
+  }
+}
+
+export const getDataByTin = async(tin) => {
+  try{
+    const data = await axios.get(baseUrl + `Registration/GetDetailsByTin?tin=${tin}`, {});
+    console.log(data,"data for tin")
+    return data
+  }catch(err){
+    console.log(err,"data errrr")
     return err
   }
 }

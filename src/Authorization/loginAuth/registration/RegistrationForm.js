@@ -133,7 +133,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
       setIsIdentity(false)
       setInfoDialog({
         isOpen:true,
-        message:`${t("dialogs.mismatch")} \n\n ${ t("dialogs.passSuccess")} `,
+        message:t("dialogs.mismatch"),
         type: "error"
       })
     }else if(!errorMessage?.ok){
@@ -417,7 +417,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
                  <VisibilityIcon style={{padding:2}} onClick={()=>setSeePass(true)} /> :
                  <VisibilityOffIcon style={{padding:2}} onClick={()=>setSeePass(false)} />
                 } 
-                <span onClick={openDialog} style={{fontWeight:700,color:"green", fontSize:"130%", cursor:"pointer",paddingLeft:"5px"}}>{"?"}</span>
+                {/* <span onClick={openDialog} style={{fontWeight:700,color:"green", fontSize:"130%", cursor:"pointer",paddingLeft:"5px"}}>{"?"}</span> */}
               </InputAdornment>,
           }}
            helperText={newUser?.password?.length ? errorMessage?.message : ""}

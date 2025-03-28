@@ -123,7 +123,6 @@ const CustomerSaleHistory = () => {
         <UniversalTable 
           rows={rows}
           collumns={collSlice?.collumns}
-          // clickToRow={()=>console.log("click to paymtransaction row")} 
         />
       }
       {/* Ռեվերսի ֆոեւնկցիանգրված չէ,ուղղակի սթորիքսի ռեվերսն ա դրած */}

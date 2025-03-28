@@ -112,3 +112,7 @@ export const getResponseAfterPay = (statusCall) => {
   }
 };
 
+export const formatNumberWithSpaces = (number) => {
+  return number.toLocaleString('en').replace(/,/g, ' ');
+}
+

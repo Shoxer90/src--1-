@@ -2,6 +2,7 @@ import React, { memo } from "react" ;
 
 import styles from "../paymentDialog/index.module.scss";
 import { useTranslation } from "react-i18next";
+import { formatNumberWithSpaces } from "../../../../modules/modules";
 
 const PrepaymentItem = ({
   index, 
@@ -41,7 +42,7 @@ const PrepaymentItem = ({
             {months * 30} {t("cardService.dayCount2")} 
           </div>
           <div style={{margin: "2px 2px 2px 100px"}}>
-            {price} {t("units.amd")}
+            {formatNumberWithSpaces(price)} {t("units.amd")}
           </div>
       </label>
       

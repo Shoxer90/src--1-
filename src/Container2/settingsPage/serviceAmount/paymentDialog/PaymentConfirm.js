@@ -4,7 +4,7 @@ import React, { memo, useEffect, useState } from 'react';
 import styles from "./index.module.scss";
 import { useTranslation } from 'react-i18next';
 import AttachedCardsItem from './AttachedCardsItem';
-
+import IdramPay from "../../../../modules/Idram"
 const PaymentConfirm = ({
   cardArr,
   setPayData, 
@@ -35,6 +35,7 @@ const PaymentConfirm = ({
       <div style={{display:"flex"}}>
         <h6>{t("settings.payByAttachedCard")}</h6>
         <img src="/multicard.jpg" alt="card_type" style={{height:"17px", margin:"4px 10px"}} />
+        {/* <IdramPay /> */}
       </div>
       {cardArr?.length ?
         <div>

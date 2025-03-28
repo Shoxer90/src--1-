@@ -4,6 +4,7 @@ import Footer from "./footer/Footer";
 import NotificationComponent from "../loginAuth/notifications";
 import { useTranslation } from "react-i18next";
 import styles from "./index.module.scss";
+import PriceList from "../../Container2/priceList";
 
 const LoginAuthContainer =({children}) => {
 
@@ -16,6 +17,7 @@ const LoginAuthContainer =({children}) => {
           {children}
         </div>
         <NotificationComponent />
+        {/* <PriceList /> */}
       </div>
       <div>
         <Footer color="#3FB68A" />

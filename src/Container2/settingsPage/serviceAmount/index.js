@@ -20,6 +20,7 @@ import AutoPaymentSwitch from "./autoPayment"
 import CreditCardNewName from './creditCard/CreditCardNewName.js';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ServicesV2 from './services/servicesV2.js';
 
 
 const stylesCard = {
@@ -144,8 +145,20 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
         <div style={{width:"600px"}}></div>
       </div>
       <div style={{display:"flex", flexFlow:"row "}}>
-        {internalPayments &&
+        {/* {internalPayments &&
           <Services 
+            content={internalPayments}
+            payData={payData} 
+            setPayData={setPayData}
+            logOutFunc={logOutFunc}
+            isDelete={isDelete}
+            serviceType={serviceType}
+            refresh={refresh}
+            setRefresh={setRefresh}
+          />
+        } */}
+         {internalPayments &&
+          <ServicesV2
             content={internalPayments}
             payData={payData} 
             setPayData={setPayData}

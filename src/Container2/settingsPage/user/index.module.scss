@@ -1,12 +1,22 @@
 .settings_user{
   margin: 90px auto;
+  display: flex;
+
+  justify-content: space-between;
 }
 .settingsCont{
   width: 40dvw;
   margin: auto;
   font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  margin-top: 10px;
+
+
+  & input{
+  font-size: 110%;
+  }
   &_avatar{
-    margin:15px auto;
+    margin:20px auto;
     border-radius: 5%;
     position: relative;
     height:200px;
@@ -52,8 +62,10 @@
         align-items: center;
         flex-direction: row;
         justify-content: flex-start;
-        padding: 5px 10px;
-        background-color: #eae7e7;
+        // padding: 5px 10px;
+        text-align: center;
+        align-content: center;
+        // background-color: #eae7e7;
       }
     }
     .info_items{
@@ -167,6 +179,66 @@
     margin:auto;
   }
 }
-@media only screen and (max-width: 700px) {
-  
+@media only screen and (max-width: 925px) {
+  .settings_user{
+    flex-flow:column;
+  }
+}
+.reg_form{
+  display: flex;
+  flex-flow: column nowrap;
+  align-content: center;
+  margin-top: 10px;
+  margin-right: 40px;
+  & input {
+    user-select: none;
+  }
+  &_div{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; 
+    grid-gap: 5px;
+    // margin:6px 0px;
+  }
+
+  & input::-webkit-outer-spin-button,
+   input::-webkit-inner-spin-button {
+     -webkit-appearance: none;
+     margin: 0;
+     user-select: none;
+    }
+   
+   /* Firefox */
+   input[type=number] {
+     appearance: textfield;
+   }
+};
+
+.errorMessage{
+  font-size: 80%;
+  padding: 0px;
+  color: red;
+  align-self: flex-start;
+
+};
+
+.successMessage{
+  font-size: 80%;
+  padding: 0px;
+  color: green;
+  align-self: flex-start;
+};
+
+
+@media screen and (max-width:1040px) {
+  .reg_form{
+    & input{
+      width: 98%;
+    }
+    &_div{
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-gap: 5px;
+      margin:6px 0px;
+    }
+  }
 }

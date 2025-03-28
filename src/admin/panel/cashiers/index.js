@@ -57,7 +57,6 @@ const CustomerCashiers = () => {
         <UniversalTable
           rows={rows} 
           collumns={collSlice?.collumns}
-          // clickToRow={()=>console.log("click to invooice row")} 
         />
       }
     </div>

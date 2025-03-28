@@ -42,7 +42,8 @@ import NewSimpleRegistration from "./Authorization/newReg";
 // import NewSimpleRegistration from "./Authorization/newReg";
 import ForgotPassword from "./Authorization/loginAuth/forgotPass";
 import ResetPassword from "./Authorization/loginAuth/resetpass/ResetPassword";
-import Confirmation from "./Authorization/loginAuth/confirmation";
+import Confirmation from "./Authorization/loginAuth/confirmation/index";
+import ConfirmationV2 from "./Authorization/loginAuth/confirmation/Confirmation";
 import PrePaymentList from "./Container2/prepayment/";
 import { QrSoccet } from "./QrSoccet";
 import ConfirmDialog from "./Container2/dialogs/ConfirmDialog";
@@ -52,7 +53,7 @@ import NewContract from "./Container2/dialogs/notifications/NewContract";
 import CustomerSaleHistory from "./admin/panel/customers/CustomerSaleHistory";
 import CustomerCashiers from "./admin/panel/cashiers";
 import AdminInvoices from "./admin/panel/invoices";
-// import { listenForNotifications, requestFirebaseNotificationPermission } from "./firebase/firebase";
+import AddNewClientInfo from "./Container2/dialogs/AddNewClientInfo";
 
 const App = () => {
 
@@ -75,6 +76,7 @@ const App = () => {
   const [from, setFrom] = useState("");
   const dispatch = useDispatch();
   const {user} = useSelector(state => state.user);
+
   const [isBlockedUser,setBlockedUser] = useState(false);
   const debounce = useDebonce(searchValue, 1000);
   const debounceBasket = useDebonce(barcodeScanValue, 20);
@@ -84,6 +86,7 @@ const App = () => {
   const [notification, setNotification] = useState([]);
   const [count, setCount] = useState(0);
   const [searchedNotAvailableProd, setSearchedNotAvailableProd] = useState();
+  const [openAddDialog,setOpenAddDialog] = useState(false)
   const [openWindow, setOpenWindow] = useState({
     prepayment: false,
     payment: false,
@@ -107,9 +110,9 @@ const App = () => {
     customer_Name: "",
     customer_Phone: ""
   });
- 
+
   const whereIsMyUs = async() => {
-    console.log("13.03.2025 update")
+    console.log("28.03.2025 update")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -123,13 +126,17 @@ const App = () => {
       if(res?.payload?.isInDate === false && !res?.payload?.days && res?.payload?.showPaymentPage){
         navigate("/setting/services")
         setBlockedUser(true)
-      } else if(res?.payload?.isInDate === true){
+      }
+      if(res?.payload?.isInDate === true){
         setBlockedUser(false)
         setCount(true)
       }
+      if(res?.payload?.isChangedPassword === false) {
+        setOpenAddDialog(true)
+      }
     })
-
   };
+
 
   const datePainter = (dateString) => {
     const date = new Date(dateString);
@@ -148,9 +155,7 @@ const App = () => {
   };
 
   const byBarCodeSearching = async(group,barcode) => {
-    // console.log(barcode,"barcode in hight func")
-    // console.log(barcode.split(""),"barcode in split")
-    // const bb = encodeURIComponent(barcode)
+  
     if(barcode === "" || barcode === " "){
       await queryFunction(dataGroup, 1).then((res) => {
         setContent(res?.data)
@@ -297,8 +302,6 @@ const App = () => {
   };
   
   const setToBasket = (wishProduct, quantity, isFromPrepaymentPage) => {
-    console.log(wishProduct?.discountedPrice,"WISHPROD DISKOUNTEDPRICE")
-    console.log(wishProduct?.discountedPrice,"WISHPROD DISKOUNTEDPRICE")
     const basket = basketContent
     if(quantity && quantity > wishProduct?.remainder && !isFromPrepaymentPage){
       setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
@@ -322,8 +325,6 @@ const App = () => {
   };
 
   const setToBasketFromSearchInput = (wishProduct, quantity) => {
-    console.log(wishProduct?.discountedPrice,"WISHPROD DISKOUNTEDPRICE")
-    console.log(wishProduct?.discountedPrice,"WISHPROD DISKOUNTEDPRICE")
     const basket = basketContent
       if(quantity && quantity > wishProduct?.remainder){
       setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
@@ -335,15 +336,6 @@ const App = () => {
             ...prod,
             count:prod?.count + 1,
             discountedPrice:wishProduct?.discountedPrice,
-
-            // discountedPrice: wishProduct?.discountType === 2? 
-            // wishProduct?.price - wishProduct?.discount :
-            // wishProduct?.price - (wishProduct?.price * wishProduct?.discount/100),
-            discountedPrice:wishProduct?.discountedPrice,
-
-            // discountedPrice: wishProduct?.discountType === 2? 
-            // wishProduct?.price - wishProduct?.discount :
-            // wishProduct?.price - (wishProduct?.price * wishProduct?.discount/100),
           }
         }else{
           return prod
@@ -356,13 +348,6 @@ const App = () => {
       basket.unshift({
         ...wishProduct,
         discountedPrice:wishProduct?.discountedPrice,
-        // discountedPrice: wishProduct?.discountType === 2? 
-        // wishProduct?.price - wishProduct.discount :
-        // wishProduct?.price - (wishProduct.price * wishProduct.discount/100) ,
-        discountedPrice:wishProduct?.discountedPrice,
-        // discountedPrice: wishProduct?.discountType === 2? 
-        // wishProduct?.price - wishProduct.discount :
-        // wishProduct?.price - (wishProduct.price * wishProduct.discount/100) ,
         count:+(quantity  ? quantity: 1)
       })
     }
@@ -420,9 +405,9 @@ const App = () => {
   
   useEffect(() => { 
     isLogin && getMeasure()
-    !user?.confirmation && user?.showPaymentPage && !count && checkForNewNotification()
+    user?.confirmation === false && user?.showPaymentPage && !count && checkForNewNotification()
    
-  },[t,isLogin]);
+  },[t,isLogin, user]);
 
   useEffect(() => {
     if(user?.isInDate === true &&
@@ -441,18 +426,19 @@ const App = () => {
       localStorage.setItem("notificOk", true)
     }
     loadBasket()
-  },[user ]);
+  },[user]);
 
   useEffect(() => {
-    setCount(false)
-    whereIsMyUs() 
+  whereIsMyUs() 
+  if(user &&  user.isChangedPassword === false) {return setOpenAddDialog(true)}
+  setCount(false)
   },[]);
 
  useEffect(() => {
-  setPaymentInfo({
-    ...paymentInfo,
-    isPrepayment: openWindow?.prepayment
-  })
+    setPaymentInfo({
+      ...paymentInfo,
+      isPrepayment: openWindow?.prepayment
+    })
   },[openWindow]);
 
   useEffect(() =>{
@@ -462,11 +448,6 @@ const App = () => {
   useEffect(() => {
     barcodeScanValue &&  debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
   },[debounceBasket]);
-
-  // useEffect(() => {
-  //   requestFirebaseNotificationPermission();
-  //   listenForNotifications();
-  // }, []);
 
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>
@@ -483,18 +464,20 @@ const App = () => {
           {/* <Route path="/registration" element={<LoginAuthContainer children={<Registration logOutFunc={logOutFunc} />} />} /> */}
           <Route path="/forgot-password" element={<LoginAuthContainer children={<ForgotPassword />} />} />
           <Route path="/reset-password/*" element={<LoginAuthContainer children={<ResetPassword />} />} />
-          <Route path="/confirmation/*" element={<LoginAuthContainer children={<Confirmation />} />} />
+          <Route path="/confirmation/*" element={<ConfirmationV2 />} />
+
+          {/* <Route path="/confirmation/*" element={<LoginAuthContainer children={<Confirmation />} />} /> */}
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
           <Route path="/basket/*" element={<BasketList t={t} />} />
 {/* ADMIN PAGE */}
-          {/* <Route path="/admin/*" element={<AdminPage />} />
+          <Route path="/admin/*" element={<AdminPage />} />
           <Route path="/admin/info/customer" element={<AdminPanel children={<CustomerInfo />} />} />
           <Route path="/admin/stores" element={<AdminPanel children={<UsersContainer />} />} />
           <Route path="/admin/transactions/customer" element={<AdminPanel children={<CustomerPage children={<CustomerSaleHistory />} />} />} />
           <Route path="/admin/invoices/customer" element={<AdminPanel children={<CustomerPage children={<AdminInvoices />} />} />} />
           <Route path="/admin/payments/customer" element={<AdminPanel children={<CustomerPage children={<CustomerPayments />} />} />} />
-          <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} /> */}
+          <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} />
         </Routes> :
         <>
           <Header
@@ -506,7 +489,7 @@ const App = () => {
             activeBtn={activeBtn}
             setActiveBtn={setActiveBtn}
           />
-          {!isBlockedUser ? <Routes>
+          {!isBlockedUser  && user ? <Routes>
             <Route
               path="/"
               element={
@@ -590,12 +573,14 @@ const App = () => {
             setPaymentInfo={setPaymentInfo}
             limitedUsing={limitedUsing}
           />}
-          {notification.length ? <Notification 
-            func={()=>setNotification([])}
-            data={notification}
-            setData={setNotification}
-            open={notification.length}
-          /> : ""}
+          {notification.length ? 
+            <Notification 
+              func={()=>setNotification([])}
+              data={notification}
+              setData={setNotification}
+              open={notification.length}
+            /> : ""
+          }
 
           {(!user?.hasAgreement && user?.newTerms) ?
             <NewContract 
@@ -607,15 +592,22 @@ const App = () => {
               role={user?.role}
             /> : ""
           }
+            <AddNewClientInfo
+              setMessage={setMessage} 
+              openAddDialog={openAddDialog} 
+              setOpenAddDialog={setOpenAddDialog}
+              noWay={true}
+              logOutFunc={logOutFunc}
+            />
           <Snackbar  
             sx={{ height: "100%" }}
+            open={!!message?.message} 
+            autoHideDuration={6000} 
+            onClose={()=>setMessage({type:"", message:""})}
             anchorOrigin={{   
               vertical: "top",
               horizontal: "center"
             }} 
-            open={!!message?.message} 
-            autoHideDuration={6000} 
-            onClose={()=>setMessage({type:"", message:""})}
           >
             <Alert onClose={()=>setMessage({type:"",message:""})} severity={message?.type || "success"} sx={{ width: '100%' }}>
               <strong style={{fontSize:"150%"}}>{message?.message}</strong>

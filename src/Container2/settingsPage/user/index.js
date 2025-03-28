@@ -9,13 +9,18 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import { changeEHDM, changeToPhysicalHDM } from "../../../services/user/userInfoQuery";
 import SnackErr from "../../dialogs/SnackErr";
 import Loader from "../../loading/Loader";
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
 import styles from "./index.module.scss";
+import { useNavigate, useNavigation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setPayForEhdm } from "../../../store/storex/openPaySlice";
 
 const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
-
   const {t} = useTranslation();
-  
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isOpenPayForEhdm = useSelector(state => state?.payForEhdm?.isOpen)
   const [confirmSwitch, setConfirmSwitch] = useState(false);
   const [openAddDialog, setOpenAddDialog] = useState(false)
   const [question, setQuestion] = useState("")
@@ -52,15 +57,23 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
     setConfirmSwitch(false)
   };
 
+  const openEhdmActivation = () => {
+    dispatch(setPayForEhdm(true))
+    navigate( "/setting/services")
+  }
+
   const switchStatus = async(newStatus) => {
-    setIsLoad(true)
     if(user?.isRegisteredInEhdm || !newStatus){
+      setIsLoad(true)
       changeEHDM(newStatus).then((res)=>{
+        setIsLoad(false)
         whereIsMyUs()
         setMessage({m: res?.data?.message, t:"success"})
       })
     }else {
-      setMessage({m:t("settings.isregistrehdm"), t:"error"})
+      setQuestion(t("authorize.ehdmConnect"))
+      setOperation({a:openEhdmActivation,b:true})
+      return setConfirmSwitch(true)
     }
     setIsLoad(false)
     setConfirmSwitch(false)
@@ -72,58 +85,69 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
   
   return(
   <div className={styles.settings_user}>
-    <ClientShopAvatar client={user} limitedUsing={limitedUsing}/>
-    <h4 className={styles.settings_user_name}>
-      {user?.firstname} {user?.lastname}  
-    </h4>
-    <h6>
+    <div style={{marginLeft:"25px"}}>
+      <ClientShopAvatar client={user} limitedUsing={limitedUsing}/>
+      
+      <h4 className={styles.settings_user_name}>
+        {user?.legalName ? user?.legalName :
+          user?.tradeName? user?.tradeName: 
+          `${user?.firstname} ${user?.lastname}`
+        }
+      </h4>
+      <h5 >
+        <label>
+          <input 
+            type="radio"
+            name="sale type"
+            checked={user?.isEhdmStatus}
+            onClick={()=>questionForConfirmText(0)}
+            style={{cursor:"pointer"}}
+          />
+          <span style={{marginLeft:"10px"}}>{t("settings.ETRM")}</span>
+        </label>
+        <label style={{marginLeft:"20px"}}>
+          <input 
+            type="radio"
+            name="sale type"
+            checked={!user?.isEhdmStatus}
+            onClick={()=>questionForConfirmText(1)}
 
-      <label>
-        <input 
-          type="radio"
-          name="sale type"
-          checked={user?.isEhdmStatus}
-          // onClick={()=>setConfirmSwitch(true)}
-          onClick={()=>questionForConfirmText(0)}
-          style={{cursor:"pointer"}}
-        />
-        <span style={{marginLeft:"10px"}}>{t("settings.ETRM")}</span>
-      </label>
-      <label style={{marginLeft:"20px"}}>
-        <input 
-          type="radio"
-          name="sale type"
-          checked={!user?.isEhdmStatus}
-          // onClick={setConfirmSwitch(true)}
-          onClick={()=>questionForConfirmText(1)}
+            style={{cursor:"pointer"}}
+          />
+        <span style={{marginLeft:"10px"}}>{t("history.receiptNoHmd")}</span> 
+        </label>
+        <label style={{marginLeft:"20px"}}>
+          <input 
+            type="radio"
+            name="sale type"
+            style={{color:"darkgrey"}}
+            checked={user?.ehdmMode === 2}
+            readOnly
+          />
+      <span style={{marginLeft:"10px"}}>{t("history.hdm")} <span style={{fontSize:"70%", color:"green"}}> ({t("settings.notAvailableInWeb")})</span> </span> 
+        </label>
+      </h5>
+      {!limitedUsing && 
+        <Button onClick={()=>setOpenAddDialog(true)} variant="contained"  sx={{textTransform: "capitalize",m:2, background: "#fd7e14",border:"#fd7e14"}}>
+          {t("settings.changepassword")} 
+        </Button>
+      }
+      <Button 
+        variant="contained"
+        startIcon={<ListAltIcon />}
+        onClick={user?.contractLink}
+        
+        style={{letterSpacing:"1px",background: "#fd7e14",border:"orange"}} 
+      >
+        {t("updates.seeContract")}
+      </Button>
+    </div>
+    {user && <ClientInfo isLoad={isLoad} setIsLoad={setIsLoad} limitedUsing={limitedUsing} logOutFunc={logOutFunc} />}
 
-          style={{cursor:"pointer"}}
-        />
-       <span style={{marginLeft:"10px"}}>{t("history.receiptNoHmd")}</span> 
-      </label>
-      <label style={{marginLeft:"20px"}}>
-        <input 
-          type="radio"
-          name="sale type"
-          style={{color:"darkgrey"}}
-          checked={user?.ehdmMode === 2}
-          readOnly
-          // onClick={()=>questionForConfirmText(2)}
-        />
-    {/* "notAvailableInWeb": "Недоступно", */}
-    <span style={{marginLeft:"10px"}}>{t("history.hdm")} <span style={{fontSize:"70%", color:"green"}}> ({t("settings.notAvailableInWeb")})</span> </span> 
-      </label>
-    </h6>
-    {user && <ClientInfo />}
-
-    {!limitedUsing && <Button onClick={()=>setOpenAddDialog(true)} variant="contained"  sx={{textTransform: "capitalize",m:2}}>
-      {t("settings.changepassword")} 
-    </Button>}
 
     <ConfirmDialog
       question={question}
       func={()=>operation?.a(operation?.b)}
-      title={t("settings.status")}
       open={confirmSwitch}
       close={setConfirmSwitch}
       t={t}
@@ -134,6 +158,7 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
         setOpenAddDialog={setOpenAddDialog}
         logOutFunc={logOutFunc}
       />
+    
       {message?.m ?
         <Dialog open={message?.m}>
           <SnackErr type={message?.t} message={message?.m} close={setMessage}/>

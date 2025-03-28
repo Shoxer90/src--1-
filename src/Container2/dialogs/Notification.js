@@ -34,14 +34,14 @@ const Notification = ({
       if(item?.id === 1) {
         return obj.title = item[`${str}`]
       }else  if(item?.id === 2) {
-        return obj.text = item[`${str}`]
+        // return obj.text = item[`${str}`]
+        return obj.text = item[`${str}`].split("\n")
       }else  if(item?.id === 3) {
         return obj.button = item[`${str}`]
       }
     })
     setDataForNotification(obj)
   };
-
   useEffect(() => {
     langEnum()
   }, []);
@@ -53,12 +53,17 @@ const Notification = ({
       style={{fontWeight:600}}
     >
       <DialogTitle style={{justifyContent:"space-between",display:"flex",padding:"10px 10px",alignItems:"center"}}>
-        <span>{dataForNotification?.title}</span>
+        <span style={{whiteSpace: "pre-wrap"}}>{dataForNotification?.title}</span>
         <CloseIcon onClick={func} />
       </DialogTitle>
 
       <DialogContent dividers>
-        <div >{dataForNotification?.text}</div> 
+        <div >{dataForNotification?.text &&
+          dataForNotification?.text?.map((item) => (
+            <div> {item}</div> 
+
+          ))
+      }</div> 
         <label>
           <input 
             style={{margin:"15px 10px 0 0"}}
@@ -74,7 +79,7 @@ const Notification = ({
         <Button 
           disabled={!openButtonSubmit} 
           onClick={()=>{
-            cleanNotifications(openButtonSubmit)
+            cleanNotifications(!!openButtonSubmit)
             setData([])
             window.location.reload(true);
           }}

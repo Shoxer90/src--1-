@@ -92,10 +92,6 @@ const LogInFormNew = ({
             }
             {...register("password", {
               required: t("authorize.empty"),
-              // minLength: {
-              //   value: 8,
-              //   message: t("authorize.password_too_short"),
-              // },
             })}
             label={t("authorize.password")}
           />
@@ -107,7 +103,8 @@ const LogInFormNew = ({
           type="submit"
           variant="contained"
           style={{
-            width: "40%",
+            width: "38%",
+            marginRight:"15px",
             backgroundColor:"#3FB68A",
             textTransform: "capitalize",
           }}
@@ -115,8 +112,8 @@ const LogInFormNew = ({
             {t("buttons.signIn")}
         </Button>
         <Button 
-          variant="text" 
-          style={{width:"40%",color:"orange",textTransform: "capitalize",}} 
+          variant="contained" 
+          style={{width:"38%",background: "#fd7e14",textTransform: "capitalize",}} 
           onClick={()=> navigate("/registration")}
         >
           {t("landing.registration")}

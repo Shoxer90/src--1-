@@ -6,27 +6,21 @@ import SnackErr from "../../Container2/dialogs/SnackErr";
 import { Dialog } from "@mui/material";
 import Loader from "../../Container2/loading/Loader";
   const initialUserData = {
-  // required
     "email": "",
     "phoneNumber": "",
     "tradeName": "",
-    "isRegisteredForEhdm": true,
-// not required
     "businessAddress": "",
-// for ehdm
-    "taxRegime": "",
+    "taxRegime": 0,
     "tin": "",
     "legalName": "",
     "legalAddress": "",
-    "isRegisteredForEhdm": true,
-// not required
-    "country": "",
-    "city": "",
-    "firstName": "",
-    "lastName": "",
-    "zipCode": "",
-    "userName": "",
-    "password": ""
+    "isRegisteredForEhdm": false,
+    // "country": "",
+    // "city": "",
+    // "firstName": "",
+    // "lastName": "",
+    // "zipCode": "",
+    // "userName": "",
   }
 
 const NewSimpleRegistration = ({logOutFunc}) => {
@@ -55,18 +49,6 @@ const NewSimpleRegistration = ({logOutFunc}) => {
         t:"error"
       })
     }
-    // }
-    // else if (res === 405) {
-    //   setRegisterMessage({
-    //     m: t("authorize.dublicate"),
-    //     t:"error"
-    //   })
-    // }else if(res === 400) {
-    //   setRegisterMessage({
-    //     m: t("authorize.dublicate"),
-    //     t:"error"
-    //   })
-    // }
   }
 
   useEffect(() => {
@@ -86,6 +68,7 @@ const NewSimpleRegistration = ({logOutFunc}) => {
         t={t}
         setIsLoad={setIsLoad}
         successSubmit={successSubmit}
+        
       />
 
       <Dialog open={Boolean(registerMessage.m)} onClose={()=>setRegisterMessage({m:"",t:""})}>

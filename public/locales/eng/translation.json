@@ -126,6 +126,7 @@
     "newpassword": "New password",
     "password": "Password",
     "passwordConform": "Enter your password",
+    "completeEhdmAuth": "Fill in the required fields for ETRM registration",
 
     "create": "Create an account",
     "company": "Company name",
@@ -149,6 +150,7 @@
     "register": "Register",
     "director": "Director",
     "taxType": "Tax Type",
+    "ehdmConnect" : "Get access to use ETRM",
     "paymentSystem": "Payment System",
     "serviceType": "Service Type",
     "merchName": "Merch Name",
@@ -162,7 +164,7 @@
     "incorrect": "Incorrect username or password!",
     "checkit": "Check it out",
     "success": "Please check your Email and Phone Incoming messages. To complete the registration, follow the link sent to the email address.",
-    "successLogin": "Registration is successed!",
+    "successLogin": "Registration was successful. You will receive a login and OTP one-time password in your email. Please change it when you log in.",
     "exist": "This username is already exist",
     "exist1": "This username is available",
     "existTin": "This TIN is already registered",
@@ -212,7 +214,7 @@
     }
   },
   "menuburger": {
-    "setting":"Setting",
+    "setting":"Personal Page",
     "title": "Menu",
     "logout": "LogOut",
     "feedback":"Contact us",
@@ -453,6 +455,10 @@
     "newEmail": "New E-mail",
     "dublicatemail": "Cashier with this email address already exists",
     "successTitle":"Data for Login to StoreX",
+    "completeEHDM1": "To use the ETRM service, you must fill in the missing fields (TIN, taxation type) and pay for service activation.",
+    "completeEHDM2": "To use the ETRM service, you must pay for service activation",
+    "checkInfo":"Please check the data before saving",
+    
     "isregistrehdm": "In order to activate the function of generating e-cash register, it is necessary to have contract  with PayX LLC on the service of e-cash register",
     "payWithNewCard": "Another Card",
     "payWithNewCardAndAttach": "Save Card",
@@ -462,11 +468,13 @@
     "priceListSubTitle1": "Services",
     "paymentMethods": "Payment method",
     "free": "Free",
+    "activate": "Activate",
     "ETRM": "ETRM",
     "StoreX": "StoreX",
     "info":"Information",
     "cashiereLimit": "Access to more than 2 cashiers, for each (one-time) 6000 dram․To activate the service, please contact 055 522225",
-    "operation": "Operation"
+    "operation": "Operation",
+    "employeeCall":"After making the payment, our employee will contact you."
   },
   "cardService":{
     "btnTitle" : "Activation of services",

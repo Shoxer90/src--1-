@@ -2,6 +2,7 @@ import { Divider } from "@mui/material";
 import React, { memo, useEffect, useState } from "react";
 import styles from "../index.module.scss";
 import { useTranslation } from "react-i18next";
+import { formatNumberWithSpaces } from "../../../modules/modules";
 const HistoryDetailsItem = ({
 unit,
 name,
@@ -32,7 +33,7 @@ adgCode
         <span>( { adgCode} ) </span>
       </div>  
       <div>
-       <span >{t("productinputs.price")} {price} </span> 
+       <span >{t("productinputs.price")} {formatNumberWithSpaces(price)} </span> 
         {discount ?
           <span >
             {discountType === 2 ?

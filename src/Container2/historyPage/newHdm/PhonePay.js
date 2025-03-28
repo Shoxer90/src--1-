@@ -8,6 +8,7 @@ import MobileScreenShareIcon from '@mui/icons-material/MobileScreenShare';
 import { useState } from "react";
 import SnackErr from "../../dialogs/SnackErr";
 import { sendSmsForPay } from "../../../services/pay/pay";
+import { formatNumberWithSpaces } from "../../../modules/modules";
 
 const PhonePay = ({
   t,
@@ -77,7 +78,7 @@ const PhonePay = ({
         <Divider sx={{color:"darkgray"}}/>
         <Divider sx={{m:1,color:"darkgray"}}/>
         <div className={styles.phone_pay_content}>
-          <div>{t("basket.totalndiscount")} {price} {t("units.amd")}</div>
+          <div>{t("basket.totalndiscount")} {formatNumberWithSpaces(price)} {t("units.amd")}</div>
           <Box>
             <MobileScreenShareIcon fontSize="large" sx={{ color: 'action.active', m:1}}/>
             <TextField

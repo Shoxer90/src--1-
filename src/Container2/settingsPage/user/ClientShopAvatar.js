@@ -16,6 +16,7 @@ const ClientShopAvatar = ({client, limitedUsing}) => {
   };
 
   return(
+    
     <div className={styles.settingsCont_avatar}>
       <img src={client?.logo || "/defaultAvatar.png"} alt="shop avatar" />
       <div className={styles.settingsCont_avatar_input}>
@@ -30,6 +31,7 @@ const ClientShopAvatar = ({client, limitedUsing}) => {
           style={{display:"none"}} 
           onChange={(e)=>handlePutPhoto(e)}
         />
+
       </div>
     </div>
   )

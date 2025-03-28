@@ -3,6 +3,7 @@ import { Slide } from "@mui/material";
 import styles from "../index.module.scss";
 import PrepaymentItem from "./PrepaymentItem";
 import { useTranslation } from "react-i18next";
+import { formatNumberWithSpaces } from "../../../../modules/modules";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -14,7 +15,7 @@ const activeStyle = {
   transition: "width 2s",
 };
 
-const PrepaymentConfirmation = ({setBills, billsData, price }) => {
+const PrepaymentConfirmation = ({setBills, billsData, price, activateEhdm }) => {
   const [activeRow,setActiveRow] = useState(0);
   const {t} = useTranslation();
 
@@ -36,6 +37,7 @@ const PrepaymentConfirmation = ({setBills, billsData, price }) => {
       price: price * 4
     }
   ];
+   
 
   const activateRow = (row) => {
     if(activeRow === row){
@@ -52,11 +54,18 @@ const PrepaymentConfirmation = ({setBills, billsData, price }) => {
       daysEnum: 1
     })
   }, []);
-
   return(
     <>
-      <div  className={styles.subscription}>
-        {
+      <div className={styles.subscription}>
+        {activateEhdm ?
+          <div className={styles.subscription_item} >
+            <label style={{display:"flex",justifyContent:"space-between"}}>
+              <h6 style={{margin:"4px 0px",opacity:"0.7"}}>{t("landing.priceListRow1")}</h6>
+              <div style={{margin: "2px 2px 2px 100px"}}>
+                {formatNumberWithSpaces(price)} {t("units.amd")}
+              </div>
+            </label>
+          </div>:
           subscriptionData && subscriptionData.map((item,index) => (
             <PrepaymentItem
               {...item} 

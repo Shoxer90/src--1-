@@ -1,0 +1,12 @@
+.update_card{
+    display: flex;
+    justify-content: space-around;
+    flex-flow: column nowrap;
+    padding: 20px;
+}
+.dialogHeader{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    margin: 5px;
+}
