@@ -84,7 +84,6 @@ const PayComponent = ({
         if(res?.status !== 200) {
           console.log(res,"err res in component")
         }else{
-          console.log(res?.data?.formUrl,"res?.data?.formUrl")
           window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
         }
       })
@@ -94,7 +93,6 @@ const PayComponent = ({
   console.log(billsData, "billsData")
 
   const servicePay = async() => {
-    console.log(activateEhdm ,!user?.isRegisteredForEhdm, "payman" )
     if(activateEhdm) {
       // if(user?.isRegisteredForEhdm){
         if(!user?.isRegisteredForEhdm){
@@ -146,7 +144,7 @@ const PayComponent = ({
       <Divider color="black" />
       <DialogContent style={{margin:"auto", paddingTop:"4px"}}>
       {activateEhdm ?  
-        <h6 style={{marginTop:"0px"}}>{`${t("settings.activate")} ${t("settings.ETRM")}`}</h6>
+        <h6 style={{marginTop:"0px"}}>{`${t("settings.register")} ${t("settings.ETRM")}`}</h6>
 
         :<h6 style={{marginTop:"0px"}}>{t("cardService.dialogTitle")}</h6>
       } 

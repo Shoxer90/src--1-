@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
-
+import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
 import { Box } from '@mui/system';
@@ -92,7 +92,7 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
       >
         {!limitedUsing && 
           <Box style={{display:'flex'}}>
-            <MiscellaneousServicesIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
+            <AccountCircleIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
             <MenuItem fontSize="medium"
               onClick={() => {
                 setActiveBtn("")
@@ -106,7 +106,7 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
         }
         {!limitedUsing && 
          <Box style={{display:'flex'}}>
-        <AccountCircleIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
+        <GroupIcon style={{marginLeft:"10px",marginTop:"6px"}}/>
           <MenuItem fontSize="medium"
             onClick={() => {
               setActiveBtn("")

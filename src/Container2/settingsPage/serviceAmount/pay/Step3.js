@@ -42,7 +42,7 @@ const Step3 = ({
 
       <div className={styles.subscription_item} >
         <label style={{display:"flex",justifyContent:"space-between"}}>
-          <h6 style={{margin:"10px"}}>{`${t("settings.activate")} ${t("settings.ETRM")}`}</h6>
+          <h6 style={{margin:"10px"}}>{`${t("settings.register")} ${t("settings.ETRM")}`}</h6>
           <h6 style={{margin: "10px"}}>
             {formatNumberWithSpaces(price)} {t("units.amd")}
           </h6>

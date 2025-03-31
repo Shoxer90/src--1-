@@ -97,7 +97,7 @@ const ServiceItemV2 = ({
             }}
             sx={{width:"150px",height:"30px",background:"#3FB68A",textTransform: "capitalize"}}
           >
-              {t("settings.activate")} 
+              {t("settings.register")} 
           </Button>
           }
           { !service?.isActive && service?.id === 5 &&  <h6 style={{margin:"4px",color:"green"}}>{t("settings.free")}</h6>}

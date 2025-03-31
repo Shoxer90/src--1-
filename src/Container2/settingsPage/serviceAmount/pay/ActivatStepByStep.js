@@ -31,7 +31,8 @@ const ActivateStepByStep = ({
     tin:"",
     legalName: "",
     legalAddress: "",
-    taxRegime: 0
+    taxRegime: 0,
+    isRegisteredForEhdm:"false"
   });
   
   const [infoDialog,setInfoDialog] = useState({
@@ -40,12 +41,10 @@ const ActivateStepByStep = ({
     type:"info",
   })
 
-  const saveUserDataForEhdm = () => {
+  const saveUserDataForEhdm = (arg) => {
   setLoader(true)
-  console.log(newUser,"newUser")
-  completeEhdmRegistration(newUser).then((res) => {
+  completeEhdmRegistration(arg).then((res) => {
     setLoader(false)
-    console.log(res,"res")
     if(res.status === 200) {
       return setStep({
         "s1":false,
@@ -54,10 +53,9 @@ const ActivateStepByStep = ({
     }else{
       setMessage({
         type:"error",
-        message:t("dialogs.wrong")
+        message: res?.response?.message || t("dialogs.wrong")
       })
     }
-    console.log(res,"res")
   })
   };
   
@@ -67,7 +65,6 @@ const ActivateStepByStep = ({
       payForEhdmWithUsingCard(payData?.cardId).then((res) => {
         setLoader(false)
         if(res?.status !== 200) {
-          console.log(res,"err res in component")
         }else{
           setMessage({type:"success", message: t("dialogs.done")})
         }
@@ -76,9 +73,7 @@ const ActivateStepByStep = ({
       payForEhdm(payData?.attach).then((res) => {
         setLoader(false)
         if(res?.status !== 200) {
-          console.log(res,"err res in component")
         }else{
-          console.log(res?.data?.formUrl,"res?.data?.formUrl")
           window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
         }
       })
@@ -117,10 +112,11 @@ const ActivateStepByStep = ({
         <Step1 
           setInfoDialog={setInfoDialog}
           setLoader={setLoader}
-          setMessage={setMessage}
+          setMessage={setInfoDialog}
           saveUserDataForEhdm={saveUserDataForEhdm}
           newUser={newUser} 
           setNewUser={setNewUser}
+          user={user}
         />
       </div>: ""}
       <div id="payForEhdm"  style={step?.s2 ? null: notActiveStyle}>

@@ -77,7 +77,6 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
       await updateUserPassword({password: newPass?.password}).then((resp) => {
         setSetIsLoad(false)
         if(resp === 200) {
-          logOutFunc()
           setMessage({m: t("dialogs.done"), t: "success",message:`${t("dialogs.done")}`, type:"success"})
           setOpenAddDialog(!openAddDialog)
         }else if(resp === 401){
@@ -213,7 +212,13 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
           }
           <Button
             variant="contained"
-            onClick={()=>setOpenConfirm(true)}
+            onClick={()=>{
+              if(noWay) {
+                createNewPass()
+              }else{
+                setOpenConfirm(true)
+              }
+            }}
             disabled={!newPass?.confirmPass || !newPass?.password}
             sx={{textTransform: "capitalize", margin:"8px"}}
           >

@@ -112,9 +112,7 @@ const Header = ({
               <ProductionQuantityLimitsIcon 
                 fontSize="large"  
                 
-                sx={{
-                  color:(activeBtn === "/prepayment"? "#FFA500": "#3FB68A"),
-                }} 
+                sx={{ color:(activeBtn === "/prepayment"? "#FFA500": "#3FB68A")}} 
               />
               <span className={styles.routeName}>{t("basket.useprepayment")}</span>
             </h6>

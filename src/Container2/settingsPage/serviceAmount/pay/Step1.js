@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Button, FormControl, FormControlLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from "@mui/material";
 import { getDataByTin } from "../../../../services/auth/auth";
 
 import styles from "./index.module.scss";
@@ -12,6 +12,7 @@ const Step1 = ({
   saveUserDataForEhdm,
   newUser, 
   setNewUser,
+  user
 }) => {
   const {t} = useTranslation();
 
@@ -89,19 +90,20 @@ const Step1 = ({
       newUser?.legalName &&
       newUser?.taxRegime
     ) {
-      saveUserDataForEhdm(newUser)
+      saveUserDataForEhdm({
+        ...newUser,
+        tradeName: user?.tradeName,
+        isRegisteredForEhdm: true
+      })
     
     }else{
-      setMessage({type:"error", message:t("authorize.errors.allInputEmpty")})
+      setMessage({type:"error", message:t("authorize.errors.allInputEmpty"), isOpen:"true"})
     }
   };
   
 
-const ss="vjarume katareluc mer ashxatakice kkapvi dzer het"
-
   return (
     <div className={styles.update_card}>
-        <h6>Step 1</h6>
         <h6>{t("authorize.completeEhdmAuth")}</h6>
     <TextField sx={{m:.6}} 
       autoComplete="off"
@@ -141,15 +143,15 @@ const ss="vjarume katareluc mer ashxatakice kkapvi dzer het"
           <span>{newUser?.legalAddress}</span>
         </div>
       </span>
-      <FormControl sx={{ width: "40%", margin:"10px"}}>
-        <InputLabel>{`${t("authorize.taxType")}*`}</InputLabel>
+      {/* <FormControl sx={{ width: "50%", margin:"10px"}}>
         <Select
           error={!newUser?.taxRegime && submitClick}
           size="small"
           name="taxRegime"
           value={newUser?.taxRegime}
-          label={`${t("authorize.taxType") }*`}
           onChange={(e)=>handleChange(e)}
+          displayEmpty
+          renderValue={(value) => (value ? newUser?.taxRegime : `${t("authorize.taxType") } *`)} 
         >
           {taxtType && taxtType.map((item, index) => (
             <MenuItem 
@@ -160,8 +162,29 @@ const ss="vjarume katareluc mer ashxatakice kkapvi dzer het"
             </MenuItem>
           ))}
         </Select>
+      </FormControl> */}
+      <h6 
+        style={{
+          textAlign:"start",
+          padding:"0px",
+          marginLeft:"25px",
+          color:!newUser?.taxRegime && submitClick ? "red": "black"
+        }}
+      >
+        {`${t("authorize.taxType") } *`}
+      </h6>
+      <FormControl sx={{color:"black"}}>
+        <RadioGroup
+          name="taxRegime"
+          value={newUser?.taxRegime}
+          onChange={(e)=>handleChange(e)}
+        >
+        {taxtType && taxtType.map((item) => (
+          <FormControlLabel sx={{ p:0,ml:2}} value={item?.id} control={<Radio />} label={item?.name} />
+        ))}
+        </RadioGroup>
       </FormControl>
-  
+
       <Button 
           sx={{
             textTransform: "capitalize",

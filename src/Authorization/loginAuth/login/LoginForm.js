@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { memo } from 'react';
 import styles from "../index.module.scss";
 import { useForm } from 'react-hook-form';
-// import loginAPI from '../../../services/auth/auth';
 import { Alert, Button, Dialog, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput} from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -11,7 +10,6 @@ import loginAPI from '../../../services/auth/auth';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const LogInFormNew = ({
-  screenWidth, 
   t, 
   setMessage,
   whereIsMyUs, 
@@ -32,6 +30,7 @@ const LogInFormNew = ({
   } = useForm({});
   
   const signInToAccount = async(userData) => {
+    
     setLoading(true)
 
     loginAPI( userData?.username, userData?.password).then((token) => {

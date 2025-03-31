@@ -65,17 +65,15 @@ export const completeEhdmRegistration = async(newUserData) => {
     const  data = await axios.post(baseUrl + `Registration/RegisterEhdmFromStoreX`,newUserData, option());
     return data
   }catch(err) {
-    return err?.request?.status
+    return err?.request
   }
 };
 
 export const payForEhdm = async(bool) => {
   try{
     const  data = await axios.get(baseUrl + `Registration/PayForEhdm?isFromWeb=true&attach=${bool}`, option());
-    console.log(data?.status)
     return data
   }catch(err){
-    console.log(err,"err")
     return err?.request?.status
   }
 };
@@ -83,10 +81,8 @@ export const payForEhdm = async(bool) => {
 export const payForEhdmWithUsingCard = async(cardId) => {
   try{
     const  data = await axios.get(baseUrl + `Registration/PayForEhdmWithCard?isFromWeb=true&cardId=${cardId}`, option());
-    console.log(data?.status)
     return data
   }catch(err){
-    console.log(err,"err")
     return err?.request?.status
   }
 };
@@ -155,10 +151,8 @@ export const getNews = async(lang) => {
 export const getDataByTin = async(tin) => {
   try{
     const data = await axios.get(baseUrl + `Registration/GetDetailsByTin?tin=${tin}`, {});
-    console.log(data,"data for tin")
     return data
   }catch(err){
-    console.log(err,"data errrr")
     return err
   }
 }

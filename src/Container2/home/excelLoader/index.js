@@ -21,7 +21,7 @@ const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
   const [allAdgs, setAllAdgs] = useState([]);
   
   const readExcel = (e) => {
-    console.log(e,"e")
+    // console.log(e,"e")
    setIsLoad(true)
     const promise = new Promise((resolve,reject) => {
         
@@ -34,7 +34,7 @@ const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
         const wsName = wb.SheetNames[0];
         const ws = wb.Sheets[wsName] ;
         const data = XLSX.utils.sheet_to_json(ws)
-        console.log(data,"data")
+        // console.log(data,"data")
         resolve(data)
       };
       fileReader.onerror = (error) => {

@@ -27,7 +27,7 @@ const EmarkInput = () => {
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-        console.log("stic mtav stex")
+        // console.log("stic mtav stex")
         // setBarcode((prev) => prev + decoder.decode(value));
         // console.log( String.fromCharCode(...value),"BARCODE")
       }
@@ -48,7 +48,7 @@ const EmarkInput = () => {
   };
 
 	const readExcel = (e) => {
-    console.log(e,"e")
+    // console.log(e,"e")
 
       const promise = new Promise((resolve,reject) => {
           
@@ -61,7 +61,7 @@ const EmarkInput = () => {
           const wsName = wb.SheetNames[0];
           const ws = wb.Sheets[wsName] ;
           const data = XLSX.utils.sheet_to_json(ws)
-          console.log(data,"data")
+          // console.log(data,"data")
           resolve(data)
         };
         fileReader.onerror = (error) => {
@@ -70,7 +70,7 @@ const EmarkInput = () => {
       })
       
       promise.then((res) => {
-      console.log(res,"EXCEL RES")
+      // console.log(res,"EXCEL RES")
       
     })
   }
@@ -87,7 +87,7 @@ const EmarkInput = () => {
 	// 	localStorage.setItem("emarkList", JSON.stringify(barcodeARR))
 	// }, []);
 
-	console.log(barcodeARR, "ARr barcode");
+	// console.log(barcodeARR, "ARr barcode");
 
 	return(
 		<>

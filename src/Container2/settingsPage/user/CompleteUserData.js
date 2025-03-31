@@ -69,7 +69,12 @@ const [newUser, setNewUser] = useState({});
   const completeReg = () => {
     setOpenConfirmation(false)
     setSubmitClick(true)
-    if(newUser?.tin && newUser?.taxRegime && newUser?.legalAddress && newUser?.legalName){
+    if(!newUser?.tradeName) {
+      return setMessage({
+        t:"error",
+        m:t("authorize.errors.allInputEmpty")
+      })
+    }else if(newUser?.tin && newUser?.taxRegime && newUser?.legalAddress && newUser?.legalName){
       setNewUser({
         ...newUser,
         isRegisteredForEhdm: true
@@ -80,7 +85,6 @@ const [newUser, setNewUser] = useState({});
         isRegisteredForEhdm: false
       })
     }
-    console.log(newUser,"newUser")
     setLoaded(true)
     completeEhdmRegistration({
       ...newUser, 
@@ -122,7 +126,6 @@ const [newUser, setNewUser] = useState({});
         if(text.length === 8) {
           setLoaded(true)
           getDataByTin(e.target.value).then((res) => {
-            console.log(res,"res")
             setLoaded(false)
             if(res?.status === 200) {
               setSubmitClick(false)
@@ -142,7 +145,6 @@ const [newUser, setNewUser] = useState({});
   };
 
   const disableBtn = () => {
-    console.log(newUser,'new user')
     if(newUser?.isRegisteredForEhdm) {
       if(!newUser?.tin || !newUser?.taxRegime || !newUser?.legalName || !newUser?.legalAddress){
         return true
@@ -168,7 +170,7 @@ const [newUser, setNewUser] = useState({});
     })
     
   }, [user]);
-console.log(newUser,"new user")
+
   return(
     <div className={styles.reg_form} autoComplete="off"> 
     <h3>{t("settings.info")}</h3>
@@ -197,7 +199,8 @@ console.log(newUser,"new user")
           }}
           name="tradeName"
           value={newUser?.tradeName}
-          placeholder={`${t("authorize.tradeName")} `}
+          error={!newUser?.tradeName && submitClick}
+          placeholder={`${t("authorize.tradeName")} *`}
           onChange={(e)=>handleChange(e)}
           InputProps={{
             startAdornment: <InputAdornment position="start">
@@ -236,9 +239,6 @@ console.log(newUser,"new user")
           label={t("settings.ETRM")}
           disabled={user?.isRegisteredForEhdm && user?.tin}
           onChange={(e)=> {
-            // setChangeInfo(e.target.checked)
-            // setChangeInfo(e.target.checked)
-            console.log(e.target.checked,"cheked")
             if(e.target.checked === false) {
               setNewUser({
                 ...newUser,
@@ -335,7 +335,6 @@ console.log(newUser,"new user")
             padding: "10px",
             m: 4,
           }}
-          // disabled={submitClick}
         >
           {t("buttons.save")}
         </Button>
@@ -346,6 +345,7 @@ console.log(newUser,"new user")
         openAddDialog={openAddDialog}
         setOpenAddDialog={setOpenAddDialog}
         logOutFunc={logOutFunc}
+
       />
 
       {infoDialog?.message &&

@@ -3,7 +3,7 @@ import React, { memo, useEffect } from "react";
 import styles from "./index.module.scss";
 import { useState } from "react";
 import { getDataByTin, registrationNew } from "../../services/auth/auth";
-import { Checkbox, Dialog, FormControl, FormControlLabel, InputAdornment, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Checkbox, Dialog, FormControl, FormControlLabel, InputAdornment, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from "@mui/material";
 import { mailValidate } from "../../modules/mailValidate";
 import TermsConditionsLink from "../loginAuth/preRegistrate/TermsConditionsLink";
 import PreRegistrateAgreement from "../loginAuth/preRegistrate/PreRegistrateAgreement";
@@ -267,15 +267,17 @@ const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => {
               <span>{newUser?.legalAddress}</span>
             </div>
           </span>
-          <FormControl sx={{ width: "60%", margin:"10px"}}>
+          {/* <FormControl sx={{ width: "60%", margin:"10px"}}>
             <InputLabel>{`${t("authorize.taxType")}*`}</InputLabel>
             <Select
               error={!newUser?.taxRegime && submitClick}
               size="small"
               name="taxRegime"
               value={newUser?.taxRegime}
-              label={`${t("authorize.taxType") }*`}
+              // label={`${t("authorize.taxType") }*`}
               onChange={(e)=>handleChange(e)}
+              renderValue={(value) => (value ? value : `${t("authorize.taxType") } *`)} 
+
             >
               {taxtType && taxtType.map((item, index) => (
                 <MenuItem 
@@ -286,6 +288,19 @@ const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => {
                 </MenuItem>
               ))}
             </Select>
+          </FormControl> */}
+
+          <h5 style={{textAlign:"start",marginLeft:"25px",color:"black"}}>{`${t("authorize.taxType") } *`}</h5>
+          <FormControl sx={{color:"black"}}>
+            <RadioGroup
+              name="taxRegime"
+              value={newUser?.taxRegime}
+              onChange={(e)=>handleChange(e)}
+            >
+            {taxtType && taxtType.map((item) => (
+              <FormControlLabel sx={{ p:0,ml:2}} value={item?.id} control={<Radio />} label={item?.name} />
+            ))}
+            </RadioGroup>
           </FormControl>
 
         </>}

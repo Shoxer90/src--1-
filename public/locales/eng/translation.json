@@ -39,7 +39,7 @@
     "priceListStars2":"** does not include servicing bank commissions ",
     "priceListSubTitle1": "Services",
     "priceListSubTitle2": "Tariff (AMD)",
-    "priceListRow1":"Registration (one time)",
+    "priceListRow1":"Registration(lump sum)",
     "priceListRow2":"Consultation and training (one time)",
     "priceListRow3":"Maximum number of sellers (users) and outlets",
     "priceListRow4":"Maximum number of transactions (monthly)",
@@ -149,7 +149,7 @@
     "block": "Block",
     "register": "Register",
     "director": "Director",
-    "taxType": "Tax Type",
+    "taxType": "Select tax type",
     "ehdmConnect" : "Get access to use ETRM",
     "paymentSystem": "Payment System",
     "serviceType": "Service Type",
@@ -437,6 +437,7 @@
     "password": "Password",
     "status": "Status",
     "active": "Active",
+    "register":"Register",
     "blocked": "Blocked",
     "update": "Update cashier data",
     "ehdmAuth": "Permission to Print on ETRM",
@@ -474,7 +475,7 @@
     "info":"Information",
     "cashiereLimit": "Access to more than 2 cashiers, for each (one-time) 6000 dram․To activate the service, please contact 055 522225",
     "operation": "Operation",
-    "employeeCall":"After making the payment, our employee will contact you."
+    "employeeCall":"You can make the payment using a bank card or transfer, after which our employee will contact you for ETRM registration."
   },
   "cardService":{
     "btnTitle" : "Activation of services",
