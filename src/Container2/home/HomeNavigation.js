@@ -29,7 +29,7 @@ const HomeNavigation = ({
   const  handleSendQuery = async(str, index) => {
     navigate(`/prods?status=${str}&page=1`)
     setSearchValue("")
-    setContent([])
+    // setContent([])
     await setCurrentPage(1)
     changeStatus(str,index)
   };

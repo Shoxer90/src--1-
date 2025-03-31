@@ -7,7 +7,7 @@ import styles from "./index.module.scss";
 
 const AdminLogin = () => {
   const {t} = useTranslation();
- 
+
   return (
     <div className={styles.loginPage}>
       <div className={styles.loginPage_content}>

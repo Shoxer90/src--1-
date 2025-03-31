@@ -310,13 +310,13 @@ console.log(newUser,"new user")
             </NativeSelect>
           </FormControl> */}
 
+            <h5 style={{textAlign:"start",marginLeft:"25px"}}>{`${t("authorize.taxType") } *`}</h5>
           <FormControl>
-            <FormLabel>{`${t("authorize.taxType") } *`}</FormLabel>
             <RadioGroup
               name="taxRegime"
               value={newUser?.taxRegime}
               onChange={(e)=>handleChange(e)}
-              defaultValue={newUser?.taxRegime? newUser?.taxRegime:""}
+              defaultValue={newUser?.taxRegime || user?.taxRegime}
             >
             {taxtType && taxtType.map((item) => (
               <FormControlLabel sx={{ml:2}} value={item?.id} control={<Radio />} label={item?.name} />

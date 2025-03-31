@@ -10,6 +10,7 @@ import { changeEHDM, changeToPhysicalHDM } from "../../../services/user/userInfo
 import SnackErr from "../../dialogs/SnackErr";
 import Loader from "../../loading/Loader";
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import ModeIcon from '@mui/icons-material/Mode';
 
 import styles from "./index.module.scss";
 import { useNavigate, useNavigation } from "react-router-dom";
@@ -128,7 +129,9 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
         </label>
       </h5>
       {!limitedUsing && 
-        <Button onClick={()=>setOpenAddDialog(true)} variant="contained"  sx={{textTransform: "capitalize",m:2, background: "#fd7e14",border:"#fd7e14"}}>
+        <Button 
+        startIcon={<ModeIcon />}
+        onClick={()=>setOpenAddDialog(true)} variant="contained"  sx={{textTransform: "capitalize",m:2, background: "#fd7e14",border:"#fd7e14"}}>
           {t("settings.changepassword")} 
         </Button>
       }
@@ -137,7 +140,7 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
         startIcon={<ListAltIcon />}
         onClick={user?.contractLink}
         
-        style={{letterSpacing:"1px",background: "#fd7e14",border:"orange"}} 
+        style={{letterSpacing:"1px",background: "#fd7e14",textTransform: "capitalize", border:"orange"}} 
       >
         {t("updates.seeContract")}
       </Button>
