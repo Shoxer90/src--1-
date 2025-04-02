@@ -15,7 +15,8 @@ const ReceiptHeader = ({
   t, 
 }) => {
 
-  const openInNewTab = url => window.open(url, '_blank', 'noopener,noreferrer');
+  const openInNewTab = url => window.location.href = url
+  // const openInNewTab = url => window.open(url, '_blank', 'noopener,noreferrer');
 
   const copyLink = () => {
     navigator.clipboard.writeText(saleData?.link)

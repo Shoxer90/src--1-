@@ -29,7 +29,7 @@ import { fetchUser } from "./store/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import PasteExcelToReact from "./Container2/home/excelLoader";
 
-import { Alert, Snackbar } from "@mui/material";
+import { Alert, Button, Dialog, Snackbar } from "@mui/material";
 import useDebonce from "./Container2/hooks/useDebonce";
 import Cashiers from "./Container2/settingsPage/cashiers/Cashiers";
 import SettingsUser from "./Container2/settingsPage/user"
@@ -54,6 +54,26 @@ import CustomerSaleHistory from "./admin/panel/customers/CustomerSaleHistory";
 import CustomerCashiers from "./admin/panel/cashiers";
 import AdminInvoices from "./admin/panel/invoices";
 import AddNewClientInfo from "./Container2/dialogs/AddNewClientInfo";
+
+const checkForUpdates = async () => {
+  try {
+    const response = await fetch("/version.json", { cache: "no-store" });
+    const data = await response.json();
+    const newVersion = data.version;
+    const currentVersion = localStorage.getItem("appVersion");
+
+    if (currentVersion && currentVersion !== newVersion) {
+      console.log("🔄 Найдена новая версия! Обновляем страницу...");
+      localStorage.setItem("appVersion", newVersion);
+      window.location.reload(true);
+    } else {
+      localStorage.setItem("appVersion", newVersion);
+    }
+  } catch (error) {
+    console.error("Ошибка при проверке обновлений:", error);
+  }
+};
+
 
 const App = () => {
  const search = useLocation().search;
@@ -87,7 +107,8 @@ const App = () => {
   const [notification, setNotification] = useState([]);
   const [count, setCount] = useState(0);
   const [searchedNotAvailableProd, setSearchedNotAvailableProd] = useState();
-  const [openAddDialog,setOpenAddDialog] = useState(false)
+  const [openAddDialog,setOpenAddDialog] = useState(false);
+  const [updateAvailable, setUpdateAvailable] = useState(false);
   const [openWindow, setOpenWindow] = useState({
     prepayment: false,
     payment: false,
@@ -405,6 +426,7 @@ const App = () => {
   };
   
   useEffect(() => { 
+    checkForUpdates()
     isLogin && getMeasure()
     user?.confirmation === false && user?.showPaymentPage && !count && checkForNewNotification()
    
@@ -472,13 +494,13 @@ const App = () => {
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
           <Route path="/basket/*" element={<BasketList t={t} />} />
 {/* ADMIN PAGE */}
-          {/* <Route path="/admin/*" element={<AdminPage />} />
+          <Route path="/admin/*" element={<AdminPage />} />
           <Route path="/admin/info/customer" element={<AdminPanel children={<CustomerInfo />} />} />
           <Route path="/admin/stores" element={<AdminPanel children={<UsersContainer />} />} />
           <Route path="/admin/transactions/customer" element={<AdminPanel children={<CustomerPage children={<CustomerSaleHistory />} />} />} />
           <Route path="/admin/invoices/customer" element={<AdminPanel children={<CustomerPage children={<AdminInvoices />} />} />} />
           <Route path="/admin/payments/customer" element={<AdminPanel children={<CustomerPage children={<CustomerPayments />} />} />} />
-          <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} /> */}
+          <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} />
         </Routes> :
         <>
           <Header
@@ -615,7 +637,7 @@ const App = () => {
               func={whereIsMyUs}
               data={user?.newTerms}
               open={!user?.hasAgreement}
-              contractLink="https://storextest.payx.am/Contract-EHDM-30or-Arm-12.02.25.pdf"
+              contractLink="https://storex.payx.am/Contract-EHDM-30or-Arm-12.02.25.pdf"
               logOutFunc={logOutFunc}
               role={user?.role}
             /> : ""
@@ -651,6 +673,13 @@ const App = () => {
             close={()=>setMessage({type:"",message:""})}
             content={message?.confirmMessage}
           />
+          {updateAvailable && (
+            <Dialog open={updateAvailable}>
+              <Button onClick={() => window.location.reload(true)}>
+                🔄 Обновить сайт
+              </Button>
+            </Dialog>
+          )}
         </>
       }
     </div>

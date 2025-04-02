@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import CompleteUserDataForEhdm from "../../updates/CompleteUserDataForEhdm";
 import { payForEhdm, payForEhdmWithUsingCard } from "../../../../services/auth/auth";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
+import { useLocation } from "react-router-dom";
 
 const langEnum = () => {
   let lang = localStorage.getItem("lang") || localStorage.getItem("i18nextLng")
@@ -36,6 +37,7 @@ const PayComponent = ({
 }) => {
   const {t} = useTranslation();
   const [openCompleteUserInfo,setOpenCompleteUserInfo] = useState(false);
+  const location = useLocation()
 
   const user = useSelector(state => state?.user?.user)
   const [billsData, setBills] = useState({
@@ -70,7 +72,9 @@ const PayComponent = ({
           console.log(res,"err res in component")
         }else{
           console.log(res?.data?.formUrl,"res?.data?.formUrl")
-          window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
+          // window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
+          window.location.href = res?.data?.formUrl
+
         }
       })
     }else{
@@ -84,7 +88,8 @@ const PayComponent = ({
         if(res?.status !== 200) {
           console.log(res,"err res in component")
         }else{
-          window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
+          window.location.href = res?.data?.formUrl;
+          // window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
         }
       })
 
@@ -98,7 +103,7 @@ const PayComponent = ({
         if(!user?.isRegisteredForEhdm){
         return setOpenCompleteUserInfo(true)
       }else{
-       return payForCompleteEhdmRegistration()
+        return payForCompleteEhdmRegistration()
       }
     }
     setLoader(true)
@@ -126,10 +131,22 @@ const PayComponent = ({
     }
   };
 
+  const openUrl = (url) => {
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   const payUsingNewCard = () => {
     payForServiceWithNewCard(billsData).then((res) => {
       setLoader(false)
-        window.open( res?.formUrl, '_blank', 'noopener,noreferrer');
+        // window.open( res?.formUrl, '_blank', 'noopener,noreferrer');
+        // openUrl(res?.formUrl)
+        window.location.href = res?.formUrl
       })
   }
 

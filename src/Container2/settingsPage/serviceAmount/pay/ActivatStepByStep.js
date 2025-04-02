@@ -74,7 +74,8 @@ const ActivateStepByStep = ({
         setLoader(false)
         if(res?.status !== 200) {
         }else{
-          window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
+          // window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
+          window.location.href = res?.data?.formUrl
         }
       })
     }

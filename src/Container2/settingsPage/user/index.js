@@ -138,7 +138,8 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
       <Button 
         variant="contained"
         startIcon={<ListAltIcon />}
-        onClick={user?.contractLink}
+        onClick={()=>window.location.href = user?.contractLink}
+        // onClick={()=>window.open(user?.contractLink, '_blank', 'noopener,noreferrer')}
         
         style={{letterSpacing:"1px",background: "#fd7e14",textTransform: "capitalize", border:"orange"}} 
       >

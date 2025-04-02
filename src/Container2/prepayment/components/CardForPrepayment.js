@@ -90,7 +90,8 @@ const CardForPrepayment = ({
     reverseProductNew(dataInput).then((res) => {
     setIsLoad(false)
       if(res?.status === 200) {
-        window.open(res?.data?.reverceLink, '_blank', 'noopener,noreferrer');
+        // window.open(res?.data?.reverceLink, '_blank', 'noopener,noreferrer');
+        window.location.href = res?.data?.reverceLink
         getPrepaymentList()
       }else {
         setMessage({message:t("dialogs.wrong"), type:"error"})

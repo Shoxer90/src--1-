@@ -33,7 +33,9 @@ const HistoryContent = ({
 
   const handleCloseMessage = () => {
     setMessage({m:"",t:""})
-    window.open(flag, '_blank', 'noopener,noreferrer');
+    
+    window.location.href = flag 
+    // window.open(flag, '_blank', 'noopener,noreferrer');
   }
 
   useEffect(() => {

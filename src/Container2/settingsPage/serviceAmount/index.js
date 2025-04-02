@@ -121,8 +121,8 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
     setIsLoad(true)
     await postNewCreditCard().then((res) => {
       setIsLoad(false)
-      window.open(res, '_blank', 'noopener,noreferrer');
-
+      // window.open(res, '_blank', 'noopener,noreferrer');
+      window.location.href = res;
     })
   };
 

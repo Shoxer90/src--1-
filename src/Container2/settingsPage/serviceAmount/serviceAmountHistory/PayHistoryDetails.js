@@ -64,9 +64,13 @@ const PayHistoryDetails = ({
             <span>{t("cardService.cardInfo")}</span>
             <span style={{textAlign:"center"}}>
               <span style={{marginRight:"20px"}}>
-                {cardPan[0] == 4 && <img src="/visa1.png" alt="card_type" style={{width:"45px",height:"12px",}}/>}
+                {/* {cardPan[0] == 4 && <img src="/visa1.png" alt="card_type" style={{width:"45px",height:"12px",}}/>}
                 {cardPan[0] == 5 && <img src="/mastercard1.png" alt="card_type" style={{width:"35px",height:"18px"}}/>}
-                {cardPan[0] == 9 && <img src="/arca1.png" alt="card_type" style={{width:"45px",height:"15px"}}/>}
+                {cardPan[0] == 9 && <img src="/arca1.png" alt="card_type" style={{width:"45px",height:"15px"}}/>} */}
+
+                {cardPan[0] == 4 && <img src="/visaNew.png" alt="visaNew" style={{height: "14px", marginBottom:"5px"}} />}
+            {cardPan[0] == 5 && <img src="/master2New.png" alt="masterNew" style={{height: "14px", marginBottom:"5px"}} />}
+            {cardPan[0] == 9 && <img src="/arcaNew.png" alt="arcaNew" style={{height: "13px", marginBottom:"5px"}} />}
                 <span style={{marginLeft:"10px"}}>
                   {cardName}
                 </span>

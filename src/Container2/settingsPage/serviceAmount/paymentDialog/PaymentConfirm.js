@@ -4,14 +4,15 @@ import React, { memo, useEffect, useState } from 'react';
 import styles from "./index.module.scss";
 import { useTranslation } from 'react-i18next';
 import AttachedCardsItem from './AttachedCardsItem';
-import IdramPay from "../../../../modules/Idram"
+import PaymentLogo from "../../../../modules/PaymentLgo";
+
 const PaymentConfirm = ({
   cardArr,
   setPayData, 
   payData, 
   content,
   setMethod,
-  method
+  method,
 }) => {
   const {t} = useTranslation();
   const [activateBtn,setActivateBtn] = useState(0);
@@ -32,11 +33,11 @@ const PaymentConfirm = ({
   return (
     <div style={{fontWeight:"600",fontSize:"90%"}}>
       <div>
-      <div style={{display:"flex"}}>
-        <h6>{t("settings.payByAttachedCard")}</h6>
-        <img src="/multicard.jpg" alt="card_type" style={{height:"17px", margin:"4px 10px"}} />
-        {/* <IdramPay /> */}
+      <div style={{display:"flex",width:"100%"}}>
+        <span>{t("settings.payByAttachedCard")}</span>
+        <PaymentLogo />
       </div>
+
       {cardArr?.length ?
         <div>
           {cardArr.map((card,index)=>(

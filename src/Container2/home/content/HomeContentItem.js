@@ -151,7 +151,6 @@ const HomeContentItem = ({
       </div>
       <Divider style={{margin:1, backgroundColor:"gray",width:"90%",alignSelf:"center",}}/>
         <Box style={style}>
-          {/* <img style={style?.picture} src= "https://thefreshandnatural.com/wp-content/uploads/2020/05/APPLE-GREEN.jpg" alt={index} /> */}
           <img style={style?.picture} src={product?.photo ? product?.photo : "/default-placeholder.png"} alt={index} />
           <Box style={style.info}>
             <div style={{marginTop:"10px"}}> 

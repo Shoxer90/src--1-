@@ -34,9 +34,11 @@ const AttachedCardsItem = ({
         />
         <span className={styles.inputLabel}  style={{textAlign:"center"}}>
           <span style={{marginRight:"5px"}}>
-            {card?.pan[0] == 4 && <img src="/visa1.png" alt="card_type" style={{width:"45px",height:"12px"}}/>}
-            {card?.pan[0] == 5 && <img src="/mastercard1.png" alt="card_type" style={{width:"32px", margin:"0px 2px"}}/>}
-            {card?.pan[0] == 9 && <img src="/arca1.png" alt="card_type" style={{width:"45px",height:"15px"}}/>}
+            {card?.pan[0] == 4 && <img src="/visaNew.png" alt="visaNew" style={{height: "14px", marginBottom:"5px"}} />}
+            {card?.pan[0] == 5 && <img src="/master2New.png" alt="masterNew" style={{height: "14px", marginBottom:"5px"}} />}
+            {card?.pan[0] == 9 && <img src="/arcaNew.png" alt="arcaNew" style={{height: "13px", marginBottom:"5px"}} />}
+
+            
           </span>
           {" "} <span  style={{textAlign:"center", marginRight:"5px"}}>{card?.bankName} </span>
           <strong style={{letterSpacing:"0.2px",textAlign:"center"}}>{" "} {card?.pan.slice(0,4)} **** {card?.pan.slice(-4)}</strong>  

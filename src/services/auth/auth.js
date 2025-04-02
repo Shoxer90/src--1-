@@ -71,7 +71,7 @@ export const completeEhdmRegistration = async(newUserData) => {
 
 export const payForEhdm = async(bool) => {
   try{
-    const  data = await axios.get(baseUrl + `Registration/PayForEhdm?isFromWeb=true&attach=${bool}`, option());
+    const  data = await axios.get(baseUrl + `Registration/PayForEhdm?isWeb=true&attach=${bool}`, option());
     return data
   }catch(err){
     return err?.request?.status
@@ -80,7 +80,7 @@ export const payForEhdm = async(bool) => {
 
 export const payForEhdmWithUsingCard = async(cardId) => {
   try{
-    const  data = await axios.get(baseUrl + `Registration/PayForEhdmWithCard?isFromWeb=true&cardId=${cardId}`, option());
+    const  data = await axios.get(baseUrl + `Registration/PayForEhdmWithCard?isWeb=true&cardId=${cardId}`, option());
     return data
   }catch(err){
     return err?.request?.status
