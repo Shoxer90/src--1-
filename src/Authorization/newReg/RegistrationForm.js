@@ -305,7 +305,10 @@ const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => {
 
         </>}
       <PreRegistrateAgreement agree={agree} setAgree={setAgree} t={t} title={<TermsConditionsLink t={t} />} />
+      <div style={{marginBottom:"40px"}}>
+        
       <BackAndOk func={reg} btnName={t("authorize.register")} link={"/login"} />
+      </div>
       
       <div style={{display:"flex",justifyContent:"space-between",fontSize:"85%"}}>
         <span className={styles.errorMessage} >

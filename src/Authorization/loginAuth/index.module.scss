@@ -1,6 +1,6 @@
 .form{
   display: flex;
-  flex-flow:column nowrap;
+  flex-flow:column ;
   justify-content: flex-start;
 }
 
@@ -17,7 +17,7 @@
   position:fixed;
   bottom:0;
   width:50dvw;
-  z-index:1000;
+  // z-index:1000;
   font-size:80%;
 }
 
@@ -28,7 +28,6 @@
   color: black;
   text-align: start;
 }
-
 .regContent{
   display: flex;
   width: 98dvw;
@@ -36,6 +35,7 @@
   justify-content: space-between;
 
    &_content{
+    overflow-x:scroll;
   width: 50dvw;
   margin-bottom: 10px;
 

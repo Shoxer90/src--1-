@@ -16,6 +16,7 @@ import styles from "./index.module.scss";
 import UserInfo from "./userAvatar/index"
 import { useTranslation } from "react-i18next";
 import NotificationBell from "../../notification/NotificationBell";
+// import NotificationFireBase from "../../firebase/notification/NotificationFireBase";
 
 const Header = ({
   setOpenBasket,
@@ -118,9 +119,11 @@ const Header = ({
             </h6>
           </div>
         </div>
-
+{/* <NotificationFireBase /> */}
         <div className={styles.contentX}>
-          {/* <NotificationBell /> */}
+
+          
+          <NotificationBell />
 
           { user?.firstname === undefined ? "":  
             <UserInfo setActiveBtn={setActiveBtn} user={user?.firstname+ " " + user?.lastname} logo={logo} mode={user?.ehdmMode} t={t}  limitedUsing={limitedUsing}/>

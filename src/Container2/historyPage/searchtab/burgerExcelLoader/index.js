@@ -12,6 +12,7 @@ const StyledMenu = styled((props) => (
     elevation={0}
     anchorOrigin={{
       vertical: 'bottom',
+      horizontal: 'center',
     }}
     {...props}
   />
@@ -40,7 +41,7 @@ const StyledMenu = styled((props) => (
 }));
 
 const HistoryExcelBurger = ({t,fileReader, setValue, value}) => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(false);
   const open = Boolean(anchorEl);
 
 
@@ -66,7 +67,7 @@ const HistoryExcelBurger = ({t,fileReader, setValue, value}) => {
       <StyledMenu
         anchorEl={anchorEl}
         open={open}
-        onClose={() => setAnchorEl(null)}
+        onClose={() => setAnchorEl(false)}
       >
         <MenuItem 
           style={{padding:"1px 5px"}}
@@ -77,7 +78,7 @@ const HistoryExcelBurger = ({t,fileReader, setValue, value}) => {
               startDate: format(new Date(value.startDate), 'MM-dd-yyyy'),
               products: false
             })
-            setAnchorEl(null)
+            setAnchorEl(false)
           }}
         >
           <div>

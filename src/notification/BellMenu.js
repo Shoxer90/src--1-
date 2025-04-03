@@ -47,7 +47,7 @@ const BellMenu = ({
     <StyledMenu
       anchorEl={anchorEl}
       open={anchorEl}
-      onClose={() => setAnchorEl(null)}
+      onClose={() => setAnchorEl(false)}
       style={{minWidth:"550px", padding:"5px"}}
     >
       <ul>

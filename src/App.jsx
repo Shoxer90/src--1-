@@ -54,6 +54,8 @@ import CustomerSaleHistory from "./admin/panel/customers/CustomerSaleHistory";
 import CustomerCashiers from "./admin/panel/cashiers";
 import AdminInvoices from "./admin/panel/invoices";
 import AddNewClientInfo from "./Container2/dialogs/AddNewClientInfo";
+import { generateToken, messaging } from "./firebase/firebase";
+import {  onMessage } from "firebase/messaging"
 
 const checkForUpdates = async () => {
   try {
@@ -471,6 +473,14 @@ const App = () => {
   useEffect(() => {
     barcodeScanValue &&  debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
   },[debounceBasket]);
+
+  useEffect(() => {
+    const tk =  generateToken()
+      console.log( tk,"tk")
+      onMessage(messaging, (payload) => {
+      console.log( payload,"PAYLOAD")
+    })
+  }, []);
 
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>

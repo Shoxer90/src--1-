@@ -14,7 +14,7 @@ const bellStyle={
 };
 
 const NotificationBell = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(false);
   const open = Boolean(anchorEl);
   const [notificationCount, setNotificationCount] = useState(9);
   const [isNotClicked, setIsNotClicked] = useState(true);
