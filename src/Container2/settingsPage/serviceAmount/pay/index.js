@@ -33,18 +33,21 @@ const PayComponent = ({
   content,
   serviceType,
   setMessage,
-  activateEhdm
+  activateEhdm,
+  id
 }) => {
   const {t} = useTranslation();
   const [openCompleteUserInfo,setOpenCompleteUserInfo] = useState(false);
   const location = useLocation()
 
   const user = useSelector(state => state?.user?.user)
+  const [url, setUrl] = useState("");
+  const [openSuccess, setOpenSuccess] = useState(false);
   const [billsData, setBills] = useState({
     web: true,
     daysEnum: 1,
     isBinding: content?.autopayment?.hasAutoPayment,
-    serviceType: serviceType,
+    serviceType: id,
     cardId: content?.autopayment?.defaultCard?.cardId
   });
   const [method,setMethod] = useState(1)
@@ -63,30 +66,29 @@ const PayComponent = ({
     setOpenPay(false)
   };
 
+  const closeSuccessDialog = () => {
+    setOpenSuccess(false)
+    window.location.href = url
+  }
+
   const payForCompleteEhdmRegistration = () => {
     setLoader(true)
     if(billsData?.cardId) {
       payForEhdmWithUsingCard(billsData?.cardId).then((res) => {
         setLoader(false)
         if(res?.status !== 200) {
-          console.log(res,"err res in component")
         }else{
-          console.log(res?.data?.formUrl,"res?.data?.formUrl")
-          // window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
-          window.location.href = res?.data?.formUrl
-
+          setUrl(res?.data?.formUrl)
+          setOpenSuccess(true)
         }
       })
     }else{
       if(billsData?.attach) {
-        console.log("attach")
       }else{
-        console.log("no attach")
       }
       payForEhdm().then((res) => {
         setLoader(false)
         if(res?.status !== 200) {
-          console.log(res,"err res in component")
         }else{
           window.location.href = res?.data?.formUrl;
           // window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
@@ -94,9 +96,8 @@ const PayComponent = ({
       })
 
     }
-  }
-  console.log(billsData, "billsData")
-
+  };
+  
   const servicePay = async() => {
     if(activateEhdm) {
       // if(user?.isRegisteredForEhdm){
@@ -163,7 +164,7 @@ const PayComponent = ({
       {activateEhdm ?  
         <h6 style={{marginTop:"0px"}}>{`${t("settings.register")} ${t("settings.ETRM")}`}</h6>
 
-        :<h6 style={{marginTop:"0px"}}>{t("cardService.dialogTitle")}</h6>
+        :<h6 style={{marginTop:"0px"}}>{t("cardService.dialogTitle1")}</h6>
       } 
        
       <PrepaymentConfirmation 
@@ -171,6 +172,7 @@ const PayComponent = ({
         billsData={billsData}
         price={price}
         activateEhdm={activateEhdm}
+        id={id}
       />
       <Divider sx={{m:1}} color="black" />
 
@@ -197,6 +199,8 @@ const PayComponent = ({
 
       </DialogContent>
      
+  
+     
       <Button
         variant="contained"
         onClick={servicePay}  
@@ -218,7 +222,14 @@ const PayComponent = ({
         open={openBankInfo}
         close={setOpenBankInfo}
         question={<strong>{user?.paymentMessage[langEnum()]}</strong>}
-        // question={<strong>{t("cardService.bankMessage")}</strong>}
+        nobutton={true}
+      />
+       <ConfirmDialog
+        t={t} 
+        func={closeSuccessDialog} 
+        open={openSuccess}
+        close={closeSuccessDialog}
+        question={<strong>{t("settings.done30000")}</strong>}
         nobutton={true}
       />
       {/* {openCompleteUserInfo &&

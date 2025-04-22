@@ -26,7 +26,9 @@ const ServiceItemV2 = ({
   setRefresh,
 }) => {
   const isOpenPayForEhdm = useSelector(state => state?.payForEhdm?.isOpen)
+  const user = useSelector(state => state?.user?.user)
   const dispatch = useDispatch();
+  const [openDialog, setOpenDialog] = useState(false)
    
   const [message, setMessage] = useState({message:"",type:""});
   const [openPay, setOpenPay] = useState(false);
@@ -44,16 +46,24 @@ const ServiceItemV2 = ({
     setRefresh(!refresh)
     setOpenPay(false)
     setMessage({message:"", type:""})
+    setRefresh(!refresh)
 
   };
 
 
   const notAvailableService = () => {
+  
+    if(service?.id === 3) {
+      // if(!user?.isRegisteredInEhdm && service?.isActive) {
+      //   return setOpenDialog(true)
+      // }
+      if(!user?.isRegisteredInEhdm && !service?.isActive) {
+        dispatch(setPayForEhdm(true))
+        return setOpenCompleteUserInfo(true)
+      }
+    }
     if(service?.isActive && !isOpenPayForEhdm) {
       setOpenPay(true)
-    }else if(!service?.isActive && service?.id === 3) {
-      dispatch(setPayForEhdm(true))
-      return setOpenCompleteUserInfo(true)
     }
   }
 
@@ -90,13 +100,13 @@ const ServiceItemV2 = ({
           }
           { !service?.isActive && service?.id === 3 && 
             <Button 
-            variant="contained" 
-            onClick={()=>{
-              setActivateEhdm(true)
-              notAvailableService()
-            }}
-            sx={{width:"150px",height:"30px",background:"#3FB68A",textTransform: "capitalize"}}
-          >
+              variant="contained" 
+              onClick={()=>{
+                setActivateEhdm(true)
+                notAvailableService()
+              }}
+              sx={{width:"150px",height:"30px",background:"#3FB68A",textTransform: "capitalize"}}
+            >
               {t("settings.register")} 
           </Button>
           }
@@ -107,28 +117,37 @@ const ServiceItemV2 = ({
           style={!service?.isActive  && service?.id !== 5 ? disableStyle: null}
         >
           
-      {service?.isActive && 
+      {service?.isActive && service?.id !== 6 &&
         <div className={styles.service_item_simpleRow}>
-
-
-              <h6 style={{margin:"4px 0px"}}>{t("cardService.currentCommitment")}</h6>
-              <h6 style={{margin:"4px 0px"}}>{formatNumberWithSpaces(service?.price)} {t("units.amd")}</h6>
-            </div>
-          }
-          {!service?.isActive && service?.id === 3 &&
-            <div className={styles.service_item_simpleRow}>
-              <h6 style={{margin:"4px 0px",opacity:"0.7"}}>{t("landing.priceListRow1")}</h6>
-              <h6 style={{margin:"4px 0px"}}>{formatNumberWithSpaces(service?.price)} {t("units.amd")}</h6>
-            </div>
-          }
+            <h6 style={{margin:"4px 0px"}}>{t("cardService.currentCommitment")}</h6>
+            <h6 style={{margin:"4px 0px"}}>{formatNumberWithSpaces(service?.price)} {t("units.amd")}</h6>
+        </div>
+      }
+      {!service?.isActive && service?.id === 3 &&
+        <div className={styles.service_item_simpleRow}>
+          <h6 style={{margin:"4px 0px",opacity:"0.7"}}>{t("landing.priceListRow155")}</h6>
+          <h6 style={{margin:"4px 0px"}}>{formatNumberWithSpaces(service?.price)} {t("units.amd")}</h6>
+        </div>
+      }
+      {service?.id === 6 &&
+        <div className={styles.service_item_simpleRow}>
+          <h6 style={{margin:"4px 0px"}}>{t("cardService.currentCommitment")} (100 {t("units.pcs")})</h6>
+          <h6 style={{margin:"4px 0px"}}>{formatNumberWithSpaces(service?.price)} {t("units.amd")}</h6>
+        </div>
+      }
         <div className={styles.service_item_simpleRow} style={{fontWeight:700, fontSize:"100%",color:"green"}}>
-         <span>{t("cardService.amountDate")}</span>
-         {service?.isActive &&
-            <span >
+          <span>{service?.id === 6 ? t("settings.availSmsCount"):t("cardService.amountDate")}</span>
+          {service?.isActive && service?.id !== 6 ?
+            <span>
               {(new Date(service?.nextPayment)).getDate()}. 
               {new Date(service?.nextPayment).getMonth()+1 < 10 ? `0${(new Date(service?.nextPayment)).getMonth()+1}`:new Date(service?.nextPayment).getMonth()+1}
               .{ new Date(service?.nextPayment).getFullYear()}
-            </span>
+            </span> : ""
+          }
+          { service?.id === 6 ?
+            <span>
+              {user?.availableSmsCount} {t("units.pcs")}
+            </span>:""
           }
         </div>
         </span>
@@ -144,6 +163,7 @@ const ServiceItemV2 = ({
         serviceType={serviceType}
         setMessage={setMessage}
         activateEhdm={activateEhdm}
+        id={service?.type}
       />
       <ActivateStepByStep
         open={isOpenPayForEhdm}
@@ -152,6 +172,16 @@ const ServiceItemV2 = ({
         content={content}
         activateEhdm={activateEhdm}
         price={service?.price}
+      />
+       <ConfirmDialog 
+        question={t("settings.clickEhdmAfterDone30000")}
+        func={()=>setOpenDialog(false)}
+        title=""
+        open={openDialog}
+        close={setOpenDialog}
+        content={" "}
+        t={t}
+        nobutton={true}
       />
     </>
   );

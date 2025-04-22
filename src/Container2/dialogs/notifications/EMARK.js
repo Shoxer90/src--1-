@@ -17,7 +17,6 @@ export const  EMARK = () => {
 
         if (done) break;
         setBarcode((prev) => prev + decoder.decode(value));
-        // console.log( String.fromCharCode(...value),"BARCODE")
       }
 
       reader.releaseLock();

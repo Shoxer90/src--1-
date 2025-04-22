@@ -134,7 +134,7 @@ const Bascket = ({
     const salesArr =  arr
     if(salesArr?.length) {
       setSingleClick({})
-      basketContent.forEach((item) => {
+      basketContent?.forEach((item) => {
         total += (item?.discountedPrice ? item?.discountedPrice* item?.count: item?.price * item?.count )
         // total += (item?.discountPrice * item?.count)
         if(item?.count === "" || item?.count == 0){
@@ -199,35 +199,50 @@ const Bascket = ({
 // here I must check is it payment or prepayment sale
   const sale = async(saletype) => {
     let saleResponse = "";
-    if(saletype === 1) {
-      saleResponse = await saleProductFromBasket(paymentInfo)
-    }else if(saletype === 2) {
-      saleResponse = await payRequestQR(paymentInfo)
-    }else if(saletype === 3) {
-      saleResponse = await sendSmsForPay({
-        ...paymentInfo,
-        phone: `+374${paymentInfo.phone}`
-      })
-        if(saleResponse?.status === 203) {
-          createMessage("error", t("authorize.errors.bank_agreement"))
-          return
-        }else{
-          closeRecieptAndRefresh()
-        }
-      setOpenPhonePay(true)
-    }else if(saletype === 4) {
-      saleResponse = await basketListUrl(paymentInfo)
-    }
-    // if sale is pending
+    if(navigator.onLine) {
 
-    responseTreatment(saleResponse, saletype)
-    const tax = await taxCounting(saleResponse?.res?.printResponseInfo?.items)
-    setTaxCount(tax)
+      if(saletype === 1) {
+        saleResponse =  await saleProductFromBasket(paymentInfo)
+      
+      }else if(saletype === 2) {
+        saleResponse = await payRequestQR(paymentInfo)
+      }else if(saletype === 3) {
+        saleResponse = await sendSmsForPay({
+          ...paymentInfo,
+          phone: `+374${paymentInfo.phone}`
+        })
+          if(saleResponse?.status === 203) {
+            createMessage("error", t("authorize.errors.bank_agreement"))
+            return
+          }else{
+            closeRecieptAndRefresh()
+          }
+        setOpenPhonePay(true)
+      }else if(saletype === 4) {
+        saleResponse = await basketListUrl(paymentInfo)
+      }
+      console.log(saleResponse, "saleResponse")
+      if(saleResponse) {
+        setLoader(false)
+        if(saleResponse === "ERR_NETWORK") {
+          return createMessage("error", t("dialogs.badInet"))
+
+        }
+        responseTreatment(saleResponse, saletype)
+        const tax = await taxCounting(saleResponse?.res?.printResponseInfo?.items)
+        setTaxCount(tax)
+      }
+      else{
+        createMessage("error", t("dialogs.badInet"))
+
+      }
+    }
+    else{
+      createMessage("error", t("dialogs.badInet"))
+    }
   }
 
   const responseTreatment = async(result, saletype) => {
-    setLoader(false)
-
     if(result === 401){
       logOutFunc()
       return 
@@ -280,7 +295,7 @@ const Bascket = ({
     setAvail([])
     cheackProductCount(paymentInfo?.sales).then((res) => {
       const errProds = []
-       res.forEach((prod) => {
+       res?.forEach((prod) => {
          return prod?.status === false ? errProds.push(prod?.id) : prod
       })
         setAvail(errProds)

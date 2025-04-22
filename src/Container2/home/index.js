@@ -64,7 +64,7 @@ const HomePage = ({
   const [newProduct,setProduct] = useState(initState); 
 
   const changeStatus = async(str) => {
-    setFlag(!flag)
+    setFlag(flag+1)
     const newSearchParams = new URLSearchParams(search);
     await setCurrentPage(page || 1)
     setDataGroup(str)

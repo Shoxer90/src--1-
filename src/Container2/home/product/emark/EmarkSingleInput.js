@@ -20,7 +20,6 @@ const EmarkSingleInput = () => {
         const { value, done } = await reader.read();
         if (done) break;
         setBarcode((prev) => prev + decoder.decode(value));
-        // console.log( String.fromCharCode(...value),"BARCODE")
       }
       reader.releaseLock();
     } catch (error) {
@@ -108,7 +107,6 @@ const EmarkSingleInput = () => {
     //   // Преобразуем лист в массив JSON-объектов
     //   const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
   
-    //   console.log(jsonData); // Массив значений ячеек
     // };
   }
 

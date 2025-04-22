@@ -2,25 +2,22 @@ import React, { memo, useEffect } from "react";
 
 import styles from "./index.module.scss";
 import { useState } from "react";
-import { Button, Checkbox, Dialog, FormControl, FormControlLabel, FormLabel, InputAdornment, InputLabel, MenuItem, NativeSelect, Radio, RadioGroup, Select, TextField } from "@mui/material";
+import { Button, Checkbox, Dialog, FormControl, FormControlLabel, InputAdornment, Radio, RadioGroup, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { completeEhdmRegistration, getDataByTin } from "../../../services/auth/auth";
 import SnackErr from "../../dialogs/SnackErr";
 import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import HomeIcon from '@mui/icons-material/Home';
 import StoreIcon from '@mui/icons-material/Store';
 import { useSelector } from "react-redux";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
-import { Link } from "react-router-dom";
+import CertificateUploader from "./CertificateUploader";
 import AddNewClientInfo from "../../dialogs/AddNewClientInfo";
 import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import BusinessIcon from '@mui/icons-material/Business';
 import Loader from "../../loading/Loader";
 
 
-const CompleteUserData = ({formatPhone, limitedUsing ,logOutFunc, setMessage}) => { 
+const CompleteUserData = ({formatPhone ,logOutFunc, setMessage, switchStatus}) => { 
   const {user} = useSelector(state => state.user);
 const [newUser, setNewUser] = useState({});
 
@@ -128,6 +125,7 @@ const [newUser, setNewUser] = useState({});
           getDataByTin(e.target.value).then((res) => {
             setLoaded(false)
             if(res?.status === 200) {
+              setChangeInfo(true)
               setSubmitClick(false)
               setNewUser({
                 ...newUser,
@@ -163,7 +161,6 @@ const [newUser, setNewUser] = useState({});
       legalName:user?.legalName ||"",
       legalAddress: user?.legalAddress || "",
       taxRegime: user?.taxRegime || "",
-      // taxRegime: user?.taxRegime || 0,
       businessAddress: user?.businessAddress || "",
       tradeName: user?.tradeName || "",
       isRegisteredForEhdm: user?.isRegisteredForEhdm || false
@@ -176,24 +173,19 @@ const [newUser, setNewUser] = useState({});
     <h3>{t("settings.info")}</h3>
   
     <div style={{display:"flex", alignItems:"center"}}>
-      <h5 style={{marginLeft:"30px",marginRight:"15px"}}><AlternateEmailIcon sx={{m:1,color:"#fd7e14"}} /></h5>
-      <h5>{user?.email}</h5>
+      <h6 style={{marginLeft:"20px",marginRight:"15px"}}><AlternateEmailIcon sx={{color:"#fd7e14"}} /></h6>
+      <h6>{user?.email}</h6>
     </div>
     <div style={{display:"flex", alignItems:"center"}}>
-      <h5 style={{marginLeft:"30px",marginRight:"15px"}}><PhoneInTalkIcon sx={{m:1,color:"#fd7e14"}} /></h5>
-      <h5>{`${formatPhone?.slice(0,4)} (${formatPhone?.slice(4,6)}) ${formatPhone?.slice(6, 8)}-${formatPhone?.slice(8, 10)}-${formatPhone?.slice(10,12)}`}</h5>
+      <h6 style={{marginLeft:"20px",marginRight:"15px"}}><PhoneInTalkIcon sx={{color:"#fd7e14"}} /></h6>
+      <h6>{`${formatPhone?.slice(0,4)} (${formatPhone?.slice(4,6)}) ${formatPhone?.slice(6, 8)}-${formatPhone?.slice(8, 10)}-${formatPhone?.slice(10,12)}`}</h6>
     </div>
       <TextField 
-        sx={{
-          m:.6,
-          ml:2,
-          "& fieldset": { border: !changeInfo ?'none': null },
-        }} 
         autoComplete="off"
         onFocus={changeInfo}
           inputProps={{
             style: {
-              height: "36px",
+              height: "30px",
               padding:"1px 10px"
             }
           }}
@@ -204,22 +196,20 @@ const [newUser, setNewUser] = useState({});
           onChange={(e)=>handleChange(e)}
           InputProps={{
             startAdornment: <InputAdornment position="start">
-              <StoreIcon sx={{m:1, color:"#fd7e14"}} />
+              <StoreIcon sx={{m:.5, color:"#fd7e14"}} />
             </InputAdornment>,
           }}
         />
         <TextField 
           sx={{
-            m:.6,
-            ml:2,
-            "& fieldset": { border: !changeInfo ?'none': null },
+            mt:.6,
           }} 
           disablePortal
           autoComplete="off"
           inputProps={{
             style: {
-              height: "36px",
-              padding:"1px 10px"
+              height: "30px",
+              padding:"1px"
             }
           }}
           name="businessAddress"
@@ -230,12 +220,13 @@ const [newUser, setNewUser] = useState({});
             startAdornment: <InputAdornment position="start"><BusinessIcon sx={{m:1, color:"#fd7e14"}} /></InputAdornment>,
           }}
         />
+      
         <FormControlLabel
           autoComplete="off"
-          sx={{ml:3.8,color:"black"}}
+          sx={{ml:1.8,color:"black"}}
           checked={newUser?.isRegisteredForEhdm ? true: false}
           name="isRegisteredForEhdm"
-          control={<Checkbox sx={{margin:"0px"}} />}
+          control={<Checkbox size="small" sx={{mr:1.2}}/>}
           label={t("settings.ETRM")}
           disabled={user?.isRegisteredForEhdm && user?.tin}
           onChange={(e)=> {
@@ -259,29 +250,33 @@ const [newUser, setNewUser] = useState({});
        
 
 
-        {(user?.isRegisteredForEhdm || newUser?.isRegisteredForEhdm) && <>
+        {(user?.isRegisteredForEhdm || newUser?.isRegisteredForEhdm) && 
+          <>
+            <div style={{display:"flex", justifyContent:"flex-start"}}>
+                
+            <TextField 
+              sx={{mt:.6,ml:4,width:"300px"}} 
+              autoComplete="off"
+              inputProps={{
+                style: {
+                  height: "30px",
+                  padding:"1px 10px"
+                }
+              }}
+              error={(!newUser?.tin && submitClick)|| (newUser?.tin && newUser?.tin?.length !==8)}
+              name="tin"
+              value={newUser?.tin}
+              disabled={user?.tin}
+              placeholder={`${t("authorize.tin")} (8 ${t("productinputs.symb")}) *`} 
+              onChange={(e)=>limitChar(e,8)} 
+              InputProps={{
+                startAdornment: <InputAdornment position="start">{`${t("authorize.tin")} `}</InputAdornment>,
+              }}   
+              />
+           
+              </div>
 
-              {/* width:"60%", */}
-        <TextField 
-          sx={{m:.6,ml:4,width:"300px"}} 
-          autoComplete="off"
-          inputProps={{
-            style: {
-              height: "36px",
-              padding:"1px 10px"
-            }
-          }}
-          error={(!newUser?.tin && submitClick)|| (newUser?.tin && newUser?.tin?.length !==8)}
-          name="tin"
-          value={newUser?.tin}
-          disabled={user?.tin}
-          placeholder={`${t("authorize.tin")} (8 ${t("productinputs.symb")}) *`} 
-          onChange={(e)=>limitChar(e,8)} 
-          InputProps={{
-            startAdornment: <InputAdornment position="start">{`${t("authorize.tin")} `}</InputAdornment>,
-          }}   
-          />
-          <span style={{color:"black", textAlign:"start", margin:"10px",marginLeft:"30px", fontSize:"80%"}}>
+          <span style={{color:"black", textAlign:"start", margin:"5px 20px", fontSize:"80%"}}>
             <div>
               <span style={{fontWeight:500}}>{`${t("authorize.legalName")} *`}</span>
               <span>{newUser?.legalName}</span>
@@ -291,26 +286,7 @@ const [newUser, setNewUser] = useState({});
               <span>{newUser?.legalAddress}</span>
             </div>
           </span>
-          {/* <FormControl sx={{ width: "60%", margin:"10px"}}>
-            <InputLabel>{`${t("authorize.taxType")}*`}</InputLabel>
-
-            <NativeSelect
-              error={!newUser?.taxRegime && submitClick}
-              sx={{'& .MuiNativeSelect-select': {paddingLeft: 4}, ml:3,width:"300px"}}
-              name="taxRegime"
-              value={newUser?.taxRegime}
-              label={`${t("authorize.taxType") } *`}
-              onChange={(e)=>handleChange(e)}
-            >
-              {taxtType && taxtType.map((item) => (
-                <option key={item?.id} value={item?.id}>
-                  <span>{item?.name}</span>
-                </option>
-              ))}
-            </NativeSelect>
-          </FormControl> */}
-
-            <h5 style={{textAlign:"start",marginLeft:"25px"}}>{`${t("authorize.taxType") } *`}</h5>
+            <h6 style={{textAlign:"start",marginLeft:"20px"}}>{`${t("authorize.taxType") } *`}</h6>
           <FormControl>
             <RadioGroup
               name="taxRegime"
@@ -319,11 +295,22 @@ const [newUser, setNewUser] = useState({});
               defaultValue={newUser?.taxRegime || user?.taxRegime}
             >
             {taxtType && taxtType.map((item) => (
-              <FormControlLabel sx={{ml:2}} value={item?.id} control={<Radio />} label={item?.name} />
+              <FormControlLabel sx={{p:0,ml:2}} value={item?.id} control={<Radio 
+                sx={{
+                  '& .MuiSvgIcon-root': {
+                    fontSize: 12,
+                  }}}
+                />} label={item?.name} />
             ))}
             </RadioGroup>
           </FormControl>
         </>}
+        <CertificateUploader 
+          isRegisteredInEhdm={user?.isRegisteredInEhdm }
+          activeServiceType={user?.activeServiceType}
+          switchStatus={switchStatus}
+        />
+        {/* {!user?.isRegisteredInEhdm && user?.activeServiceType === 3 ?  <CertificateUploader /> : ""} */}
        
       { changeInfo &&
         <Button

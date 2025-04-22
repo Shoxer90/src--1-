@@ -16,7 +16,8 @@ const Step3 = ({
   price,
   loader,
   user,
-  payForCompleteEhdmRegistration
+  payForCompleteEhdmRegistration,
+  close
 }) => {
   const {t} = useTranslation();
   const [method,setMethod] = useState(1);
@@ -37,7 +38,7 @@ const Step3 = ({
 	return (
 		<div className={styles.update_card}>
       <p style={{fontSize:"110%", fontWeight: 600}}>
-        {t("settings.employeeCall")}
+        {t("settings.30000inProcess")}
       </p>
 
       <div className={styles.subscription_item} >
@@ -71,14 +72,24 @@ const Step3 = ({
     >
       {t("cardService.bankTransfer")}
     </Button>
-    <Button
-      variant="contained"
-      onClick={payForCompleteEhdmRegistration}  
-      sx={{m:2,background:"#3FB68A",textTransform: "capitalize"}}
-      disabled={payData?.attach === undefined && payData?.cardId === undefined }
-    >
-      {t("basket.totalndiscount")} { price} ֏ 
-    </Button>
+    <div>
+      <Button
+          variant="contained"
+          onClick={close}  
+          sx={{m:2,background:"#3FB68A",textTransform: "capitalize", width:"40%", opacity:3}}
+        >
+          {t("buttons.cancel")}
+        </Button>
+      <Button
+        variant="contained"
+        onClick={payForCompleteEhdmRegistration}  
+        sx={{m:2,background:"#3FB68A",textTransform: "capitalize", width:"40%"}}
+        disabled={payData?.attach === undefined && payData?.cardId === undefined }
+      >
+        {t("basket.totalndiscount")} { price} ֏ 
+      </Button>
+
+    </div>
 
     {loader && 
       <Dialog open={!!loader}>

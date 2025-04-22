@@ -75,22 +75,13 @@ const PayButtons = ({
           {t("history.cash")}
         </div>
       </span>
-      <span
-        style={
-        // (!paymentInfo?.cardAmount && !openWindow?.prePaymentAmount) ? buttonBlock : null
-        (totalPrice && paymentInfo?.cardAmount) 
-        // || (totalPrice === paymentInfo?.prePaymentAmount && paymentInfo?.prePaymentAmount) 
-        ? null :buttonBlock}
-      >
-
+      <span style={(totalPrice && paymentInfo?.cardAmount) ? null :buttonBlock}>
         <img
           src="/image/card.png"
           alt="card pay"
           onClick={()=>{
-            if(!singleClick?.pointerEvents) {
-              setSingleClick(buttonBlock)
-              checkSaleMode(1)
-            }
+            setSingleClick(buttonBlock)
+            checkSaleMode(1)
           }}
         />  
         <div>
@@ -109,7 +100,6 @@ const PayButtons = ({
               checkSaleMode(4)
             }
           }}
-          
         />
         <div>
           QR
@@ -160,7 +150,6 @@ const PayButtons = ({
         }}
         content={message}
       />
-
     </div>
   )
 };

@@ -110,10 +110,16 @@ export const saleProductFromBasket = async(content) => {
     },
   };
   try{
-    const data = await axios.put(baseUrl + `Sale/Sale`, content, option)
+    const data = await axios.put(baseUrl + `Sale/Sale`, content, option, { retry: 0 })
+    console.log(data,"DATA")
     return data.data
   }catch(err){
-    return err.response.status
+    console.log(err?.code,"err")
+    if(err?.code === "ERR_NETWORK"){
+      return "ERR_NETWORK"
+    }else{
+      return err.response.status
+    }
   }
 }
 

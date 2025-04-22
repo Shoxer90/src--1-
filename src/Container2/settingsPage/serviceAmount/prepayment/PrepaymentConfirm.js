@@ -15,7 +15,7 @@ const activeStyle = {
   transition: "width 2s",
 };
 
-const PrepaymentConfirmation = ({setBills, billsData, price, activateEhdm }) => {
+const PrepaymentConfirmation = ({setBills, billsData, price, activateEhdm, id }) => {
   const [activeRow,setActiveRow] = useState(0);
   const {t} = useTranslation();
 
@@ -76,6 +76,7 @@ const PrepaymentConfirmation = ({setBills, billsData, price, activateEhdm }) => 
               activateRow={activateRow}
               setPaymentData={setBills}
               paymentData={billsData}
+              id={id}
             />
           ))
         }

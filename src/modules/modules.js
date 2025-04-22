@@ -116,3 +116,12 @@ export const formatNumberWithSpaces = (number) => {
   return number.toLocaleString('en').replace(/,/g, ' ');
 }
 
+export const datePainter = (dateString) => {
+  const date = new Date(dateString);
+  return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
+};
+
+export const datePainterClock = (dateString) => {
+  const date = new Date(dateString);
+  return `${date.getHours().toString().padStart(2, '0')}.${(date.getMinutes() ).toString().padStart(2, '0')}`
+}

@@ -27,9 +27,7 @@ const EmarkInput = () => {
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-        // console.log("stic mtav stex")
         // setBarcode((prev) => prev + decoder.decode(value));
-        // console.log( String.fromCharCode(...value),"BARCODE")
       }
       reader.releaseLock();
     } catch (error) {
@@ -48,8 +46,6 @@ const EmarkInput = () => {
   };
 
 	const readExcel = (e) => {
-    // console.log(e,"e")
-
       const promise = new Promise((resolve,reject) => {
           
       const fileReader = new FileReader();

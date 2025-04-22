@@ -54,8 +54,11 @@ import CustomerSaleHistory from "./admin/panel/customers/CustomerSaleHistory";
 import CustomerCashiers from "./admin/panel/cashiers";
 import AdminInvoices from "./admin/panel/invoices";
 import AddNewClientInfo from "./Container2/dialogs/AddNewClientInfo";
-import { generateToken, messaging } from "./firebase/firebase";
-import {  onMessage } from "firebase/messaging"
+import IframeReader from "./Container/iframe/iframeReader"; 
+import { addNotification } from "./store/notification/notificationSlice";
+import { removeDeviceToken, sendDeviceToken } from "./services/notifications/notificatonRequests";
+import { generateToken, messaging } from "./firebase/firebase-config";
+import { onMessage } from "firebase/messaging";
 
 const checkForUpdates = async () => {
   try {
@@ -111,6 +114,7 @@ const App = () => {
   const [searchedNotAvailableProd, setSearchedNotAvailableProd] = useState();
   const [openAddDialog,setOpenAddDialog] = useState(false);
   const [updateAvailable, setUpdateAvailable] = useState(false);
+  const [ notifTrigger, setNotifTrigger] = useState(false)
   const [openWindow, setOpenWindow] = useState({
     prepayment: false,
     payment: false,
@@ -119,7 +123,6 @@ const App = () => {
     prePaymentAmount: JSON.parse(localStorage.getItem("endPrePayment"))?.prepayment || 0,
     isPrepayment: localStorage.getItem("endPrePayment") ? true : false
   });
-
   const [paymentInfo, setPaymentInfo] = useState({
     discount: 0,
     discountType: 0,
@@ -136,7 +139,8 @@ const App = () => {
   });
 
   const whereIsMyUs = async() => {
-    console.log("31.03.2025 update")
+    console.log("22.04.2025 update")
+    // setNotifTrigger(!notifTrigger)
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -228,8 +232,8 @@ const App = () => {
         setBasketContent(res)
         setBasketGoodsqty(res?.length)
         res.forEach((item) => {
-          existArr.push(item?.productId || item?.id)
-          arrForSale.push({id:item?.productId || item?.id, count: +item?.count})
+          existArr?.push(item?.productId || item?.id)
+          arrForSale?.push({id:item?.productId || item?.id, count: +item?.count})
         })
       }else {
         setBasketGoodsqty(0)
@@ -261,9 +265,9 @@ const App = () => {
       res.map((prod) => {
         if(prod.id === id) {
           
-          return handleArr.push({...prod, count: value})
+          return handleArr?.push({...prod, count: value})
         }else{
-         return handleArr.push(prod)
+         return handleArr?.push(prod)
         }
       })  
     })
@@ -338,9 +342,7 @@ const App = () => {
       basket.unshift({
         ...wishProduct,
         discountedPrice: wishProduct?.discountedPrice,
-        // discountPrice: wishProduct?.discountedPrice,
         discountedPrice: wishProduct?.discountedPrice,
-        // discountPrice: wishProduct?.discountedPrice,
         count:+(quantity ? quantity: 1)
       })
     }
@@ -380,9 +382,27 @@ const App = () => {
     return loadBasket()
   };
 
-  
-  const logOutFunc = () =>{
+
+  // const getDeviceTokenForNotifs = async() => {
+  //   const appToken = await generateToken();
+  //   sendDeviceToken(appToken)
+  // }
+
+  // useEffect(() => {
+  //   getDeviceTokenForNotifs()
+  //   onMessage(messaging, (payload) => {
+  //   })
+  // }, []); 
+
+  onMessage(messaging, (payload) => {
+    console.log(payload,"in appjs")
+    setNotifTrigger(notifTrigger)
+  })
+
+  const logOutFunc = async() =>{
     const language = localStorage.getItem("lang");
+    const deviceToken = await generateToken()
+    removeDeviceToken(deviceToken)
     setContent([]);
     setCount(false)
     localStorage.clear();
@@ -453,13 +473,22 @@ const App = () => {
     loadBasket()
   },[user]);
 
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event.data?.type === 'REFRESH_PAGE') {
+        console.log('🔄 Страница будет обновлена из-за push-сообщения:', event.data.payload);
+        window.location.reload(); // Это обновление страницы
+      }
+    });
+  }
+
   useEffect(() => {
   whereIsMyUs() 
   if(user &&  user.isChangedPassword === false) {return setOpenAddDialog(true)}
   setCount(false)
-  },[]);
+  },[notifTrigger]);
 
- useEffect(() => {
+  useEffect(() => {
     setPaymentInfo({
       ...paymentInfo,
       isPrepayment: openWindow?.prepayment
@@ -474,13 +503,6 @@ const App = () => {
     barcodeScanValue &&  debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
   },[debounceBasket]);
 
-  useEffect(() => {
-    const tk =  generateToken()
-      console.log( tk,"tk")
-      onMessage(messaging, (payload) => {
-      console.log( payload,"PAYLOAD")
-    })
-  }, []);
 
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>
@@ -503,6 +525,7 @@ const App = () => {
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
           <Route path="/basket/*" element={<BasketList t={t} />} />
+          <Route path="/kuku" element={<IframeReader />} />
 {/* ADMIN PAGE */}
           <Route path="/admin/*" element={<AdminPage />} />
           <Route path="/admin/info/customer" element={<AdminPanel children={<CustomerInfo />} />} />
@@ -521,6 +544,9 @@ const App = () => {
             logo={user?.logo}
             activeBtn={activeBtn}
             setActiveBtn={setActiveBtn}
+            setNotifTrigger={setNotifTrigger}
+            notifTrigger={notifTrigger}
+
           />
           {!isBlockedUser  && user ? <Routes>
             <Route
@@ -550,6 +576,7 @@ const App = () => {
                 />
               }  
             />
+
             <Route
               path="/prods" 
               element={
@@ -571,6 +598,8 @@ const App = () => {
                   setSearchValue={setSearchValue}
                   byBarCodeSearching={byBarCodeSearching}
                   flag={flag}
+                  setFlag={setFlag}
+
                   setFetching={setFetching}
                   fetching={fetching}
                 />

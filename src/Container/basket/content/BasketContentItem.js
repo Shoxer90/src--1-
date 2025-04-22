@@ -126,7 +126,7 @@ const BasketContentItem = ({
   const editRemovePrepaymentItem= async(id) => {
     let editedData = await (JSON.parse(localStorage.getItem("isEditPrepayment")))
     let flag=0
-    let newDataForEdit = editedData?.sales.map((item) => {
+    let newDataForEdit = editedData?.sales?.map((item) => {
       if(item?.id === id){
         flag+=1
         return {
@@ -138,7 +138,7 @@ const BasketContentItem = ({
       }
     })
     if(!flag) {
-      newDataForEdit.push({
+      newDataForEdit?.push({
         id:id,
         count:0
       })

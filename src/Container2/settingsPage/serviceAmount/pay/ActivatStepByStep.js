@@ -82,7 +82,7 @@ const ActivateStepByStep = ({
   };
 
   const notActiveStyle = {
-    opacity: 0.4
+    opacity: 0.3,
   };
   
   useEffect(() => {
@@ -105,7 +105,7 @@ const ActivateStepByStep = ({
       minWidth="320px"
     >
        <DialogTitle className={styles.dialogHeader}>
-        <div>{t("authorize.ehdmConnect")}</div>
+        <div></div>
         <CloseIcon onClick={close} />
       </DialogTitle>
       <Divider color="black" />
@@ -130,6 +130,7 @@ const ActivateStepByStep = ({
           loader={loader} 
           user={user}
           payForCompleteEhdmRegistration={payForCompleteEhdmRegistration}
+          close={close}
         />
       </div>
       {infoDialog?.message &&

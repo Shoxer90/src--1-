@@ -1,8 +1,9 @@
 import React, { memo } from "react" ;
 
-import styles from "../paymentDialog/index.module.scss";
 import { useTranslation } from "react-i18next";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
+
+import styles from "../paymentDialog/index.module.scss";
 
 const PrepaymentItem = ({
   index, 
@@ -11,14 +12,15 @@ const PrepaymentItem = ({
   price, 
   setPaymentData, 
   paymentData,
-  activeStyle
+  activeStyle,
+  id
 }) => {
-     const {t} = useTranslation();
+  const {t} = useTranslation();
    
   const handleClick = (e) => {
      setPaymentData({
      ...paymentData,
-      daysEnum:months,
+      daysEnum: months,
     })
     activateRow(index+1)
   };
@@ -38,9 +40,13 @@ const PrepaymentItem = ({
           name="months"
           onChange={(e)=> handleClick(e)}
         />
-          <div style={{width:"80px"}}>
-            {months * 30} {t("cardService.dayCount2")} 
-          </div>
+          {id !==6 ? <div style={{width:"80px"}}>
+              {months * 30} {t("cardService.dayCount2")} 
+            </div>:
+            <div style={{width:"80px"}}>
+              {months * 100} SMS
+            </div>
+          } 
           <div style={{margin: "2px 2px 2px 100px"}}>
             {formatNumberWithSpaces(price)} {t("units.amd")}
           </div>

@@ -10,11 +10,13 @@ import navigationReducer from "./navigation/NavigationSlice";
 import startEndDateReducer from "./filter/startEndDateSlice";
 import payForEhdmReducer from "./storex/openPaySlice";
 import userNewReducer from "./storex/user/userNewSlice";
+import notificationReducer from "./notification/notificationSlice";
 
 import { storesApi } from "./storesUsers/storesApi";
 import { adminApi } from "./admin/adminApi";
 import { customerApi } from "./customer/customerApi";
 import { userApi } from "./storex/user/userApi";
+import { notificationApi } from "./notification/notificationApi";
 
 export default configureStore({
   reducer: {
@@ -29,10 +31,12 @@ export default configureStore({
     navigation: navigationReducer,
     startEndDate: startEndDateReducer,
     payForEhdm: payForEhdmReducer,
+    notification: notificationReducer,
     [adminApi.reducerPath]:adminApi.reducer,
     [storesApi.reducerPath]:storesApi.reducer,
     [customerApi.reducerPath]:customerApi.reducer,
-    [userApi.reducerPath]:userApi.reducer
+    [userApi.reducerPath]:userApi.reducer,
+    [notificationApi.reducerPath]:notificationApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
      getDefaultMiddleware()
@@ -40,4 +44,5 @@ export default configureStore({
       .concat(storesApi.middleware)
       .concat(customerApi.middleware)
       .concat(userApi.middleware)
+      .concat(notificationApi.middleware)
 })

@@ -2,7 +2,6 @@ import React, { useState, memo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {Card, Dialog, Divider, useMediaQuery } from '@mui/material';
-import Services from './services';
 import CreditCard from './creditCard/CreditCard';
 import ServiceTitle from './ServiceTitle';
 import CreditCardWrapper from './creditCard/CreditCardWrapper';
@@ -20,7 +19,7 @@ import AutoPaymentSwitch from "./autoPayment"
 import CreditCardNewName from './creditCard/CreditCardNewName.js';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ServicesV2 from './services/servicesV2.js';
+import ServicesV2 from './services/ServicesV2.js';
 
 
 const stylesCard = {
@@ -121,8 +120,8 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
     setIsLoad(true)
     await postNewCreditCard().then((res) => {
       setIsLoad(false)
-      // window.open(res, '_blank', 'noopener,noreferrer');
-      window.location.href = res;
+      window.open(res, '_blank');
+      // window.location.href = res;
     })
   };
 
@@ -145,18 +144,6 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
         <div style={{width:"600px"}}></div>
       </div>
       <div style={{display:"flex", flexFlow:"row "}}>
-        {/* {internalPayments &&
-          <Services 
-            content={internalPayments}
-            payData={payData} 
-            setPayData={setPayData}
-            logOutFunc={logOutFunc}
-            isDelete={isDelete}
-            serviceType={serviceType}
-            refresh={refresh}
-            setRefresh={setRefresh}
-          />
-        } */}
          {internalPayments &&
           <ServicesV2
             content={internalPayments}

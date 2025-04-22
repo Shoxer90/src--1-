@@ -39,7 +39,8 @@
     "priceListStars2":"** does not include servicing bank commissions ",
     "priceListSubTitle1": "Services",
     "priceListSubTitle2": "Tariff (AMD)",
-    "priceListRow1":"Registration(lump sum)",
+    "priceListRow1":"Registration(one time)",
+    "priceListRow155":"Price (one time)",
     "priceListRow2":"Consultation and training (one time)",
     "priceListRow3":"Maximum number of sellers (users) and outlets",
     "priceListRow4":"Maximum number of transactions (monthly)",
@@ -150,7 +151,7 @@
     "register": "Register",
     "director": "Director",
     "taxType": "Select tax type",
-    "ehdmConnect" : "Get access to use ETRM",
+    "ehdmConnect" : "To activate the ETRM, make a one‑time payment",
     "paymentSystem": "Payment System",
     "serviceType": "Service Type",
     "merchName": "Merch Name",
@@ -271,9 +272,9 @@
     "discount": "Discount",
     "barcode": "Internal code/ Barcode",
     "ndsNone": "Excluding VAT",
-    "nds": "Taxable with VAT",
-    "tax3": "Sales Tax",
-    "tax7": "Micro manual",
+    "nds": "Including VAT",
+    "tax3": "Turnover tax payer",
+    "tax7": "Micro-entrepreneurship",
     "description": "Description",
     "delete_btn": "Delete",
     "measure": "Measure",
@@ -403,6 +404,10 @@
   }, 
   "updates": {
     "seeContract":"See the contract",
+    "uploadCRT": "Upload the ETRM CRT file",
+    "uploadedCRT": "CRT file is attached",
+    "uploadedCRT1": "ETRM is active",
+    "fileUpld":"File is downloaded, do you want to save it?",
     "changes": "Changes",
     "sales": "Sales",
     "go_to_changes": "Go to changes",
@@ -418,6 +423,8 @@
   },
   "settings": {
     "switcher": "ETRM",
+    "SMS": "SMS Bundle",
+    "availSmsCount": "Available SMS count",
     "hdmstatus2": "TRM",
     "hdmstatus1": "ETRM",
     "hdmstatus0": "Receipt",
@@ -471,11 +478,14 @@
     "free": "Free",
     "activate": "Activate",
     "ETRM": "ETRM",
+    "ETRM 30000": "ETRM 30 000",
     "StoreX": "StoreX",
     "info":"Information",
     "cashiereLimit": "Access to more than 2 cashiers, for each (one-time) 6000 dram․To activate the service, please contact 055 522225",
     "operation": "Operation",
-    "employeeCall":"You can make the payment using a bank card or transfer, after which our employee will contact you for ETRM registration."
+    "30000inProcess":"The payment can be done via card or bank transfer, then CSR certificate and registration guide for ETRM registration will be send to your email.",
+    "done30000": "Done. The CSR certificate and registration guide for ETRM registration have been sent to your email.",
+    "clickEhdmAfterDone30000": "The ETRM registration guide has been sent to your email. Please follow the instructions in the guide."
   },
   "cardService":{
     "btnTitle" : "Activation of services",
@@ -484,6 +494,8 @@
     "activeDue":"Until",
     "paid": "Amount",
     "dialogTitle": "Service period",
+    "dialogTitle1": "Active Packs ",
+
     "cardInfo":"Card",
     "chooseCard": "Make the card the main one",
     "chooseMain": "Make main",
@@ -559,7 +571,7 @@
     "unicBarCode": "A product with a similar barcode already exists.",
     "activateEhdm":"Do you really want to activate ETRM register?",
     "activateEhdm2":"Do you really want to activate TRM register?",
-    "activateEhdm3":"Turn of ETRM / TRM ?",
+    "activateEhdm3":"Turn of ETRM ?",
     "deprecated": "The data is deprecated․ Please, confirm registration again",
     "saveData": "Do you want to save the collected data?",
     "excelAddProds": "Would you like to download the product(s) to your store ?",
@@ -578,7 +590,8 @@
     "logoutQuestion": "Sign out?",
     "returnPrepayment": "Would you like to cancel this transaction?",
     "changeEhdmMode":"The cash register device is connected (soon it will also be available on the website). To complete the sale, change the sale type.",
-    "changeEhdmModeForCashiere":"The cash register device is connected (soon it will also be available on the website)."
+    "changeEhdmModeForCashiere":"The cash register device is connected (soon it will also be available on the website).",
+    "badInet":"Bad internet connection.Before repeating the sale, check Sales History — it may have gone through."
   },
 
   "emark":{

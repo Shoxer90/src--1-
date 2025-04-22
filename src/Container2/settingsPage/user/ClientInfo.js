@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import SnackErr from "../../dialogs/SnackErr";
 import CompleteUserData from "./CompleteUserData";
 
-const ClientInfo = ({limitedUsing, setIsLoad, logOutFunc}) => {
+const ClientInfo = ({limitedUsing, setIsLoad, switchStatus}) => {
 const {user} = useSelector(state => state.user);
 const [formatPhone, setFormatPhone] = useState("");
 const [registerMessage, setRegisterMessage] = useState({});
@@ -33,6 +33,7 @@ useEffect(() => {
         formatPhone={formatPhone}
         message={registerMessage} 
         setMessage={setRegisterMessage}
+        switchStatus={switchStatus}
       />
       <Dialog open={Boolean(registerMessage.m)} onClose={()=>setRegisterMessage({m:"",t:""})}>
         <SnackErr 

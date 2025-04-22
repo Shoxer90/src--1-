@@ -31,7 +31,6 @@ const ClientShopAvatar = ({client, limitedUsing}) => {
           style={{display:"none"}} 
           onChange={(e)=>handlePutPhoto(e)}
         />
-
       </div>
     </div>
   )

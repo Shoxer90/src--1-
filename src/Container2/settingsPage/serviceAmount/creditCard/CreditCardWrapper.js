@@ -22,18 +22,26 @@ const CreditCardWrapper = ({
         {!isMain && 
           <span className={styles.creditCard_bank_icon} onClick={()=>handleOperation(1,cardId)}>
             <Tooltip title={t("cardService.chooseMain")} placement="bottom">
-              <CreditScoreIcon fontSize='medium' color="white" />
+              <div>
+                <CreditScoreIcon fontSize='medium' color="white" />
+              </div>
             </Tooltip>
           </span>
         }
         <span className={styles.creditCard_bank_icon} onClick={()=>handleOperation(2,cardId,name)}>
           <Tooltip title={t("cardService.updateName")} placement="bottom">
-          <DriveFileRenameOutlineIcon fontSize='medium' color="white"  title="Add" placement="bottom" />
-          </Tooltip>
+            <div>
+              <DriveFileRenameOutlineIcon fontSize='medium' color="white"  title="Add" placement="bottom" />
+            </div>
+            </Tooltip>
         </span>
         <span className={styles.creditCard_bank_icon} onClick={()=>handleOperation(3,cardId)}>
           <Tooltip title={t("settings.remove")} placement="bottom">
-            <DeleteOutlineIcon fontSize='medium' />
+            <div>
+              <DeleteOutlineIcon fontSize='medium' />
+
+            </div>
+
           </Tooltip>
         </span>
       </div>

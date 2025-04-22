@@ -2,7 +2,7 @@ import React, { memo, useState } from 'react';
 import { TableCell, TableRow } from '@mui/material';
 import PayHistoryDetails from './PayHistoryDetails';
 
-const HistoryTableItem = ({price, days, cardName, cardPan, service, nextPaymentDate, t, index, date}) => {
+const HistoryTableItem = ({price, days, cardName, cardPan, service, nextPaymentDate, t, index, date,type}) => {
   const dateFormat = new Date(date);
   const nextDateFormat = new Date(nextPaymentDate);
   const [openHistoryDetails, setOpenHistoryDetails] = useState(false);
@@ -46,6 +46,7 @@ const HistoryTableItem = ({price, days, cardName, cardPan, service, nextPaymentD
        days={days}
        cardPan={cardPan}
        cardName={cardName}
+       type={type}
        />}
       </>
   )

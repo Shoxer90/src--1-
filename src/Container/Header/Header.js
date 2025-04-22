@@ -5,7 +5,7 @@ import Logo from "./Logo";
 import MenuBurger from "./MenuBurger";
 import {LimitContext} from "../../context/Context";
 
-import { Badge, Button } from "@mui/material";
+import { Badge, Button, IconButton, Tooltip } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import HistoryIcon from '@mui/icons-material/History';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -16,6 +16,7 @@ import styles from "./index.module.scss";
 import UserInfo from "./userAvatar/index"
 import { useTranslation } from "react-i18next";
 import NotificationBell from "../../notification/NotificationBell";
+// import NotificationBell from "../../notification/NotificationBell";
 // import NotificationFireBase from "../../firebase/notification/NotificationFireBase";
 
 const Header = ({
@@ -26,16 +27,20 @@ const Header = ({
   logo,
   activeBtn,
   setActiveBtn,
+  setNotifTrigger,
+  notifTrigger
 }) => {
   const {t} = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const [windWidth, setWidWidth] = useState(window.screen.availWidth)
   const {limitedUsing} = useContext(LimitContext);
 
   useEffect(() => {
     setActiveBtn(location.pathname)
   },[]);
 
+  window.addEventListener("resize", ()=>setWidWidth(window.screen.availWidth));
   return (
       <div className={styles.containerXX}> 
         <div 
@@ -112,26 +117,25 @@ const Header = ({
             >
               <ProductionQuantityLimitsIcon 
                 fontSize="large"  
-                
                 sx={{ color:(activeBtn === "/prepayment"? "#FFA500": "#3FB68A")}} 
               />
               <span className={styles.routeName}>{t("basket.useprepayment")}</span>
             </h6>
           </div>
         </div>
-{/* <NotificationFireBase /> */}
         <div className={styles.contentX}>
-
-          
-          <NotificationBell />
-
+          {/* <NotificationBell user={user} 
+            setNotifTrigger={setNotifTrigger}
+            notifTrigger={notifTrigger}
+          /> */}
           { user?.firstname === undefined ? "":  
             <UserInfo setActiveBtn={setActiveBtn} user={user?.firstname+ " " + user?.lastname} logo={logo} mode={user?.ehdmMode} t={t}  limitedUsing={limitedUsing}/>
           }
-          <Badge
+          {/* <Badge
             anchorOrigin={{
               vertical: 'top',
-              horizontal: 'left',
+              horizontal: 'right',
+              transform: 'translate(45px, -14px)'
             }}
             badgeContent={basketGoodsqty}
             color="warning"
@@ -151,7 +155,27 @@ const Header = ({
               <ShoppingCartIcon/>
               <span className={styles.routeName}>{t("menubar.basket")}</span> 
             </Button>
-          </Badge>
+          </Badge> */}
+
+        <Tooltip
+          onClick={()=>setOpenBasket(true)}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          >
+            <Badge 
+              badgeContent={basketGoodsqty}
+              color="warning" 
+              overlap="circular" 
+              style={{  transform:windWidth<785?'translate(65px, -14px)':'translate(105px, -14px)', zIndex:10,fontWeight:700}}
+            > </Badge>
+            <Button variant="contained" sx={{background:"#3FB68A",position:"relative"}}>
+              <ShoppingCartIcon/> 
+              <span className={styles.routeName}>{t("menubar.basket")}</span> 
+            </Button>
+        </Tooltip>
+
           <MenuBurger logout={logOutFunc} setActiveBtn={setActiveBtn} user={user}/>
         </div>
      </div>

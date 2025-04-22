@@ -1,8 +1,7 @@
 import React, { memo } from "react";
-import ServiceItemSecond from "./ServiceItemSecond";
+import ServiceItemV2 from "./ServiceItemV2";
 
 import styles from "./index.module.scss";
-import ServiceItemV2 from "./ServiceItemV2";
 
 const ServicesV2 = ({
   content,
@@ -13,8 +12,6 @@ const ServicesV2 = ({
   refresh, 
   setRefresh,
 }) => {
-  
-
 
   return(
     <div className={styles.allservices}>
@@ -31,19 +28,6 @@ const ServicesV2 = ({
           setRefresh={setRefresh}
         />
       ))}
-       {/* {content?.services && content?.services.map((service, index) => (
-        <ServiceItemSecond 
-          key={index}
-          service={service}
-          content={content}
-          isDelete={isDelete}
-          payData={payData}
-          setPayData={setPayData}
-          serviceType={serviceType}
-          refresh={refresh}
-          setRefresh={setRefresh}
-        />
-      ))} */}
     </div>
   )
 };

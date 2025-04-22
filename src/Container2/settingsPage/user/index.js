@@ -12,16 +12,16 @@ import Loader from "../../loading/Loader";
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import ModeIcon from '@mui/icons-material/Mode';
 
-import styles from "./index.module.scss";
-import { useNavigate, useNavigation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { setPayForEhdm } from "../../../store/storex/openPaySlice";
+
+import styles from "./index.module.scss";
 
 const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isOpenPayForEhdm = useSelector(state => state?.payForEhdm?.isOpen)
   const [confirmSwitch, setConfirmSwitch] = useState(false);
   const [openAddDialog, setOpenAddDialog] = useState(false)
   const [question, setQuestion] = useState("")
@@ -46,6 +46,7 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
     }
     setConfirmSwitch(true)
   }
+
   const switchToHDM = (num) => {
     setIsLoad(true)
     changeToPhysicalHDM(num).then((res) => {
@@ -69,16 +70,32 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
       changeEHDM(newStatus).then((res)=>{
         setIsLoad(false)
         whereIsMyUs()
-        setMessage({m: res?.data?.message, t:"success"})
+        // setMessage({m: res?.data?.message, t:"success"})
+        setConfirmSwitch(false)
       })
+
     }else {
-      setQuestion(t("authorize.ehdmConnect"))
-      setOperation({a:openEhdmActivation,b:true})
-      return setConfirmSwitch(true)
+      if(!user?.isRegisteredInEhdm && user?.activeServiceType === 3){
+        setQuestion(t("settings.clickEhdmAfterDone30000"))
+        setOperation({a:setConfirmSwitch,b:false})
+
+      }else{
+        setQuestion(t("authorize.ehdmConnect"))
+        setOperation({a:openEhdmActivation,b:true})
+        return setConfirmSwitch(true)
+      }
     }
     setIsLoad(false)
-    setConfirmSwitch(false)
   };
+
+  const closeSnackWithRefresh = () => {
+    setIsLoad(true)
+    setMessage({m:"", t:""})
+    setIsLoad(false)
+    setConfirmSwitch(false)
+
+
+  }
 
   useEffect(() => {
     whereIsMyUs()
@@ -101,7 +118,26 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
             type="radio"
             name="sale type"
             checked={user?.isEhdmStatus}
-            onClick={()=>questionForConfirmText(0)}
+            onClick={()=>{
+              if(user?.isEhdmStatus) {
+                console.log("at")
+              }else {
+                if(!user?.isRegisteredInEhdm){
+                  if(user?.activeServiceType === 3){
+                    setQuestion(t("settings.clickEhdmAfterDone30000"))
+                    setOperation({a:setConfirmSwitch,b:false})
+                    return setConfirmSwitch(true)
+  
+                  }else{
+                    setQuestion(t("authorize.ehdmConnect"))
+                    setOperation({a:openEhdmActivation,b:true})
+                    return setConfirmSwitch(true)
+                  }
+                }else{
+                  questionForConfirmText(0)
+                }
+              }
+            }}
             style={{cursor:"pointer"}}
           />
           <span style={{marginLeft:"10px"}}>{t("settings.ETRM")}</span>
@@ -111,7 +147,13 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
             type="radio"
             name="sale type"
             checked={!user?.isEhdmStatus}
-            onClick={()=>questionForConfirmText(1)}
+            onClick={()=>{
+              if(!user?.isEhdmStatus){
+                console.log("et")
+              }else{
+                questionForConfirmText(1)
+              }
+            }}
 
             style={{cursor:"pointer"}}
           />
@@ -139,14 +181,14 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
         variant="contained"
         startIcon={<ListAltIcon />}
         onClick={()=>window.location.href = user?.contractLink}
-        // onClick={()=>window.open(user?.contractLink, '_blank', 'noopener,noreferrer')}
-        
         style={{letterSpacing:"1px",background: "#fd7e14",textTransform: "capitalize", border:"orange"}} 
       >
         {t("updates.seeContract")}
       </Button>
     </div>
-    {user && <ClientInfo isLoad={isLoad} setIsLoad={setIsLoad} limitedUsing={limitedUsing} logOutFunc={logOutFunc} />}
+    {user && 
+      <ClientInfo 
+      isLoad={isLoad} setIsLoad={setIsLoad} limitedUsing={limitedUsing} logOutFunc={logOutFunc} switchStatus={switchStatus} />}
 
 
     <ConfirmDialog
@@ -165,7 +207,7 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
     
       {message?.m ?
         <Dialog open={message?.m}>
-          <SnackErr type={message?.t} message={message?.m} close={setMessage}/>
+          <SnackErr type={message?.t} message={message?.m} close={closeSnackWithRefresh}/>
         </Dialog> :""
       }
        {isLoad && <Dialog open={isLoad}> <Loader /> </Dialog>}

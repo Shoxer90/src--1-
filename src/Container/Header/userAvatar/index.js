@@ -72,7 +72,6 @@ const UserInfo = ({ user,logo,mode,setActiveBtn,limitedUsing}) => {
         </>
       }
     </div>
-   
   ) 
 };
 
