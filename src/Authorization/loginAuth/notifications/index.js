@@ -15,13 +15,9 @@ const NotificationComponent = () => {
       localStorage.getItem("lang")=== "eng" 
     ){
       getNews(localStorage.getItem("lang")).then((res) => {
-        console.log(res,"res")
-      // setNotification(res?.news)
       setNotification(res)
     })}else{
       getNews().then((res) => {
-        console.log(res,"res")
-      // setNotification(res?.news)
       setNotification(res)
     })}
   }, [localStorage.getItem("lang")]);

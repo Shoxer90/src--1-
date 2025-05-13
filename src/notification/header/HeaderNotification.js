@@ -13,7 +13,7 @@ import RangeDatePicker from "../../modules/RangeDatePicker";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmDialog from "../../Container2/dialogs/ConfirmDialog";
 import { setReserveIds } from "../../store/notification/notificationSlice";
-import { useReadNotificationMutation } from "../../store/notification/notificationApi";
+import { useReadNotificationMutation, useRemoveNotificationListMutation } from "../../store/notification/notificationApi";
 import Loader from "../../Container2/loading/Loader";
 
 const HeaderNotification = ({
@@ -24,8 +24,6 @@ const HeaderNotification = ({
   choose,
   notifIdArr, 
   setNotifIdArr,
-  removeNotifications,
-  // readNotifications,
   setNotifTrigger,
   notifTrigger,
 
@@ -36,7 +34,8 @@ const HeaderNotification = ({
   const reserve = useSelector(state=> state?.notification?.idReserve);
   const dispatch = useDispatch();
   const [createReaded, readed] = useReadNotificationMutation();
-  
+  const [deleteNots, deleted] = useRemoveNotificationListMutation();
+  console.log(reserve, "Reserve")
   
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [filterUnRead, setFilterUnRead] = useState(false);
@@ -62,6 +61,7 @@ const HeaderNotification = ({
         createReaded(notifIdArr).then((res) => {
           if(res) {
             setChoose(false)
+            setNotifTrigger(!notifTrigger)
             setNotifIdArr([])
           }
         })
@@ -109,16 +109,18 @@ const HeaderNotification = ({
     setFilterUnRead(bool)
   }
 
-  const removeNotificationsList = () => {
-    removeNotifications(notifIdArr)
-    setNotifIdArr([])
-    setNotifTrigger(!notifTrigger)
-    setChoose(false)
-    setOpenConfirm(false)
+  const removeNots = async() => {
+   deleteNots(notifIdArr).then((res) => {
+     setNotifTrigger(!notifTrigger)
+     setChoose(false)
+     setOpenConfirm(false)
+    })
+    // setNotifIdArr([])
   };
    
   useEffect(() => {
     handleRangeUnread(false)
+
   }, [])
 
 
@@ -163,6 +165,7 @@ const HeaderNotification = ({
           style={{
             margin:"10px 0px",
             fontSize:"70%",
+
             fontWeight:600, 
             alignContent:"center"
             }}
@@ -187,7 +190,7 @@ const HeaderNotification = ({
       />  
        <ConfirmDialog 
         title={""}
-        func={removeNotificationsList}
+        func={removeNots}
         question={t("menubar.removeAll")}
         open={openConfirm}
         close={setOpenConfirm}

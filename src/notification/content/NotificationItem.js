@@ -22,7 +22,7 @@ const notifCardStyle = {
   justifyContent:"space-between",
   padding:"1px 8px",
   cursor:"pointer",
-  alignItems:"center"
+  alignItems:"center",
 };
 
 const notifIcon = {
@@ -161,13 +161,15 @@ const NotificationItem = ({
         <div style={notifText} onClick={handleClick}>
 
           <div style={{display:"flex",flexFlow:"row nowrap", justifyContent:"space-between",textAlign:"start"}}>
-            <div style={{fontSize:"80%",fontWeight:800}}>{title}</div>
+            <div style={{fontSize:"80%",fontWeight:800, color:status? "grey":"black"}}>{title}</div>
             <div className={styles.notifications_mainDate}>{createDateFormat(createdAt,1,0)}</div>
           </div>
 
           <span style={{fontSize:"70%", fontWeight:status ? 400 : 800}}>
             {message.length < 70 ? message:` ${message.slice(0,65)}.. (more)`}
           </span>
+            <div style={{textAlign:"right", fontSize:"70%", padding:"0px"}}>{createDateFormat(createdAt,0,1)}</div>
+
         </div>
 
       </div>

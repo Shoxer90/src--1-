@@ -1,6 +1,6 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "../../services/baseUrl";
-import { setNotifications } from "./notificationSlice";
+import { setNotifications, setReserveIds } from "./notificationSlice";
 
  export const notificationApi = createApi({
   reducerPath:"notificationApi",
@@ -11,6 +11,7 @@ import { setNotifications } from "./notificationSlice";
       const token = localStorage.getItem("token"); 
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
+        headers.set( "accept_language", localStorage.getItem("i18nextLng") ||localStorage.getItem("lang") );
       }
       return headers;
     },
@@ -26,10 +27,17 @@ import { setNotifications } from "./notificationSlice";
       onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
         try {
           const { data, meta } = await queryFulfilled;
-          const count = meta.response.headers.get("count")
+          const count = meta.response.headers.get("count");
+          const ids = []
+          data.map((item) => {
+            item?.list.map((item) => {
+              ids.push(item?.id)
+            console.log(item, "item not")
 
-          console.log(data,"DATATATATATA")
-          
+            })
+          })
+          dispatch(setReserveIds(ids))
+
           dispatch(setNotifications({list:data, count:count}))
         } catch(error) {
         }

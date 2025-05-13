@@ -103,10 +103,6 @@ const NotificationBell = ({
   //   });
   // };
 
-  const removeNotifications = (list) => {
-    removeNotifList(list).then((res) => {
-    })
-  };
 
   const playSound = () => {
     new Audio(sound)?.play()
@@ -117,10 +113,6 @@ const NotificationBell = ({
     setAnchorEl(e?.currentTarget);
   };
 
-  const changePage = (event, value) => {
-    setPage(value)
-  };
-  
   const getDeviceTokenForNotifs = async() => {
     const appToken = await generateToken();
     sendDeviceToken(appToken)
@@ -129,6 +121,7 @@ const NotificationBell = ({
   onMessage(messaging, (payload) => {
     console.log(payload,"payload in bell")
     audioRef.current.click()
+    setNotifTrigger(!notifTrigger)
     setAnchorEl(buttonRef.current)
   });
 
@@ -147,17 +140,12 @@ const NotificationBell = ({
   }, [user,notif, notifTrigger]);
 
   useEffect(() => {
-    
     getDeviceTokenForNotifs()
   }, []); 
   
 
   return (
     <div>
-       
-
-
-
       <button onClick={generateToken} style={{display:"none"}}></button>
       <OpenBtn clickFunc={(handleClick)} notificationCount={notificationCount} buttonRef={buttonRef} open={anchorEl} />        
       <StyledMenu
@@ -177,7 +165,6 @@ const NotificationBell = ({
             setNotifIdArr={setNotifIdArr}
             setUnreadIds={setUnreadIds}
             unreadIds={unreadIds}
-            removeNotifications={removeNotifications}
             setNotifTrigger={setNotifTrigger}
             notifTrigger={notifTrigger}
             notifications={notifications}

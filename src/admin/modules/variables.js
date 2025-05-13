@@ -263,18 +263,18 @@ export const createRowModel = (...props) =>{
  
 };
 
-export const createDateFormat = (dateItem) => {
+export const createDateFormat = (dateItem,d, t) => {
   const  date = new Date(dateItem)
   return <div>
-    <div>
+    {d ? <div>
       {date?.getUTCDate()>9 ? date?.getUTCDate() : `0${ date?.getUTCDate()}`}/
       {date.getMonth()>8 ? date.getMonth()+1: `0${date.getMonth()+1}`}/
       {date.getFullYear()} {" "}
-    </div>
-    <div> 
+    </div>: ""}
+    {t ? <div> 
       {date.getHours()>9? date.getHours(): `0${date.getHours()}`}:
       {date.getMinutes()>9? date.getMinutes(): `0${date.getMinutes()}`}:
       {date?.getSeconds()>9? date?.getSeconds(): `0${date?.getSeconds()}`}  
-    </div>
+    </div>: ""}
   </div>
 }

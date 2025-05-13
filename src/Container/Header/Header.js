@@ -121,22 +121,19 @@ const Header = ({
               />
               <span className={styles.routeName}>{t("basket.useprepayment")}</span>
             </h6>
-             {/* <NotificationBell user={user} 
-            setNotifTrigger={setNotifTrigger}
-            notifTrigger={notifTrigger}
-          /> */}
+             <NotificationBell user={user} 
+                setNotifTrigger={setNotifTrigger}
+                notifTrigger={notifTrigger}
+              />
           </div>
         </div>
 
         <div className={styles.contentX}>
-          {/* <NotificationBell user={user} 
-            setNotifTrigger={setNotifTrigger}
-            notifTrigger={notifTrigger}
-          /> */}
+        
           { user?.firstname === undefined ? "":  
             <UserInfo setActiveBtn={setActiveBtn} user={user?.firstname+ " " + user?.lastname} logo={logo} mode={user?.ehdmMode} t={t}  limitedUsing={limitedUsing}/>
           }
-          {/* <Badge
+          <Badge
             anchorOrigin={{
               vertical: 'top',
               horizontal: 'right',
@@ -160,9 +157,9 @@ const Header = ({
               <ShoppingCartIcon/>
               <span className={styles.routeName}>{t("menubar.basket")}</span> 
             </Button>
-          </Badge> */}
+          </Badge>
 
-        <Tooltip
+        {/* <Tooltip
           onClick={()=>setOpenBasket(true)}
           anchorOrigin={{
             vertical: 'top',
@@ -179,7 +176,7 @@ const Header = ({
               <ShoppingCartIcon/> 
               <span className={styles.routeName}>{t("menubar.basket")}</span> 
             </Button>
-        </Tooltip>
+        </Tooltip> */}
 
           <MenuBurger logout={logOutFunc} setActiveBtn={setActiveBtn} user={user}/>
         </div>

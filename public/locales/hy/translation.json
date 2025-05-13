@@ -231,7 +231,9 @@
     "basket": "Զամբյուղ",
     "unReaded": "Չընթերցված" ,
     "notificationsTitle":"Ծանուցումներ",
-    "markRead": "Նշել որպես կարդացված"
+    "markRead": "Նշել որպես կարդացված",
+    "removeAll": "Հեռացնել"
+
   },
   "mainnavigation": {
     "available": "Առկա ",
