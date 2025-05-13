@@ -68,6 +68,7 @@ const CardForPrepayment = ({
       })
     }
   };
+
   const removeAllReciept = async() => {
     let prodArr = []
     await item?.products.forEach((prod, index) => {

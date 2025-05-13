@@ -121,8 +121,13 @@ const Header = ({
               />
               <span className={styles.routeName}>{t("basket.useprepayment")}</span>
             </h6>
+             {/* <NotificationBell user={user} 
+            setNotifTrigger={setNotifTrigger}
+            notifTrigger={notifTrigger}
+          /> */}
           </div>
         </div>
+
         <div className={styles.contentX}>
           {/* <NotificationBell user={user} 
             setNotifTrigger={setNotifTrigger}

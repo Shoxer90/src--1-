@@ -80,28 +80,6 @@ const Bascket = ({
   const [seeBtn,setSeeBtn] = useState();
   const [freezeCount, setFreezeCount] = useState([]);
 
-  // #editprepayment
-  const saveChanges = async() => {
-    const changedData = JSON.parse(localStorage.getItem("isEditPrepayment"))
-    if(changedData?.sales.length) {
-      setLoader(true)
-      await SavePrePaymentBasket(changedData).then((res) => {
-        setLoader(false)
-        if(res?.status === 200) {
-          setMesFromHead({message: t("dialogs.done"), type:"success"})
-          setOpenBasket(false)
-          setFlag(flag => flag+=1)
-          deleteBasketGoods()
-        } else {
-          setMesFromHead({message: res?.data?.message, type:"error"})
-        }
-      })
-    }else{
-      setMesFromHead({message:t("dialogs.noChanges"), type:"info"})
-    }
-  };
-  // 
-
   const closePhoneDialog = () => {
     setOpenPhonePay(false)
     setOpenBasket(false)
@@ -501,16 +479,8 @@ const Bascket = ({
                 setMessage={setMessage}
                 setType={setType}
              />}
-          {/* #editprepayment */}
-            {localStorage.getItem("isEditPrepayment") ?
-              <Button
-                onClick={saveChanges}
-                variant="contained"
-                style={{width:"60%", alignSelf:"center", margin:"2px"}}
-              >
-                Save
-              </Button>
-            : basketContent?.length ? 
+        
+            { basketContent?.length ? 
               <div className={styles.bask_container_body_footer}>
               <Divider flexItem  sx={{bgcolor:"black"}} />
                 <PayButtons

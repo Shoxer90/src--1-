@@ -1,0 +1,16 @@
+.payItem{
+  height: 60px;
+  width: 80px;
+  border: solid lightgrey 2px;
+  border-radius: 12px;
+  cursor: pointer;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+ 
+   &:hover{
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+   }
+
+}

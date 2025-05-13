@@ -109,9 +109,9 @@ const BasketContentItem = ({
           return createMessage("error", t("basket.price_change"))
         }
         else{
-          if(localStorage.getItem("isEditPrepayment")) {
-            editPrepaymentCounts(el?.productId || el?.id, val)
-          }
+          // if(localStorage.getItem("isEditPrepayment")) {
+          //   editPrepaymentCounts(el?.productId || el?.id, val)
+          // }
           changeCountOfBasketItem( el?.id, val)
         }
       })

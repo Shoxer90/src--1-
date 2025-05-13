@@ -225,7 +225,10 @@
     "home": "Главная",
     "history": "История",  
     "product": "Детали",
-    "basket": "Корзина"
+    "basket": "Корзина",
+    "unReaded": "Непрочитанные" ,
+    "notificationsTitle": "Уведомления",
+    "markRead": "Отметить как прочитанное"
   },
   "mainnavigation": {
     "available": "Доступные ",

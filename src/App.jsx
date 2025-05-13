@@ -132,14 +132,14 @@ const App = () => {
     partialAmount: 0,
     partnerTin: "",
     sales: [],
-    prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id,
+    prePaymentSaleDetailId: JSON.parse(localStorage.getItem("endPrePayment"))?.id,
     isPrepayment: openWindow?.prepayment,
     customer_Name: "",
     customer_Phone: ""
   });
 
   const whereIsMyUs = async() => {
-    console.log("22.04.2025 update")
+    console.log("13.05.2025 update")
     // setNotifTrigger(!notifTrigger)
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
@@ -285,6 +285,7 @@ const App = () => {
         localStorage.setItem("freezeBasketCounts", JSON.stringify(freeze))
       }
 // 
+console.log(handleArr,"handleArr")
     if(!handleArr?.length) {
       localStorage.removeItem("endPrePayment")
       localStorage.removeItem("isEditPrepayment")
@@ -305,7 +306,6 @@ const App = () => {
     localStorage.removeItem("endPrePayment")
     localStorage.removeItem("isEditPrepayment")
     localStorage.removeItem("freezeBasketCounts")
-    localStorage.removeItem("isEditPrepayment")
     setPaymentInfo({
       discountType: 0,
       cashAmount: 0,
@@ -527,13 +527,13 @@ const App = () => {
           <Route path="/basket/*" element={<BasketList t={t} />} />
           <Route path="/kuku" element={<IframeReader />} />
 {/* ADMIN PAGE */}
-          <Route path="/admin/*" element={<AdminPage />} />
+          {/* <Route path="/admin/*" element={<AdminPage />} />
           <Route path="/admin/info/customer" element={<AdminPanel children={<CustomerInfo />} />} />
           <Route path="/admin/stores" element={<AdminPanel children={<UsersContainer />} />} />
           <Route path="/admin/transactions/customer" element={<AdminPanel children={<CustomerPage children={<CustomerSaleHistory />} />} />} />
           <Route path="/admin/invoices/customer" element={<AdminPanel children={<CustomerPage children={<AdminInvoices />} />} />} />
           <Route path="/admin/payments/customer" element={<AdminPanel children={<CustomerPage children={<CustomerPayments />} />} />} />
-          <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} />
+          <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} /> */}
         </Routes> :
         <>
           <Header
