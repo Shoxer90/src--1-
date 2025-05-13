@@ -1,0 +1,51 @@
+.hovertext {
+    position: relative;
+    cursor:pointer;
+
+  }
+  
+  .hovertext:before {
+    content: attr(data-hover);
+    visibility: hidden;
+    min-width: 100px;
+    background-color: #eeeeee;
+    text-align: center;
+    transition: opacity .5s ease-in-out;
+    position: absolute;
+    z-index: 1;
+    top: 110%;
+    left: -40%;
+    transform: translateX(-60%);
+    padding: 4px;
+    font-size: 12px;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+    cursor: pointer;
+  }
+  
+  .hovertext:hover:before {
+    opacity: 1;
+    visibility: visible;
+  };
+
+
+  .header{
+      width: 320px;
+      display: flex;
+      flex-flow: column;
+      padding: 5px 10px;
+    &_firstRow{
+      display: flex;
+      flex-flow:"row nowrap";
+      justify-content: space-between;
+      align-content: center;
+      align-items: center;
+      & h6{
+        margin: 0px;
+      }
+
+    }
+  }

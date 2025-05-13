@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   notifications: [],
-  count: 0
+  count: 0,
+  idReserve: []
 };
 
 const notificationSlice = createSlice({
@@ -27,10 +28,13 @@ const notificationSlice = createSlice({
           }
         }
       })
+    },
+    setReserveIds:(state, action) => {
+      state.idReserve = action.payload
     }
   },
 });
 
-export const { setNotifications, addNotification,setChangeNotification } = notificationSlice.actions;
+export const { setNotifications, addNotification,setChangeNotification , setReserveIds} = notificationSlice.actions;
 
 export default notificationSlice.reducer;

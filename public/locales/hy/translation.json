@@ -228,7 +228,10 @@
     "home": "Գլխավոր",
     "history": "Պատմություն",
     "product": "Մանրամասն",
-    "basket": "Զամբյուղ"
+    "basket": "Զամբյուղ",
+    "unReaded": "Չընթերցված" ,
+    "notificationsTitle":"Ծանուցումներ",
+    "markRead": "Նշել որպես կարդացված"
   },
   "mainnavigation": {
     "available": "Առկա ",

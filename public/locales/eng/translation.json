@@ -226,7 +226,11 @@
     "home": "Home",
     "history": "History",
     "product": "Product",
-    "basket": "Basket"
+    "basket": "Basket",
+    "unReaded": "Unreaded" ,
+    "notificationsTitle": "Notifications",
+    "markRead": "Mark as Read"
+
   },
   "mainnavigation": {
     "available": "Available ",

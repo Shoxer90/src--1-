@@ -30,12 +30,42 @@ import { setNotifications } from "./notificationSlice";
 
           console.log(data,"DATATATATATA")
           
-          dispatch(setNotifications({list:data[0]?.list, count:count}))
+          dispatch(setNotifications({list:data, count:count}))
         } catch(error) {
         }
       },
     }),
+    removeNotificationList: builder.mutation({
+      query: (credentials) => ({
+        url:"/User/DeleteNotifications",
+        method: "DELETE",
+        body: credentials,
+      }),
+      onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
+        try {
+          const { data, meta } = await queryFulfilled;
+          // dispatch(setNotifications({list:data[0]?.list, count:count}))
+        } catch(error) {
+        }
+      },
+    }),
+  // }),
+
+  readNotification: builder.mutation({
+      query: (credentials) => ({
+        url:"/User/ReadNotifications",
+        method: "POST",
+        body: credentials,
+      }),
+      onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
+        try {
+          const { data, meta } = await queryFulfilled;
+          console.log(data,"DATATATATATA")
+        } catch(error) {
+        }
+      },
+    })
   })
 });
 
-export const { useLazyGetNotificationHistoryQuery} = notificationApi
+export const { useLazyGetNotificationHistoryQuery, useRemoveNotificationListMutation, useReadNotificationMutation} = notificationApi

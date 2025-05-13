@@ -2,6 +2,7 @@ import { memo, useEffect, useState } from "react";
 import { getNews } from "../../../services/auth/auth";
 import styles from "../index.module.scss";
 import { useTranslation } from "react-i18next";
+import NotificationItemLOginPage from "./NotificationItemLOginPage";
 
 const NotificationComponent = () => {
   const {t} = useTranslation();
@@ -12,11 +13,16 @@ const NotificationComponent = () => {
     if(localStorage.getItem("lang")=== "hy" ||
       localStorage.getItem("lang")=== "ru" ||
       localStorage.getItem("lang")=== "eng" 
-    ){getNews(localStorage.getItem("lang")).then((res) => {
-      setNotification(res?.news)
+    ){
+      getNews(localStorage.getItem("lang")).then((res) => {
+        console.log(res,"res")
+      // setNotification(res?.news)
+      setNotification(res)
     })}else{
       getNews().then((res) => {
-      setNotification(res?.news)
+        console.log(res,"res")
+      // setNotification(res?.news)
+      setNotification(res)
     })}
   }, [localStorage.getItem("lang")]);
   
@@ -27,9 +33,10 @@ const NotificationComponent = () => {
         {t("updates.changes")}
       </div>
       { notification && notification.map((item, index) => 
-        <div key={index} style={{padding:"10px 0px"}}>
-          {item}
-        </div>
+        <NotificationItemLOginPage
+          key={index}
+          {...item}
+        />
       )}
     </div> 
   )
