@@ -230,7 +230,9 @@
     "unReaded": "Unreaded" ,
     "notificationsTitle": "Notifications",
     "markRead": "Mark as Read",
-    "removeAll": "Remove"
+    "removeAll": "Remove",
+    "more": "more"
+
 
   },
   "mainnavigation": {

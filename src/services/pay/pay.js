@@ -100,6 +100,15 @@ export const basketListUrl = async(body) => {
   }catch(err){
     return err?.response?.status
   }
+};
+
+export const completePaymentForOrder = async(saleId, paymentType) => {
+  try {
+    const data = await axios.post(baseUrl + `Sale/CompletePaymentByType?SaleId=${saleId}&paymentType=${paymentType}`, {}, option())
+    return data?.data
+  }catch(err){
+    return err?.response?.status
+  }
 }
 
 

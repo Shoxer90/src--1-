@@ -13,6 +13,7 @@ import styles from "./index.module.scss";
 
 const BasketList = ({t}) => {
   const search = useLocation().search;
+  const saleId = new URLSearchParams(search).get('saleId')
   const [basketContent, setBasketContent] = useState([]);
   const [load,setLoad] = useState(false);
 
@@ -34,7 +35,7 @@ const BasketList = ({t}) => {
 
   return(
     !load ? <Loader /> :
-    basketContent?.payXPaymentLink ? <div className={styles.orderContainer} > 
+    basketContent?.mainVpos ? <div className={styles.orderContainer} > 
       <span style={{display:"flex", justifyContent:"flex-end"}}>
         <LangSelect size={"22px"} />
       </span>
@@ -52,7 +53,7 @@ const BasketList = ({t}) => {
       </div>
       <DenseTable basketContent={basketContent} />
       <Divider sx={{bcolor:"black"}} />
-      <OrderListPayInfo  t={t} basketContent={basketContent}/>
+      <OrderListPayInfo  t={t} basketContent={basketContent} saleId={saleId}/>
     </div>:<h5 style={{textAlign:"center",margin:"150px"}}> Էջը հասանելի չէ </h5>
   )
 };

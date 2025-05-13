@@ -31,9 +31,7 @@ import { setNotifications, setReserveIds } from "./notificationSlice";
           const ids = []
           data.map((item) => {
             item?.list.map((item) => {
-              ids.push(item?.id)
-            console.log(item, "item not")
-
+              return ids.push(item?.id)
             })
           })
           dispatch(setReserveIds(ids))

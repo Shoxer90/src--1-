@@ -229,7 +229,8 @@
     "unReaded": "Непрочитанные" ,
     "notificationsTitle": "Уведомления",
     "markRead": "Отметить как прочитанное",
-    "removeAll": "Удалить"
+    "removeAll": "Удалить",
+    "more": "ещё"
   },
   "mainnavigation": {
     "available": "Доступные ",

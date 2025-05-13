@@ -59,7 +59,7 @@ const Reciept = ({
         prod: []
       },
     }
-    saleData?.res?.printResponseInfo?.items.forEach((item) => {
+    saleData?.res?.printResponseInfo?.items?.forEach((item) => {
       if(item?.dep === 1 || item?.dep === 0) {
         synthData = {
           ...synthData,

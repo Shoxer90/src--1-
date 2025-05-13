@@ -1,10 +1,46 @@
-import React, { memo } from 'react';
-import { Button, Divider } from '@mui/material';
+import { memo, useEffect, useRef, useState } from 'react';
+import { Button, Dialog, Divider } from '@mui/material';
 import PaymentIcon from '@mui/icons-material/Payment';
 
 import styles from "./index.module.scss";
+import BankButton from './button/BankButton';
+import { completePaymentForOrder } from '../../services/pay/pay';
+import Loader from '../loading/Loader';
 
-const OrderListPayInfo = ({basketContent,t}) => {
+const OrderListPayInfo = ({basketContent,t, saleId}) => {
+  const payLinkRef = useRef()
+  const [activeBtn, setActiveBtn] = useState();
+  const [paymentUrl, setPaymentUrl] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const createActiveBtn = (id, url) => {
+     setPaymentUrl()
+    setActiveBtn(id)
+  };
+
+  const payForOrder = () => {
+    setIsLoading(true)
+    completePaymentForOrder(saleId, activeBtn ).then((res) => {
+      setIsLoading(false)
+      if(res?.formUrl) {
+        setPaymentUrl(res?.formUrl)
+      }else{
+        alert("something went wrong. Try later")
+      }
+      console.log(res,"rewsss")
+    })
+  }
+
+  useEffect(()=> {
+    paymentUrl && payLinkRef.current.click()
+  }, [paymentUrl]);
+
+    useEffect(()=> {
+    if(!basketContent?.paymentTypes.length) {
+      setActiveBtn(basketContent?.mainVpos?.paymentType)
+    }
+  }, []);
+
   return (
     <div className={styles.orderContainer_payContainer}>
         { basketContent?.partnerTin  && 
@@ -55,23 +91,52 @@ const OrderListPayInfo = ({basketContent,t}) => {
           </span> 
         </strong>
       </div>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <h1>
-        <PaymentIcon
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center", gap:"10px",margin:"20px"}}>
+        {basketContent?.mainVpos && 
+          <BankButton
+            {...basketContent?.mainVpos}
+            createActiveBtn={createActiveBtn} 
+            activeBtn={activeBtn}
+
+          />
+        }
+        {basketContent?.paymentTypes &&
+          basketContent?.paymentTypes?.map((item) => {
+            return <BankButton
+              createActiveBtn={createActiveBtn} 
+              activeBtn={activeBtn}
+              {...item}
+            />
+          })
+        }
+
+
+        <a 
+          ref={payLinkRef}
+          href={paymentUrl} 
+          style={{margin:"20px 0px",textDecoration:"none", color:"white", }}
+          rel="noreferrer"
+          target='_blank' 
+        />
+
+      </div>
+        {activeBtn ?
+        <div onClick={payForOrder}>
+        {/* <PaymentIcon
           sx={{
             color:"#63B48D",
             fontSize:"2.2rem",
             marginTop:"5px"
           }} 
-        />
-
-        </h1>
-        <a href={basketContent?.payXPaymentLink} style={{margin:"20px 0px",textDecoration:"none", color:"white", }} rel="noreferrer" >
+        /> */}
           <Button variant="contained" style={{color:"white",letterSpacing:"5px", background:"#63B48D",width:"200px",textTransform: "capitalize"}}>
             {basketContent?.isPrepayment ? t("basket.useprepayment") :t("basket.linkPayment")} 
-          </Button> 
-        </a>
-      </div>
+          </Button>
+        </div> :""}
+
+         <Dialog open={isLoading}>
+            <Loader />
+          </Dialog>
     </div>
   )
 }

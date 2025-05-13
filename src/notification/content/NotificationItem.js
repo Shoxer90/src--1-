@@ -63,6 +63,9 @@ const NotificationItem = ({
   };
   
   const handleClick = () => {
+    if(notificationType === 0) {
+      return openCloseHDM()
+    }
     if(!status) {
       readNotificationsPush(id)
       setNotifTrigger(!notifTrigger)
@@ -160,32 +163,26 @@ const NotificationItem = ({
 
         <div style={notifText} onClick={handleClick}>
 
-          <div style={{display:"flex",flexFlow:"row nowrap", justifyContent:"space-between",textAlign:"start"}}>
-            <div style={{fontSize:"80%",fontWeight:800, color:status? "grey":"black"}}>{title}</div>
-            <div className={styles.notifications_mainDate}>{createDateFormat(createdAt,1,0)}</div>
+          <div style={{display:"flex",flexFlow:"row nowrap", justifyContent:"space-between",textAlign:"start", alignContent:"center"}}>
+            <div style={{fontSize:"75%",fontWeight:800, color:status? "grey":"black"}}>{title}</div>
+            <div style={{textAlign:"right", fontSize:"60%", padding:"0px"}}>{createDateFormat(createdAt,0,1)}</div>
           </div>
 
           <span style={{fontSize:"70%", fontWeight:status ? 400 : 800}}>
-            {message.length < 70 ? message:` ${message.slice(0,65)}.. (more)`}
+            {message.length < 70 ? message:` ${message.slice(0,65)}..(${t("menubar.more")})`}
           </span>
-            <div style={{textAlign:"right", fontSize:"70%", padding:"0px"}}>{createDateFormat(createdAt,0,1)}</div>
-
+            <div style={{display:"flex", justifyContent:"right", margin:"5px 10px", fontSize:"60%"}}>
+              { notificationType === 0  ? 
+                <Button 
+                  onClick={openCloseHDM}
+                  variant="contained" 
+                  style={{background:"#F69221", height:"20px",textTransform: "capitalize"}}
+                >   
+                  {t("basket.seeReciept") }
+                </Button> :""
+              }
+            </div>
         </div>
-
-      </div>
-
-
-      <div style={{display:"flex", justifyContent:"right", margin:"5px 10px", fontSize:"60%"}}>
-        { notificationType === 0  ? 
-          <Button 
-            onClick={openCloseHDM}
-            // onClick={()=> window.open( item?.link, '_blank', 'noopener,noreferrer')}
-            variant="contained" 
-            style={{background:"#F69221", height:"20px",textTransform: "capitalize"}}
-          >   
-            {t("basket.seeReciept") }
-          </Button> :""
-        }
 
       </div>
       <Divider color="black" sx={{mt:0.5}} />
