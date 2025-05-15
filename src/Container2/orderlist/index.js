@@ -4,12 +4,14 @@ import { useLocation } from "react-router-dom";
 import { basketListCreator } from "../../services/pay/pay";
 import DenseTable from "./table";
 import OrderListPayInfo from "./payInfo";
+import OrderListPayInfo2 from "./pay/payInfo2";
 import LangSelect from "../langSelect";
 import Loader from "../loading/Loader";
 
 import {Divider} from "@mui/material";
 
 import styles from "./index.module.scss";
+import PaymentRedirector from "./appJS";
 
 const BasketList = ({t}) => {
   const search = useLocation().search;
@@ -28,6 +30,21 @@ const BasketList = ({t}) => {
       }
    })
   };
+  //
+
+  window.onerror = function (message, source, lineno, colno, error) {
+  console.error("Global error caught:", {
+    message,
+    source,
+    lineno,
+    colno,
+    error,
+  });
+  
+
+  // You can send this to your logging service
+};
+  //
 
   useEffect(() => {
     getBasketList() 
@@ -53,10 +70,11 @@ const BasketList = ({t}) => {
       </div>
       <DenseTable basketContent={basketContent} />
       <Divider sx={{bcolor:"black"}} />
-      <OrderListPayInfo  t={t} basketContent={basketContent} saleId={saleId}/>
+      <OrderListPayInfo t={t} basketContent={basketContent} saleId={saleId}/>
+
+      {/* <PaymentRedirector /> */}
     </div>:<h5 style={{textAlign:"center",margin:"150px"}}> Էջը հասանելի չէ </h5>
   )
 };
 
 export default memo(BasketList);
-// 128

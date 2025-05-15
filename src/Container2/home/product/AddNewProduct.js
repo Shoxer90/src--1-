@@ -381,7 +381,7 @@ const AddNewProduct = ({
 
           </Box>
           {/* emark popup */}
-            {/* <PopUpButton /> */}
+            <PopUpButton />
           {(regime !== "3" || regime !== "7")  &&
             <div className={styles.duoInput}>
               <FormControlLabel 

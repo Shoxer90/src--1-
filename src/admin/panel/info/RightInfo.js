@@ -91,7 +91,7 @@ const RightInfo = ({customerInfo}) => {
 
         <div style={{display:'flex', flexFlow:"column"}}>
          <div> cashiers max count {customerInfo?.director?.cashiersMaxCount}</div> 
-         <div> registrated at {createDateFormat(customerInfo?.director?.regDate)}</div> 
+         <div> registrated at {createDateFormat(customerInfo?.director?.regDate,1,0)}</div> 
          {customerInfo?.director?.contractLink && <a href={customerInfo?.director?.contractLink} target="_blank"> contractLink </a> }
          <h5>Bank</h5>
          <div> externalPaymentType {customerInfo?.store?.bankInformation?.externalPaymentType}</div> 

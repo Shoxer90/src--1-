@@ -34,7 +34,7 @@ const AdminInvoices = () => {
       collSlice?.collTitle.includes("id") && item?.id, 
       collSlice?.collTitle.includes("isFromFile") && `${item?.isFromFile}`, 
       collSlice?.collTitle.includes("paymentId") && item?.paymentId, 
-      collSlice?.collTitle.includes("sendingDay") && createDateFormat(item?.sendingDay), 
+      collSlice?.collTitle.includes("sendingDay") && createDateFormat(item?.sendingDay,1,0), 
       collSlice?.collTitle.includes("sendingStatus") && `${item?.sendingStatus}`, 
       collSlice?.collTitle.includes("store") && `${item?.store}`, 
     )

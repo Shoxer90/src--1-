@@ -47,7 +47,7 @@ const CustomerSaleHistory = () => {
         {item?.id}
         <HdmStatus status={Boolean(item?.ehdmStatus)} mode={item?.hdmMode} />
       </strong>: null,
-      collSlice?.collTitle.includes("date") ? createDateFormat(item?.date): null,
+      collSlice?.collTitle.includes("date") ? createDateFormat(item?.date ,1,0): null,
       collSlice?.collTitle.includes("operation") ?
        <ButtonGroup>
         <Button 

@@ -28,7 +28,7 @@ const NotificationComponent = () => {
       <div style={{color:"#3FB68A",fontSize:"110%", width:"fit-content", padding:"10px 0px"}}>
         {t("updates.changes")}
       </div>
-      { notification && notification.map((item, index) => 
+      { notification && notification?.map((item, index) => 
         <NotificationItemLOginPage
           key={index}
           {...item}

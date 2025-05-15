@@ -56,8 +56,8 @@ import AdminInvoices from "./admin/panel/invoices";
 import AddNewClientInfo from "./Container2/dialogs/AddNewClientInfo";
 import IframeReader from "./Container/iframe/iframeReader"; 
 import { addNotification } from "./store/notification/notificationSlice";
-import { removeDeviceToken, sendDeviceToken } from "./services/notifications/notificatonRequests";
-import { generateToken, messaging } from "./firebase/firebase-config";
+import { removeDeviceToken } from "./services/notifications/notificatonRequests";
+import { messaging } from "./firebase/firebase-config";
 import { onMessage } from "firebase/messaging";
 
 const checkForUpdates = async () => {
@@ -139,7 +139,7 @@ const App = () => {
   });
 
   const whereIsMyUs = async() => {
-    console.log("13.05.2025 update")
+    console.log("15.05.2025 update")
     // setNotifTrigger(!notifTrigger)
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
@@ -197,7 +197,8 @@ const App = () => {
         if(from === "basket"){
           if(res?.length) {
             res.forEach((item) =>{
-              if(item?.barCode === barcode || item?.emark === barcode){
+              if(item?.barCode === barcode){
+              // if(item?.barCode === barcode || item?.emark === barcode){
                 if(item?.remainder){
                   setSearchValue("")
                   setToBasketFromSearchInput(item, 1)
@@ -382,33 +383,31 @@ console.log(handleArr,"handleArr")
     return loadBasket()
   };
 
-
-  // const getDeviceTokenForNotifs = async() => {
-  //   const appToken = await generateToken();
-  //   sendDeviceToken(appToken)
-  // }
-
-  // useEffect(() => {
-  //   getDeviceTokenForNotifs()
-  //   onMessage(messaging, (payload) => {
-  //   })
-  // }, []); 
-
   onMessage(messaging, (payload) => {
     console.log(payload,"in appjs")
     setNotifTrigger(notifTrigger)
   })
 
   const logOutFunc = async() =>{
+     console.log("1")
     const language = localStorage.getItem("lang");
-    const deviceToken = await generateToken()
-    removeDeviceToken(deviceToken)
-    setContent([]);
-    setCount(false)
-    localStorage.clear();
-    localStorage.setItem("lang", language)
+     console.log("2")
     setIsLogIn(false)
-  };  
+     console.log("4")
+    removeDeviceToken(localStorage.getItem("dt"))
+     console.log("5")
+    setContent([]);
+     console.log("6")
+    setCount(false)
+     console.log("7")
+
+    localStorage.clear();
+     console.log("8")
+    localStorage.setItem("lang", language)
+     console.log("9")
+  }; 
+
+  
 
   
   const getMeasure = async() => {
@@ -483,10 +482,10 @@ console.log(handleArr,"handleArr")
   }
 
   useEffect(() => {
-  whereIsMyUs() 
-  if(user &&  user.isChangedPassword === false) {return setOpenAddDialog(true)}
-  setCount(false)
-  },[notifTrigger]);
+    whereIsMyUs() 
+    if(user &&  user.isChangedPassword === false) { return setOpenAddDialog(true) }
+    setCount(false)
+  }, [notifTrigger]);
 
   useEffect(() => {
     setPaymentInfo({
@@ -496,18 +495,17 @@ console.log(handleArr,"handleArr")
   },[openWindow]);
 
   useEffect(() =>{
-    searchValue && debounce && byBarCodeSearching(dataGroup,debounce)
+    searchValue && debounce && byBarCodeSearching(dataGroup, debounce)
   },[debounce]);
 
   useEffect(() => {
     barcodeScanValue &&  debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
   },[debounceBasket]);
 
-
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>
     <div className="App"  autoComplete="off">
-      {!isLogin ?
+      {!isLogin  && !localStorage.getItem("token")?
         <Routes>
           <Route path="*" element={<LoginAuthContainer children={<Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />} />
           <Route 

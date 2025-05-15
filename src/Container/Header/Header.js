@@ -55,7 +55,7 @@ const Header = ({
           <div className={styles.headerLinkBtn}>
             <h6
               style={{ 
-                color:(activeBtn === "/"? "#FFA500" : "#383838"),
+                color:(activeBtn === "/" ? "#FFA500" : "#383838"),
                 fontSize:(activeBtn === "/" && "140%")
               }}
               onClick={() => {
@@ -70,7 +70,7 @@ const Header = ({
               <HomeIcon 
                 fontSize="large" 
                 sx={{
-                  color:(activeBtn === "/"? "#FFA500": "#3FB68A"),
+                  color:(activeBtn === "/" ? "#FFA500": "#3FB68A"),
                 }}
               />
               <span className={styles.routeName}>{t("menubar.home")}</span>

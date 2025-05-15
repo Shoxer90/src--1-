@@ -23,7 +23,6 @@ export const generateToken = async() => {
     const token = await getToken(messaging, {
       vappidKey: VAPID_KEY
     })
-    console.log(token, "token")
     return token
   }
 }

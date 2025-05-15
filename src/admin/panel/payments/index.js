@@ -49,7 +49,7 @@ const CustomerPayments = () => {
       collSlice?.collTitle.includes("id") && item?.id, 
       collSlice?.collTitle.includes("store") && item?.store, 
       collSlice?.collTitle.includes("serviceType") && item?.serviceType, 
-      collSlice?.collTitle.includes("paymentDate") && createDateFormat(item?.paymentDate),
+      collSlice?.collTitle.includes("paymentDate") && createDateFormat(item?.paymentDate,1,0),
       collSlice?.collTitle.includes("pxNumber") && <span 
         className={styles.hovertext}
         onClick={()=>navigator.clipboard.writeText(item?.pxNumber)}
@@ -70,12 +70,12 @@ const CustomerPayments = () => {
       collSlice?.collTitle.includes("web") && `${item?.web}`,
       collSlice?.collTitle.includes("send") && `${item?.send}`,
       collSlice?.collTitle.includes("months") && item?.months, 
-      collSlice?.collTitle.includes("paymentRealDate") && createDateFormat(item?.paymentRealDate),
+      collSlice?.collTitle.includes("paymentRealDate") && createDateFormat(item?.paymentRealDate,1,1),
       collSlice?.collTitle.includes("realMonths") && item?.realMonths, 
       collSlice?.collTitle.includes("cardPan") && item?.cardPan.trim() || "-", 
       collSlice?.collTitle.includes("cardPan") && `${item?.draftSend}`, 
       collSlice?.collTitle.includes("sendDraftMounts") && item?.sendDraftMounts || "-",
-      collSlice?.collTitle.includes("lastDraftDate") && createDateFormat(item?.lastDraftDate), 
+      collSlice?.collTitle.includes("lastDraftDate") && createDateFormat(item?.lastDraftDate,1,1), 
       collSlice?.collTitle.includes("cashierId") && item?.cashierId
     )  
   });

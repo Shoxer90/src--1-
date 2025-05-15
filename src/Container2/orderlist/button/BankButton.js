@@ -18,11 +18,7 @@ import styles from "./index.module.scss";
       {title === "Idram" ? <img src="/IDram.jpg" alt={title} style={{height: "22px"}} /> : ""}
       {title === "TelCell" ? <img src="/TellCell.jpg" alt={title} style={{height: "50px"}} />: ""}
       <div style={{display:"flex", flexFlow:"column"}}>
-      {title === "Arca" ? <img src="/4.png" alt={title} style={{height: "28px"}} />: ""}
-      {/* {title === "Arca" ? <img src="/6.png" alt={title} style={{height: "28px"}} />: ""} */}
-
-        {/* {title === "Arca" ?<img src="/card_icon.png" alt?={title} style={{height: "40px", padding:"3px", objectFit:"contain"}} />: ""}
-        {title === "Arca" ?<img src="/multicard.jpg" alt={title} style={{height: "10px"}} />: ""} */}
+        {title === "Arca" ? <img src="/4.png" alt={title} style={{height: "28px"}} />: ""}
       </div>
     </div>
   )

@@ -115,6 +115,7 @@ const NotificationBell = ({
 
   const getDeviceTokenForNotifs = async() => {
     const appToken = await generateToken();
+    localStorage.setItem("dt", appToken)
     sendDeviceToken(appToken)
   };
   

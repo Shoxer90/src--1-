@@ -32,7 +32,10 @@ const OrderListPayInfo = ({basketContent,t, saleId}) => {
   }
 
   useEffect(()=> {
-    paymentUrl && payLinkRef.current.click()
+    // paymentUrl && payLinkRef.current.click()
+    if(paymentUrl) {
+      window.location.href = paymentUrl
+    }
   }, [paymentUrl]);
 
     useEffect(()=> {
@@ -40,6 +43,11 @@ const OrderListPayInfo = ({basketContent,t, saleId}) => {
       setActiveBtn(basketContent?.mainVpos?.paymentType)
     }
   }, []);
+
+
+
+
+  
 
   return (
     <div className={styles.orderContainer_payContainer}>
