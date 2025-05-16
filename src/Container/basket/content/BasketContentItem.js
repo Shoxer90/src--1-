@@ -278,7 +278,7 @@ const editPrepaymentCounts = async(id,value) => {
           content={" "}
           t={t}
         />
-        {}
+        
     </div>
   )
 }

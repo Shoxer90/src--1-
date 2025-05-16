@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+import OrderListPayInfo from "./payInfo"
 
-const PaymentRedirector = () => {
+const PaymentRedirector = ({
+    t,basketContent,saleId,
+}) => {
   const [isInAppBrowser, setIsInAppBrowser] = useState(false);
   const paymentUrl = "https://storextest.payx.am/basket?saleId=6cb06e985b7809d19732eef1bb103096443d9742";
 
@@ -42,23 +45,7 @@ const PaymentRedirector = () => {
           </button>
         </>
       ) : (
-        <>
-          <p>Вы будете перенаправлены на страницу оплаты.</p>
-          <button
-            onClick={handleOpen}
-            style={{
-              marginTop: 20,
-              padding: "10px 20px",
-              fontSize: "16px",
-              borderRadius: "8px",
-              backgroundColor: "#28a745",
-              color: "white",
-              border: "none",
-            }}
-          >
-            Перейти к оплате
-          </button>
-        </>
+        <OrderListPayInfo t={t} basketContent={basketContent} saleId={saleId}/>
       )}
     </div>
   );

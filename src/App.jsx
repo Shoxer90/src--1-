@@ -123,6 +123,7 @@ const App = () => {
     prePaymentAmount: JSON.parse(localStorage.getItem("endPrePayment"))?.prepayment || 0,
     isPrepayment: localStorage.getItem("endPrePayment") ? true : false
   });
+  
   const [paymentInfo, setPaymentInfo] = useState({
     discount: 0,
     discountType: 0,

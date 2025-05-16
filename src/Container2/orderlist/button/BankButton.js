@@ -6,6 +6,7 @@ import styles from "./index.module.scss";
   paymentType, 
   icon, 
   createActiveBtn, 
+  myTitle,
   activeBtn}) => {
 
   const activeStyle={
@@ -17,9 +18,7 @@ import styles from "./index.module.scss";
     <div className={styles.payItem} style={activeBtn === paymentType? activeStyle: null} onClick={()=>createActiveBtn(paymentType)}>
       {title === "Idram" ? <img src="/IDram.jpg" alt={title} style={{height: "22px"}} /> : ""}
       {title === "TelCell" ? <img src="/TellCell.jpg" alt={title} style={{height: "50px"}} />: ""}
-      <div style={{display:"flex", flexFlow:"column"}}>
-        {title === "Arca" ? <img src="/4.png" alt={title} style={{height: "28px"}} />: ""}
-      </div>
+      {myTitle ? <img src="/4.png" alt={title} style={{height: "28px"}} />: ""}
     </div>
   )
 

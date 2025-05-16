@@ -32,7 +32,6 @@ const OrderListPayInfo = ({basketContent,t, saleId}) => {
   }
 
   useEffect(()=> {
-    // paymentUrl && payLinkRef.current.click()
     if(paymentUrl) {
       window.location.href = paymentUrl
     }
@@ -43,11 +42,6 @@ const OrderListPayInfo = ({basketContent,t, saleId}) => {
       setActiveBtn(basketContent?.mainVpos?.paymentType)
     }
   }, []);
-
-
-
-
-  
 
   return (
     <div className={styles.orderContainer_payContainer}>
@@ -81,7 +75,6 @@ const OrderListPayInfo = ({basketContent,t, saleId}) => {
 
       {!basketContent?.isPrepayment  && basketContent?.prePayment ? 
         <div className={styles.orderContainer_payContainer_item}>
-          {/* {t("basket.useprepayment")}  */}
           {t("basket.prepaymentTitle")}
           <span style={{margin:"0px 7px"}}> {basketContent?.prePayment}  {t("units.amd")} </span>
         </div> : ""
@@ -105,6 +98,7 @@ const OrderListPayInfo = ({basketContent,t, saleId}) => {
             {...basketContent?.mainVpos}
             createActiveBtn={createActiveBtn} 
             activeBtn={activeBtn}
+            myTitle="Arca"
 
           />
         }
@@ -130,13 +124,6 @@ const OrderListPayInfo = ({basketContent,t, saleId}) => {
       </div>
         {activeBtn ?
         <div onClick={payForOrder}>
-        {/* <PaymentIcon
-          sx={{
-            color:"#63B48D",
-            fontSize:"2.2rem",
-            marginTop:"5px"
-          }} 
-        /> */}
           <Button variant="contained" style={{color:"white",letterSpacing:"5px", background:"#63B48D",width:"200px",textTransform: "capitalize"}}>
             {basketContent?.isPrepayment ? t("basket.useprepayment") :t("basket.linkPayment")} 
           </Button>

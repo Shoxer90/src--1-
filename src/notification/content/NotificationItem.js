@@ -64,7 +64,11 @@ const NotificationItem = ({
   
   const handleClick = () => {
     if(notificationType === 0) {
-      return openCloseHDM()
+      console.log(id,"DI")
+      readNotificationsPush(id).then((res) => {
+        setNotifTrigger(!notifTrigger)
+        return openCloseHDM()
+      })
     }
     if(!status) {
       readNotificationsPush(id)

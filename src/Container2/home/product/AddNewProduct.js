@@ -225,8 +225,11 @@ const AddNewProduct = ({
   useEffect(() => {
     checkStorageSavedData()
     setTypeCode(newProduct?.type)
-    setRegime(localStorage.getItem("taxRegime"))
+    setRegime(JSON.parse(localStorage.getItem("taxRegime")))
   }, []);
+
+  console.log("reginme", regime)
+  console.log(regime && (regime !== 3 || regime !== 7) ,"reginme")
 
   return (
     <Dialog
@@ -381,8 +384,8 @@ const AddNewProduct = ({
 
           </Box>
           {/* emark popup */}
-            <PopUpButton />
-          {(regime !== "3" || regime !== "7")  &&
+            {/* <PopUpButton /> */}
+          {regime && (regime !== 3 && regime !== 7)  &&
             <div className={styles.duoInput}>
               <FormControlLabel 
                 style={{alignSelf:"start"}}

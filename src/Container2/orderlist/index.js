@@ -8,7 +8,7 @@ import OrderListPayInfo2 from "./pay/payInfo2";
 import LangSelect from "../langSelect";
 import Loader from "../loading/Loader";
 
-import {Divider} from "@mui/material";
+import {Button, Divider} from "@mui/material";
 
 import styles from "./index.module.scss";
 import PaymentRedirector from "./appJS";
@@ -18,19 +18,29 @@ const BasketList = ({t}) => {
   const saleId = new URLSearchParams(search).get('saleId')
   const [basketContent, setBasketContent] = useState([]);
   const [load,setLoad] = useState(false);
+  const [recieptLink,setRecieptLink] = useState("");
 
   const getBasketList = async() => {
     await basketListCreator(new URLSearchParams(search).get('saleId'))
     .then((res) => {
       setLoad(true)
       if(res?.data?.status === 1 && res?.data?.receiptLink) {
+        // setRecieptLink(res?.data?.receiptLink)
         return window.location.href = res?.data?.receiptLink
       }else{
         setBasketContent(res?.data)
       }
    })
   };
+
   //
+  const paySubmit = () => {
+    const a = document.createElement("a");
+    a.href = recieptLink;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.click();
+  };
 
   window.onerror = function (message, source, lineno, colno, error) {
   console.error("Global error caught:", {
@@ -40,6 +50,13 @@ const BasketList = ({t}) => {
     colno,
     error,
   });
+  alert("im errorna", {
+    message,
+    source,
+    lineno,
+    colno,
+    error,
+  })
   
 
   // You can send this to your logging service
@@ -52,6 +69,7 @@ const BasketList = ({t}) => {
 
   return(
     !load ? <Loader /> :
+    // recieptLink ? <Button variant="contained" onClick={paySubmit} sx={{m:30}}>{t("basket.seeReciept")}</Button> :
     basketContent?.mainVpos ? <div className={styles.orderContainer} > 
       <span style={{display:"flex", justifyContent:"flex-end"}}>
         <LangSelect size={"22px"} />
@@ -72,7 +90,7 @@ const BasketList = ({t}) => {
       <Divider sx={{bcolor:"black"}} />
       <OrderListPayInfo t={t} basketContent={basketContent} saleId={saleId}/>
 
-      {/* <PaymentRedirector /> */}
+      {/* <PaymentRedirector t={t} basketContent={basketContent} saleId={saleId} /> */}
     </div>:<h5 style={{textAlign:"center",margin:"150px"}}> Էջը հասանելի չէ </h5>
   )
 };
