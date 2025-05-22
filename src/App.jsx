@@ -567,6 +567,7 @@ console.log(paymentInfo?.emarks,"payment emarks")
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
           <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc}/>} />
+          <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc}/>} />
           <Route path="/kuku" element={<IframeReader />} />
           {/* ADMIN PAGE */}
           {/* <Route path="/admin/*" element={<AdminPage />} />
@@ -579,10 +580,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
         </Routes> :
         <>
          
-<<<<<<< HEAD
-         
-=======
->>>>>>> 1551210 (22.05_live_before emark)
           <Header
             setOpenBasket={setOpenBasket}
             basketGoodsqty={basketGoodsqty}
@@ -665,10 +662,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} />} />
             {/* <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} /> */}
             <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
-<<<<<<< HEAD
-            <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
-=======
->>>>>>> 1551210 (22.05_live_before emark)
             <Route path="/prepayment" element={<PrePaymentList 
               setOpenBasket={setOpenBasket} 
               setToBasket={setToBasket}
@@ -682,11 +675,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
             {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
             {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
-<<<<<<< HEAD
-            {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
-            {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
-=======
->>>>>>> 1551210 (22.05_live_before emark)
           </Routes> :
           <Routes>
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
