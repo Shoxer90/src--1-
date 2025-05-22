@@ -1,4 +1,5 @@
 import { useState , useEffect , memo } from "react";
+import { useState , useEffect , memo } from "react";
 import { useLocation } from "react-router-dom";
 
 import { basketListCreator, checkAndGetReceiptLink } from "../../services/pay/pay";
@@ -12,7 +13,6 @@ import { Divider} from "@mui/material";
 import styles from "./index.module.scss";
 
 const BasketList = ({t, logOutFunc}) => {
-const BasketList = ({t, logOutFunc}) => {
   const search = useLocation().search;
   const saleId = new URLSearchParams(search).get('saleId')
   const [basketContent, setBasketContent] = useState([]);
@@ -23,6 +23,7 @@ const BasketList = ({t, logOutFunc}) => {
     .then((res) => {
       setLoad(true)
       if(res?.data?.status === 1 && res?.data?.receiptLink) {
+        // setRecieptLink(res?.data?.receiptLink)
         // setRecieptLink(res?.data?.receiptLink)
         setBasketContent(res?.data)
         // return window.location.href = res?.data?.receiptLink
@@ -43,23 +44,11 @@ const BasketList = ({t, logOutFunc}) => {
     });
   }
     
+    
   useEffect(() => {
-    logOutFunc()
     logOutFunc()
     getBasketList() 
   }, []);
-
-  useEffect(() => {
-    const handlePageShow = (event) => {
-      if (event.persisted || performance.getEntriesByType("navigation")[0]?.type === "back_forward") {
-        // Safari iOS: принудительно обновить при возврате "назад"
-        window.location.reload();
-      }
-    };
-
-  window.addEventListener("pageshow", handlePageShow);
-  return () => window.removeEventListener("pageshow", handlePageShow);
-}, []);
 
   return (
     !load ? <Loader /> :
