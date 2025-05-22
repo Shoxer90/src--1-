@@ -199,7 +199,6 @@ const Bascket = ({
       }else if(saletype === 4) {
         saleResponse = await basketListUrl(paymentInfo)
       }
-      console.log(saleResponse, "saleResponse")
       if(saleResponse) {
         setLoader(false)
         if(saleResponse === "ERR_NETWORK") {

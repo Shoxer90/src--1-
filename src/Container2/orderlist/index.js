@@ -1,4 +1,4 @@
-import React, { useState , useEffect , memo } from "react";
+import { useState , useEffect , memo } from "react";
 import { useLocation } from "react-router-dom";
 
 import { basketListCreator, checkAndGetReceiptLink } from "../../services/pay/pay";
@@ -10,24 +10,20 @@ import Loader from "../loading/Loader";
 import { Divider} from "@mui/material";
 
 import styles from "./index.module.scss";
-import PaymentRedirector from "./appJS";
-import { checkStatus } from "../../services/products/productsRequests";
 
+const BasketList = ({t, logOutFunc}) => {
 const BasketList = ({t, logOutFunc}) => {
   const search = useLocation().search;
   const saleId = new URLSearchParams(search).get('saleId')
   const [basketContent, setBasketContent] = useState([]);
   const [load,setLoad] = useState(false);
-  const [recieptLink,setRecieptLink] = useState("");
-  const [isInAppBrowser, setIsInAppBrowser] = useState(false);
- 
 
   const getBasketList = async() => {
     await basketListCreator(new URLSearchParams(search).get('saleId'))
     .then((res) => {
       setLoad(true)
       if(res?.data?.status === 1 && res?.data?.receiptLink) {
-        setRecieptLink(res?.data?.receiptLink)
+        // setRecieptLink(res?.data?.receiptLink)
         setBasketContent(res?.data)
         // return window.location.href = res?.data?.receiptLink
       }else{
@@ -47,8 +43,8 @@ const BasketList = ({t, logOutFunc}) => {
     });
   }
     
-
   useEffect(() => {
+    logOutFunc()
     logOutFunc()
     getBasketList() 
   }, []);
@@ -61,15 +57,9 @@ const BasketList = ({t, logOutFunc}) => {
       }
     };
 
-    window.addEventListener("pageshow", handlePageShow);
-    return () => window.removeEventListener("pageshow", handlePageShow);
-  }, []);
-console.log(!recieptLink,"receiptLink")
-  useEffect(()=> {
-    if(!recieptLink && basketContent?.orderStatus === "2") {
-      checkAndGetReceiptLink(saleId)
-    }
-  }, []);
+  window.addEventListener("pageshow", handlePageShow);
+  return () => window.removeEventListener("pageshow", handlePageShow);
+}, []);
 
   return (
     !load ? <Loader /> :

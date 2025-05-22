@@ -189,7 +189,6 @@ const App = () => {
     }else{
       setMessage("")
       await byBarCode(group, barcode).then((res) => {
-        // await byBarCode(group, barcode).then((res) => {
         if(from === "basket"){
           if(res?.length) {
             res.forEach((item) =>{
@@ -451,7 +450,6 @@ const App = () => {
   },[user]);
 
   useEffect(() => {
-    console.log("in effect for get user")
     whereIsMyUs() 
     if(user &&  user.isChangedPassword === false) { return setOpenAddDialog(true) }
     setCount(false)
@@ -497,6 +495,7 @@ const App = () => {
           <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} /> */}
         </Routes> :
         <>
+         
           <Header
             setOpenBasket={setOpenBasket}
             basketGoodsqty={basketGoodsqty}
@@ -560,7 +559,6 @@ const App = () => {
                   byBarCodeSearching={byBarCodeSearching}
                   flag={flag}
                   setFlag={setFlag}
-
                   setFetching={setFetching}
                   fetching={fetching}
                 />
@@ -585,8 +583,8 @@ const App = () => {
               logOutFunc={logOutFunc}
             />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-            {user?.showPaymentPage &&<Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
-            {user?.showPaymentPage &&<Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
+            {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
+            {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
           </Routes> :
           <Routes>
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
