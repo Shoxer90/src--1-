@@ -1,33 +1,28 @@
-import React, { useState , useEffect , memo } from "react";
+import { useState , useEffect , memo } from "react";
 import { useLocation } from "react-router-dom";
 
 import { basketListCreator } from "../../services/pay/pay";
 import DenseTable from "./table";
 import OrderListPayInfo from "./payInfo";
-import OrderListPayInfo2 from "./pay/payInfo2";
 import LangSelect from "../langSelect";
 import Loader from "../loading/Loader";
 
 import { Divider} from "@mui/material";
 
 import styles from "./index.module.scss";
-import PaymentRedirector from "./appJS";
 
-const BasketList = ({t}) => {
+const BasketList = ({t, logOutFunc}) => {
   const search = useLocation().search;
   const saleId = new URLSearchParams(search).get('saleId')
   const [basketContent, setBasketContent] = useState([]);
   const [load,setLoad] = useState(false);
-  const [recieptLink,setRecieptLink] = useState("");
-  const [isInAppBrowser, setIsInAppBrowser] = useState(false);
- 
 
   const getBasketList = async() => {
     await basketListCreator(new URLSearchParams(search).get('saleId'))
     .then((res) => {
       setLoad(true)
       if(res?.data?.status === 1 && res?.data?.receiptLink) {
-        setRecieptLink(res?.data?.receiptLink)
+        // setRecieptLink(res?.data?.receiptLink)
         setBasketContent(res?.data)
         // return window.location.href = res?.data?.receiptLink
       }else{
@@ -47,10 +42,9 @@ const BasketList = ({t}) => {
     });
   }
     
-
   useEffect(() => {
+    logOutFunc()
     getBasketList() 
-   
   }, []);
 
 useEffect(() => {
@@ -64,9 +58,6 @@ useEffect(() => {
   window.addEventListener("pageshow", handlePageShow);
   return () => window.removeEventListener("pageshow", handlePageShow);
 }, []);
-
-
-  console.log(recieptLink,"reciept link")
 
   return(
     !load ? <Loader /> :

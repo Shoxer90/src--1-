@@ -127,7 +127,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status}) => {
         />
 
       </div>
-      {activeBtn ?
+      {activeBtn  && (!basketContent?.receiptLink && basketContent?.isPrepayment) ?
       <div onClick={payForOrder}>
         <Button variant="contained" style={{color:"white",letterSpacing:"5px", background:"#63B48D",width:"200px",textTransform: "capitalize"}}>
           {basketContent?.isPrepayment ? t("basket.useprepayment") :t("basket.linkPayment")} 
