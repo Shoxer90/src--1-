@@ -14,6 +14,7 @@ const Loader = ({close}) => {
   };
   
   useEffect(() => {
+    // close && setTimeout(() => {
     close && setTimeout(() => {
      close(false)
     },13000)

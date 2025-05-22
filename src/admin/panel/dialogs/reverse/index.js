@@ -237,7 +237,7 @@ return(
           </Alert>
         </Dialog>
       }
-    <Dialog open={!!load}> <Loader /> </Dialog>
+    <Dialog open={!!load}> <Loader close={setLoad} /> </Dialog>
     </DialogContent>
   </Dialog>
 )

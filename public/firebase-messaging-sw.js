@@ -10,6 +10,10 @@ firebase.initializeApp( {
   appId: "1:931894215046:web:be53ad4dccb7373a93ac07"
 });
 const messaging = firebase.messaging();
+    
+navigator.serviceWorker.register('/firebase-messaging-sw.js').then((registration) => {
+  messaging.useServiceWorker(registration);
+});
 
 messaging.onBackgroundMessage(async(payload) => {
   console.log( payload, "messaging-sw");
@@ -29,3 +33,4 @@ messaging.onBackgroundMessage(async(payload) => {
   });
 
 });
+

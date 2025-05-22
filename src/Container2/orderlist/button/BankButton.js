@@ -16,9 +16,18 @@ import styles from "./index.module.scss";
 
   return (
     <div className={styles.payItem} style={activeBtn === paymentType? activeStyle: null} onClick={()=>createActiveBtn(paymentType)}>
-      {title === "Idram" ? <img src="/IDram.jpg" alt={title} style={{height: "22px"}} /> : ""}
-      {title === "TelCell" ? <img src="/TellCell.jpg" alt={title} style={{height: "50px"}} />: ""}
-      {myTitle ? <img src="/4.png" alt={title} style={{height: "28px"}} />: ""}
+      {/* {title === "Idram" ? <img src="/IDram.jpg" alt={title} style={{width:"98%", height:"99%",objectFit:"contain"}} /> : ""}
+      {title === "TelCell" ? <img src="/TellCell.jpg" alt={title} style={{width:"98%",height:"99%",objectFit:"contain"}} />: ""}
+      {title === "FastShift" ? <img src="/TellCell.jpg" alt={title} style={{width:"98%",height:"99%",objectFit:"contain"}} />: ""}  */}
+      
+      {myTitle ? <img src="/4.png" alt={title} style={{width:"98%",height:"95%",objectFit:"contain"}} />:
+      <img src={icon} alt={title} style={{width:"98%",height:"95%",objectFit:"contain"}} />}
+
+
+       {/* {title === "Idram" ? <img src={icon} alt={title} style={{height: "22px"}} /> : ""}
+      {title === "TelCell" ? <img src={icon} alt={title} style={{height: "50px"}} />: ""}
+      {title === "FastShift" ? <img src={icon} alt={title} style={{height: "50px"}} />: ""}
+      {myTitle ? <img src={icon} alt={title} style={{height: "28px"}} />: ""} */}
     </div>
   )
 

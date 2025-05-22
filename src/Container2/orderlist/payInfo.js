@@ -6,8 +6,9 @@ import styles from "./index.module.scss";
 import BankButton from './button/BankButton';
 import { completePaymentForOrder } from '../../services/pay/pay';
 import Loader from '../loading/Loader';
+import PaidButtons from './button/PaidButtons';
 
-const OrderListPayInfo = ({basketContent,t, saleId}) => {
+const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status}) => {
   const payLinkRef = useRef()
   const [activeBtn, setActiveBtn] = useState();
   const [paymentUrl, setPaymentUrl] = useState();
@@ -25,7 +26,7 @@ const OrderListPayInfo = ({basketContent,t, saleId}) => {
       if(res?.formUrl) {
         setPaymentUrl(res?.formUrl)
       }else{
-        alert("something went wrong. Try later")
+       console.log("something went wrong. Try later")
       }
       console.log(res,"rewsss")
     })
@@ -42,6 +43,8 @@ const OrderListPayInfo = ({basketContent,t, saleId}) => {
       setActiveBtn(basketContent?.mainVpos?.paymentType)
     }
   }, []);
+  console.log(status, "status")
+  console.log(recieptLink, "recieptLink")
 
   return (
     <div className={styles.orderContainer_payContainer}>
@@ -81,38 +84,40 @@ const OrderListPayInfo = ({basketContent,t, saleId}) => {
       }
 
       <Divider style={{ background: '#343a40', width:"60%", fontWight:600, margin:"10px 0px" }} />
-      <div style={{fontSize:"100%",color:"EE8D1C"}} className={styles.orderContainer_payContainer_item}>
-        <strong> 
-        {t("basket.orderPayment")}
-        </strong> 
-        <strong> 
-          <span style={{margin:"0px 7px"}}>
-            {basketContent?.cardAmount} 
-            {t("units.amd")} 
-          </span> 
-        </strong>
-      </div>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center", gap:"10px",margin:"20px"}}>
-        {basketContent?.mainVpos && 
-          <BankButton
-            {...basketContent?.mainVpos}
-            createActiveBtn={createActiveBtn} 
-            activeBtn={activeBtn}
-            myTitle="Arca"
 
-          />
+        {recieptLink ?  
+          <>
+            { status === 1 && <PaidButtons recieptLink={recieptLink}/>}
+            {  status === 3 && <h6>{t("history.reverse")}</h6> }
+          </>:
+          <div>
+            <div style={{fontSize:"98%",color:"EE8D1C"}} >
+              <strong> 
+                {t("basket.orderPayment")} {basketContent?.cardAmount} {t("units.amd")} 
+              </strong>
+            </div>
+            <div style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"10px",margin:"20px"}}>
+              {basketContent?.mainVpos && 
+                <BankButton
+                  {...basketContent?.mainVpos}
+                  createActiveBtn={createActiveBtn} 
+                  activeBtn={activeBtn}
+                  myTitle="Arca"
+                />
+              }
+              {basketContent?.paymentTypes &&
+                basketContent?.paymentTypes?.map((item) => {
+                  return <BankButton
+                    createActiveBtn={createActiveBtn} 
+                    activeBtn={activeBtn}
+                    {...item}
+                  />
+                })
+              }
+            </div>
+          </div>
         }
-        {basketContent?.paymentTypes &&
-          basketContent?.paymentTypes?.map((item) => {
-            return <BankButton
-              createActiveBtn={createActiveBtn} 
-              activeBtn={activeBtn}
-              {...item}
-            />
-          })
-        }
-
-
         <a 
           ref={payLinkRef}
           href={paymentUrl} 

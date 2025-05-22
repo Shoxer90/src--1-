@@ -1,52 +1,29 @@
-import React, { useEffect, useState } from "react";
-import OrderListPayInfo from "./payInfo"
+import { useTranslation } from "react-i18next";
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
-const PaymentRedirector = ({
-    t,basketContent,saleId,
-}) => {
-  const [isInAppBrowser, setIsInAppBrowser] = useState(false);
-  const paymentUrl = "https://storextest.payx.am/basket?saleId=6cb06e985b7809d19732eef1bb103096443d9742";
-
-  useEffect(() => {
-    const ua = navigator.userAgent.toLowerCase();
-    const inApp = /instagram|fbav|telegram/.test(ua);
-    setIsInAppBrowser(inApp);
-  }, []);
+const PaymentRedirector = () => {
+  const {t} = useTranslation()
 
   const handleOpen = () => {
-    window.open(paymentUrl, "_blank", "noopener,noreferrer");
+    // window.open(paymentUrl, "_blank", "noopener,noreferrer");
+    const a = document.createElement("a");
+    a.href = window.location.href;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.click();
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Переход на оплату</h2>
-
-      {!isInAppBrowser ? (
+    <div style={{ padding: 20, marginTop:"60px"}}>
+      <h2>{t("basket.openInMobile1")}</h2>
         <>
           <p>
-            Вы открыли сайт через встроенный браузер (Instagram или Telegram). Возможно, ссылка оплаты не откроется.
+            {t("basket.openInMobile2")}
           </p>
           <p>
-            Пожалуйста, нажмите на <strong>три точки</strong> вверху и выберите <strong>«Открыть в браузере»</strong>.
+            {t("basket.openInMobile3")} <strong>{t("basket.openInMobile4")} "<MoreHorizIcon />" </strong>{t("basket.openInMobile5")}<strong>{t("basket.openInMobile6")}</strong>.
           </p>
-          <button
-            onClick={handleOpen}
-            style={{
-              marginTop: 20,
-              padding: "10px 20px",
-              fontSize: "16px",
-              borderRadius: "8px",
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-            }}
-          >
-            Открыть ссылку вручную
-          </button>
         </>
-      ) : (
-        <OrderListPayInfo t={t} basketContent={basketContent} saleId={saleId}/>
-      )}
     </div>
   );
 };

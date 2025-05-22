@@ -35,7 +35,6 @@ const HeaderNotification = ({
   const dispatch = useDispatch();
   const [createReaded, readed] = useReadNotificationMutation();
   const [deleteNots, deleted] = useRemoveNotificationListMutation();
-  console.log(reserve, "Reserve")
   
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [filterUnRead, setFilterUnRead] = useState(false);

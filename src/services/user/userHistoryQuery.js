@@ -27,19 +27,19 @@ export async function filterByDate(date, status) {
       const  data = await axios.get(
         baseUrl + `History/GetSaleProductsByDate?startDate=${date.startDate}&endDate=${date.endDate}`,option())
       response.data = data?.data
-      response.count = data?.headers.count
+      response.count = data?.headers?.count
       return response
     }else if (status === "Unpaid") {
       const  data = await axios.get(
         baseUrl + `History/GetNotPaidSaleProductsByDate?startDate=${date.startDate}&endDate=${date.endDate}`, option())
       response.data = data?.data
-      response.count = data?.headers.count
+      response.count = data?.headers?.count
       return response
     }else if( status === "Canceled") {
       const  data = await axios.get(
         baseUrl + `History/GetReveredHistoryByDate?startDate=${date.startDate}&endDate=${date.endDate}`, option())
       response.data = data?.data
-      response.count = data?.headers.count
+      response.count = data?.headers?.count
       return response
     }
   }catch(err) {

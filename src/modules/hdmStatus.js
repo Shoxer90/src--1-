@@ -18,7 +18,8 @@ const HdmStatus = ({status,mode}) => {
       padding: "2px 12px",
       alignText:"center",
       margin:screen<600 ?"auto":"2px"
-  }
+  };
+  
   window.addEventListener('resize', function(event) {
       setScreenWidth(window.innerWidth)
     }, true);
@@ -32,8 +33,6 @@ const HdmStatus = ({status,mode}) => {
           {mode === 2 && t("history.hdm")}
         </>: ""
       }
-      {/*some changes */}
-      {/* {screen > 600 ? mode ?  t("history.hdm"): status ? t("settings.switcher") :t("history.receiptNoHmd"): ""} */}
       </button>
 
   )

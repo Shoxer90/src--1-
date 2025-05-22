@@ -59,7 +59,7 @@ const ChangesAnalyses = ({open, setOpen, content, name, t}) => {
             {t("productinputs.price")} : {item.price}  {t("units.amd")}
             </span>
             <span>
-            {t("productinputs.count")} : {item.count}
+            {t("productinputs.count")} : {item?.count}
             </span>                    
             <Divider color="initial" style={{margin:1}} />
           </div>

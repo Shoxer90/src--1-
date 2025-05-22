@@ -8,7 +8,7 @@ import OrderListPayInfo2 from "./pay/payInfo2";
 import LangSelect from "../langSelect";
 import Loader from "../loading/Loader";
 
-import {Button, Divider} from "@mui/material";
+import { Divider} from "@mui/material";
 
 import styles from "./index.module.scss";
 import PaymentRedirector from "./appJS";
@@ -19,79 +19,65 @@ const BasketList = ({t}) => {
   const [basketContent, setBasketContent] = useState([]);
   const [load,setLoad] = useState(false);
   const [recieptLink,setRecieptLink] = useState("");
+  const [isInAppBrowser, setIsInAppBrowser] = useState(false);
+ 
 
   const getBasketList = async() => {
     await basketListCreator(new URLSearchParams(search).get('saleId'))
     .then((res) => {
       setLoad(true)
       if(res?.data?.status === 1 && res?.data?.receiptLink) {
-        // setRecieptLink(res?.data?.receiptLink)
-        return window.location.href = res?.data?.receiptLink
+        setRecieptLink(res?.data?.receiptLink)
+        setBasketContent(res?.data)
+        // return window.location.href = res?.data?.receiptLink
       }else{
         setBasketContent(res?.data)
       }
    })
   };
 
-  //
-  const paySubmit = () => {
-    const a = document.createElement("a");
-    a.href = recieptLink;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    a.click();
-  };
-
-  window.onerror = function (message, source, lineno, colno, error) {
-  console.error("Global error caught:", {
-    message,
-    source,
-    lineno,
-    colno,
-    error,
-  });
-  alert("im errorna", {
-    message,
-    source,
-    lineno,
-    colno,
-    error,
-  })
   
-
-  // You can send this to your logging service
-};
-  //
+  window.onerror = function (message, source, lineno, colno, error) {
+    console.error("Global error caught:", {
+      message,
+      source,
+      lineno,
+      colno,
+      error,
+    });
+  }
+    
 
   useEffect(() => {
     getBasketList() 
+   
   }, []);
+  console.log(recieptLink,"reciept link")
 
   return(
     !load ? <Loader /> :
-    // recieptLink ? <Button variant="contained" onClick={paySubmit} sx={{m:30}}>{t("basket.seeReciept")}</Button> :
-    basketContent?.mainVpos ? <div className={styles.orderContainer} > 
-      <span style={{display:"flex", justifyContent:"flex-end"}}>
-        <LangSelect size={"22px"} />
-      </span>
-      <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-        <img src={basketContent?.storeLogo || "/defaultAvatar.png"}  alt="" className={styles.orderContainer_img}/>
-        <h5>{basketContent?.storeName}</h5>
-      </div>
-      {basketContent?.isPrepayment && <h5>{t("basket.useprepayment")}</h5>}
-      <div style={{display:"flex", justifyContent:"center", margin:"5px auto",fontSize:"110%"}}>
-        <span>
-          {t("productinputs.orderList")}
-        </span>
-        <span style={{margin: "0 5px", fontWeight:600}}>&#8470;  {basketContent?.saleId}</span>
-        
-      </div>
-      <DenseTable basketContent={basketContent} />
-      <Divider sx={{bcolor:"black"}} />
-      <OrderListPayInfo t={t} basketContent={basketContent} saleId={saleId}/>
+      basketContent?.mainVpos ? 
+          <div className={styles.orderContainer}> 
+            <span style={{display:"flex", justifyContent:"flex-end"}}>
+              <LangSelect size={"22px"} />
+            </span>
+            <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+              <img src={basketContent?.storeLogo || "/defaultAvatar.png"}  alt="" className={styles.orderContainer_img}/>
+              <h5>{basketContent?.storeName}</h5>
+            </div>
+            {basketContent?.isPrepayment && <h5>{t("basket.useprepayment")}</h5>}
+            <div style={{display:"flex", justifyContent:"center", margin:"5px auto",fontSize:"110%"}}>
+              <span>
+                {t("productinputs.orderList")}
+              </span>
+              <span style={{margin: "0 5px", fontWeight:600}}>&#8470;  {basketContent?.saleId}</span>
+            </div>
 
-      {/* <PaymentRedirector t={t} basketContent={basketContent} saleId={saleId} /> */}
-    </div>:<h5 style={{textAlign:"center",margin:"150px"}}> Էջը հասանելի չէ </h5>
+            <DenseTable basketContent={basketContent} />
+            <Divider sx={{bcolor:"black"}} />
+            <OrderListPayInfo t={t} basketContent={basketContent} saleId={saleId} recieptLink={basketContent?.receiptLink} status={basketContent?.status}/>
+        </div>
+        :<h5 style={{textAlign:"center",margin:"150px"}}> Էջը հասանելի չէ </h5>
   )
 };
 

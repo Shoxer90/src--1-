@@ -107,7 +107,7 @@ const {t} = useTranslation();
         </div>
       </div>
       <Dialog open={Boolean(load)} >
-        <Loader />
+        <Loader close={setLoad} />
       </Dialog>
     </div>
   )

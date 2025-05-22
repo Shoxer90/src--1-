@@ -26,7 +26,7 @@ const OrderListPayInfo2 = ({basketContent,t, saleId}) => {
       if(res?.formUrl) {
         setPaymentUrl(res?.formUrl)
       }else{
-        alert("something went wrong. Try later")
+        console.log("something went wrong. Try later")
       }
       console.log(res,"rewsss")
     })

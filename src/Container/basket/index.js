@@ -93,7 +93,7 @@ const Bascket = ({
 
   const checkDiscountVsProdPrice = (disc) => {
     basketContent.map((item) => {
-      if((item.count * item?.price - (item.count * item?.price * disc/100)) < 1){
+      if((item?.count * item?.price - (item?.count * item?.price * disc/100)) < 1){
         setSingleClick({pointerEvents:"none"})
         createMessage("error", t("basket.total_zero"))
       }
@@ -151,7 +151,7 @@ const Bascket = ({
       pointerEvents:"none"
     })
     basketContent.map((item) => {
-      if(item.count * item?.price < 1){
+      if(item?.count * item?.price < 1){
         createMessage("error", t("basket.total_zero"))
       }
       return item

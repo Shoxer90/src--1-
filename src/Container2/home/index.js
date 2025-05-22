@@ -2,7 +2,6 @@ import { memo , useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import Loader from "../loading/Loader";
-// import HomeContent from "./HomeContent";
 import HomeNavigation from "./HomeNavigation";
 import PaginationSnip from "../pagination";
 import AddNewProduct from "./product/AddNewProduct";
@@ -28,7 +27,8 @@ const initState = {
   measure:"",
   pan: 0,
   dep: 0
-}
+};
+
 const HomePage = ({
   measure,
   dataGroup,
@@ -111,48 +111,6 @@ const HomePage = ({
       }
     })
   };
-
-  // const scrollHandler = (e) => { 
-  //   setFetching(false)
-  //   if(content?.length <= +totalCount){
-  //     if(e.target.documentElement.scrollHeight - (
-  //       e.target.documentElement.scrollTop + window.innerHeight) < 100) {
-  //       setFetching(true)
-  //     }
-  //   }else{
-  //     document.removeEventListener("scroll",scrollHandler)
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   setFetching(true)
-  // },[]);
-
-  // useEffect(() => {
-  //   changeStatus(dataGroup)
-  // },[dataGroup]);
-
-  // useEffect(() => {
-  //   if(searchValue)return
-  //   fetching && queryFunction(dataGroup, currentPage).then((res) => { 
-  //     setTotalCount(res?.headers["count"])
-  //     setFetching(false)
-  //     if(res?.data?.length === 0){
-  //      return 
-  //     }else{
-  //       setContent([...content, ...res?.data])
-  //     }
-  //     setCurrentPage(currentPage + 1) 
-  //   })
-
-  //   if(totalCount && totalCount > content?.length){
-  //     document.addEventListener("scroll", scrollHandler)
-  //     return function () {
-  //       document.removeEventListener("scroll", scrollHandler)
-  //     } 
-  //   }
-    
-  // }, [c, dataGroup, isLogin, openNewProd, content, flag,currentPage]);
 
   useEffect(() => {
     setFetching(true)

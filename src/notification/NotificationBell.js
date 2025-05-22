@@ -1,21 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import sound from "../modules/sound_notification.wav";
 import Notifications from './content/Notifications';
-import { useLazyGetNotificationHistoryQuery, useRemoveNotificationListMutation } from '../store/notification/notificationApi';
-import { onMessage } from 'firebase/messaging';
-import { generateToken, messaging } from '../firebase/firebase-config';
+import { useLazyGetNotificationHistoryQuery } from '../store/notification/notificationApi';
+import { firebaseConfig} from '../firebase/firebase-config';
 import { sendDeviceToken } from '../services/notifications/notificatonRequests';
-import { Menu, styled, alpha } from '@mui/material';
+import { Menu, styled, alpha, Dialog } from '@mui/material';
 import OpenBtn from './button/OpenBtn';
 import HeaderNotification from './header/HeaderNotification';
-
-const PER_PAGE = 8;
-
-const notifStyle = {
-  maxHeight: "400px",       
-  overflowY: 'auto'
-};
+// fb
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { canUsePush } from '../firebase/helper';
+import SnackErr from "../Container2/dialogs/SnackErr";
+// 
+const notifStyle = {maxHeight: "400px", overflowY: 'auto'};
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -70,6 +69,7 @@ const NotificationBell = ({
 }) => {
 
   const [notificationCount, setNotificationCount] = useState(0);
+  const [infoDialog, setInfoDialog] = useState({message:"",type:""});
 
   const [anchorEl, setAnchorEl] = useState(false);
   const audioRef = useRef(null);
@@ -81,28 +81,19 @@ const NotificationBell = ({
   const [choose, setChoose] = useState(false);
   const [notifIdArr, setNotifIdArr] = useState([]);
   const [unreadIds, setUnreadIds] = useState([]);
+  const [allowNotifs, setAllowNotifs] = useState(false)
   
   const [trigger, { data:notif, isFetching, error }] = useLazyGetNotificationHistoryQuery();
-  const [removeNotifList, result] = useRemoveNotificationListMutation();
 
   const [notifications, setNotifications] = useState([]); 
 
   const [initDate, setInitDate] = useState({  
     "endDate": new Date().toISOString(),
     "startDate": getOneMnthEarlr(),
-  })
-
-  // if ('serviceWorker' in navigator) {
-  //   navigator.serviceWorker.addEventListener('message', (event) => {
-  //     if (event.data?.type === 'REFRESH_PAGE') {
-  //       console.log('🔄 Страница будет обновлена из-за push-сообщения:', event.data.payload);
-  //       setNotifTrigger(!notifTrigger)
-  //       audioRef.current.click()
-  //       window.location.reload();
-  //     }
-  //   });
-  // };
-
+  });
+  // FB
+  const firebaseApp = initializeApp(firebaseConfig);
+  // 
 
   const playSound = () => {
     new Audio(sound)?.play()
@@ -113,19 +104,41 @@ const NotificationBell = ({
     setAnchorEl(e?.currentTarget);
   };
 
-  const getDeviceTokenForNotifs = async() => {
-    const appToken = await generateToken();
-    localStorage.setItem("dt", appToken)
-    sendDeviceToken(appToken)
+  const checkNotifs = async() => {
+    const canIUsePush = canUsePush()
+    setAllowNotifs(canIUsePush)
+    if(!canIUsePush) {
+     setInfoDialog({message:'Push уведомления не поддерживаются в этом браузере', type:"info"});
+    }
+  }
+
+  // const getDeviceTokenForNotifs = async() => {
+  //   const appToken = await generateToken();
+  //   localStorage.setItem("dt", appToken)
+  // };
+
+ 
+// console.log(allowNotifs,"alllow")
+  if(canUsePush()){
+    const messaging = getMessaging(firebaseApp);
+
+
+    if(!localStorage.getItem("dt")) {
+     
+      getToken(messaging, { vapidKey: "BL9M8IRH_J6IAHVHod8G0_aVhdQfSDlAJBQ76VIYpnfGeCxtsbMuV3uxrP0ZjLLN0SPWu2CigsToA-2KVW9JI5c" })
+      .then((currentToken) => {
+        localStorage.setItem("dt", currentToken)
+        sendDeviceToken(currentToken)
+      })
+    }
+    onMessage(messaging, (payload) => {
+      console.log(payload,"payload in bell")
+      setNotifTrigger(!notifTrigger)
+      audioRef.current.click()
+      setAnchorEl(buttonRef.current)
+    })
   };
   
-  onMessage(messaging, (payload) => {
-    console.log(payload,"payload in bell")
-    audioRef.current.click()
-    setNotifTrigger(!notifTrigger)
-    setAnchorEl(buttonRef.current)
-  });
-
   useEffect(() => {
     setNotificationCount(user?.notificationsReadCount)
     trigger({
@@ -136,18 +149,25 @@ const NotificationBell = ({
       }
     })
     setNotifications([])
-
     setNotifications(notif)
   }, [user,notif, notifTrigger]);
 
-  useEffect(() => {
-    getDeviceTokenForNotifs()
-  }, []); 
-  
+
+   useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data?.type === 'REFRESH_PAGE') {
+          setNotifTrigger(!notifTrigger)
+          audioRef.current.click()
+          setAnchorEl(buttonRef.current)
+        }
+      })
+    }
+  }, []);
+
 
   return (
     <div>
-      <button onClick={generateToken} style={{display:"none"}}></button>
       <OpenBtn clickFunc={(handleClick)} notificationCount={notificationCount} buttonRef={buttonRef} open={anchorEl} />        
       <StyledMenu
         anchorEl={anchorEl}
@@ -193,19 +213,14 @@ const NotificationBell = ({
               />
             )) :<span style={{color:"lightGrey", fontWeight:600 ,margin:"20px"}}>you have not notificationd</span>}
           </div>
-
         </div>
-
-        {/* <Pagination 
-          count={Math.ceil(count/PER_PAGE)} 
-          color="primary"
-          page={page} 
-          onChange={changePage} 
-          size="small"
-          sx={{alignItems:"center"}}
-        /> */}
       </StyledMenu>  
       <button style={{display:'none'}}  ref={audioRef} onClick={playSound} ></button>
+        {infoDialog?.message &&
+          <Dialog open={!!infoDialog?.message} onClose={()=>setInfoDialog({message:"",type:"info"})}>
+            <SnackErr type={infoDialog?.type} message={infoDialog?.message}  close={()=>setInfoDialog({message:"",type:"info"})}/>
+          </Dialog>
+        }
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Basket from "./Container/basket";
 import HistoryPage from "./Container2/historyPage";
@@ -11,6 +11,10 @@ import UsersContainer from "./admin/panel/stores";
 import CustomerPage from "./admin/panel/customers"
 import CustomerPayments from "./admin/panel/payments";
 import CustomerInfo from "./admin/panel/info";
+import AdminPage from "./admin/index";
+import CustomerSaleHistory from "./admin/panel/customers/CustomerSaleHistory";
+import CustomerCashiers from "./admin/panel/cashiers";
+import AdminInvoices from "./admin/panel/invoices";
 
 import { byBarCode, productQuery } from "./services/products/productsRequests";
 import { getBasketContent } from "./modules/modules";
@@ -37,28 +41,20 @@ import { getNewNotifications } from "./services/user/getUser";
 import Notification from "./Container2/dialogs/Notification";
 import LoginAuthContainer from "./Authorization/loginAuth";
 import Login from "./Authorization/loginAuth/login";
-// import Registration from "./Authorization/loginAuth/registration";
 import NewSimpleRegistration from "./Authorization/newReg";
-// import NewSimpleRegistration from "./Authorization/newReg";
 import ForgotPassword from "./Authorization/loginAuth/forgotPass";
 import ResetPassword from "./Authorization/loginAuth/resetpass/ResetPassword";
-import Confirmation from "./Authorization/loginAuth/confirmation/index";
 import ConfirmationV2 from "./Authorization/loginAuth/confirmation/Confirmation";
 import PrePaymentList from "./Container2/prepayment/";
 import { QrSoccet } from "./QrSoccet";
 import ConfirmDialog from "./Container2/dialogs/ConfirmDialog";
 import PrivacyPayx from "./payxPrivacyRemove/PrivacyPayx";
-import AdminPage from "./admin/index";
 import NewContract from "./Container2/dialogs/notifications/NewContract";
-import CustomerSaleHistory from "./admin/panel/customers/CustomerSaleHistory";
-import CustomerCashiers from "./admin/panel/cashiers";
-import AdminInvoices from "./admin/panel/invoices";
+
+import { addNotification } from "./store/notification/notificationSlice";
 import AddNewClientInfo from "./Container2/dialogs/AddNewClientInfo";
 import IframeReader from "./Container/iframe/iframeReader"; 
-import { addNotification } from "./store/notification/notificationSlice";
 import { removeDeviceToken } from "./services/notifications/notificatonRequests";
-import { messaging } from "./firebase/firebase-config";
-import { onMessage } from "firebase/messaging";
 
 const checkForUpdates = async () => {
   try {
@@ -140,7 +136,7 @@ const App = () => {
   });
 
   const whereIsMyUs = async() => {
-    console.log("15.05.2025 update")
+    console.log("21.05.2025 update")
     // setNotifTrigger(!notifTrigger)
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
@@ -287,7 +283,6 @@ const App = () => {
         localStorage.setItem("freezeBasketCounts", JSON.stringify(freeze))
       }
 // 
-console.log(handleArr,"handleArr")
     if(!handleArr?.length) {
       localStorage.removeItem("endPrePayment")
       localStorage.removeItem("isEditPrepayment")
@@ -384,33 +379,22 @@ console.log(handleArr,"handleArr")
     return loadBasket()
   };
 
-  onMessage(messaging, (payload) => {
-    console.log(payload,"in appjs")
-    setNotifTrigger(notifTrigger)
-  })
+  // onMessage(messaging, (payload) => {
+  //   console.log(payload,"in appjs")
+  //   setNotifTrigger(!notifTrigger)
+  // })
+
 
   const logOutFunc = async() =>{
-     console.log("1")
     const language = localStorage.getItem("lang");
-     console.log("2")
     setIsLogIn(false)
-     console.log("4")
     removeDeviceToken(localStorage.getItem("dt"))
-     console.log("5")
     setContent([]);
-     console.log("6")
     setCount(false)
-     console.log("7")
-
     localStorage.clear();
-     console.log("8")
     localStorage.setItem("lang", language)
-     console.log("9")
   }; 
 
-  
-
-  
   const getMeasure = async() => {
     const str = await localStorage.getItem("lang")
     switch(str){
@@ -473,15 +457,6 @@ console.log(handleArr,"handleArr")
     loadBasket()
   },[user]);
 
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.addEventListener('message', (event) => {
-      if (event.data?.type === 'REFRESH_PAGE') {
-        console.log('🔄 Страница будет обновлена из-за push-сообщения:', event.data.payload);
-        window.location.reload(); // Это обновление страницы
-      }
-    });
-  }
-
   useEffect(() => {
     whereIsMyUs() 
     if(user &&  user.isChangedPassword === false) { return setOpenAddDialog(true) }
@@ -505,27 +480,20 @@ console.log(handleArr,"handleArr")
 
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>
-    <div className="App"  autoComplete="off">
-      {!isLogin  && !localStorage.getItem("token")?
+    <div className="App" autoComplete="off">
+      {! isLogin  && !localStorage.getItem("token")?
         <Routes>
           <Route path="*" element={<LoginAuthContainer children={<Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />} />
-          <Route 
-            path="/login" 
-            element={<LoginAuthContainer children={
-            <Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />}
-          />
+          <Route path="/login" element={<LoginAuthContainer children={<Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />}  />
           <Route path="/registration" element={<LoginAuthContainer children={<NewSimpleRegistration logOutFunc={logOutFunc} />} />} />
-          {/* <Route path="/registration" element={<LoginAuthContainer children={<Registration logOutFunc={logOutFunc} />} />} /> */}
           <Route path="/forgot-password" element={<LoginAuthContainer children={<ForgotPassword />} />} />
           <Route path="/reset-password/*" element={<LoginAuthContainer children={<ResetPassword />} />} />
           <Route path="/confirmation/*" element={<ConfirmationV2 />} />
-
-          {/* <Route path="/confirmation/*" element={<LoginAuthContainer children={<Confirmation />} />} /> */}
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
           <Route path="/basket/*" element={<BasketList t={t} />} />
           <Route path="/kuku" element={<IframeReader />} />
-{/* ADMIN PAGE */}
+          {/* ADMIN PAGE */}
           {/* <Route path="/admin/*" element={<AdminPage />} />
           <Route path="/admin/info/customer" element={<AdminPanel children={<CustomerInfo />} />} />
           <Route path="/admin/stores" element={<AdminPanel children={<UsersContainer />} />} />

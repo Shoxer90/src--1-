@@ -13,7 +13,7 @@ export const EmarkFileUploader = ({ setCsvData}) => {
       formData.append('file', file);
       setCsvData(formData)
     }else{
-       alert("No file choosen")
+       console.log("No file choosen")
     }
   };
   
