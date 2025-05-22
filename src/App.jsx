@@ -55,6 +55,7 @@ import { addNotification } from "./store/notification/notificationSlice";
 import AddNewClientInfo from "./Container2/dialogs/AddNewClientInfo";
 import IframeReader from "./Container/iframe/iframeReader"; 
 import { removeDeviceToken } from "./services/notifications/notificatonRequests";
+import { onMessage } from "firebase/messaging";
 
 const checkForUpdates = async () => {
   try {
@@ -139,6 +140,7 @@ const App = () => {
     console.log("21.05.2025 update")
     // setNotifTrigger(!notifTrigger)
     await dispatch(fetchUser()).then(async(res) => {
+      console.log(user,"user")
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
         `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
@@ -458,6 +460,7 @@ const App = () => {
   },[user]);
 
   useEffect(() => {
+    console.log("in effect for get user")
     whereIsMyUs() 
     if(user &&  user.isChangedPassword === false) { return setOpenAddDialog(true) }
     setCount(false)

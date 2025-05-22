@@ -70,18 +70,17 @@ const NotificationBell = ({
 
   const [notificationCount, setNotificationCount] = useState(0);
   const [infoDialog, setInfoDialog] = useState({message:"",type:""});
+  const [iSClicked, setIsClicked] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(false);
   const audioRef = useRef(null);
   const buttonRef = useRef(null);
 
   const open = Boolean(anchorEl);
-  const [page, setPage] = useState(1);
   const [flag, setFlag] = useState(0);
   const [choose, setChoose] = useState(false);
   const [notifIdArr, setNotifIdArr] = useState([]);
   const [unreadIds, setUnreadIds] = useState([]);
-  const [allowNotifs, setAllowNotifs] = useState(false)
   
   const [trigger, { data:notif, isFetching, error }] = useLazyGetNotificationHistoryQuery();
 
@@ -94,55 +93,41 @@ const NotificationBell = ({
   // FB
   const firebaseApp = initializeApp(firebaseConfig);
   // 
-
-  const playSound = () => {
-    new Audio(sound)?.play()
-    setNotifTrigger(!notifTrigger)
-  };
-      
+  
   const handleClick = (e) => {
     setAnchorEl(e?.currentTarget);
   };
+  
+    const playSound = () => {
+      if(iSClicked){
+        new Audio(sound)?.play()
+      }
+      setNotifTrigger(!notifTrigger)
+      audioRef?.current?.click()
 
-  const checkNotifs = async() => {
-    const canIUsePush = canUsePush()
-    setAllowNotifs(canIUsePush)
-    if(!canIUsePush) {
-     setInfoDialog({message:'Push уведомления не поддерживаются в этом браузере', type:"info"});
-    }
-  }
+    };
 
-  // const getDeviceTokenForNotifs = async() => {
-  //   const appToken = await generateToken();
-  //   localStorage.setItem("dt", appToken)
-  // };
-
- 
-// console.log(allowNotifs,"alllow")
   if(canUsePush()){
     const messaging = getMessaging(firebaseApp);
-
-
     if(!localStorage.getItem("dt")) {
-     
-      getToken(messaging, { vapidKey: "BL9M8IRH_J6IAHVHod8G0_aVhdQfSDlAJBQ76VIYpnfGeCxtsbMuV3uxrP0ZjLLN0SPWu2CigsToA-2KVW9JI5c" })
+      getToken(messaging, { vapidKey: "BL9M8IRH_J6IAHVHod8G0_aVhdQfSDlAJBQ76VIYpnfGeCxtsbMuV3uxrP0ZjLLN0SPWu2CigsToA-2KVW9JI5c"})
       .then((currentToken) => {
         localStorage.setItem("dt", currentToken)
         sendDeviceToken(currentToken)
       })
     }
     onMessage(messaging, (payload) => {
-      console.log(payload,"payload in bell")
-      setNotifTrigger(!notifTrigger)
+      // setNotifTrigger(!notifTrigger)
       audioRef.current.click()
       setAnchorEl(buttonRef.current)
     })
   };
+
   
   useEffect(() => {
     setNotificationCount(user?.notificationsReadCount)
     trigger({
-      page:page,
+      page:1,
       count:1000,
       "byDate": {
         ...initDate
@@ -152,23 +137,27 @@ const NotificationBell = ({
     setNotifications(notif)
   }, [user,notif, notifTrigger]);
 
-
-   useEffect(() => {
+  useEffect(() => {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data?.type === 'REFRESH_PAGE') {
-          setNotifTrigger(!notifTrigger)
-          audioRef.current.click()
+          audioRef?.current?.click()
+          //  setNotificationCount(notificationCount+1)
+
+          // setNotifTrigger(!notifTrigger)
           setAnchorEl(buttonRef.current)
         }
       })
     }
   }, []);
 
+  window.addEventListener('click', () => {
+    setIsClicked(true)
+  });
 
   return (
     <div>
-      <OpenBtn clickFunc={(handleClick)} notificationCount={notificationCount} buttonRef={buttonRef} open={anchorEl} />        
+      <OpenBtn clickFunc={handleClick} notificationCount={notificationCount} buttonRef={buttonRef} open={anchorEl} />        
       <StyledMenu
         anchorEl={anchorEl}
         open={open}

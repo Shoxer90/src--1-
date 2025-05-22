@@ -2,13 +2,8 @@ import { Badge, IconButton, Tooltip } from "@mui/material"
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { memo } from "react";
-import styles from "../index.module.scss";
-import styles2 from "../../Container/Header/index.module.scss";
-import { useTranslation } from "react-i18next";
-
 
 const OpenBtn = ({clickFunc, buttonRef, notificationCount, open}) => {
-  const {t} = useTranslation();
   const bellStyle = {
     position:"relative",
     top:"-10px",

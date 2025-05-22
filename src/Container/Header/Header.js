@@ -121,7 +121,8 @@ const Header = ({
               />
               <span className={styles.routeName}>{t("basket.useprepayment")}</span>
             </h6>
-             <NotificationBell user={user} 
+             <NotificationBell 
+                user={user} 
                 setNotifTrigger={setNotifTrigger}
                 notifTrigger={notifTrigger}
               />
@@ -158,26 +159,6 @@ const Header = ({
               <span className={styles.routeName}>{t("menubar.basket")}</span> 
             </Button>
           </Badge>
-
-        {/* <Tooltip
-          onClick={()=>setOpenBasket(true)}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          >
-            <Badge 
-              badgeContent={basketGoodsqty}
-              color="warning" 
-              overlap="circular" 
-              style={{  transform:windWidth<785?'translate(65px, -14px)':'translate(105px, -14px)', zIndex:10,fontWeight:700}}
-            > </Badge>
-            <Button variant="contained" sx={{background:"#3FB68A",position:"relative"}}>
-              <ShoppingCartIcon/> 
-              <span className={styles.routeName}>{t("menubar.basket")}</span> 
-            </Button>
-        </Tooltip> */}
-
           <MenuBurger logout={logOutFunc} setActiveBtn={setActiveBtn} user={user}/>
         </div>
      </div>
