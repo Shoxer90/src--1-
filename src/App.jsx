@@ -546,7 +546,7 @@ const App = () => {
           <Route path="/confirmation/*" element={<ConfirmationV2 />} />
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
-          <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
+          <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc}/>} />
           <Route path="/kuku" element={<IframeReader />} />
           {/* ADMIN PAGE */}
           {/* <Route path="/admin/*" element={<AdminPage />} />
@@ -558,6 +558,7 @@ const App = () => {
           <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} /> */}
         </Routes> :
         <>
+         
          
           <Header
             setOpenBasket={setOpenBasket}
@@ -635,6 +636,7 @@ const App = () => {
             <Route path="/qrsoccet" element={<QrSoccet />} />
             {/* <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} /> */}
             <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
+            <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
             <Route path="/prepayment" element={<PrePaymentList 
               setOpenBasket={setOpenBasket} 
               setToBasket={setToBasket}
@@ -646,6 +648,8 @@ const App = () => {
               logOutFunc={logOutFunc}
             />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+            {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
+            {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
             {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
             {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
           </Routes> :
