@@ -46,6 +46,7 @@ const BasketList = ({t, logOutFunc}) => {
     logOutFunc()
     getBasketList() 
   }, []);
+<<<<<<< HEAD
 
 useEffect(() => {
   const handlePageShow = (event) => {
@@ -58,6 +59,8 @@ useEffect(() => {
   window.addEventListener("pageshow", handlePageShow);
   return () => window.removeEventListener("pageshow", handlePageShow);
 }, []);
+=======
+>>>>>>> b23759ff68b6fe528eeaa1078399f6545930d91e
 
   return(
     !load ? <Loader /> :
