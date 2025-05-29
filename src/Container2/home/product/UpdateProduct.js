@@ -153,6 +153,18 @@ const UpdateProduct = ({
     }
   };
 
+  const changeUpdatedProdInBasket = (id) => {
+    const currBasket = JSON.parse(localStorage.getItem("bascket1"))
+    const newBasketContent = currBasket.map((prodInBasket) => {
+      if(prodInBasket?.id === id) {
+        return currentProduct
+      }else{
+        return prodInBasket
+      }
+    })
+    localStorage.setItem("bascket1", JSON.stringify(newBasketContent))
+  }
+
   const handleUpdate = async() => {
      const newArr = await content.map((item) => {
       if(item?.id === currentProduct?.id){
@@ -162,15 +174,16 @@ const UpdateProduct = ({
       }
     });
     setContent(newArr)
-    if(csvData){
-      sendEmarkCSV(currentProduct?.id, csvData)
-    }
+    // if(csvData){
+    //   sendEmarkCSV(currentProduct?.id, csvData)
+    // }
     updateProduct(currentProduct).then((res) => {
       if(res === 200) {
         setCurrentPage(1)
         setFetching(true)
-        
-        deleteBasketItem(currentProduct?.id)
+        // deleted
+        // deleteBasketItem(currentProduct?.id)
+        changeUpdatedProdInBasket(currentProduct?.id)
 
         setFlag(!flag)
         setMessage({message:t("dialogs.welldone"),type:"success"});
@@ -232,7 +245,7 @@ const UpdateProduct = ({
 
   }, [product?.discount, product?.price]);
 
-
+console.log(currentProduct?.isEmark,"curr is Emark")
   useEffect(() => {
     currentProduct && functionInit()
   }, [typeCode]);
@@ -377,6 +390,18 @@ const UpdateProduct = ({
           <div style={{height:"60px",color:"red",fontSize:"80%", width:"100%"}}>
            {fixMessage && fixMessage}
           </div>
+            <FormControlLabel 
+              style={{alignSelf:"start"}}
+              name="isEmark"
+              control={<Checkbox />} 
+              label={t("productinputs.isEmark")}
+              // value={currentProduct?.isEmark}
+              checked={!!currentProduct?.isEmark}
+              onChange={(e)=> setCurrentProduct({
+                ...currentProduct,
+                [e.target.name]: e.target.checked
+              })}
+            />
           <Box>
             {currentProduct?.dep === 2 && 
               <FormControlLabel 

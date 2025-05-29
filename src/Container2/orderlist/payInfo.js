@@ -118,7 +118,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status, orderS
               </strong>
             </div>
             <div style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"10px",margin:"20px"}}>
-              {basketContent?.mainVpos && 
+              { basketContent?.mainVpos && 
                 <BankButton
                   {...basketContent?.mainVpos}
                   createActiveBtn={createActiveBtn} 
@@ -126,7 +126,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status, orderS
                   myTitle="Arca"
                 />
               }
-              {basketContent?.paymentTypes &&
+              { basketContent?.paymentTypes &&
                 basketContent?.paymentTypes?.map((item) => {
                   return <BankButton
                     createActiveBtn={createActiveBtn} 
@@ -147,7 +147,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status, orderS
         />
 
       </div>
-      {activeBtn  && (!basketContent?.receiptLink && basketContent?.isPrepayment) ?
+      {activeBtn  || (!basketContent?.receiptLink && basketContent?.isPrepayment) ?
       <div onClick={payForOrder}>
         <Button variant="contained" style={{color:"white",letterSpacing:"5px", background:"#63B48D",width:"200px",textTransform: "capitalize"}}>
           {t("basket.linkPayment")}

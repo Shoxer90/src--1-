@@ -144,7 +144,7 @@ export const getNews = async(lang) => {
     const data = await axios.get(baseUrl + `Login/GetNews?language=${lang}`, {});
     return data.data
   }catch(err){
-    return err
+    return console.log(err)
   }
 }
 
