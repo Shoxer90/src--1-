@@ -1,7 +1,7 @@
 import React, { useEffect, useState, memo} from "react";
 import styles from "../index.module.scss";
 import { numberSpacing } from "../../../modules/numberSpacing";
-import { Divider } from "@mui/material";
+import { Button, ButtonGroup, Divider } from "@mui/material";
 
 const ProductPrePayment = ({
   t, 
@@ -33,6 +33,7 @@ const ProductPrePayment = ({
       setFlag(e.target.value)
     }
 };
+
 const payChanges = (e) => {
   if(e.target.name === "cashAmount") {
     setPaymentInfo({
@@ -92,26 +93,63 @@ const limitChar = (e,val) => {
       <h6>{t("basket.prepaymentGenerate")}</h6>
       <div>
         <span>{t("history.cash")}</span>
-        <input
-          name="cashAmount"
-          value={paymentInfo?.cashAmount || ""}
-          autoComplete="off"
-          onChange={(e)=> {
-            if(+e.target.value + paymentInfo?.cardAmount <= val) handleChangeInput(e)
-          }}
-        />
+        <ButtonGroup>
+        <Button 
+          size="small" 
+          style={{background:"#F69221", color:"white", padding:"1px 3px"}} 
+          onClick={()=>{
+           setBlockTheButton(false)
+            setPaymentInfo({
+              ...paymentInfo,
+              "cardAmount": 0,
+              "cashAmount":totalPrice,
+            })
+          }
+          }
+        >
+          100%
+        </Button>
+          <input
+            name="cashAmount"
+            value={paymentInfo?.cashAmount || ""}
+            autoComplete="off"
+            style={{width:window?.screenX>1100 && "110px", borderRadius:"0px 5px 5px 0px"}}
+            onChange={(e)=> {
+              if(+e.target.value + paymentInfo?.cardAmount <= val) handleChangeInput(e)
+            }}
+          />
+        </ButtonGroup>
+       
       </div>
     
       <div>
         <span>{t("history.card")}</span>
+        <ButtonGroup>
+        <Button 
+          size="small" 
+          style={{background:"#F69221", color:"white", padding:"1px 3px"}} 
+          onClick={ () => {
+            setBlockTheButton(false)
+            setPaymentInfo({
+              ...paymentInfo,
+              "cashAmount": 0,
+              "cardAmount":totalPrice,
+            })
+          }
+        }
+        >
+          100%
+        </Button>
         <input
           value={paymentInfo?.cardAmount || ""}
           name="cardAmount"
           autoComplete="off"
+          style={{width:window?.screenX>1100 && "110px", borderRadius:"0px 5px 5px 0px"}}
           onChange={(e)=> {
             if(+e.target.value + paymentInfo?.cashAmount <= val) handleChangeInput(e)
           }}
         />
+        </ButtonGroup>
       </div>
 
 {/* PHONE AND NAME */}

@@ -137,7 +137,7 @@ const App = () => {
   });
 
   const whereIsMyUs = async() => {
-    console.log("21.05.2025 update")
+    console.log("29.05.2025 update")
     // setNotifTrigger(!notifTrigger)
     await dispatch(fetchUser()).then(async(res) => {
       console.log(user,"user")

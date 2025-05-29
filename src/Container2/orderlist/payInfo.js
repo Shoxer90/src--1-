@@ -15,7 +15,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const createActiveBtn = (id, url) => {
-     setPaymentUrl()
+    setPaymentUrl()
     setActiveBtn(id)
   };
 
@@ -86,10 +86,10 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status}) => {
       <Divider style={{ background: '#343a40', width:"60%", fontWight:600, margin:"10px 0px" }} />
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center", gap:"10px",margin:"20px"}}>
 
-        {recieptLink ?  
+        { recieptLink ?  
           <>
-            { status === 1 && <PaidButtons recieptLink={recieptLink}/>}
-            {  status === 3 && <h6>{t("history.reverse")}</h6> }
+            { status === 1 || (status === 2 && basketContent?.isPrepayment) && <PaidButtons recieptLink={recieptLink}/>}
+            { status === 3 && <h6>{t("history.reverse")}</h6> }
           </>:
           <div>
             <div style={{fontSize:"98%",color:"EE8D1C"}} >
@@ -127,16 +127,16 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status}) => {
         />
 
       </div>
-        {activeBtn ?
-        <div onClick={payForOrder}>
-          <Button variant="contained" style={{color:"white",letterSpacing:"5px", background:"#63B48D",width:"200px",textTransform: "capitalize"}}>
-            {basketContent?.isPrepayment ? t("basket.useprepayment") :t("basket.linkPayment")} 
-          </Button>
-        </div> :""}
+      {activeBtn ?
+      <div onClick={payForOrder}>
+        <Button variant="contained" style={{color:"white",letterSpacing:"5px", background:"#63B48D",width:"200px",textTransform: "capitalize"}}>
+          {basketContent?.isPrepayment ? t("basket.useprepayment") :t("basket.linkPayment")} 
+        </Button>
+      </div> :""}
 
-         <Dialog open={isLoading}>
-            <Loader />
-          </Dialog>
+      <Dialog open={isLoading}>
+        <Loader />
+      </Dialog>
     </div>
   )
 }

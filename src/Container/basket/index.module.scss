@@ -162,21 +162,25 @@
   
   & div{
     margin: 5px;
+    align-items: center;
+    
     & input{
-      border-radius: 5px;
-      margin: 0px 10px;
+      border-radius:5px;
       padding-left: 5px;
-      // width: 80%;
       width:200px;
-  }
+      height: 27px;
+    }
     & >span{
-      min-width: 230px;
+    //  width:150px;
       // width: fit-content;
     }
     display: flex;
-    justify-content: flex-start;
+    // justify-content: flex-start;
+    justify-content: space-between;
+    
     flex-flow:nowrap;
   }
+  padding: 5px 10px;
 };
 
 .bask_container{
@@ -319,8 +323,13 @@ input[type=number] {
     & div{
       font-size: 80%;
       width: 100%;
+       & input{
+      border-radius:5px;
+      padding-left: 5px;
+      width:120px;
+    }
       & >span{
-        min-width:165px;
+        min-width:80px;
       }
       // width:200px;
       display: flex;

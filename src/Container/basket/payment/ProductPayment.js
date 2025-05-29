@@ -1,7 +1,7 @@
 import React, { useEffect, useState, memo} from "react";
 import styles from "../index.module.scss";
 import { numberSpacing } from "../../../modules/numberSpacing";
-import { Divider } from "@mui/material";
+import { Button, ButtonGroup, Divider } from "@mui/material";
 
 const ProductPayment = ({
   t, 
@@ -112,25 +112,62 @@ const ProductPayment = ({
         <span>
           {t("history.cash")}
         </span>
-        <input
-          autoComplete="off"
-          name="cashAmount"
-          value={paymentInfo?.cashAmount || ""}
-          onChange={(e)=> {
-            if(+e.target.value <= val){
-              handleChangeInput(e)
+        <ButtonGroup>
+          <Button 
+            size="small" 
+            style={{background:"#F69221", color:"white", padding:"1px 3px"}} 
+            onClick={ () => {
+              setBlockTheButton(false)
+              setPaymentInfo({
+                ...paymentInfo,
+                "cashAmount": totalPrice,
+                "cardAmount": 0,
+              })
             }
-          }}
-        />
+            }
+          >
+            100%
+          </Button>
+          <input
+            autoComplete="off"
+            name="cashAmount"
+            style={{width:window?.screenX>1100 && "150px", borderRadius:"0px 5px 5px 0px"}}
+            value={paymentInfo?.cashAmount || ""}
+            onChange={(e)=> {
+              if(+e.target.value <= val){
+                handleChangeInput(e)
+              }
+            }}
+          />
+        </ButtonGroup>
+        
       </div>
 
       <div>
         <span>
           {t("history.card")}
         </span>
+        <ButtonGroup >
+         <Button 
+          size="small" 
+
+          style={{background:"#F69221", color:"white", padding:"1px 3px"}}  
+          onClick={ () => {
+            setBlockTheButton(false)
+            setPaymentInfo({
+              ...paymentInfo,
+              "cashAmount": 0,
+              "cardAmount":totalPrice,
+            })
+          }
+          }
+        >
+          100%
+        </Button>
         <input
           value={paymentInfo?.cardAmount || ""}
           name="cardAmount"
+          style={{width:window?.screenX>1100 && "100px", borderRadius:"0px 5px 5px 0px"}}
           autoComplete="off"
           onChange={(e)=> {
             if(+e.target.value <= val){
@@ -138,6 +175,8 @@ const ProductPayment = ({
             }
           }}
         />
+        </ButtonGroup>
+
       </div>
       <div>
         <span>
