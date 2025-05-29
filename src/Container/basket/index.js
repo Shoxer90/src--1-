@@ -417,15 +417,6 @@ const Bascket = ({
                 flag={flag}
                 createMessage={createMessage}
                 freezeCount={freezeCount}
-                // loadBasket={loadBasket}
-                // setFlag={setFlag}
-                // setSingleClick={setSingleClick}
-                // singleClick={singleClick}
-                // paymentInfo={paymentInfo}
-                // setIsEmpty={setIsEmpty}
-                // totalPrice={totalPrice}
-                // message={message}
-                // setBlockTheButton={setBlockTheButton}
               />
             </DialogContent>
             <Divider style={{margin:2,height:"2px", backgroundColor:"black"}}/>

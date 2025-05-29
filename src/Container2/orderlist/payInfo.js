@@ -89,7 +89,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status}) => {
         {recieptLink ?  
           <>
             { status === 1 && <PaidButtons recieptLink={recieptLink}/>}
-            {  status === 3 && <h6>{t("history.reverse")}</h6> }
+            { status === 3 && <h6>{t("history.reverse")}</h6> }
           </>:
           <div>
             <div style={{fontSize:"98%",color:"EE8D1C"}} >
@@ -98,7 +98,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status}) => {
               </strong>
             </div>
             <div style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"10px",margin:"20px"}}>
-              {basketContent?.mainVpos && 
+              { basketContent?.mainVpos && 
                 <BankButton
                   {...basketContent?.mainVpos}
                   createActiveBtn={createActiveBtn} 
@@ -106,7 +106,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status}) => {
                   myTitle="Arca"
                 />
               }
-              {basketContent?.paymentTypes &&
+              { basketContent?.paymentTypes &&
                 basketContent?.paymentTypes?.map((item) => {
                   return <BankButton
                     createActiveBtn={createActiveBtn} 
