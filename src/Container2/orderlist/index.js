@@ -50,7 +50,21 @@ const BasketList = ({t, logOutFunc}) => {
     getBasketList() 
   }, []);
 
-  return (
+
+useEffect(() => {
+  const handlePageShow = (event) => {
+    if (event.persisted || performance.getEntriesByType("navigation")[0]?.type === "back_forward") {
+      // Safari iOS: принудительно обновить при возврате "назад"
+      window.location.reload();
+    }
+  };
+
+  window.addEventListener("pageshow", handlePageShow);
+  return () => window.removeEventListener("pageshow", handlePageShow);
+}, []);
+
+
+  return(
     !load ? <Loader /> :
       basketContent?.mainVpos ? 
         <div className={styles.orderContainer}> 
