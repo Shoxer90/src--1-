@@ -436,10 +436,6 @@ const Bascket = ({
                 flag={flag}
                 createMessage={createMessage}
                 freezeCount={freezeCount}
-                setOpenEmarkInput={setOpenEmarkInput}
-                setOpenBasket={setOpenBasket}
-                setFrom={setFrom}
-
               />
             </DialogContent>
             <Divider style={{margin:2,height:"2px", backgroundColor:"black"}}/>
