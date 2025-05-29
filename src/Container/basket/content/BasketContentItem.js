@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import ConfirmDialog from '../../../Container2/dialogs/ConfirmDialog';
 import {cheackProductCountnPrice } from '../../../services/products/productsRequests';
 import { useTranslation } from 'react-i18next';
+import useDebonce from '../../../Container2/hooks/useDebonce';
 
 const BasketContentItem = ({
   el, 
@@ -17,10 +18,13 @@ const BasketContentItem = ({
   createMessage,
   freezeCount,
 }) => {
+  
   const [notAvailable, setNotAvailable] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [errRed, setErrRed] = useState(false);
   const [ownCount, setOwnCount] = useState(0);
+  const [newCount,setNewCount] = useState(el?.count)
+  const debounceProdCount = useDebonce(newCount, 200);
 
   const ref = useRef();
   const {t} = useTranslation();
@@ -28,7 +32,8 @@ const BasketContentItem = ({
   const removeOneProduct = async() => {
     notAvailable && setAvail(avail.filter(item => item !== el.id))
     editRemovePrepaymentItem(el?.productId || el?.id)
-    deleteBasketItem(el.id)
+    deleteBasketItem(el.id, el?.isEmark)
+ 
     setOpenDialog(false)
   };
 
@@ -153,7 +158,7 @@ const editPrepaymentCounts = async(id,value) => {
   let infuncData = await JSON.parse(localStorage.getItem("isEditPrepayment"))
   if(infuncData) {
       let flag = 0
-      let arr = infuncData?.sales.map((item) => {
+      let arr = infuncData?.sales?.map((item) => {
         if(item?.id === id) {
           flag+=1
           return {
@@ -178,6 +183,10 @@ const editPrepaymentCounts = async(id,value) => {
   useEffect(() => {  
     setNotAvailable(false)
   }, [flag]);
+
+  // useEffect(() => {
+  //   newCount && debounceProdCount && lastFunc(newCount)
+  // }, [debounceProdCount, el?.count])
 
   useEffect(() => {
     avail?.length ? 
@@ -252,9 +261,11 @@ const editPrepaymentCounts = async(id,value) => {
           <input
             ref={ref}
             style={{ width:"100%",border: !el?.count? "red solid 2px":null}}
+            // value={newCount}
             value={el?.count}
             onChange={(event) => {
               setErrRed(false)
+              // setNewCount(event.target.value)
               lastFunc(event.target.value)
             }} 
           />

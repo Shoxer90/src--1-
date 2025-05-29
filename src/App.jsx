@@ -56,6 +56,7 @@ import AddNewClientInfo from "./Container2/dialogs/AddNewClientInfo";
 import IframeReader from "./Container/iframe/iframeReader"; 
 import { removeDeviceToken } from "./services/notifications/notificatonRequests";
 import { onMessage } from "firebase/messaging";
+import EmarkInputForDeleteItem from "./Container/basket/emark/EmarkInputForDeletItem";
 
 const checkForUpdates = async () => {
   try {
@@ -111,7 +112,10 @@ const App = () => {
   const [searchedNotAvailableProd, setSearchedNotAvailableProd] = useState();
   const [openAddDialog,setOpenAddDialog] = useState(false);
   const [updateAvailable, setUpdateAvailable] = useState(false);
-  const [ notifTrigger, setNotifTrigger] = useState(false)
+  const [ notifTrigger, setNotifTrigger] = useState(false);
+  const [openEmarkInput, setOpenEmarkInput] = useState(false);
+  const [canIopenEmark, setCanIOpenEmark] = useState(false);
+
   const [openWindow, setOpenWindow] = useState({
     prepayment: false,
     payment: false,
@@ -179,33 +183,80 @@ const App = () => {
     }
   };
 
+  const isEmarkBarcode = (input) => {
+    if (input?.substring(0, 2) === "01" && input?.substring(16, 18) === "21") {
+      const emarkList = JSON.parse(localStorage.getItem("emarkList")) || [];
+      const emarkNewList = JSON.parse(localStorage.getItem("emarkNewList")) || [];
+      const currentBarcode = input?.slice(2,16)
+      console.log(emarkNewList,"emarkNewList")
+      console.log(currentBarcode,"BARCODE")
+      console.log(emarkList,"LISTT")
+      if(!emarkList?.includes(input)) {
+        localStorage.setItem("emarkList", JSON.stringify(
+          [
+            input,
+            ...emarkList
+          ]
+        ));
+        let flag=0
+        let newDataForStorage = [];
+        newDataForStorage = emarkNewList?.map((prod) => {
+          if(prod?.barcode === currentBarcode) {
+            flag+=1
+            // return prod?.emarks = [...prod?.emarks, input]
+            return prod?.emarks.push(input)
+          }
+          else {
+            return prod
+          }
+        });
+        if(!flag) {
+          console.log("djkdhjkfndjkfndjkfn")
+          newDataForStorage?.push({barcode:currentBarcode,emarks:[input]})
+        }
+        console.log(newDataForStorage,"new data for storage")
+        localStorage.setItem("emarkNewList", JSON.stringify(newDataForStorage))
+        return true
+      }else{
+        setMessage({message:"This qr is already in basket", type:"error"})
+        return false
+      }
+    } 
+    return true
+  };
+
+
+
   const byBarCodeSearching = async(group,barcode) => {
-  
     if(barcode === "" || barcode === " "){
       await queryFunction(status, 1).then((res) => {
         setContent(res?.data)
       })
       setCurrentPage(2)
       return
-    }else{
+    } else {
       setMessage("")
       await byBarCode(group, barcode).then((res) => {
         if(from === "basket"){
           if(res?.length) {
+             if(!isEmarkBarcode(barcode)){
+              return
+            }
             res.forEach((item) =>{
-              if(item?.barCode === barcode){
-              // if(item?.barCode === barcode || item?.emark === barcode){
+              if(item?.barCode === barcode || item?.emark === barcode){
                 if(item?.remainder){
                   setSearchValue("")
                   setToBasketFromSearchInput(item, 1)
                 }else{
+                  console.log("1")
                   return setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
                 }
               }
             })
-          }else(
-           setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
-          )
+          } else {
+                  console.log("2")
+            setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
+          }
         }else if(from === "main") {
           return res?.length ? setContent(res) : (
             setContent([]) ,
@@ -256,12 +307,17 @@ const App = () => {
   };
 
   const changeCountOfBasketItem = async(id,value) => {
-   
+            console.log(value, "Value")
+    
     let handleArr = [] 
     await  getBasketContent().then((res) => {
       res.map((prod) => {
         if(prod.id === id) {
-          
+          if(prod?.count > value && prod?.isEmark){
+            console.log(value, "Value")
+            // emark
+            setOpenEmarkInput(true)
+          }
           return handleArr?.push({...prod, count: value})
         }else{
          return handleArr?.push(prod)
@@ -272,8 +328,12 @@ const App = () => {
     loadBasket()
   };
 
-  const deleteBasketItem = async(id) => {
+  const deleteBasketItem = async(id,isEmark) => {
     let handleArr = await basketContent.filter(prod => prod.id !== id)
+    if(isEmark && JSON.parse(localStorage.getItem("emarkList"))){
+      console.log(JSON.parse(localStorage.getItem("emarkList")), "app jss storsga")
+      setOpenEmarkInput(true)
+    }
    
 // handling freze prods when you want to close prepayment transaction
       let freeze = await JSON.parse(localStorage.getItem("freezeBasketCounts"))
@@ -285,6 +345,7 @@ const App = () => {
     if(!handleArr?.length) {
       localStorage.removeItem("endPrePayment")
       localStorage.removeItem("isEditPrepayment")
+      localStorage.removeItem("emarkList")
       setOpenWindow({
         prepayment: false ,
         payment: false,
@@ -301,7 +362,8 @@ const App = () => {
     !localStorage.getItem("endPrePayment") && setFlag(flag+1);
     localStorage.removeItem("endPrePayment")
     localStorage.removeItem("isEditPrepayment")
-    localStorage.removeItem("freezeBasketCounts")
+    localStorage.removeItem("endPrePayment")
+    localStorage.removeItem("emarkList")
     setPaymentInfo({
       discountType: 0,
       cashAmount: 0,
@@ -352,20 +414,21 @@ const App = () => {
       setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
       return
     }else if(basketExist.includes(wishProduct?.id)){
-      const newBasket = basket.map((prod) => {
-        if(prod?.id === wishProduct?.id){
-          return {
-            ...prod,
-            count:prod?.count + 1,
-            discountedPrice:wishProduct?.discountedPrice,
+        console.log(wishProduct?.emark, wishProduct?.barCode, "emark barcode")
+        const newBasket = basket.map((prod) => {
+          if(prod?.id === wishProduct?.id){
+            return {
+              ...prod,
+              count:prod?.count + 1,
+              discountedPrice:wishProduct?.discountedPrice,
+            }
+          }else{
+            return prod
           }
-        }else{
-          return prod
-        }
-      })
-      localStorage.setItem("bascket1", JSON.stringify(newBasket))
-      setSearchValue("")
-      return loadBasket()
+        })
+        localStorage.setItem("bascket1", JSON.stringify(newBasket))
+        setSearchValue("")
+        return loadBasket()
     }else{
       basket.unshift({
         ...wishProduct,
@@ -658,7 +721,12 @@ const App = () => {
               horizontal: "center"
             }} 
           >
-            <Alert onClose={()=>setMessage({type:"",message:""})} severity={message?.type || "success"} sx={{ width: '100%' }}>
+            <Alert 
+            onClose={()=>{
+              setBarcodeScanValue("")
+              setMessage({type:"",message:""})
+            }}
+             severity={message?.type || "success"} sx={{ width: '100%' }}>
               <strong style={{fontSize:"150%"}}>{message?.message}</strong>
             </Alert>
           </Snackbar>
@@ -672,6 +740,13 @@ const App = () => {
             close={()=>setMessage({type:"",message:""})}
             content={message?.confirmMessage}
           />
+
+           <ConfirmDialog
+            func={()=> setOpenEmarkInput(true)}
+            open={canIopenEmark}
+            close={()=>setCanIOpenEmark(false)}
+            content={"heracnel"}
+          />
           {updateAvailable && (
             <Dialog open={updateAvailable}>
               <Button onClick={() => window.location.reload(true)}>
@@ -679,6 +754,7 @@ const App = () => {
               </Button>
             </Dialog>
           )}
+          <EmarkInputForDeleteItem open={openEmarkInput} close={()=>setOpenEmarkInput(false)} />
         </>
       }
     </div>
