@@ -13,7 +13,7 @@ import { Divider} from "@mui/material";
 import styles from "./index.module.scss";
 import PaymentRedirector from "./appJS";
 
-const BasketList = ({t}) => {
+const BasketList = ({t, logOutFunc}) => {
   const search = useLocation().search;
   const saleId = new URLSearchParams(search).get('saleId')
   const [basketContent, setBasketContent] = useState([]);
@@ -49,8 +49,8 @@ const BasketList = ({t}) => {
     
 
   useEffect(() => {
+    logOutFunc()
     getBasketList() 
-   
   }, []);
 
 useEffect(() => {
@@ -64,9 +64,6 @@ useEffect(() => {
   window.addEventListener("pageshow", handlePageShow);
   return () => window.removeEventListener("pageshow", handlePageShow);
 }, []);
-
-
-  console.log(recieptLink,"reciept link")
 
   return(
     !load ? <Loader /> :

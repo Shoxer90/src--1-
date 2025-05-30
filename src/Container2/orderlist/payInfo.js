@@ -88,7 +88,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status}) => {
 
         { recieptLink ?  
           <>
-            { status === 1 || (status === 2 && basketContent?.isPrepayment) && <PaidButtons recieptLink={recieptLink}/>}
+            { (status === 1 || (status === 2 && basketContent?.isPrepayment) ) && <PaidButtons recieptLink={recieptLink}/>}
             { status === 3 && <h6>{t("history.reverse")}</h6> }
           </>:
           <div>
@@ -127,7 +127,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status}) => {
         />
 
       </div>
-      {activeBtn ?
+      {activeBtn || (basketContent?.isPrepayment && basketContent?.status) ?
       <div onClick={payForOrder}>
         <Button variant="contained" style={{color:"white",letterSpacing:"5px", background:"#63B48D",width:"200px",textTransform: "capitalize"}}>
           {basketContent?.isPrepayment ? t("basket.useprepayment") :t("basket.linkPayment")} 
