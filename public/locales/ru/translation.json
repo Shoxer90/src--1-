@@ -492,6 +492,8 @@
     "payByActiveCard": "Оплатить oсновной картой",
     "activeCard": "Оплатить oсновной картой",
     "payByAttachedCard": "Оплатить картой",
+    "payByOther": "Другие варианты оплаты",
+
     "checkArcaStatus": "Проверка статуса прикрепления карты",
     "priceListSubTitle1": "Услуги",
     "paymentMethods": "Способ оплаты",

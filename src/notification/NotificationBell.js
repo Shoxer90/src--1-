@@ -117,7 +117,6 @@ const NotificationBell = ({
       })
     }
     onMessage(messaging, (payload) => {
-      // setNotifTrigger(!notifTrigger)
       audioRef.current.click()
       setAnchorEl(buttonRef.current)
     })
@@ -142,9 +141,6 @@ const NotificationBell = ({
       navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data?.type === 'REFRESH_PAGE') {
           audioRef?.current?.click()
-          //  setNotificationCount(notificationCount+1)
-
-          // setNotifTrigger(!notifTrigger)
           setAnchorEl(buttonRef.current)
         }
       })

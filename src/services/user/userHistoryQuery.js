@@ -121,3 +121,16 @@ export async function getHistoryById(id) {
 
 }
 
+
+
+export async function getHistoryByIdForReverse(id) {
+  try {
+    const data = await axios.get(baseUrl + `History/FixReceiptIds?saleDetailId=${id}`,option())
+    console.log(data, "DATA FOR NEW API")
+    return data?.data
+  }catch(err) {
+    return err?.response?.status
+  }
+
+}
+

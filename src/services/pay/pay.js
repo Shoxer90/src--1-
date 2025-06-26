@@ -36,12 +36,21 @@ export const payRequestQR = async(content) => {
   }
 };
 
+export const checkAndGetReceiptLink = async(saleId) => {
+  try{
+    const data = await axios.get(baseUrl + `Sale/CheckStatus?saleId=${saleId}`, option())
+    return data
+  }catch(err){
+    return err.response.status
+  }
+}
+
 export const transferQuery = async(id) => {
   const option = {
     headers: {
       Authorization: localStorage.getItem("token"),
     },
-  };
+  }
   try{
     const data = await axios.get(baseUrl + `History/CheckStatus?transferId=${id}`, option)
     return data

@@ -137,10 +137,8 @@ const App = () => {
   });
 
   const whereIsMyUs = async() => {
-    console.log("29.05.2025 update")
-    // setNotifTrigger(!notifTrigger)
+    console.log("19.06.2025 100% total")
     await dispatch(fetchUser()).then(async(res) => {
-      console.log(user,"user")
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
         `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
@@ -494,7 +492,7 @@ const App = () => {
           <Route path="/confirmation/*" element={<ConfirmationV2 />} />
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
-          <Route path="/basket/*" element={<BasketList t={t} />} />
+          <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
           <Route path="/kuku" element={<IframeReader />} />
           {/* ADMIN PAGE */}
           {/* <Route path="/admin/*" element={<AdminPage />} />
@@ -582,7 +580,7 @@ const App = () => {
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} />} />
             <Route path="/qrsoccet" element={<QrSoccet />} />
             {/* <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} /> */}
-            <Route path="/basket/*" element={<BasketList t={t} />} />
+            <Route path="/basket/*" element={<BasketList t={t}  logOutFunc={logOutFunc}/>} />
             <Route path="/prepayment" element={<PrePaymentList 
               setOpenBasket={setOpenBasket} 
               setToBasket={setToBasket}

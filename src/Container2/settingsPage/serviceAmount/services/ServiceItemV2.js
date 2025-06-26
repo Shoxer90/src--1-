@@ -14,7 +14,6 @@ import ActivateStepByStep from "../pay/ActivatStepByStep"
 import { setPayForEhdm } from "../../../../store/storex/openPaySlice";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
 
-
 const ServiceItemV2 = ({
   service,
   content,
@@ -29,10 +28,10 @@ const ServiceItemV2 = ({
   const user = useSelector(state => state?.user?.user)
   const dispatch = useDispatch();
   const [openDialog, setOpenDialog] = useState(false)
-   
   const [message, setMessage] = useState({message:"",type:""});
   const [openPay, setOpenPay] = useState(false);
   const [activateEhdm,setActivateEhdm] = useState(false);
+
   
   const [openCompleteUserInfo,setOpenCompleteUserInfo] = useState(false);
   
@@ -52,11 +51,7 @@ const ServiceItemV2 = ({
 
 
   const notAvailableService = () => {
-  
     if(service?.id === 3) {
-      // if(!user?.isRegisteredInEhdm && service?.isActive) {
-      //   return setOpenDialog(true)
-      // }
       if(!user?.isRegisteredInEhdm && !service?.isActive) {
         dispatch(setPayForEhdm(true))
         return setOpenCompleteUserInfo(true)
@@ -77,8 +72,8 @@ const ServiceItemV2 = ({
 
   useEffect(() => {
     isOpenPayForEhdm && notAvailableService()
-  }, [])
-
+  }, []);
+  
   return (
     <>
       <Card 

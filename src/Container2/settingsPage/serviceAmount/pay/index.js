@@ -1,10 +1,10 @@
 import { Button, Dialog, DialogContent, Divider, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import PrepaymentConfirmation from "../prepayment/PrepaymentConfirm";
 import PaymentConfirm from "../paymentDialog/PaymentConfirm";
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
-import { payForServiceWithAttachedCard, payForServiceWithNewCard } from "../../../../services/internal/InternalPayments";
+import { getPaymenTypesArcaOther, payForServiceWithAttachedCard, payForServiceWithNewCard } from "../../../../services/internal/InternalPayments";
 import Loader from "../../../loading/Loader";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,8 @@ import CompleteUserDataForEhdm from "../../updates/CompleteUserDataForEhdm";
 import { payForEhdm, payForEhdmWithUsingCard } from "../../../../services/auth/auth";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
 import { useLocation } from "react-router-dom";
+import ChoosePaymentType from "../pay/paymentType/index";
+import paymentType from "../pay/paymentType/index";
 
 const langEnum = () => {
   let lang = localStorage.getItem("lang") || localStorage.getItem("i18nextLng")
@@ -43,12 +45,15 @@ const PayComponent = ({
   const user = useSelector(state => state?.user?.user)
   const [url, setUrl] = useState("");
   const [openSuccess, setOpenSuccess] = useState(false);
+  const [paymentType,setPaymentType] = useState([]);
+  
   const [billsData, setBills] = useState({
     web: true,
     daysEnum: 1,
     isBinding: content?.autopayment?.hasAutoPayment,
     serviceType: id,
-    cardId: content?.autopayment?.defaultCard?.cardId
+    cardId: content?.autopayment?.defaultCard?.cardId,
+    paymentType: 1
   });
   const [method,setMethod] = useState(1)
   const [openBankInfo,setOpenBankInfo] = useState();
@@ -61,7 +66,9 @@ const PayComponent = ({
       daysEnum: 1,
       isBinding: content?.autopayment?.hasAutoPayment,
       serviceType: serviceType,
-      cardId: content?.autopayment?.defaultCard?.cardId
+      cardId: content?.autopayment?.defaultCard?.cardId,
+      paymentType: 1
+
     })
     setOpenPay(false)
   };
@@ -149,7 +156,14 @@ const PayComponent = ({
         // openUrl(res?.formUrl)
         window.location.href = res?.formUrl
       })
-  }
+  };
+
+  
+  useEffect(() => {
+    getPaymenTypesArcaOther().then((res) => {
+      setPaymentType(res)
+    });
+  }, []);
 
   return(
     <Dialog open={openPay}>
@@ -175,6 +189,7 @@ const PayComponent = ({
         id={id}
       />
       <Divider sx={{m:1}} color="black" />
+      
 
       <PaymentConfirm
         cardArr={content?.cards}
@@ -184,6 +199,14 @@ const PayComponent = ({
         method={method}
         setMethod={setMethod}
         activateEhdm={activateEhdm}
+      />
+      <ChoosePaymentType 
+        billsData={billsData}
+        setBills={setBills}
+        paymentType={paymentType}
+        setPaymentType={setPaymentType}
+        setMethod={setMethod}
+
       />
         <Divider sx={{m:1}} color="black" />
 

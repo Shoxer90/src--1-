@@ -5,6 +5,7 @@ import styles from "./index.module.scss";
 import { useTranslation } from 'react-i18next';
 import AttachedCardsItem from './AttachedCardsItem';
 import PaymentLogo from "../../../../modules/PaymentLgo";
+import paymentType from '../pay/paymentType';
 
 const PaymentConfirm = ({
   cardArr,
@@ -56,13 +57,15 @@ const PaymentConfirm = ({
       }
       </div>
       <Divider sx={{bgcolor:"black"}} />
+     
       <div 
         className={styles.subscription_item}
-        style={activateBtn === 100 ? activeStyle :null}
+        style={activateBtn === 100 && payData?.paymentType === 1? activeStyle :null}
       >
         <label htmlFor="no attach" style={{display:"flex",justifyContent:"flex-start",width:"100%"}}>
         <input 
           id="no attach"
+          checked={!payData?.cardId && payData?.paymentType === 1 }
           type="radio"
           name="pay operation"
           onChange={()=>{
@@ -71,7 +74,9 @@ const PaymentConfirm = ({
             setMethod(2)
             setPayData({
               ...payData,
-              attach: false
+              attach: false,
+                paymentType:1,
+
             })
           }}
         />
@@ -91,13 +96,16 @@ const PaymentConfirm = ({
               setMethod(2)
               setPayData({
                 ...payData,
-                attach: !payData?.attach
+                attach: !payData?.attach,
+                paymentType:1,
               })
             }}
           />
           <span style={{marginLeft:"10px"}}>{t("settings.payWithNewCardAndAttach")}</span>
         </label>}
       </div>
+     
+
     </div>
   )
 }

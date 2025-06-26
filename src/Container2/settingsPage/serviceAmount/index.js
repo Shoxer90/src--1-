@@ -19,7 +19,7 @@ import AutoPaymentSwitch from "./autoPayment"
 import CreditCardNewName from './creditCard/CreditCardNewName.js';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ServicesV2 from './services/ServicesV2.js';
+import ServicesV2 from './services/servicesV2.js';
 
 
 const stylesCard = {
@@ -119,9 +119,13 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
   const addNewCreditCard = async() => {
     setIsLoad(true)
     await postNewCreditCard().then((res) => {
-      setIsLoad(false)
-      window.open(res, '_blank');
-      // window.location.href = res;
+      if(res === "ERR_NETWORK") {
+        setMessage({type:"error", message:t("dialogs.wrong")})
+      }else {
+        setIsLoad(false)
+        window.open(res, '_blank');
+        // window.location.href = res;
+      }
     })
   };
 

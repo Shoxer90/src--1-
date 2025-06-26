@@ -7,10 +7,12 @@ import { hdm_generate } from "../../../services/user/hdm_query";
 import { taxCounting } from "../../../modules/modules";
 
 import HdmStatus from "../../../modules/hdmStatus";
-import ReverseDialog from "../editsales/index";
+import ReverseDialog from "../reverseSale/index";
+// import ReverseDialog from "../editsales/index";
 import HistoryDetails from "../details/HistoryDetails";
 import Reciept from "../newHdm/receipt/index";
 import { useNavigate } from "react-router-dom";
+import { getHistoryByIdForReverse } from "../../../services/user/userHistoryQuery";
 
 const HistoryItems = ({
   item, 
@@ -22,8 +24,6 @@ const HistoryItems = ({
   messageAfterReverse,
 }) => {
   const {t} = useTranslation();
-  const navigate = useNavigate();
-
   const [amountForPrePayment, setAmountForPrePayment] = useState({});
   const [openDetails, setOpenDetails] = useState(false);
   const [originTotal, setOriginTotal] = useState(false);
@@ -32,11 +32,15 @@ const HistoryItems = ({
   const [taxCount,setTaxCount] = useState();
   const [openHDM, setOpenHDM] = useState(false);
   const [message, setMessage] = useState("");
-
-  const reverseButton = true;
+  const [revItem, setRevItem] = useState({});
 
   const dialogManage = () => {
-    setOpenDialog(!openDialog)
+    setLoad(true)
+    getHistoryByIdForReverse(item?.id).then((res)=> {
+      setLoad(false)
+      setRevItem(res)
+      setOpenDialog(!openDialog)
+    })
   };
 
   const openCloseHDM = async(id) => {
@@ -175,12 +179,23 @@ const HistoryItems = ({
     />
    } 
   
-    { openDialog &&
+    {/* { openDialog &&
       <ReverseDialog
         openDialog={openDialog}
         setOpendDialog={setOpenDialog}
         products={item?.products}
         item={item}
+        messageAfterReverse={messageAfterReverse}
+      /> 
+    } */}
+
+    { openDialog &&
+      <ReverseDialog
+        openDialog={openDialog}
+        setOpendDialog={setOpenDialog}
+        products={item?.products}
+        // item={item}
+        item={revItem}
         messageAfterReverse={messageAfterReverse}
       /> 
     }
