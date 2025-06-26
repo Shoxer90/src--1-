@@ -1,0 +1,31 @@
+.payComponent {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  
+
+}
+
+.subscription{
+  font-weight: 600;
+  &_item{
+    font-weight: 600;
+    border-radius: 10px;
+    border: solid 1px grey;
+    padding: 4px 7px;
+    margin: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    &:hover{
+      // background: rgb(200, 240, 240);
+      scale: 1.02;
+    }
+    input[type='radio'] {
+      accent-color: #3FB68A;
+      border: 2px solid white;
+    margin-right: 10px;
+
+    }
+  }
+}

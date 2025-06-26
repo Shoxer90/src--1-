@@ -493,6 +493,7 @@
     "payWithNewCardAndAttach": "Save Card",
     "payByActiveCard": "Pay by Main Card",
     "payByAttachedCard": "Pay by Card",
+    "payByOther": "Other payment options",
     "checkArcaStatus": "Checking Card Attach Status",
     "priceListSubTitle1": "Services",
     "paymentMethods": "Payment method",

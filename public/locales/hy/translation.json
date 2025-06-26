@@ -495,6 +495,8 @@
     "payWithNewCardAndAttach": "Պահպանել քարտը",
     "payByActiveCard": "Վճարել հիմնական քարտով",
     "payByAttachedCard": "Վճարել քարտով",
+    "payByOther": "Վճարման այլ տարբերակներ",
+
     "checkArcaStatus": "Քարտի կցման կարգավիճակի ստուգում",
     "priceListSubTitle1": "Ծառայություններ",
     "paymentMethods": "Վճարման եղանակ",

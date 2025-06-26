@@ -120,7 +120,7 @@ const ProductPayment = ({
               setBlockTheButton(false)
               setPaymentInfo({
                 ...paymentInfo,
-                "cashAmount": totalPrice,
+                "cashAmount": totalPrice - paymentInfo?.prePaymentAmount,
                 "cardAmount": 0,
               })
             }
@@ -157,7 +157,7 @@ const ProductPayment = ({
             setPaymentInfo({
               ...paymentInfo,
               "cashAmount": 0,
-              "cardAmount":totalPrice,
+              "cardAmount":totalPrice - paymentInfo?.prePaymentAmount,
             })
           }
           }

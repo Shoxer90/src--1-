@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 
 import styles from "./index.module.scss";
+import paymentType from "../pay/paymentType";
 
 const AttachedCardsItem = ({
   card,
@@ -15,12 +16,12 @@ const AttachedCardsItem = ({
   return (
     <div 
       className={styles.subscription_item}
-      style={payData?.cardId === card?.cardId ? activeStyle :null}
+      style={payData?.cardId === card?.cardId  && payData?.paymentType === 1 ? activeStyle :null}
     >
       <label>
         <input
           type="radio"
-          checked={payData?.cardId === card?.cardId}
+          checked={payData?.cardId === card?.cardId && payData?.paymentType === 1 }
           name="pay operation"
           onChange={() => {
             delete payData?.attach
@@ -28,7 +29,8 @@ const AttachedCardsItem = ({
             setMethod(1)
             setPayData({
               ...payData,
-              cardId: card?.cardId
+              cardId: card?.cardId,
+              paymentType: 1
             })
           }}
         />

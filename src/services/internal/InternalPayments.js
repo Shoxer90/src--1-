@@ -14,10 +14,11 @@ export const getPaymentCardServices = async() => {
 export const postNewCreditCard = async() => {
   try{
     const data = await axios.post( baseUrl + `InternalPayments/AddNewCard?Web=true`, {}, option());
+    console.log(data,"DATA +card")
     return data?.data?.formUrl
 
   }catch(err){
-    return err
+    return err?.code
   }
 };
 
@@ -69,3 +70,12 @@ export const changeCreditCardName = async(str) => {
   }
 };
 
+
+export const getPaymenTypesArcaOther = async() => {
+ try{
+  const data = await axios.get( baseUrl + `InternalPayments/GetPaymentTypes`, option());
+  return data?.data
+ }catch(err){
+  return err
+ }
+};

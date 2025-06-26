@@ -141,8 +141,7 @@ const App = () => {
   });
 
   const whereIsMyUs = async() => {
-    console.log("29.05.2025 update")
-    // setNotifTrigger(!notifTrigger)
+    console.log("19.06.2025 100% total")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -548,7 +547,7 @@ const App = () => {
           <Route path="/confirmation/*" element={<ConfirmationV2 />} />
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
-          <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc}/>} />
+          <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
           <Route path="/kuku" element={<IframeReader />} />
           {/* ADMIN PAGE */}
           {/* <Route path="/admin/*" element={<AdminPage />} />
