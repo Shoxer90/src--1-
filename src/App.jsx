@@ -580,7 +580,7 @@ const App = () => {
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} />} />
             <Route path="/qrsoccet" element={<QrSoccet />} />
             {/* <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} /> */}
-            <Route path="/basket/*" element={<BasketList t={t}  logOutFunc={logOutFunc}/>} />
+            <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
             <Route path="/prepayment" element={<PrePaymentList 
               setOpenBasket={setOpenBasket} 
               setToBasket={setToBasket}

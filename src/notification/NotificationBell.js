@@ -10,7 +10,8 @@ import OpenBtn from './button/OpenBtn';
 import HeaderNotification from './header/HeaderNotification';
 // fb
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { getMessaging, getToken, onMessage, isSupported } from "firebase/messaging";
+
 import { canUsePush } from '../firebase/helper';
 import SnackErr from "../Container2/dialogs/SnackErr";
 // 
@@ -98,24 +99,57 @@ const NotificationBell = ({
     setAnchorEl(e?.currentTarget);
   };
   
-    const playSound = () => {
-      if(iSClicked){
-        new Audio(sound)?.play()
-      }
-      setNotifTrigger(!notifTrigger)
-      audioRef?.current?.click()
+  const playSound = () => {
+    if(iSClicked){
+      new Audio(sound)?.play()
+    }
+    setNotifTrigger(!notifTrigger)
+    audioRef?.current?.click()
+  };
 
-    };
+
+const askNotificationPermission = async () => {
+  if (!(await isSupported())) return;
+
+  const permission = Notification.permission;
+
+  if (permission === "granted") {
+    const messaging = getMessaging();
+    const token = await getToken(messaging, { vapidKey: "<YOUR_VAPID_KEY>" });
+    console.log("TOKEN", token);
+  } else if (permission === "default") {
+    const result = await Notification.requestPermission();
+    if (result === "granted") {
+      const messaging = getMessaging();
+      const token = await getToken(messaging, { vapidKey: "<YOUR_VAPID_KEY>" });
+      console.log("TOKEN", token);
+    } else {
+      console.warn("Notifications denied by user");
+    }
+  } else {
+    console.warn("Notifications permission blocked. Ask user to enable in browser settings.");
+  }
+};
+
+
+
 
   if(canUsePush()){
     const messaging = getMessaging(firebaseApp);
-    if(!localStorage.getItem("dt")) {
+    const permission = Notification.permission;
+    console.log(permission)
+    // if(!localStorage.getItem("dt") && permission === "granted") {
+    if(!localStorage.getItem("dt") ) {
+
       getToken(messaging, { vapidKey: "BL9M8IRH_J6IAHVHod8G0_aVhdQfSDlAJBQ76VIYpnfGeCxtsbMuV3uxrP0ZjLLN0SPWu2CigsToA-2KVW9JI5c"})
       .then((currentToken) => {
         localStorage.setItem("dt", currentToken)
         sendDeviceToken(currentToken)
       })
     }
+    // else{
+    //    console.warn("Notifications denied by user");
+    // }
     onMessage(messaging, (payload) => {
       audioRef.current.click()
       setAnchorEl(buttonRef.current)

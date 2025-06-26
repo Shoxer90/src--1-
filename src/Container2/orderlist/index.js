@@ -51,7 +51,6 @@ const BasketList = ({t, logOutFunc}) => {
   useEffect(() => {
     logOutFunc()
     getBasketList() 
-   
   }, []);
 
   useEffect(() => {
