@@ -53,7 +53,8 @@ export async function reverseProductNew(body) {
     const  data = await axios.post(baseUrl + `Sale/ReturnReciept`,body, option());
     return data
   }catch(err){
-    return err?.response?.status
+    return err?.response
+    // return err?.response?.status
   }
 };
 

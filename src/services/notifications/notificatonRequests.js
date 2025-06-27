@@ -5,7 +5,6 @@ export  async function removeDeviceToken(token) {
     try{
         const  data = await axios.get(baseUrl + `User/RemoveDeviceToken?deviceToken=${token}`, option());
     }catch(err){
-        console.log(err.response, "dt err")
     }
 };
 
@@ -13,7 +12,6 @@ export  async function sendDeviceToken(token) {
     try{
         const  data = await axios.get(baseUrl + `User/AddDeviceToken?deviceToken=${token}`, option());
     }catch(err){
-        console.log(err.response, "dt err")
     }
 };
 

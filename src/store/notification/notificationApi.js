@@ -66,7 +66,6 @@ import { setNotifications, setReserveIds } from "./notificationSlice";
       onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
         try {
           const { data, meta } = await queryFulfilled;
-          console.log(data,"DATATATATATA")
         } catch(error) {
         }
       },

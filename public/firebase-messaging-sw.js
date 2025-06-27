@@ -9,6 +9,7 @@ firebase.initializeApp( {
   messagingSenderId: "931894215046",
   appId: "1:931894215046:web:be53ad4dccb7373a93ac07"
 });
+
 const messaging = firebase.messaging();
     
 navigator.serviceWorker.register('/firebase-messaging-sw.js').then((registration) => {
@@ -16,7 +17,7 @@ navigator.serviceWorker.register('/firebase-messaging-sw.js').then((registration
 });
 
 messaging.onBackgroundMessage(async(payload) => {
-  console.log( payload, "messaging-sw");
+  console.log(payload, "messaging-sw");
 
   const notificationTitle = payload.notification.title;
   const notificationOptions = {

@@ -14,6 +14,10 @@ const BasketContent = ({
   flag,
   createMessage,
   freezeCount,
+  setOpenEmarkInput,
+  setOpenBasket,
+ setFrom
+
 }) => {
   return (
   <div className={styles.bask_container_body}>
@@ -30,6 +34,10 @@ const BasketContent = ({
           flag={flag}
           createMessage={createMessage}
           freezeCount={freezeCount}
+          setOpenEmarkInput={setOpenEmarkInput}
+          setOpenBasket={setOpenBasket}
+          setFrom={setFrom}
+
         />
         <Divider sx={{backgroundColor:"gray"}} color="black" />
       </span>

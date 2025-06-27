@@ -255,15 +255,6 @@ const PayComponent = ({
         question={<strong>{t("settings.done30000")}</strong>}
         nobutton={true}
       />
-      {/* {openCompleteUserInfo &&
-        <CompleteUserDataForEhdm 
-          open={openCompleteUserInfo}
-          close={()=>setOpenCompleteUserInfo(false)}
-          setMessage={setMessage}
-          func={()=>console.log("user new data for ehdm")}
-          setIsLoad={setLoader}        
-        />
-      } */}
     </Dialog>
   )
 };

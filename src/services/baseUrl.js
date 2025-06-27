@@ -11,7 +11,16 @@ export const option = () => {
   return option
 };
 
-export const CASH_LIMIT = +300000
+export const CASH_LIMIT = +300000;
+
+export const replaceGS = (code) => {
+  // console.log(code,"code")
+  const input = code.trim(); 
+  const output = input.replace(/\x1d/g, "\\u001d");  
+  // console.log(output,"output")
+  return output
+};
+
 export const columnNames = [{
   title: "history.number",
   id: 0,

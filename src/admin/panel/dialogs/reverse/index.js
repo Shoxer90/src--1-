@@ -66,15 +66,9 @@ const handleOk = async(func, body) => {
 setLoad(true)
   await func(body).then((res) => {
   setLoad(false)
-  if(res === 400) {
+  if(res?.status === 400 || res?.status === 406 || res?.status === 403) {
     setType("error")
-    setOwnMessage(`${t("dialogs.sorry")}, ${t("dialogs.wrong")}`)
-  }else if(res === 406) {
-    setType("error")
-    setOwnMessage(`${t("dialogs.sorry")}, ${t("dialogs.choose")}`)
-  }else if(res === 403) {
-    setType("error")
-    setOwnMessage(`${t("dialogs.sorry")}, ${t("dialogs.noReverse")}`)
+    setOwnMessage(res?.data?.message)
   }else if(res.status === 200 && res?.data?.reverceLink){
    return close
   }

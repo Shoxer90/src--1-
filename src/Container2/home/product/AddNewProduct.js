@@ -15,8 +15,6 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 
 import styles from "../index.module.scss";
 import { useTranslation } from 'react-i18next';
-import EmarkSingleInput from './emark/EmarkSingleInput';
-import PopUpButton from './emark/PopUpButton';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -228,9 +226,6 @@ const AddNewProduct = ({
     setRegime(JSON.parse(localStorage.getItem("taxRegime")))
   }, []);
 
-  console.log("reginme", regime)
-  console.log(regime && (regime !== 3 || regime !== 7) ,"reginme")
-
   return (
     <Dialog
       open={!!openNewProd}
@@ -374,13 +369,14 @@ const AddNewProduct = ({
               setProduct={setProduct} 
               content={newProduct?.photo}
              />
-                <BarcodeInput
-                  emptyValidate={emptyValidate}
-                  newProduct={newProduct}
-                  isUniqBarCode={isUniqBarCode}
-                  setIsUniqBarcode={setIsUniqBarcode}
-                  setProduct={setProduct}
-                />
+
+            <BarcodeInput
+              emptyValidate={emptyValidate}
+              newProduct={newProduct}
+              isUniqBarCode={isUniqBarCode}
+              setIsUniqBarcode={setIsUniqBarcode}
+              setProduct={setProduct}
+            />
 
           </Box>
 

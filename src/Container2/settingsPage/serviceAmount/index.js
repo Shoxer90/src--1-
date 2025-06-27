@@ -31,7 +31,6 @@ const stylesCard = {
   padding:"10px 20px"
 };
 
-
 const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate}) => {
   const [internalPayments, setInternalPayments] = useState(); 
   const [payData, setPayData] = useState({
@@ -53,6 +52,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
   const [openRename, setRename] = useState(false);
   const [openAttachInfo,setOpenAttachInfo] = useState(false);
 
+  console.log(payData, "payData")
 
   const [isOpenHistory, setOpenHistory] = useState(false);
 
@@ -106,6 +106,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
 
   const getInfo = async() => {
     await getPaymentCardServices().then((res) =>{
+      console.log(res,"123")
       setInternalPayments(res)
       if(!res?.isInDate && !res?.days) {
         setMessage({type:"error", message:t("cardService.notInDate")})
@@ -131,6 +132,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
 
   useEffect(() => {
     getInfo()
+  
   }, [refresh, isDelete]);
 
   return (
@@ -227,7 +229,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
     }
 
     <Dialog open={!!isLoad}>
-        <Loader close={setIsLoad} />
+      <Loader close={setIsLoad} />
     </Dialog>
     <CreditCardNewName 
       open={openRename} 
