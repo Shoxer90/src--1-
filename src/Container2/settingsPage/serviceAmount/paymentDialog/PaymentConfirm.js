@@ -36,7 +36,7 @@ const PaymentConfirm = ({
       <div>
       <div style={{display:"flex",width:"100%"}}>
         <span>{t("settings.payByAttachedCard")}</span>
-        <PaymentLogo />
+        {/* <PaymentLogo /> */}
       </div>
 
       {cardArr?.length ?
@@ -80,7 +80,11 @@ const PaymentConfirm = ({
             })
           }}
         />
-          <span style={{marginLeft:"10px", width:"100%"}}>{t("settings.payWithNewCard")} </span>
+          {/* <span style={{marginLeft:"10px", width:"100%"}}>{t("settings.payWithNewCard")}
+          </span> */}
+          <div style={{marginLeft:"10px", width:"100%", display:"flex", alignItems:"center",}}>
+            {t("settings.payWithNewCard")} <span style={{height:"10px", marginBottom:"2px", marginLeft:"3px"}}><PaymentLogo /></span>
+          </div>
         </label>
       </div>
       <div style={{height:"30px", marginLeft:"20px"}}>

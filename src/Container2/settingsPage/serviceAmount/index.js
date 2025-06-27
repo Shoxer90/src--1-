@@ -19,7 +19,8 @@ import AutoPaymentSwitch from "./autoPayment"
 import CreditCardNewName from './creditCard/CreditCardNewName.js';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ServicesV2 from './services/servicesV2.js';
+import ServicesV2 from './services/ServicesV2.js';
+// import ServicesV2 from './services/servicesV2.js';
 
 
 const stylesCard = {

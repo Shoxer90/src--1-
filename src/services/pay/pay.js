@@ -39,6 +39,7 @@ export const payRequestQR = async(content) => {
 export const checkAndGetReceiptLink = async(saleId) => {
   try{
     const data = await axios.get(baseUrl + `Sale/CheckStatus?saleId=${saleId}`, option())
+    console.log(data, "DATA ADADDD")
     return data
   }catch(err){
     return err.response.status

@@ -1,7 +1,8 @@
-import React, { memo, useEffect } from "react";
-
+import { memo, useEffect } from "react";
+import QrCode2Icon from '@mui/icons-material/QrCode2';
 import styles from "./index.module.scss";
 import { useTranslation } from "react-i18next";
+import { Divider } from "@mui/material";
 
 const ItemReverse = ({
   photo, 
@@ -13,7 +14,7 @@ const ItemReverse = ({
   unit,
   isChecked,
   quantity,
-
+  emarks,
   reverseContainer,
   setReverseContainer,
   checkedProduct,
@@ -71,34 +72,38 @@ const ItemReverse = ({
   },[reverseContainer]);
 
   return(
-    <label className={styles.radioDialog}>
-      <span style={{display:"flex",alignItems:"center"}}>
-        <input 
-          type="checkbox" 
-          name="isChecked"
-          onChange={(e)=>checkedProduct(recieptId, e.target.name, e.target.checked)}
-          checked={isChecked || false}
-          // checked={reverseContainer[index]?.isChecked || false}
-        />
-        <img src={photo || "/default-placeholder.png"} alt="prod" />
-        <span style={{fontWeight:600}}>{brand} {name}</span>
-      </span>
-      <label className={styles.reverse_quantity}>
-        <span style={{alignContent:"center",marginRight:"10px"}}>{count} {t(`units.${unit}`)} x {discountedPrice} {t("units.amd")}</span>
-        <input
-          className={styles.reverse_quantity_input}
-          autoComplete="off"
-          name="quantity"
-          value={quantity}
-          // value={reverseContainer[index]?.quantity}
-          // value={reverseContainer[index]?.quantity}
-          onChange={(e)=>handleChange(e)}
-        />
-        <span style={{minWidth:"60px"}}>
-          {t(`units.${unit}`)}
-        </span> 
-      </label>
-    </label> 
+    <div style={{display:"flex", flexFlow:"column"}}>
+      <label className={styles.radioDialog}>
+        <span style={{display:"flex",alignItems:"center"}}>
+          <input 
+            type="checkbox" 
+            name="isChecked"
+            onChange={(e)=>checkedProduct(recieptId, e.target.name, e.target.checked)}
+            checked={isChecked || false}
+          />
+          <img src={photo || "/default-placeholder.png"} alt="prod" />
+          <span style={{fontWeight:600, marginLeft:"5px"}}>{brand} {name}</span>
+        
+          {emarks.length ? 
+          <div style={{alignItems:"center", color:"green"}}><QrCode2Icon fontSize="xsmall" sx={{ml:1, mb:.5}} /><>×{emarks.length}</></div>:''
+          }
+        </span>
+        <label className={styles.reverse_quantity}>
+          <span style={{alignContent:"center",marginRight:"10px"}}>{count} {t(`units.${unit}`)} × {discountedPrice} {t("units.amd")}</span>
+          <input
+            className={styles.reverse_quantity_input}
+            autoComplete="off"
+            name="quantity"
+            value={quantity}
+            onChange={(e)=>handleChange(e)}
+          />
+          <span style={{minWidth:"60px"}}>
+            {t(`units.${unit}`)}
+          </span> 
+        </label>
+      </label> 
+      <Divider color="black" sx={{m:0, p:0}} />
+    </div>
   )
 };
 

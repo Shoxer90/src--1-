@@ -102,7 +102,6 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status, orderS
       <Divider style={{ background: '#343a40', width:"60%", fontWight:600, margin:"10px 0px" }} />
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center", gap:"10px",margin:"20px"}}>
 
-        {/* { recieptLink || status ?   */}
         { orderStatus === "2" ?
           <>
             { (status === 1 || (status === 2 && basketContent?.isPrepayment)) && <PaidButtons recieptLink={recieptLink} />}

@@ -60,12 +60,12 @@ const BasketList = ({t, logOutFunc}) => {
     window.addEventListener("pageshow", handlePageShow);
     return () => window.removeEventListener("pageshow", handlePageShow);
   }, []);
-console.log(!recieptLink,"receiptLink")
-  useEffect(()=> {
-    if(!recieptLink && basketContent?.orderStatus === "2") {
-      checkAndGetReceiptLink(saleId)
-    }
-  }, []);
+
+  // useEffect(()=> {
+  //   if(!recieptLink && basketContent?.orderStatus === "2") {
+  //     checkAndGetReceiptLink(saleId)
+  //   }
+  // }, []);
 
   return (
     !load ? <Loader /> :

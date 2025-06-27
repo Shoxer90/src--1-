@@ -28,9 +28,9 @@ console.log(billsData,"bills data")
   return (
       
     <div>
-      <h6 style={{display:"flex",width:"100%", }}>
+      {/* <h6 style={{display:"flex",width:"100%", }}>
         <span>{t("settings.payByOther")}</span>
-      </h6>
+      </h6> */}
       {paymentType && paymentType.map((type) => {
         if(type?.title !== "Arca") {
 

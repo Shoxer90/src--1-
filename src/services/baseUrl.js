@@ -12,6 +12,7 @@ export const option = () => {
 };
 
 export const CASH_LIMIT = +300000;
+let bazmapat = "×"
 
 export const replaceGS = (code) => {
   // console.log(code,"code")

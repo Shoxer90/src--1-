@@ -9,13 +9,16 @@ const divStyle = {
 }
 
 const master = {
-  height: "18px",
+  // height: "18px",
+  height: "14px",
 }
 const visa = {
-  height: "15px",
+  // height: "15px",
+  height: "11px",
 }
 const arca = {
-  height: "13px",
+  // height: "13px",
+  height: "9px",
 }
 
 const PaymentLogo = () => {
