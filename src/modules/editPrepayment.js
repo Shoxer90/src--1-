@@ -2,7 +2,7 @@ export const editPrepaymentCountsModule = async(id,value) => {
     let infuncData = await JSON.parse(localStorage.getItem("isEditPrepayment"))
     if(infuncData) {
         let flag = 0
-        let arr = infuncData?.sales.map((item) => {
+        let arr = infuncData?.sales?.map((item) => {
           if(item?.id === id) {
             flag+=1
             return {

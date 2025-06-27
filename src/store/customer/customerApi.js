@@ -19,7 +19,6 @@ export const customerApi = createApi({
   endpoints: (builder) => ({
     saleDetails: builder.query({
       query:(credentials) => ({
-        // url:`/GetSaleDetailsByStore?storeId=${credentials?.storeId}&historyType=${credentials?.historyType}`,
         url:`/GetSaleDetailsByStore?storeId=${1}&historyType=${credentials?.historyType}`,
         method: "POST",
         body: credentials 

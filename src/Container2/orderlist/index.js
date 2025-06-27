@@ -1,5 +1,4 @@
 import { useState , useEffect , memo } from "react";
-import { useState , useEffect , memo } from "react";
 import { useLocation } from "react-router-dom";
 
 import { basketListCreator, checkAndGetReceiptLink } from "../../services/pay/pay";

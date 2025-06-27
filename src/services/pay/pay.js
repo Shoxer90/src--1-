@@ -132,12 +132,7 @@ export const saleProductFromBasket = async(content) => {
     console.log(data,"DATA")
     return data.data
   }catch(err){
-    console.log(err?.code,"err")
-    if(err?.code === "ERR_NETWORK"){
-      return "ERR_NETWORK"
-    }else{
-      return err.response.status
-    }
+    return err.response
   }
 }
 

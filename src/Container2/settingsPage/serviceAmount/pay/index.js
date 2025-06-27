@@ -227,7 +227,6 @@ const PayComponent = ({
         question={<strong>{t("settings.done30000")}</strong>}
         nobutton={true}
       />
-    
     </Dialog>
   )
 };

@@ -13,7 +13,6 @@ import Loader from "../../../loading/Loader";
 import ActivateStepByStep from "../pay/ActivatStepByStep"
 import { setPayForEhdm } from "../../../../store/storex/openPaySlice";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
-import { getPaymenTypesArcaOther } from "../../../../services/internal/InternalPayments";
 
 const ServiceItemV2 = ({
   service,

@@ -23,6 +23,7 @@ import ProductPrePayment from "./payment/ProductPrePayment.js";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -45,6 +46,7 @@ const Bascket = ({
   setContent,
   byBarCodeSearching,
   setFrom,
+  from,
   searchValue,
   setSearchValue,
   user,
@@ -54,7 +56,8 @@ const Bascket = ({
   openWindow,
   setOpenWindow,
   paymentInfo, setPaymentInfo,
-  limitedUsing
+  limitedUsing,
+  setOpenEmarkInput,
 }) => {
   const navigate = useNavigate()
   const {t} = useTranslation();
@@ -126,6 +129,9 @@ const Bascket = ({
         cashAmount:0,
         cardAmount: 0,
         sales: salesArr,
+    emarks: JSON.parse(localStorage.getItem("emarkList"))
+
+
       })
       // 16.01.2025
       setTotalPrice(total)
@@ -137,6 +143,8 @@ const Bascket = ({
         cardAmount: 0,
         partnerTin: "",
         sales:[],
+        emarks: JSON.parse(localStorage.getItem("emarkList")),
+
         customer_Name: "",
         customer_Phone: ""
       })
@@ -180,7 +188,7 @@ const Bascket = ({
     if(navigator.onLine) {
 
       if(saletype === 1) {
-        saleResponse =  await saleProductFromBasket(paymentInfo)
+        saleResponse =  await saleProductFromBasket({...paymentInfo, emarks: JSON.parse(localStorage.getItem("emarkList"))})
       
       }else if(saletype === 2) {
         saleResponse = await payRequestQR(paymentInfo)
@@ -200,9 +208,10 @@ const Bascket = ({
         saleResponse = await basketListUrl(paymentInfo)
       }
       if(saleResponse) {
+        console.log(saleResponse,"saleResponse")
         setLoader(false)
-        if(saleResponse === "ERR_NETWORK") {
-          return createMessage("error", t("dialogs.badInet"))
+        if(saleResponse?.status === 400) {
+          return createMessage("error", saleResponse?.data?.message)
 
         }
         responseTreatment(saleResponse, saletype)
@@ -211,7 +220,6 @@ const Bascket = ({
       }
       else{
         createMessage("error", t("dialogs.badInet"))
-
       }
     }
     else{
@@ -269,6 +277,7 @@ const Bascket = ({
   }
 
   const checkAvail = async(saletype) => {
+    console.log(paymentInfo?.sales, "paymentInfo?.sales")
     setAvail([])
     cheackProductCount(paymentInfo?.sales).then((res) => {
       const errProds = []
@@ -323,6 +332,11 @@ const Bascket = ({
     setMessage(message)
   };
 
+  const closeBasketDialog = () => {
+    setFrom("main")
+    setOpenBasket(false)
+  }
+ 
   useEffect(()=> {
     createPaymentSales()
     searchValue?.length && setSearchValue("")
@@ -337,15 +351,15 @@ const Bascket = ({
 
   useEffect(() => {
     getFreezedCounts()
-  }, [])
+  }, []);
 
   useEffect(() => {
-
     if(totalPrice - paymentInfo?.prePaymentAmount < 0 && paymentInfo?.prePaymentAmount ){
       createMessage("error", t("history.reverseLimit"))
-    }
+    } 
 
   }, [totalPrice]);
+
 
   return (
     <Dialog
@@ -353,7 +367,7 @@ const Bascket = ({
       style={{
         background:"rgb(40,167,69,0.15)", 
       }}
-      onClose={loader ? null : ()=>setOpenBasket(false)}
+      onClose={loader ? null : ()=>closeBasketDialog()}
       TransitionComponent={Transition}
     >
       { loader ? <Loader />: 
@@ -370,16 +384,19 @@ const Bascket = ({
             onKeyDown={(e)=>{
               if(e.key === "Enter") {
                 e.preventDefault()
-                byBarCodeSearching("GetAvailableProducts ",setSearchValue)
+                // byBarCodeSearching("GetAvailableProducts ",setSearchValue)
+                byBarCodeSearching("GetAvailableProducts ",searchValue)
               }}}
             >
             <BasketHeader 
               t={t} 
+              closeBasketDialog={closeBasketDialog}
               setOpenBasket={setOpenBasket} 
               deleteBasketGoods={deleteBasketGoods}
               basketContent={basketContent}
               setSingleClick={setSingleClick}
               freezeCount={freezeCount}
+              openBasket={openBasket}
             />
             <Divider sx={{mt:2}}/>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -389,6 +406,8 @@ const Bascket = ({
                 byBarCodeSearching={byBarCodeSearching}
                 stringFrom="basket"
                 setFrom={setFrom}
+                dataGroup={"GetAvailableProducts"}
+                openBasket={openBasket}
               />
               { paymentInfo?.prePaymentSaleDetailId &&
                 <Button 
@@ -417,6 +436,10 @@ const Bascket = ({
                 flag={flag}
                 createMessage={createMessage}
                 freezeCount={freezeCount}
+                setOpenEmarkInput={setOpenEmarkInput}
+                setOpenBasket={setOpenBasket}
+                setFrom={setFrom}
+
               />
             </DialogContent>
             <Divider style={{margin:2,height:"2px", backgroundColor:"black"}}/>
