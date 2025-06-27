@@ -19,7 +19,8 @@ const HomeContent = ({
   setTypeCode,
   setFetching,
   setContent,
-  setCurrentPage
+  setCurrentPage,
+  setOpenBasket
 }) => {
   return (
     <div className={styles.productContent} style={{marginLeft:"25px"}}>
@@ -41,6 +42,7 @@ const HomeContent = ({
           setContent={setContent}
           content={content}
           setCurrentPage={setCurrentPage}
+          setOpenBasket={setOpenBasket}
         />
       })}
     </div>

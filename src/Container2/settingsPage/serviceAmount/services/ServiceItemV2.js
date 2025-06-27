@@ -14,6 +14,7 @@ import ActivateStepByStep from "../pay/ActivatStepByStep"
 import { setPayForEhdm } from "../../../../store/storex/openPaySlice";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
 
+
 const ServiceItemV2 = ({
   service,
   content,
@@ -31,7 +32,6 @@ const ServiceItemV2 = ({
   const [message, setMessage] = useState({message:"",type:""});
   const [openPay, setOpenPay] = useState(false);
   const [activateEhdm,setActivateEhdm] = useState(false);
-
   
   const [openCompleteUserInfo,setOpenCompleteUserInfo] = useState(false);
   
@@ -72,8 +72,8 @@ const ServiceItemV2 = ({
 
   useEffect(() => {
     isOpenPayForEhdm && notAvailableService()
-  }, []);
-  
+  }, [])
+
   return (
     <>
       <Card 

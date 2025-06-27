@@ -11,6 +11,7 @@ import startEndDateReducer from "./filter/startEndDateSlice";
 import payForEhdmReducer from "./storex/openPaySlice";
 import userNewReducer from "./storex/user/userNewSlice";
 import notificationReducer from "./notification/notificationSlice";
+import barcodeReducer from "./searchbarcode/barcodeSlice";
 
 import { storesApi } from "./storesUsers/storesApi";
 import { adminApi } from "./admin/adminApi";
@@ -32,6 +33,7 @@ export default configureStore({
     startEndDate: startEndDateReducer,
     payForEhdm: payForEhdmReducer,
     notification: notificationReducer,
+    barcode: barcodeReducer,
     [adminApi.reducerPath]:adminApi.reducer,
     [storesApi.reducerPath]:storesApi.reducer,
     [customerApi.reducerPath]:customerApi.reducer,

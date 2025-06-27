@@ -1,4 +1,4 @@
-import React, { useEffect , useContext, memo, useState} from "react";
+import { useEffect , useContext, memo, useState} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 
 import Logo from "./Logo";
@@ -16,8 +16,6 @@ import styles from "./index.module.scss";
 import UserInfo from "./userAvatar/index"
 import { useTranslation } from "react-i18next";
 import NotificationBell from "../../notification/NotificationBell";
-// import NotificationBell from "../../notification/NotificationBell";
-// import NotificationFireBase from "../../firebase/notification/NotificationFireBase";
 
 const Header = ({
   setOpenBasket,
@@ -28,7 +26,8 @@ const Header = ({
   activeBtn,
   setActiveBtn,
   setNotifTrigger,
-  notifTrigger
+  notifTrigger,
+  setFrom,
 }) => {
   const {t} = useTranslation();
   const location = useLocation();
@@ -153,7 +152,10 @@ const Header = ({
                 textTransform: "capitalize",
                 // fontWeight: "bold",    
               }}
-              onClick={()=>setOpenBasket(true)}
+              onClick={()=>{
+                setFrom("basket")
+                setOpenBasket(true)
+              }}
             >
               <ShoppingCartIcon/>
               <span className={styles.routeName}>{t("menubar.basket")}</span> 

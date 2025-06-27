@@ -21,11 +21,6 @@ const CertificateUploader = ({isRegisteredInEhdm, activeServiceType, switchStatu
   const handleChange = (event) => {
     setFile(event.target.files[0]);
     event.target.value = ""
-    // if(!isRegisteredInEhdm && activeServiceType !==3) {
-    //   setContentText(t(""))
-    //   setOpenConfirm(true)
-    //   switchStatus(true)
-    // }else 
     if(!isRegisteredInEhdm && activeServiceType ===3){
       setContentText(t("updates.fileUpld") )
       setOpenConfirm(true)
@@ -33,7 +28,6 @@ const CertificateUploader = ({isRegisteredInEhdm, activeServiceType, switchStatu
   };
 
    const checkConditions = () => { 
-    console.log(isRegisteredInEhdm , activeServiceType)
     if(!isRegisteredInEhdm && activeServiceType !==3) {
       switchStatus(true)
     } else{

@@ -41,13 +41,16 @@ const HomePage = ({
   queryFunction,
   setCurrentPage,
   setFrom,
+  from,
   searchValue, 
   setSearchValue, 
   byBarCodeSearching,
   flag,
   setFlag,
   setFetching,
-  fetching
+  fetching,
+  setOpenBasket,
+  
 }) => {
   const {t} = useTranslation();
   const [openNewProd, setOpenNewProduct] = useState(false);
@@ -115,9 +118,12 @@ const HomePage = ({
   useEffect(() => {
     setFetching(true)
     queryFunction(status, page).then((res) => { 
-    setFetching(false)
-      setTotalCount(res?.headers["count"])
-      setContent(res?.data)
+      console.log(res,"res")
+      if(res){
+        setFetching(false)
+        setTotalCount(res?.headers["count"])
+        setContent(res?.data)
+      }
     })
   }, [page, flag, status]);
 
@@ -133,6 +139,8 @@ const HomePage = ({
         dataGroup={dataGroup}
         status={status}
         setFrom={setFrom}
+
+        from={from}
         setContent={setContent}
       />
       <HomeContent
@@ -148,6 +156,7 @@ const HomePage = ({
         setFetching={setFetching} 
         setContent={setContent}
         setCurrentPage={setCurrentPage}
+        setOpenBasket={setOpenBasket}
       />
       { totalCount/perPage > 1 &&
         <PaginationSnip 

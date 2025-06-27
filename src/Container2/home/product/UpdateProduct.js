@@ -1,4 +1,4 @@
-import React, { useEffect, memo, useState } from "react";
+import { useEffect, memo, useState } from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
@@ -19,8 +19,6 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import ImageLoad from "./ImageLoad";
 import Barcode from "react-barcode";
 import { useTranslation } from "react-i18next";
-import { EmarkFileUploader } from "./emark/Emark";
-import { sendEmarkCSV } from "../../../services/excel/excel";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -33,8 +31,6 @@ const UpdateProduct = ({
   product, 
   deleteAndRefresh, 
   setNewPrice, 
-  deleteBasketItem, 
-  setFetching,
   setContent,
   content,
   getSelectData,
@@ -43,8 +39,6 @@ const UpdateProduct = ({
   setCurrentPage
 }) => {
   const {t} = useTranslation();
-
-  const [csvData, setCsvData] = useState();
 
   const [currentProduct,setCurrentProduct] = useState();
   const [confirmation, setConfirmation] = useState(false);
@@ -154,8 +148,8 @@ const UpdateProduct = ({
   };
 
   const changeUpdatedProdInBasket = (id) => {
-    const currBasket = JSON.parse(localStorage.getItem("bascket1"))
-    const newBasketContent = currBasket.map((prodInBasket) => {
+    const currBasket = JSON.parse(localStorage.getItem("bascket1")) || []
+    const newBasketContent = currBasket?.map((prodInBasket) => {
       if(prodInBasket?.id === id) {
         return currentProduct
       }else{
@@ -174,15 +168,9 @@ const UpdateProduct = ({
       }
     });
     setContent(newArr)
-    // if(csvData){
-    //   sendEmarkCSV(currentProduct?.id, csvData)
-    // }
     updateProduct(currentProduct).then((res) => {
       if(res === 200) {
         setCurrentPage(1)
-        setFetching(true)
-        // deleted
-        // deleteBasketItem(currentProduct?.id)
         changeUpdatedProdInBasket(currentProduct?.id)
 
         setFlag(!flag)
@@ -240,12 +228,10 @@ const UpdateProduct = ({
       ...product,
     })
     priceValidate(product?.price, product?.discount, product?.discountType)
-    // setTitleName(` ${product?.brand} ${product?.name} (${product?.type})`)
     setNewPrice(product?.price - (product?.price * product?.discount / 100))
 
   }, [product?.discount, product?.price]);
 
-console.log(currentProduct?.isEmark,"curr is Emark")
   useEffect(() => {
     currentProduct && functionInit()
   }, [typeCode]);
@@ -395,7 +381,6 @@ console.log(currentProduct?.isEmark,"curr is Emark")
               name="isEmark"
               control={<Checkbox />} 
               label={t("productinputs.isEmark")}
-              // value={currentProduct?.isEmark}
               checked={!!currentProduct?.isEmark}
               onChange={(e)=> setCurrentProduct({
                 ...currentProduct,
@@ -426,7 +411,6 @@ console.log(currentProduct?.isEmark,"curr is Emark")
             func={updateImage} 
             content={currentProduct?.photo} 
             />
-             {/* <EmarkFileUploader setCsvData={setCsvData}/> */}
           </Box>
         <Box className={styles.update_btns}>
           <Button 

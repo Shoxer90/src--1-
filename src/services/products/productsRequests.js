@@ -2,12 +2,6 @@ import axios from "axios";
 import { baseUrl, option } from "../baseUrl";
 
 
-export const getProducts = () => axios.get(baseUrl + "Products/GetProducts", option)
-
-export const getNotAvProducs = (option) => axios.get(baseUrl + "Products/GetNotAvailableProducts", option)
-
-export const getAvProducts = (option) => axios.get(baseUrl + "Products/GetAvailableProducts", option)
-
 export const getAdg = async(type) => {
   const option = {
     headers: {
@@ -95,13 +89,6 @@ export const cheackProductCount = async(body) => {
 
 // check product available count and price
 export const cheackProductCountnPrice = async(body) => {
-  // [
-  //   {
-  //     "id": 20248,
-  //     "count": 2141,
-  //     "price": 12
-  //   }
-  // ]
   try{
     const data = await axios.put( baseUrl + "Products/CheackProduct", body, option());
     return data?.data

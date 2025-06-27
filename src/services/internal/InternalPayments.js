@@ -79,3 +79,12 @@ export const getPaymenTypesArcaOther = async() => {
   return err
  }
 };
+
+export const getPaymenTypesArcaOther = async() => {
+ try{
+  const data = await axios.get( baseUrl + `InternalPayments/GetPaymentTypes`, option());
+  return data?.data
+ }catch(err){
+  return err
+ }
+};
