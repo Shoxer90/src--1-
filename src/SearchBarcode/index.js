@@ -36,17 +36,11 @@ const SearchBarcode = ({
   };
   
   useEffect(() => {
-    setFrom(stringFrom)
+    stringFrom !=="reverse" && setFrom(stringFrom)
   }, [stringFrom]);
-
-  // useEffect(() => {
-  //   (searchValue === "" || !searchValue) && byBarCodeSearching(dataGroup,searchValue);
-  // }, [searchValue]);
-
-
   
   useEffect(() => {
-    !inputSlice[stringFrom] && byBarCodeSearching(dataGroup,inputSlice[stringFrom]);
+    !inputSlice[stringFrom] && stringFrom !=="reverse" && byBarCodeSearching(dataGroup,inputSlice[stringFrom]);
   }, [inputSlice[stringFrom]]);
 
   useEffect(() => {
@@ -71,9 +65,7 @@ const SearchBarcode = ({
           onFocus={handleFocus}
           value={inputSlice[stringFrom]}
           onChange={(e)=>{
-            // if(!e.target.value){
-            //   return byBarCodeSearching(dataGroup,"")
-            // }
+           
             dispatch(setSearchBarCodeSlice({
               name: stringFrom,
               value: e.target.value
@@ -82,7 +74,15 @@ const SearchBarcode = ({
           placeholder={t("mainnavigation.placeholder")}
           style={{width:"80%"}}
         />
-        <IconButton type="button" sx={{p: '10px'}} onClick={()=>byBarCodeSearching(dataGroup, searchValue, stringFrom)}>
+        <IconButton type="button" sx={{p: '10px'}} 
+          onClick={()=>{
+            if(stringFrom !== "reverse"){
+              byBarCodeSearching(dataGroup, searchValue, stringFrom)
+            }else{
+              setSearchValue(inputSlice[stringFrom])
+            }
+          }}
+        >
           <SearchIcon fontSize="medium" />
         </IconButton>
       </Paper> 

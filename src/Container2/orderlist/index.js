@@ -59,10 +59,15 @@ useEffect(() => {
     }
   };
 
-  window.addEventListener("pageshow", handlePageShow);
-  return () => window.removeEventListener("pageshow", handlePageShow);
-}, []);
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, []);
 
+  // useEffect(()=> {
+  //   if(!recieptLink && basketContent?.orderStatus === "2") {
+  //     checkAndGetReceiptLink(saleId)
+  //   }
+  // }, []);
 
   return(
     !load ? <Loader /> :

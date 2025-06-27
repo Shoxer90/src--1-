@@ -1,7 +1,13 @@
 import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button } from "@mui/material";
+import { Button, InputBase } from "@mui/material";
 import styles from "./index.module.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchBarCodeSlice } from "../../../store/searchbarcode/barcodeSlice";
+import { getInputChangeFunction } from "../../../Container/emarkScanner/ScannerManager";
+import SearchBarcode from "../../../SearchBarcode";
+import useDebonce from "../../hooks/useDebonce";
+import QrCode2Icon from '@mui/icons-material/QrCode2';
 
 
 const ReverseConditions = ({
@@ -18,7 +24,26 @@ const ReverseConditions = ({
   isAllSelected,
 }) => {
   const {t} = useTranslation();
+  const dispatch = useDispatch();
   const [blockButton,setBlockButton] = useState(false);
+  const [emarkQr,setEmarkQr] = useState("");
+  const [message,setMessage] = useState({
+    type:"",
+    message:""
+  });
+  const debounceEmark = useDebonce(emarkQr, 500);
+
+  const [emarkQrList,setEmarkQrList] = useState([]);
+
+  const emarkInput = useSelector(state=>state?.barcode?.reverse);
+  console.log(emarkInput,"emarkInput");
+
+  const fillEmarkQrs = (e) => {
+    dispatch(setSearchBarCodeSlice({
+      name:"reverse",
+      value: e.target.value
+    }))
+  }
 
   const handleChangeInput = (e) => {
     const valid =/^\d*\.?(?:\d{1,2})?$/
@@ -81,6 +106,7 @@ const ReverseConditions = ({
     }, [reverseTotal]);
   
   
+  
   useEffect(() => {
     setConditionState({
       ...conditionState,
@@ -88,8 +114,16 @@ const ReverseConditions = ({
     })
   }, [conditionState?.cardAmount]);
 
+  useEffect(() => {
+    emarkQr && debounceEmark && setEmarkQrList([
+      ...emarkQrList,
+      debounceEmark
+    ])
+  }, [emarkQr]);
+
+console.log(emarkInput, emarkQrList, "qr, list")
   return (
-    <>
+    <div>
     <div className={styles.conditions}>
       <div style={{marginTop:"5px",width:"37%"}}>
         <div style={{color:"green", display:"flex", justifyContent:"space-between"}}>
@@ -142,6 +176,7 @@ const ReverseConditions = ({
           <span>
             <input 
               style={{height:"20px"}}
+              className={styles.cardInput}
               autoComplete="off"
               name="cardAmount"
               value={conditionState?.cardAmount || ""}
@@ -159,10 +194,25 @@ const ReverseConditions = ({
       </div>
 
       </div>
-      <div style={{display:"flex", flexFlow:"column",alignItems:"center",justifyContent:"center"}}>
-      <div style = {{color:"red",  padding:"0px 20px"}}> 
-        {(conditionState?.cashAmount > cashAmount + prePaymentAmount) && `${t("dialogs.limitCash")} ${+cashAmount+ prePaymentAmount} ${t("units.amd")}`}
+      <div style={{margin:"10px", width:"100%", display:"flex", padding:"5px", alignItems:"center",justifyContent:"space-between"}}>
+     <div>skanavorel apranqi emarky</div>
+     <div style={{ display:"flex"}}>
+        <QrCode2Icon fontSize="large" />
+        <SearchBarcode
+          searchValue={emarkQr}
+          setSearchValue={setEmarkQr}
+          byBarCodeSearching={fillEmarkQrs}
+          setFrom={""}
+          stringFrom="reverse"
+          dataGroup={""}
+        />
+     </div>
       </div>
+        {message?.message && <div style={{color:message?.type === "error"?"red": "green", fontWeight:600}}>{message?.message}</div>}
+      <div style={{display:"flex", flexFlow:"column",alignItems:"center",justifyContent:"center"}}>
+        <div style = {{color:"red",  padding:"0px 20px"}}> 
+          {(conditionState?.cashAmount > cashAmount + prePaymentAmount) && `${t("dialogs.limitCash")} ${+cashAmount+ prePaymentAmount} ${t("units.amd")}`}
+        </div>
       <div style = {{color:"red",  padding:"0px 20px"}}> 
         {(conditionState?.cardAmount > cardAmount) && `${t("dialogs.limitCard")} ${cardAmount} ${t("units.amd")}`}
       </div> 
@@ -179,7 +229,7 @@ const ReverseConditions = ({
         {t("buttons.submit")}
       </Button>
       </div>
-  </>
+  </div>
 
   )
 };
