@@ -216,8 +216,7 @@ const EmarkInputForDeleteItem = ({
       localStorage.setItem("emarkNewList", JSON.stringify([...newDataLS, {
         barcode: bCode,
         scanRequired: false,
-        emarks:[],
-        
+        emarks:[]
       }]))
       return close()
     }
