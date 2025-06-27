@@ -148,8 +148,8 @@ const UpdateProduct = ({
   };
 
   const changeUpdatedProdInBasket = (id) => {
-    const currBasket = JSON.parse(localStorage.getItem("bascket1"))
-    const newBasketContent = currBasket.map((prodInBasket) => {
+    const currBasket = JSON.parse(localStorage.getItem("bascket1")) || []
+    const newBasketContent = currBasket?.map((prodInBasket) => {
       if(prodInBasket?.id === id) {
         return currentProduct
       }else{
@@ -168,15 +168,9 @@ const UpdateProduct = ({
       }
     });
     setContent(newArr)
-    // if(csvData){
-    //   sendEmarkCSV(currentProduct?.id, csvData)
-    // }
     updateProduct(currentProduct).then((res) => {
       if(res === 200) {
         setCurrentPage(1)
-        setFetching(true)
-        // deleted
-        // deleteBasketItem(currentProduct?.id)
         changeUpdatedProdInBasket(currentProduct?.id)
 
         setFlag(!flag)
@@ -238,7 +232,6 @@ const UpdateProduct = ({
 
   }, [product?.discount, product?.price]);
 
-console.log(currentProduct?.isEmark,"curr is Emark")
   useEffect(() => {
     currentProduct && functionInit()
   }, [typeCode]);
@@ -388,7 +381,6 @@ console.log(currentProduct?.isEmark,"curr is Emark")
               name="isEmark"
               control={<Checkbox />} 
               label={t("productinputs.isEmark")}
-              // value={currentProduct?.isEmark}
               checked={!!currentProduct?.isEmark}
               onChange={(e)=> setCurrentProduct({
                 ...currentProduct,

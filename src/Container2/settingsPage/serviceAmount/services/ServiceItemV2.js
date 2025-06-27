@@ -14,6 +14,7 @@ import ActivateStepByStep from "../pay/ActivatStepByStep"
 import { setPayForEhdm } from "../../../../store/storex/openPaySlice";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
 
+
 const ServiceItemV2 = ({
   service,
   content,
