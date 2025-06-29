@@ -27,6 +27,12 @@ const ChoosePaymentType = ({billsData, setMethod, setBills, paymentType, setClic
   return (
       
     <div>
+<<<<<<< HEAD
+=======
+      {/* <h6 style={{display:"flex",width:"100%", }}>
+        <span>{t("settings.payByOther")}</span>
+      </h6> */}
+>>>>>>> 6b7c59e216853be088432cff0183f2663a6fa3a7
       {paymentType && paymentType.map((type) => {
         if(type?.title !== "Arca") {
 

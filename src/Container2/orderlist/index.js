@@ -1,5 +1,8 @@
 import { useState , useEffect , memo } from "react";
+<<<<<<< HEAD
 import { useState , useEffect , memo } from "react";
+=======
+>>>>>>> 6b7c59e216853be088432cff0183f2663a6fa3a7
 import { useLocation } from "react-router-dom";
 
 import { basketListCreator, checkAndGetReceiptLink } from "../../services/pay/pay";
@@ -24,7 +27,10 @@ const BasketList = ({t, logOutFunc}) => {
       setLoad(true)
       if(res?.data?.status === 1 && res?.data?.receiptLink) {
         // setRecieptLink(res?.data?.receiptLink)
+<<<<<<< HEAD
         // setRecieptLink(res?.data?.receiptLink)
+=======
+>>>>>>> 6b7c59e216853be088432cff0183f2663a6fa3a7
         setBasketContent(res?.data)
         // return window.location.href = res?.data?.receiptLink
       }else{
@@ -44,7 +50,10 @@ const BasketList = ({t, logOutFunc}) => {
     });
   }
     
+<<<<<<< HEAD
     
+=======
+>>>>>>> 6b7c59e216853be088432cff0183f2663a6fa3a7
   useEffect(() => {
     logOutFunc()
     getBasketList() 
@@ -62,6 +71,15 @@ useEffect(() => {
     window.addEventListener("pageshow", handlePageShow);
     return () => window.removeEventListener("pageshow", handlePageShow);
   }, []);
+<<<<<<< HEAD
+=======
+
+  // useEffect(()=> {
+  //   if(!recieptLink && basketContent?.orderStatus === "2") {
+  //     checkAndGetReceiptLink(saleId)
+  //   }
+  // }, []);
+>>>>>>> 6b7c59e216853be088432cff0183f2663a6fa3a7
 
   // useEffect(()=> {
   //   if(!recieptLink && basketContent?.orderStatus === "2") {

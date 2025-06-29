@@ -564,7 +564,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
         </Routes> :
         <>
          
-         
           <Header
             setOpenBasket={setOpenBasket}
             basketGoodsqty={basketGoodsqty}
@@ -659,8 +658,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
               logOutFunc={logOutFunc}
             />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-            {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
-            {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
             {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
             {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
           </Routes> :

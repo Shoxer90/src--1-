@@ -37,6 +37,10 @@ const PaymentConfirm = ({
       <div>
       <div style={{display:"flex",width:"100%"}}>
         <span>{t("settings.payByAttachedCard")}</span>
+<<<<<<< HEAD
+=======
+        {/* <PaymentLogo /> */}
+>>>>>>> 6b7c59e216853be088432cff0183f2663a6fa3a7
       </div>
 
       {cardArr?.length ?
@@ -82,9 +86,16 @@ const PaymentConfirm = ({
             })
           }}
         />
+<<<<<<< HEAD
           <div style={{marginLeft:"10px", width:"100%", display:"flex"}}>
             <PaymentLogo />
             <span>{t("settings.payWithNewCard")}</span>
+=======
+          {/* <span style={{marginLeft:"10px", width:"100%"}}>{t("settings.payWithNewCard")}
+          </span> */}
+          <div style={{marginLeft:"10px", width:"100%", display:"flex", alignItems:"center",}}>
+            {t("settings.payWithNewCard")} <span style={{height:"10px", marginBottom:"2px", marginLeft:"3px"}}><PaymentLogo /></span>
+>>>>>>> 6b7c59e216853be088432cff0183f2663a6fa3a7
           </div>
         </label>
       </div>
