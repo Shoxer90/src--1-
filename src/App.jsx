@@ -137,7 +137,7 @@ const App = () => {
   });
 
   const whereIsMyUs = async() => {
-    console.log("19.06.2025 100% total")
+    console.log("27.06.2025 100% fast idram")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(

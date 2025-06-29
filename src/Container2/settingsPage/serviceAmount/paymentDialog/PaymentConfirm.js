@@ -14,6 +14,7 @@ const PaymentConfirm = ({
   content,
   setMethod,
   method,
+  clicked,setClicked
 }) => {
   const {t} = useTranslation();
   const [activateBtn,setActivateBtn] = useState(0);
@@ -36,7 +37,6 @@ const PaymentConfirm = ({
       <div>
       <div style={{display:"flex",width:"100%"}}>
         <span>{t("settings.payByAttachedCard")}</span>
-        <PaymentLogo />
       </div>
 
       {cardArr?.length ?
@@ -51,6 +51,7 @@ const PaymentConfirm = ({
               index={index}
               activateBtn={activateBtn}
               activeStyle={activeStyle}
+              setClicked={setClicked}
             /> 
           ))}
         </div>: ""
@@ -69,22 +70,26 @@ const PaymentConfirm = ({
           type="radio"
           name="pay operation"
           onChange={()=>{
+            setClicked(true)
             delete payData?.cardId
             setActivateBtn(100)
             setMethod(2)
             setPayData({
               ...payData,
               attach: false,
-                paymentType:1,
+              paymentType:1,
 
             })
           }}
         />
-          <span style={{marginLeft:"10px", width:"100%"}}>{t("settings.payWithNewCard")} </span>
+          <div style={{marginLeft:"10px", width:"100%", display:"flex"}}>
+            <PaymentLogo />
+            <span>{t("settings.payWithNewCard")}</span>
+          </div>
         </label>
       </div>
-      <div style={{height:"30px", marginLeft:"20px"}}>
-        {method === 2 && <label htmlFor="attach">
+      <div style={{marginLeft:"20px"}}>
+        {method === 2 && clicked && <label htmlFor="attach">
           <input 
             id="attach"
             type="checkbox"
@@ -101,11 +106,9 @@ const PaymentConfirm = ({
               })
             }}
           />
-          <span style={{marginLeft:"10px"}}>{t("settings.payWithNewCardAndAttach")}</span>
+          <span style={{height:"30px",marginLeft:"10px"}}>{t("settings.payWithNewCardAndAttach")}</span>
         </label>}
       </div>
-     
-
     </div>
   )
 }

@@ -10,7 +10,8 @@ const AttachedCardsItem = ({
   setPayData,
   setMethod,
   index,
-  activeStyle
+  activeStyle,
+  setClicked
 }) => {
 
   return (
@@ -24,6 +25,8 @@ const AttachedCardsItem = ({
           checked={payData?.cardId === card?.cardId && payData?.paymentType === 1 }
           name="pay operation"
           onChange={() => {
+            setClicked(false)
+
             delete payData?.attach
             setActivateBtn(index)
             setMethod(1)

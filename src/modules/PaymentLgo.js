@@ -5,14 +5,16 @@ const divStyle = {
   flexFlow:"row nowrap",
   alignItems:"center",
   gap: "3px", 
-  width:"60%"
+  width:"40%",
+  marginLeft: "0px",
+  marginRight: "30px"
 }
 
 const master = {
   height: "18px",
 }
 const visa = {
-  height: "15px",
+  height: "14.5px",
 }
 const arca = {
   height: "13px",

@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogContent, Divider, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import React, { memo, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import PrepaymentConfirmation from "../prepayment/PrepaymentConfirm";
 import PaymentConfirm from "../paymentDialog/PaymentConfirm";
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
@@ -40,12 +40,12 @@ const PayComponent = ({
 }) => {
   const {t} = useTranslation();
   const [openCompleteUserInfo,setOpenCompleteUserInfo] = useState(false);
-  const location = useLocation()
 
   const user = useSelector(state => state?.user?.user)
   const [url, setUrl] = useState("");
   const [openSuccess, setOpenSuccess] = useState(false);
   const [paymentType,setPaymentType] = useState([]);
+  const [clicked,setClicked] = useState(false);
   
   const [billsData, setBills] = useState({
     web: true,
@@ -107,7 +107,6 @@ const PayComponent = ({
   
   const servicePay = async() => {
     if(activateEhdm) {
-      // if(user?.isRegisteredForEhdm){
         if(!user?.isRegisteredForEhdm){
         return setOpenCompleteUserInfo(true)
       }else{
@@ -199,6 +198,8 @@ const PayComponent = ({
         method={method}
         setMethod={setMethod}
         activateEhdm={activateEhdm}
+        clicked={clicked}
+        setClicked={setClicked}
       />
       <ChoosePaymentType 
         billsData={billsData}
@@ -206,7 +207,7 @@ const PayComponent = ({
         paymentType={paymentType}
         setPaymentType={setPaymentType}
         setMethod={setMethod}
-
+        setClicked={setClicked}
       />
         <Divider sx={{m:1}} color="black" />
 

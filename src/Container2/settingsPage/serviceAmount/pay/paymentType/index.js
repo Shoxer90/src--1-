@@ -5,7 +5,7 @@ import styles from "./index.module.scss";
 import { useTranslation } from "react-i18next";
 
   
-const ChoosePaymentType = ({billsData, setMethod, setBills, paymentType}) => {
+const ChoosePaymentType = ({billsData, setMethod, setBills, paymentType, setClicked}) => {
   const {t} = useTranslation();
   const [activeField,setActiveField] = useState([]);
 
@@ -23,20 +23,18 @@ const ChoosePaymentType = ({billsData, setMethod, setBills, paymentType}) => {
       paymentType: num
     })
   }
-console.log(billsData,"bills data")
 
   return (
       
     <div>
-      <h6 style={{display:"flex",width:"100%", }}>
-        <span>{t("settings.payByOther")}</span>
-      </h6>
       {paymentType && paymentType.map((type) => {
         if(type?.title !== "Arca") {
 
         return <div 
            onChange={() => {
-                setMethod(1)
+                // setMethod(1)
+                setMethod(2)
+                setClicked(false)
                 delete billsData?.cardId
                 delete billsData?.attach
                 handleChange(type?.paymentType)
@@ -50,14 +48,16 @@ console.log(billsData,"bills data")
               checked={activeField === type?.paymentType && billsData?.paymentType !==1}
               name="payment type"
               onChange={() => {
-                setMethod(1)
+                // setMethod(1)
+                setClicked(false)
+                setMethod(2)
                 delete billsData?.cardId
                 delete billsData?.attach
                 handleChange(type?.paymentType)
               }}
             />
             <span style={{textAlign:"center", marginRight:"5px"}}>
-              <img src={type?.icon} alt={type?.title} style={{height: "17px", marginBottom:"3px"}} />
+              <img src={type?.icon} alt={type?.title} style={{height: "20px", marginBottom:"3px"}} />
             </span>
           </label>
         </div>}
