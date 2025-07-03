@@ -65,7 +65,6 @@ const checkForUpdates = async () => {
     const currentVersion = localStorage.getItem("appVersion");
 
     if (currentVersion && currentVersion !== newVersion) {
-      console.log("🔄 Найдена новая версия! Обновляем страницу...");
       localStorage.setItem("appVersion", newVersion);
       window.location.reload(true);
     } else {
@@ -378,12 +377,6 @@ const App = () => {
     setSearchValue("")
     return loadBasket()
   };
-
-  // onMessage(messaging, (payload) => {
-  //   console.log(payload,"in appjs")
-  //   setNotifTrigger(!notifTrigger)
-  // })
-
 
   const logOutFunc = async() =>{
     const language = localStorage.getItem("lang");

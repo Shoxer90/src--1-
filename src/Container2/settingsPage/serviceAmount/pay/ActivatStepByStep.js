@@ -75,7 +75,14 @@ const ActivateStepByStep = ({
   };
   // this is new in this component
     const servicePay = async() => {
-     
+      if(activateEhdm) {
+        if(!user?.isRegisteredForEhdm){
+        return 
+      }else{
+        return payForCompleteEhdmRegistration()
+      }
+    }
+    setLoader(true)
       setLoader(true)
       if(method === 1) {
         payForServiceWithAttachedCard(payData).then((res) => {
@@ -93,7 +100,6 @@ const ActivateStepByStep = ({
           }else {
             setMessage({type:"error", message:t("dialogs.checkCardStatus400")})
           }
-          // setOpenPay(false)
         })
         
       }else if (method === 2){
@@ -114,7 +120,7 @@ const ActivateStepByStep = ({
         }
       })
     }else{
-      payForEhdm(payData?.attach).then((res) => {
+      payForEhdm(payData?.attach, payData?.paymentType).then((res) => {
         setLoader(false)
         if(res?.status !== 200) {
         }else{

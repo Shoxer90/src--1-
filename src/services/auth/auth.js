@@ -69,9 +69,9 @@ export const completeEhdmRegistration = async(newUserData) => {
   }
 };
 
-export const payForEhdm = async(bool) => {
+export const payForEhdm = async(bool,paymentType ) => {
   try{
-    const  data = await axios.get(baseUrl + `Registration/PayForEhdm?isWeb=true&attach=${bool}`, option());
+    const  data = await axios.get(baseUrl + `Registration/PayForEhdm?isWeb=true&attach=${bool}&paymentType=${paymentType}`, option());
     return data
   }catch(err){
     return err?.request?.status

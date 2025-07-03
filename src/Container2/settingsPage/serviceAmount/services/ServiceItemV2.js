@@ -57,6 +57,8 @@ const ServiceItemV2 = ({
   const notAvailableService = () => {
     if(service?.id === 3) {
       if(!user?.isRegisteredInEhdm && !service?.isActive) {
+        setActivateEhdm(true)
+
        return  dispatch(setPayForEhdm(true))
       }
     }
