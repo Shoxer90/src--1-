@@ -15,7 +15,12 @@ const master = {
   height: "14px",
 }
 const visa = {
+<<<<<<< HEAD
   height: "14.5px",
+=======
+  // height: "15px",
+  height: "11px",
+>>>>>>> 6b7c59e216853be088432cff0183f2663a6fa3a7
 }
 const arca = {
   // height: "13px",

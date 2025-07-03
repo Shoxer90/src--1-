@@ -19,6 +19,7 @@ navigator.serviceWorker.register('/firebase-messaging-sw.js').then((registration
 
 messaging.onBackgroundMessage(async(payload) => {
   console.log(payload, "messaging-sw");
+  console.log(payload, "messaging-sw");
 
   const notificationTitle = payload.notification.title;
   const notificationOptions = {

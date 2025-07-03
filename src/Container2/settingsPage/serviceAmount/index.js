@@ -23,6 +23,7 @@ import ServicesV2 from './services/servicesV2.js';
 // import ServicesV2 from './services/servicesV2.js';
 
 
+
 const stylesCard = {
   m: window.innerWidth > 1000 ? 2 : .2,
   mb: 1,
@@ -105,6 +106,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
   const getInfo = async() => {
     await getPaymentCardServices().then((res) =>{
       console.log(res,"123")
+      console.log(res,"123")
       setInternalPayments(res)
       if(!res?.isInDate && !res?.days) {
         setMessage({type:"error", message:t("cardService.notInDate")})
@@ -130,6 +132,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
 
   useEffect(() => {
     getInfo()
+  
   
   }, [refresh, isDelete]);
 
@@ -227,6 +230,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
     }
 
     <Dialog open={!!isLoad}>
+      <Loader close={setIsLoad} />
       <Loader close={setIsLoad} />
     </Dialog>
     <CreditCardNewName 

@@ -104,13 +104,9 @@ const App = () => {
   const inputSlice = useSelector(state => state?.barcode?.basket);
   const debounceBasket = useDebonce(inputSlice, 500);
 
-  const inputSlice = useSelector(state => state?.barcode?.basket);
-  const debounceBasket = useDebonce(inputSlice, 500);
-
 
   const [isBlockedUser,setBlockedUser] = useState(false);
   const debounce = useDebonce(searchValue, 1000);
-  // const debounceBasket = useDebonce(barcodeScanValue, 20);
   // const debounceBasket = useDebonce(barcodeScanValue, 20);
   const [activeBtn, setActiveBtn] = useState("/");
   const [lastDate,setLastDate] = useState("");
@@ -142,8 +138,6 @@ const App = () => {
     prePaymentSaleDetailId: JSON.parse(localStorage.getItem("endPrePayment"))?.id,
     isPrepayment: openWindow?.prepayment,
     customer_Name: "",
-    customer_Phone: "",
-    emarks: JSON.parse(localStorage.getItem("emarkList"))
     customer_Phone: "",
     emarks: JSON.parse(localStorage.getItem("emarkList"))
   });
@@ -250,21 +244,13 @@ const App = () => {
                     name: from,
                     value: ""
                   }))
-                  dispatch(setSearchBarCodeSlice({
-                    name: from,
-                    value: ""
-                  }))
                   setToBasketFromSearchInput(item, 1)
-               
                
                 }else{
                   return setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
                 }
               }
             })
-          } else {
-            setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
-          }
           } else {
             setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
           }
@@ -306,7 +292,6 @@ const App = () => {
           partnerTin: "",
           sales: [],
           emarks: [],
-          emarks: [],
           prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id,
           isPrepayment: openWindow?.prepayment,
           customer_Name: "",
@@ -343,10 +328,6 @@ const App = () => {
       let newList = emarkNewList?.filter((item) => item?.barcode !== barcode)
       localStorage.setItem("emarkNewList",JSON.stringify(newList))
       localStorage.setItem("emarkList",JSON.stringify(newEmarkArr))
-    }
-    if(isEmark && JSON.parse(localStorage.getItem("emarkList"))){
-      console.log(JSON.parse(localStorage.getItem("emarkList")), "app jss storsga")
-      setOpenEmarkInput(true)
     }
    
 // handling freze prods when you want to close prepayment transaction
@@ -387,7 +368,6 @@ const App = () => {
       partialAmount: 0,
       partnerTin: "",
       sales: [],
-      emarks: [],
       emarks: [],
       prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id || "",
       isPrepayment: openWindow?.prepayment,
@@ -461,7 +441,6 @@ const App = () => {
     const language = localStorage.getItem("lang");
     removeDeviceToken(localStorage.getItem("dt"))
     setIsLogIn(false)
-    setIsLogIn(false)
     setContent([]);
     setCount(false)
     localStorage.clear();
@@ -511,8 +490,6 @@ const App = () => {
    
   },[t, user]);
   // },[t,isLogin, user]);
-  },[t, user]);
-  // },[t,isLogin, user]);
 
   useEffect(() => {
     if(user?.isInDate === true &&
@@ -557,16 +534,7 @@ const App = () => {
 console.log(paymentInfo,"payment Info")
 console.log(paymentInfo?.emarks,"payment emarks")
 
-  // useEffect(() => {
-  //   barcodeScanValue &&  debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
-  // },[debounceBasket, barcodeScanValue]);
-
-console.log(paymentInfo,"payment Info")
-console.log(paymentInfo?.emarks,"payment emarks")
-
   useEffect(() => {
-    debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
-  }, [debounceBasket]);
     debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
   }, [debounceBasket]);
 
@@ -583,7 +551,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
           <Route path="/confirmation/*" element={<ConfirmationV2 />} />
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
-          <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc}/>} />
           <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc}/>} />
           <Route path="/kuku" element={<IframeReader />} />
           {/* ADMIN PAGE */}
@@ -610,9 +577,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
             setFrom={setFrom}
             from={from}
 
-            setFrom={setFrom}
-            from={from}
-
 
           />
           {!isBlockedUser  && user ? <Routes>
@@ -634,7 +598,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
                   setCurrentPage={setCurrentPage}
                   setFrom={setFrom}
                   from={from}
-                  from={from}
                   searchValue={searchValue}
                   setSearchValue={setSearchValue}
                   byBarCodeSearching={byBarCodeSearching}
@@ -642,7 +605,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
                   setFlag={setFlag}
                   setFetching={setFetching}
                   fetching={fetching}
-                  setOpenBasket={setOpenBasket}
                   setOpenBasket={setOpenBasket}
                 />
               }  
@@ -666,7 +628,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
                   setCurrentPage={setCurrentPage}
                   setFrom={setFrom}
                   from={from}
-                  from={from}
                   searchValue={searchValue}
                   setSearchValue={setSearchValue}
                   byBarCodeSearching={byBarCodeSearching}
@@ -674,7 +635,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
                   setFlag={setFlag}
                   setFetching={setFetching}
                   fetching={fetching}
-                  setOpenBasket={setOpenBasket}
                   setOpenBasket={setOpenBasket}
                 />
               }  
@@ -685,6 +645,7 @@ console.log(paymentInfo?.emarks,"payment emarks")
             <Route path="/setting/user" element={<SettingsUser user={user} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc} limitedUsing={limitedUsing}/>} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} />} />
             {/* <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} /> */}
+            <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
             <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
             <Route path="/prepayment" element={<PrePaymentList 
               setOpenBasket={setOpenBasket} 
@@ -723,7 +684,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
             setContent={setContent}
             byBarCodeSearching={byBarCodeSearching}
             setFrom={setFrom}
-            from={from}
             from={from}
             searchValue={barcodeScanValue}
             setSearchValue={setBarcodeScanValue}
@@ -774,28 +734,11 @@ console.log(paymentInfo?.emarks,"payment emarks")
               }))
               setMessage({type:"", message:""})
             }}
-            onClose={()=>{
-             dispatch(setSearchBarCodeSlice({
-                name: from,
-                value: ""
-              }))
-              setMessage({type:"", message:""})
-            }}
             anchorOrigin={{   
               vertical: "top",
               horizontal: "center"
             }} 
           >
-            <Alert 
-            onClose={()=>{
-              // setBarcodeScanValue("")
-              dispatch(setSearchBarCodeSlice({
-                name: from,
-                value: ""
-              }))
-              setMessage({type:"",message:""})
-            }}
-             severity={message?.type || "success"} sx={{ width: '100%' }}>
             <Alert 
             onClose={()=>{
               // setBarcodeScanValue("")
