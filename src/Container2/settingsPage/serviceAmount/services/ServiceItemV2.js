@@ -24,7 +24,8 @@ const ServiceItemV2 = ({
   serviceType,
   refresh,
   setRefresh,
-  paymentType, setPaymentType
+  paymentType, 
+  setPaymentType
 }) => {
   const isOpenPayForEhdm = useSelector(state => state?.payForEhdm?.isOpen)
   const user = useSelector(state => state?.user?.user)
