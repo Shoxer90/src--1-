@@ -9,6 +9,7 @@ import { completeEhdmRegistration, payForEhdm, payForEhdmWithUsingCard } from ".
 import styles from "./index.module.scss";
 import SnackErr from "../../../dialogs/SnackErr";
 import Loader from "../../../loading/Loader";
+import { payForServiceWithAttachedCard, payForServiceWithNewCard } from "../../../../services/internal/InternalPayments";
 
 const ActivateStepByStep = ({
   open, 
@@ -17,11 +18,16 @@ const ActivateStepByStep = ({
   content,
   activateEhdm,
   price,
+  paymentType,
+  setPaymentType,
+  payData, setPayData
+
 }) => {
   const {t} = useTranslation();
   const user = useSelector(state => state?.user?.user);
   const [loader, setLoader] = useState(false);
-  const [payData, setPayData] = useState({ })
+  const [method,setMethod] = useState(1);
+
   const [step, setStep] = useState({
     "s1": true,
     "s2": false,
@@ -41,6 +47,15 @@ const ActivateStepByStep = ({
     type:"info",
   })
 
+  const payUsingNewCard = () => {
+    payForServiceWithNewCard(payData).then((res) => {
+      setLoader(false)
+        // window.open( res?.formUrl, '_blank', 'noopener,noreferrer');
+        // openUrl(res?.formUrl)
+        window.location.href = res?.formUrl
+      })
+  };
+
   const saveUserDataForEhdm = (arg) => {
   setLoader(true)
   completeEhdmRegistration(arg).then((res) => {
@@ -58,6 +73,35 @@ const ActivateStepByStep = ({
     }
   })
   };
+  // this is new in this component
+    const servicePay = async() => {
+     
+      setLoader(true)
+      if(method === 1) {
+        payForServiceWithAttachedCard(payData).then((res) => {
+          setLoader(false)
+          if(res?.status === 200) {
+            setMessage({type:"success", message:t("dialogs.checkCardStatus200")})
+          }else if(res?.status === 201) {
+            setMessage({type:"success", message:t("dialogs.checkCardStatus201")})
+          }else if(res?.status === 410) {
+            setMessage({type:"error", message:t("dialogs.checkCardStatus410")})
+          }else if(res?.status === 400) {
+            setMessage({type:"error", message:t("dialogs.checkCardStatus400")})
+          }else if(res?.status === 411) {
+            setMessage({type:"error", message:t("dialogs.checkCardStatus412")})
+          }else {
+            setMessage({type:"error", message:t("dialogs.checkCardStatus400")})
+          }
+          // setOpenPay(false)
+        })
+        
+      }else if (method === 2){
+        payUsingNewCard()
+      }
+    };
+  
+  // 
   
   const payForCompleteEhdmRegistration = () => {
     setLoader(true)
@@ -120,7 +164,7 @@ const ActivateStepByStep = ({
           user={user}
         />
       </div>: ""}
-      <div id="payForEhdm"  style={step?.s2 ? null: notActiveStyle}>
+      <div id="payForEhdm" style={step?.s2 ? null: notActiveStyle}>
         <Step3 
           setPayData={setPayData}
           payData={payData}
@@ -131,6 +175,12 @@ const ActivateStepByStep = ({
           user={user}
           payForCompleteEhdmRegistration={payForCompleteEhdmRegistration}
           close={close}
+          paymentType={ paymentType}
+          setPaymentType={setPaymentType}
+          servicePay={servicePay}
+          method={method}
+          setMethod={setMethod}
+
         />
       </div>
       {infoDialog?.message &&
@@ -142,6 +192,7 @@ const ActivateStepByStep = ({
         <Loader />
       </Dialog>
     </Dialog>
+
     )
 };
 

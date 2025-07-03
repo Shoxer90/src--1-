@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import styles from "./index.module.scss";
 import { useTranslation } from "react-i18next";
 import PaymentConfirm from "../paymentDialog/PaymentConfirm";
@@ -7,6 +7,7 @@ import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 import Loader from "../../../loading/Loader";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
+import { getPaymenTypesArcaOther } from "../../../../services/internal/InternalPayments";
 
 const Step3 = ({
   setPayData,
@@ -16,12 +17,15 @@ const Step3 = ({
   price,
   loader,
   user,
-  payForCompleteEhdmRegistration,
-  close
+  close,
+  paymentType,
+  setPaymentType,
+  servicePay,
+  method,setMethod
 }) => {
   const {t} = useTranslation();
-  const [method,setMethod] = useState(1);
   const [openBankInfo,setOpenBankInfo] = useState();
+  const [clicked,setClicked] = useState(false);
 
   const langEnum = () => {
     let lang = localStorage.getItem("lang") || localStorage.getItem("i18nextLng")
@@ -34,7 +38,13 @@ const Step3 = ({
       return "arm"
     }
   };
-  
+
+  useEffect(() => {
+   !paymentType?.length && getPaymenTypesArcaOther().then((res) => {
+      setPaymentType(res)
+    });
+  }, []);
+
 	return (
 		<div className={styles.update_card}>
       <p style={{fontSize:"110%", fontWeight: 600}}>
@@ -58,9 +68,12 @@ const Step3 = ({
         method={method}
         setMethod={setMethod}
         activateEhdm={activateEhdm}
+        clicked={clicked}
+        setClicked={setClicked}
+        paymentType={paymentType}
+        setPaymentType={setPaymentType}
       />
       </div>
-
       <Divider color="black" />
 {/* SKSEL ESTEXIC */}
     <Button 
@@ -82,7 +95,8 @@ const Step3 = ({
         </Button>
       <Button
         variant="contained"
-        onClick={payForCompleteEhdmRegistration}  
+        onClick={servicePay}  
+        // onClick={payForCompleteEhdmRegistration}  
         sx={{m:2,background:"#3FB68A",textTransform: "capitalize", width:"40%"}}
         disabled={payData?.attach === undefined && payData?.cardId === undefined }
       >

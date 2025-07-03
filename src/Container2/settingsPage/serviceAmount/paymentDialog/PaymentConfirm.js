@@ -1,11 +1,11 @@
 import { Divider } from '@mui/material';
-import React, { memo, useEffect, useState } from 'react';
+import { memo, useEffect } from 'react';
 
 import styles from "./index.module.scss";
 import { useTranslation } from 'react-i18next';
 import AttachedCardsItem from './AttachedCardsItem';
 import PaymentLogo from "../../../../modules/PaymentLgo";
-import paymentType from '../pay/paymentType';
+import ChoosePaymentType from "../pay/paymentType/index"
 
 const PaymentConfirm = ({
   cardArr,
@@ -14,10 +14,13 @@ const PaymentConfirm = ({
   content,
   setMethod,
   method,
-  clicked,setClicked
+  clicked,
+  setClicked,
+  setPaymentType,
+  paymentType
+
 }) => {
   const {t} = useTranslation();
-  const [activateBtn,setActivateBtn] = useState(0);
 
   const activeStyle = {
     boxShadow: "10px 5px 5px grey",
@@ -43,13 +46,12 @@ const PaymentConfirm = ({
         <div>
           {cardArr.map((card,index)=>(
             <AttachedCardsItem 
+              key={index}
               card={card} 
               payData={payData}
-              setActivateBtn={setActivateBtn}
               setPayData={setPayData}
               setMethod={setMethod}
               index={index}
-              activateBtn={activateBtn}
               activeStyle={activeStyle}
               setClicked={setClicked}
             /> 
@@ -60,25 +62,21 @@ const PaymentConfirm = ({
       <Divider sx={{bgcolor:"black"}} />
      
       <div 
-        className={styles.subscription_item}
-        style={activateBtn === 100 && payData?.paymentType === 1? activeStyle :null}
-      >
+        className={styles.subscription_item} style={ payData?.paymentType === 1 && !payData?.cardId? activeStyle :null}>
         <label htmlFor="no attach" style={{display:"flex",justifyContent:"flex-start",width:"100%"}}>
         <input 
           id="no attach"
-          checked={!payData?.cardId && payData?.paymentType === 1 }
+          checked={!payData?.cardId &&  payData?.paymentType === 1 }
           type="radio"
           name="pay operation"
           onChange={()=>{
-            setClicked(true)
             delete payData?.cardId
-            setActivateBtn(100)
+            setClicked(true)
             setMethod(2)
             setPayData({
               ...payData,
               attach: false,
               paymentType:1,
-
             })
           }}
         />
@@ -97,18 +95,26 @@ const PaymentConfirm = ({
             name="pay operation"
             onChange={()=>{
               delete payData?.cardId
-              setActivateBtn(101)
               setMethod(2)
               setPayData({
                 ...payData,
                 attach: !payData?.attach,
-                paymentType:1,
+                paymentType: 1,
               })
             }}
           />
           <span style={{height:"30px",marginLeft:"10px"}}>{t("settings.payWithNewCardAndAttach")}</span>
         </label>}
       </div>
+      <ChoosePaymentType 
+        billsData={payData}
+        setBills={setPayData}
+        paymentType={paymentType}
+        setPaymentType={setPaymentType}
+        setMethod={setMethod}
+        setClicked={setClicked}
+        activeStyle={activeStyle}
+      />
     </div>
   )
 }

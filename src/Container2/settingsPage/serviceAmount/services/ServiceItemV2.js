@@ -13,6 +13,7 @@ import Loader from "../../../loading/Loader";
 import ActivateStepByStep from "../pay/ActivatStepByStep"
 import { setPayForEhdm } from "../../../../store/storex/openPaySlice";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
+import { getPaymenTypesArcaOther } from "../../../../services/internal/InternalPayments";
 
 const ServiceItemV2 = ({
   service,
@@ -23,6 +24,7 @@ const ServiceItemV2 = ({
   serviceType,
   refresh,
   setRefresh,
+  paymentType, setPaymentType
 }) => {
   const isOpenPayForEhdm = useSelector(state => state?.payForEhdm?.isOpen)
   const user = useSelector(state => state?.user?.user)
@@ -31,37 +33,37 @@ const ServiceItemV2 = ({
   const [message, setMessage] = useState({message:"",type:""});
   const [openPay, setOpenPay] = useState(false);
   const [activateEhdm,setActivateEhdm] = useState(false);
-
-  
-  const [openCompleteUserInfo,setOpenCompleteUserInfo] = useState(false);
-  
+   const [billsData, setBills] = useState({
+    web: true,
+    daysEnum: 1,
+    isBinding: content?.autopayment?.hasAutoPayment,
+    serviceType: user?.activeServiceType,
+    cardId: content?.autopayment?.defaultCard?.cardId,
+    paymentType: 1
+  });
   const disableStyle={opacity: 0.3};
-    const {t} = useTranslation();
+  const {t} = useTranslation();
   
 
   const closeMessage = () => {
     dispatch(setPayForEhdm(false))
-    setOpenCompleteUserInfo(false)
     setRefresh(!refresh)
     setOpenPay(false)
     setMessage({message:"", type:""})
     setRefresh(!refresh)
-
   };
 
 
   const notAvailableService = () => {
     if(service?.id === 3) {
       if(!user?.isRegisteredInEhdm && !service?.isActive) {
-        dispatch(setPayForEhdm(true))
-        return setOpenCompleteUserInfo(true)
+       return  dispatch(setPayForEhdm(true))
       }
     }
     if(service?.isActive && !isOpenPayForEhdm) {
       setOpenPay(true)
     }
   }
-
   useEffect(() =>{
     service?.isActive &&
     setPayData({
@@ -73,13 +75,13 @@ const ServiceItemV2 = ({
   useEffect(() => {
     isOpenPayForEhdm && notAvailableService()
   }, []);
-  
+
+
   return (
     <>
       <Card 
         sx={{ p:1.1,boxShadow:5,borderRadius:"5px"}} 
         className={styles.service_item}
-        onClick={notAvailableService}
       >
         <div style={{display:"flex",justifyContent:"space-between"}}>
           <h6 style={{margin:"4px"}}>{t(`settings.${service?.name}`)}</h6>
@@ -159,15 +161,23 @@ const ServiceItemV2 = ({
         setMessage={setMessage}
         activateEhdm={activateEhdm}
         id={service?.type}
+        paymentType={paymentType}
+        setPaymentType={setPaymentType}
+        billsData={billsData}
+        setBills={setBills}
       />
-      <ActivateStepByStep
+      {isOpenPayForEhdm && !service?.isActive && <ActivateStepByStep
         open={isOpenPayForEhdm}
         close={()=>dispatch(setPayForEhdm(false))}
         setMessage={setMessage}
         content={content}
         activateEhdm={activateEhdm}
         price={service?.price}
-      />
+        paymentType={paymentType}
+        setPaymentType={setPaymentType}
+        payData={billsData}
+        setPayData={setBills}
+      />}
        <ConfirmDialog 
         question={t("settings.clickEhdmAfterDone30000")}
         func={()=>setOpenDialog(false)}

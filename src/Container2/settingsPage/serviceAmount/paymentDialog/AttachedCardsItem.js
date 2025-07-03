@@ -6,7 +6,6 @@ import paymentType from "../pay/paymentType";
 const AttachedCardsItem = ({
   card,
   payData,
-  setActivateBtn,
   setPayData,
   setMethod,
   index,
@@ -18,6 +17,16 @@ const AttachedCardsItem = ({
     <div 
       className={styles.subscription_item}
       style={payData?.cardId === card?.cardId  && payData?.paymentType === 1 ? activeStyle :null}
+      onClick={() => {
+        setClicked(false)
+        setMethod(1)
+        setPayData({
+          ...payData,
+          cardId: card?.cardId,
+          paymentType: 1
+        })
+        delete payData?.attach
+      }}
     >
       <label>
         <input
@@ -26,9 +35,7 @@ const AttachedCardsItem = ({
           name="pay operation"
           onChange={() => {
             setClicked(false)
-
             delete payData?.attach
-            setActivateBtn(index)
             setMethod(1)
             setPayData({
               ...payData,
@@ -42,8 +49,6 @@ const AttachedCardsItem = ({
             {card?.pan[0] == 4 && <img src="/visaNew.png" alt="visaNew" style={{height: "14px", marginBottom:"5px"}} />}
             {card?.pan[0] == 5 && <img src="/master2New.png" alt="masterNew" style={{height: "14px", marginBottom:"5px"}} />}
             {card?.pan[0] == 9 && <img src="/arcaNew.png" alt="arcaNew" style={{height: "13px", marginBottom:"5px"}} />}
-
-            
           </span>
           {" "} <span  style={{textAlign:"center", marginRight:"5px"}}>{card?.bankName} </span>
           <strong style={{letterSpacing:"0.2px",textAlign:"center"}}>{" "} {card?.pan.slice(0,4)} **** {card?.pan.slice(-4)}</strong>  

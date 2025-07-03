@@ -4,17 +4,13 @@ import { memo, useEffect, useState } from "react";
 import PrepaymentConfirmation from "../prepayment/PrepaymentConfirm";
 import PaymentConfirm from "../paymentDialog/PaymentConfirm";
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
-import { getPaymenTypesArcaOther, payForServiceWithAttachedCard, payForServiceWithNewCard } from "../../../../services/internal/InternalPayments";
+import { payForServiceWithAttachedCard, payForServiceWithNewCard } from "../../../../services/internal/InternalPayments";
 import Loader from "../../../loading/Loader";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import CompleteUserDataForEhdm from "../../updates/CompleteUserDataForEhdm";
 import { payForEhdm, payForEhdmWithUsingCard } from "../../../../services/auth/auth";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
-import { useLocation } from "react-router-dom";
-import ChoosePaymentType from "../pay/paymentType/index";
-import paymentType from "../pay/paymentType/index";
 
 const langEnum = () => {
   let lang = localStorage.getItem("lang") || localStorage.getItem("i18nextLng")
@@ -27,6 +23,7 @@ const langEnum = () => {
     return "arm"
   }
 };
+console.log("IN PAY COMPONENT")
 
 const PayComponent = ({
   openPay,
@@ -36,25 +33,18 @@ const PayComponent = ({
   serviceType,
   setMessage,
   activateEhdm,
-  id
+  id,
+  paymentType,
+  setPaymentType,
+  billsData,
+  setBills
 }) => {
   const {t} = useTranslation();
-  const [openCompleteUserInfo,setOpenCompleteUserInfo] = useState(false);
 
   const user = useSelector(state => state?.user?.user)
   const [url, setUrl] = useState("");
   const [openSuccess, setOpenSuccess] = useState(false);
-  const [paymentType,setPaymentType] = useState([]);
   const [clicked,setClicked] = useState(false);
-  
-  const [billsData, setBills] = useState({
-    web: true,
-    daysEnum: 1,
-    isBinding: content?.autopayment?.hasAutoPayment,
-    serviceType: id,
-    cardId: content?.autopayment?.defaultCard?.cardId,
-    paymentType: 1
-  });
   const [method,setMethod] = useState(1)
   const [openBankInfo,setOpenBankInfo] = useState();
   const [loader,setLoader] = useState(false);
@@ -108,7 +98,8 @@ const PayComponent = ({
   const servicePay = async() => {
     if(activateEhdm) {
         if(!user?.isRegisteredForEhdm){
-        return setOpenCompleteUserInfo(true)
+        // return setOpenCompleteUserInfo(true)
+        return 
       }else{
         return payForCompleteEhdmRegistration()
       }
@@ -138,15 +129,7 @@ const PayComponent = ({
     }
   };
 
-  const openUrl = (url) => {
-    const a = document.createElement('a');
-    a.href = url;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
+ 
 
   const payUsingNewCard = () => {
     payForServiceWithNewCard(billsData).then((res) => {
@@ -157,12 +140,6 @@ const PayComponent = ({
       })
   };
 
-  
-  useEffect(() => {
-    getPaymenTypesArcaOther().then((res) => {
-      setPaymentType(res)
-    });
-  }, []);
 
   return(
     <Dialog open={openPay}>
@@ -200,14 +177,8 @@ const PayComponent = ({
         activateEhdm={activateEhdm}
         clicked={clicked}
         setClicked={setClicked}
-      />
-      <ChoosePaymentType 
-        billsData={billsData}
-        setBills={setBills}
         paymentType={paymentType}
         setPaymentType={setPaymentType}
-        setMethod={setMethod}
-        setClicked={setClicked}
       />
         <Divider sx={{m:1}} color="black" />
 
@@ -256,15 +227,7 @@ const PayComponent = ({
         question={<strong>{t("settings.done30000")}</strong>}
         nobutton={true}
       />
-      {/* {openCompleteUserInfo &&
-        <CompleteUserDataForEhdm 
-          open={openCompleteUserInfo}
-          close={()=>setOpenCompleteUserInfo(false)}
-          setMessage={setMessage}
-          func={()=>console.log("user new data for ehdm")}
-          setIsLoad={setLoader}        
-        />
-      } */}
+    
     </Dialog>
   )
 };

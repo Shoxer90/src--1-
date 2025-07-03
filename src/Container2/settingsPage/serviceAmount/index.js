@@ -185,7 +185,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
             </Card>
           </div>
           {internalPayments?.cards?.length ?  internalPayments?.cards.map((card) => {
-            return  <div style={{margin:"10px"}}>
+            return  <div style={{margin:"10px"}} key={card?.cardId}>
               <CreditCardWrapper 
                 isMain={card?.isDefault}
                 handleOperation={handleOperation}
