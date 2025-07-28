@@ -22,6 +22,8 @@ const ReverseConditions = ({
   receiptAmountForPrepayment,
   chooseFuncForSubmit,
   isAllSelected,
+  defineEmarkQrs,
+  checkEmarksOrSubmit
 }) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
@@ -194,20 +196,7 @@ console.log(emarkInput, emarkQrList, "qr, list")
       </div>
 
       </div>
-      <div style={{margin:"10px", width:"100%", display:"flex", padding:"5px", alignItems:"center",justifyContent:"space-between"}}>
-     <div>skanavorel apranqi emarky</div>
-     <div style={{ display:"flex"}}>
-        <QrCode2Icon fontSize="large" />
-        <SearchBarcode
-          searchValue={emarkQr}
-          setSearchValue={setEmarkQr}
-          byBarCodeSearching={fillEmarkQrs}
-          setFrom={""}
-          stringFrom="reverse"
-          dataGroup={""}
-        />
-     </div>
-      </div>
+      
         {message?.message && <div style={{color:message?.type === "error"?"red": "green", fontWeight:600}}>{message?.message}</div>}
       <div style={{display:"flex", flexFlow:"column",alignItems:"center",justifyContent:"center"}}>
         <div style = {{color:"red",  padding:"0px 20px"}}> 
@@ -223,7 +212,8 @@ console.log(emarkInput, emarkQrList, "qr, list")
         <Button 
           variant="contained" 
           sx={{background: "#3FB68A", width:"70%",textTransform: "capitalize"}}
-          onClick={chooseFuncForSubmit}
+          onClick={checkEmarksOrSubmit}
+          // onClick={chooseFuncForSubmit}
           disabled={blockButton}
         >
         {t("buttons.submit")}

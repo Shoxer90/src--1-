@@ -17,7 +17,8 @@ const CardForPrepayment = ({
   setOpenWindow,
   setPaymentInfo,
   paymentInfo,
-  getPrepaymentList
+  getPrepaymentList,
+  from, setFrom
 }) => {
   const {t} = useTranslation();
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -45,6 +46,7 @@ const CardForPrepayment = ({
       "partnerTin": item?.partnerTin,
       "customer_Name": item?.customer_Name,
       "customer_Phone": item?.customer_Phone,
+      "emarks": []
     })
     if(!localStorage.getItem("endPrePayment")) {
       localStorage.setItem("endPrePayment", JSON.stringify({
@@ -52,11 +54,18 @@ const CardForPrepayment = ({
         prepayment: item?.prePaymentAmount,
         id: item?.id
       })) 
-      // createEditPrepContent()
       // here is new solution will be
       if(item?.products?.length){
+        let emarkCount = 0
         localStorage.setItem("freezeBasketCounts", JSON.stringify(item?.products))
-        item?.products?.forEach((prod) => setToBasket(prod, prod?.count, true))
+        // item?.products?.forEach((prod) => setToBasket(prod, prod?.count, true))
+        item?.products?.forEach((prod) =>{
+          if(prod?.isEmark) {
+            emarkCount+=1*prod?.count
+          }
+           setToBasket(prod, prod?.count, true)
+        })
+        localStorage.setItem('needEmark', emarkCount)
       }
       setOpenBasket(true)
       return setOpenWindow({
@@ -155,34 +164,16 @@ const CardForPrepayment = ({
               fontSize:"80%"
             }}
             variant="contained" 
-            // size="small"
             onClick={()=>setOpenConfirm(true)}
           >
             {t("history.reverse")}
           </Button>
-          {/* <Button 
-            variant="contained" 
-            size="small"
-            sx={{
-              background:"rgb(63, 182, 138)", 
-              fontSize:"70%",
-              textTransform: "capitalize",
-              letterSpacing:"1px"
-            }}
-            onClick={()=>{
-              createBasketContent(1)
-              localStorage.setItem("isEditPrepayment", JSON.stringify({
-                prePaymentSaleDetailId:  item?.id,
-                sales:[]
-              }))
-            }}
-          >
-            {t("buttons.edit")}
-          </Button> */}
           <Button 
             variant="contained" 
-            onClick={()=>createBasketContent(0)}
-            // size="small"
+            onClick={()=>{
+              setFrom("")
+              createBasketContent(0)
+            }}
             sx={{
               background:"#6C757D",
               width:"34%",

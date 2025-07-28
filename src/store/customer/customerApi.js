@@ -75,7 +75,6 @@ export const customerApi = createApi({
 
     cashiersDetails: builder.query({
       query: (credentials) => ({
-        // url:`/GetCashiersByStore?storeId=${credentials?.id}`,
         url:`/GetCashiersByStore?storeId=1`,
         method: "POST",
         body: credentials 

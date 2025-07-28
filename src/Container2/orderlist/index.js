@@ -93,7 +93,7 @@ useEffect(() => {
             status={basketContent?.status}
           />
       </div>
-      :<h5 style={{textAlign:"center",margin:"150px"}}> Էջը հասանելի չէ </h5>
+      :<h5 style={{textAlign:"center",margin:"150px"}}>{t("info.notValidPage")} </h5>
   )
 };
 

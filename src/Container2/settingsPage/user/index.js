@@ -70,7 +70,6 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
       changeEHDM(newStatus).then((res)=>{
         setIsLoad(false)
         whereIsMyUs()
-        // setMessage({m: res?.data?.message, t:"success"})
         setConfirmSwitch(false)
       })
 

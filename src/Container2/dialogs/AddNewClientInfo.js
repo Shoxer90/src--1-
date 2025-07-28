@@ -40,18 +40,6 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
     })
   };
   
-  // const passValidator = (value) => {
-  //   if (validator.isStrongPassword(value, { 
-  //     minLength: 8, minLowercase: 1, 
-  //     minUppercase: 1, minNumbers: 1, minSymbols: 1 
-  //   })) { 
-  //     setIsValid(true)
-  //     setErrMessage({t:"success", m: <div style={{color:"green"}}>{t("dialogs.validatepass")}</div>}) 
-  //   } else { 
-  //     setIsValid(false)
-  //     setErrMessage({t:"error", m: <div style={{color:"red"}}>{t("dialogs.novalidatepass")}</div>}) 
-  //   } 
-  // };
 
   const createNewPass = async() => {
     setSubmitClick(true)

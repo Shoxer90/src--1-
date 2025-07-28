@@ -97,6 +97,7 @@
     "remove": "Remove",
     "update": "Update",
     "cancel": "Cancel",
+    "cancel2": "Skip",
     "save": "Save",
     "yes": "Yes",
     "no": "No",
@@ -105,7 +106,8 @@
     "back" : "Back",
     "reverse": "Refund",
     "createMultiProds": "Import Catalog",
-    "view": "View"
+    "view": "View",
+    "noEmark":"Return without scanning"
   },
     "intro": {
     "privacyPolicy": "Privacy And Policy",
@@ -240,6 +242,7 @@
     "notavailable": "Not available ",
     "favourite": "Favourite ",
     "placeholder": "Search product",
+    "placeholder2": "Add to basket",
     "searchconcl": "The product with the specified barcode or name is not listed.",
     "searchEmarkconcl": "The product with the given E-mark is not in the basket or has already been removed.",
     "searchconclOutOfStock":"Products with this barcode or name were found in the unavailable products section. Do you want to go?",
@@ -323,6 +326,9 @@
     "orderPayment": "Cashless amount payable",
     "removeallprod": "Clean basket ?",
     "removeoneprod": "Remove current product from basket ?",
+    "removeEmarks": "Scanned Emarks (if any) will also be removed from the list",
+    "prepaymentEmark":"Emark will not be sold in case of prepayment transaction. Continue?",
+    "endPrepaymentEmark": "There are products with Emark marking in the prepayment transaction. Do you want to scan?",
     "useprepayment":"Prepayment",
     "usepayment":"Payment",
     "prepaymentTitle": "Using prepayment",
@@ -617,11 +623,36 @@
   },
 
   "emark":{
-    "popBtn1" : "Add E-mark via scans",
-    "popBtn2" : "Download E-mark Excel list",
-    "mainBtn" : "E-Mark marking",
-    "availableQr": "Available"
-    },
+    "availableQr": "Available",
+    "qrInBasket": "This qr is already in basket.",
+    "canOverSale": "You can complete the sale",
+    "done" : "Successed",
+    "notForThisProd": "This QR code does not belong to this product",
+    "emarkMarked": " registered in the store as Emark marked.",
+    "emark1" : "You have scanned ",
+    "emark2" : "products with Emark ",
+    "butHave": "But there are only ",
+    "plusEmark": "Add product quantity by scanning a Emark.",
+    "minusEmark1": "Reduce product quantity by scanning Emark",
+    "minusEmark2": "Scan outgoing product Emarks",
+    "withoutScan": "Increase count without scanning.",
+    "minusWithoutScan": "Decrement count without scanning.",
+    "makeCount": "Make ",
+     "scan": "Scan",
+    "wrongFormat": "Wrong format",
+    "onScan": "Enable scans",
+    "offScan": "Turn off scans",
+    "noEmark": "You have not scanned anything.",
+    "scanForReverse": "Scan the Emark codes of the returned product",
+    "cantFindEmark":"There is no Emark in the list"
+    
+  },
+  "info": {
+    "notValidPage":"Page not available",
+    "uploadFile": "Please upload the file",
+    "chooseNotifs": "Choose notifications"
+
+  },
   "admin":{
     "stores": "Customs, Stores",
     "invoices": "Invoices",

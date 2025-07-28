@@ -7,6 +7,9 @@ import {cheackProductCountnPrice } from '../../../services/products/productsRequ
 import { useTranslation } from 'react-i18next';
 import EmarkInputForDeleteItem from "../emark/EmarkInputForDeletItem";
 import useDebonce from '../../../Container2/hooks/useDebonce';
+            
+import QrCode2Icon from '@mui/icons-material/QrCode2';
+import { Opacity } from '@mui/icons-material';
 
 const BasketContentItem = ({
   el, 
@@ -19,7 +22,11 @@ const BasketContentItem = ({
   createMessage,
   freezeCount,
   setOpenBasket,
- setFrom
+  setFrom,
+  globalStorageList, 
+  setGlobalStorageList,
+  blockTheButton,
+  setBlockTheButton
 
 }) => {
   const ref = useRef();
@@ -33,8 +40,12 @@ const BasketContentItem = ({
   const [operation,setOperation] = useState("");
   const [change, setChange] = useState(false);
   const [newCount, setNewCount] = useState(el?.count)
+  const [isErr,setIsErr] = useState(false);
+  const [emarkScanned, setEmarkScanned] = useState({})
 
   const removeOneProduct = async() => {
+    setIsErr(false)
+
     notAvailable && setAvail(avail.filter(item => item !== el.id))
     editRemovePrepaymentItem(el?.productId || el?.id)
     deleteBasketItem(el.id, el?.isEmark, el?.barCode)
@@ -51,6 +62,10 @@ const BasketContentItem = ({
       ref.current.style.border="";
     }
   };
+  const errorStyle = {
+    border:"solid red 2px",
+    color:"red"
+  }
 
   const checkPriceChangeV2 = async(val) => {
     let count = {count:0}
@@ -68,10 +83,13 @@ const BasketContentItem = ({
       }]).then((result) => {
         if(!result[0]?.countStatus) {
           // if we havenot so many prod
-          getErrorStyle(true)
+          // getErrorStyle(true)
+          setIsErr(true)
           return createMessage("error", ` ${el?.name} ${t("dialogs.havenot")} ${result[0]?.existCount} ${t(`${el?.measure}`)}`)
         }else if(!result[0]?.priceStatus) {
-          getErrorStyle(true)
+          // getErrorStyle(true)
+          setIsErr(true)
+
           return createMessage("error", t("basket.price_change"))
         }
         else{
@@ -140,9 +158,9 @@ const editPrepaymentCounts = async(id,value) => {
 }
 
 
-const handleChangeBasketCount = (val, fromEmarkDialog) => {
+const handleChangeBasketCount = (val) => {
   setNewCount(val)
-  if(val> el?.count){
+  if(val > el?.count){
     setOperation("incr")
   }else{
     setOperation("decr")
@@ -153,7 +171,8 @@ const handleChangeBasketCount = (val, fromEmarkDialog) => {
     el?.isEmark
   ) {
     return setOpenEmarkInput(true)
-  }else{
+  }
+  else{
     setErrRed(false)
     let count = {count:0}
     if(freezeCount?.length) {
@@ -219,6 +238,14 @@ const handleChangeBasketCount = (val, fromEmarkDialog) => {
   }
 
   useEffect(() => {
+   globalStorageList?.map((item) => {
+      if(item?.barcode=== el?.barCode) {
+        setEmarkScanned(item)
+      }
+   })
+  }, []);
+
+  useEffect(() => {
     getFreezedCount()
   }, [freezeCount]);
 
@@ -235,10 +262,22 @@ const handleChangeBasketCount = (val, fromEmarkDialog) => {
 
   useEffect(() => {
     emarkQrCounting()
-  }, [el?.count, change]);
-  
+  }, [el?.count, change, globalStorageList]);
+
+  useEffect(() => {
+    setIsErr(false)
+  }, [el]);
+
+  useEffect(() => {
+    if(el?.count < dataFromLS?.emarks?.length) {
+      setOperation("decr")
+      setOpenEmarkInput(true)
+      setBlockTheButton(true)
+    }
+  }, [el?.count,dataFromLS?.emarks?.length,blockTheButton]);
+
   return (
-    <div className={styles.basketContent_item} ref={ref} style={{border:notAvailable? "red solid 2px":"none"}}> 
+    <div className={styles.basketContent_item}  style={ isErr ? errorStyle:null}> 
       {screen > 500 && <div className={styles.basketContent_item_image}>
         <img
           src= {el?.photo || "/default-placeholder.png"}
@@ -279,26 +318,38 @@ const handleChangeBasketCount = (val, fromEmarkDialog) => {
                   {t("basket.maxCount")} {el?.remainder + ownCount} {t(`units.${el?.unit || el?.measure}`)}
                 </div>
               </span>
-        
+             
             </div>
           </div> 
         </div>
-        <div className={styles.basketContent_item_quantity}>
-          <input
-            ref={ref}
-            style={{ width:"100%",border: !el?.count? "red solid 2px":null,fontWeight:700,fontSIze:"100%"}}
-            value={el?.count}
-             onBlur={() => {
-              if(el?.count < dataFromLS?.emarks?.length) {
-                setOperation("decr")
-                setOpenEmarkInput(true)
-              }
-            }}
-            onChange={(event) => handleChangeBasketCount(event.target.value, false)} 
-          />
+        <div style={{display:"flex", flexFlow:"column"}}>
 
-          <div style={{margin:"3px",width:"40px", fontSize:"80%"}}>
-            {el?.measure ? t(`units.${el?.measure}`) : t(`units.${el?.unit}`)}
+          <div className={styles.basketContent_item_quantity}>
+            <input
+              ref={ref}
+              style={{ width:"100%",border: !el?.count? "red solid 2px":null,fontWeight:700,fontSIze:"100%"}}
+              value={el?.count}
+              onBlur={() => {
+                if(el?.count < dataFromLS?.emarks?.length) {
+                  setOperation("decr")
+                  setOpenEmarkInput(true)
+                }
+              }}
+              onChange={(event) => handleChangeBasketCount(event.target.value, false)} 
+            />
+
+            <div style={{margin:"3px",width:"40px", fontSize:"80%",alignItems:"center"}}>
+              {el?.measure ? t(`units.${el?.measure}`) : t(`units.${el?.unit}`)}
+            </div>
+          </div>
+
+          <div style={{display:"flex", color:"green", fontSize:"70%", alignItems:"center"}}>
+            {el?.isEmark ? 
+            <>
+              <QrCode2Icon fontSize="small" sx={{mr:0.21}} />
+              <span style={{marginRight:"3px"}}>{dataFromLS?.emarks?.length || 0}</span> 
+              <span> {t(`units.${el?.unit || el?.measure}`)}</span>
+            </>:""}
           </div>
         </div>
         <div className={styles.basketContent_item_garbage} onClick={()=>setOpenDialog(true)}>

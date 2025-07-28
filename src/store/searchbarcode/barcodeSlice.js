@@ -6,7 +6,10 @@ const initialState = {
   basket: "",
   newProd: "",
   emarkConfig: "",
-  reverse:""
+  reverse:"",
+  endPrepayment: "",
+  history:""       
+
 };
 
 const barcodeSlice = createSlice({

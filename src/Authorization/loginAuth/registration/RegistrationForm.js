@@ -35,7 +35,6 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
  
   const handleChange = (e) => {
     setSubmitClick(false)
-    // setMessage({message:"", type:""})
     setInfoDialog({
       isOpen: false,
       message:"",
@@ -66,20 +65,11 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
       message:"",
       type:"",
     })
-    // setMessage({message:"",type:""})
     handleChange(e)
      const res= await mailValidate(e.target.value)
       setValidMail(res)
       !res ?
-      // setInfoDialog({
-      //   isOpen: true,
-      //   message:t("authorize.errors.notMail"),
-      //   type:"error",
-      // }): setInfoDialog({
-      //   isOpen: false,
-      //   message:"",
-      //   type:"",
-      // })
+     
       setMessage({
         message:t("authorize.errors.notMail"),
         type:"error",

@@ -50,15 +50,11 @@ import ConfirmDialog from "./Container2/dialogs/ConfirmDialog";
 import PrivacyPayx from "./payxPrivacyRemove/PrivacyPayx";
 import NewContract from "./Container2/dialogs/notifications/NewContract";
 
-import { addNotification } from "./store/notification/notificationSlice";
 import AddNewClientInfo from "./Container2/dialogs/AddNewClientInfo";
 import IframeReader from "./Container/iframe/iframeReader"; 
 import { removeDeviceToken } from "./services/notifications/notificatonRequests";
-import { onMessage } from "firebase/messaging";
-import EmarkInputForDeleteItem from "./Container/basket/emark/EmarkInputForDeletItem";
 import { setSearchBarCodeSlice } from "./store/searchbarcode/barcodeSlice";
 import { replaceGS } from "./services/baseUrl";
-import { ControlsStrategy } from "react-alice-carousel";
 
 const checkForUpdates = async () => {
   try {
@@ -80,7 +76,7 @@ const checkForUpdates = async () => {
 
 
 const App = () => {
- const search = useLocation().search;
+  const search = useLocation().search;
   const status = new URLSearchParams(search).get("status") || "GetAvailableProducts";
   const [limitedUsing, setLimitedUsing] = useState();
   const [basketGoodsqty, setBasketGoodsqty] = useState();
@@ -135,15 +131,15 @@ const App = () => {
     partialAmount: 0,
     partnerTin: "",
     sales: [],
+    emarks: [],
     prePaymentSaleDetailId: JSON.parse(localStorage.getItem("endPrePayment"))?.id,
     isPrepayment: openWindow?.prepayment,
     customer_Name: "",
     customer_Phone: "",
-    emarks: JSON.parse(localStorage.getItem("emarkList"))
+    emarks: JSON.parse(localStorage.getItem("emarkList")) || []
   });
 
   const whereIsMyUs = async() => {
-    console.log("02.07.2025 100% fast idram")
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -184,7 +180,7 @@ const App = () => {
       return setLimitedUsing(true)
     }
   };
-
+ 
   const isEmarkBarcode = (barcodeOrEmark) => {
     let input = barcodeOrEmark
     if(input?.substring(0, 2) === "01" && input?.substring(16, 18) === "21") {
@@ -213,10 +209,12 @@ const App = () => {
         localStorage.setItem("emarkNewList", JSON.stringify(newDataForStorage))
         return true
       }else {
-        setMessage({message:"This qr is already in basket", type:"error"})
+        setMessage({message:t("emark.qrInBasket"), type:"error"})
         return false
+        // return setBarcodeScanValue("")
       }
     } 
+    // return false
     return true
   };
 
@@ -236,7 +234,7 @@ const App = () => {
             if(!isEmarkBC) {
               return setBarcodeScanValue("")
             }
-            res.forEach((item) =>{
+            res.forEach((item) => {
               if(item?.barCode === barcode || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")){
                 if(item?.remainder){
                   setSearchValue("")
@@ -305,6 +303,7 @@ const App = () => {
   };
 
   const changeCountOfBasketItem = async(id,value) => {
+    console.log(value,"value app.js")
     let handleArr = [] 
     await  getBasketContent().then((res) => {
       res.map((prod) => {
@@ -321,9 +320,9 @@ const App = () => {
 
   const deleteBasketItem = async(id,isEmark, barcode) => {
     let handleArr =  basketContent.filter(prod => prod.id !== id)
-    if(isEmark && JSON.parse(localStorage.getItem("emarkNewList"))){
-      const emarkNewList = JSON.parse(localStorage.getItem("emarkNewList"))
-      const emarkList = JSON.parse(localStorage.getItem("emarkList"))
+    if(isEmark && localStorage.getItem("emarkNewList")){
+      const emarkNewList = JSON.parse(localStorage.getItem("emarkNewList")) || []
+      const emarkList = JSON.parse(localStorage.getItem("emarkList")) || []
       let newEmarkArr = emarkList?.filter((emark) => emark?.slice(3,16) !== barcode)
       let newList = emarkNewList?.filter((item) => item?.barcode !== barcode)
       localStorage.setItem("emarkNewList",JSON.stringify(newList))
@@ -384,24 +383,25 @@ const App = () => {
     !localStorage.getItem("endPrePayment") && loadBasket()
   };
   
-  const setToBasket = (wishProduct, quantity, isFromPrepaymentPage) => {
-    const basket = basketContent
+  const setToBasket =async (wishProduct, quantity, isFromPrepaymentPage) => {
+    console.log(quantity,"quantity")
+    const basket = basketContent || []
     if(quantity && quantity > wishProduct?.remainder && !isFromPrepaymentPage){
-      setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
+      setMessage({message:`${t("dialogs.havenot")} ${wishProduct?.remainder} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
       return
     }else if(basketExist.includes(wishProduct?.id)){
         setMessage({message: t("productcard.secondclick"), type:"success"})
         return
     }else{
-     
+      console.log(+(quantity ? quantity: 1),"dsjdjdj")
       basket.unshift({
         ...wishProduct,
-        discountedPrice: wishProduct?.discountedPrice,
         discountedPrice: wishProduct?.discountedPrice,
         count:+(quantity ? quantity: 1)
       })
     }
-    localStorage.setItem("bascket1", JSON.stringify(basket))
+    console.log(basket,"basket fo ls")
+     localStorage.setItem("bascket1", JSON.stringify(basket))
     return loadBasket()
   };
 
@@ -412,7 +412,7 @@ const App = () => {
       return
     }else if(basketExist.includes(wishProduct?.id)){
         const newBasket = basket.map((prod) => {
-          if(prod?.id === wishProduct?.id){
+          if(prod?.productId === wishProduct?.id){
             return {
               ...prod,
               count:prod?.count + 1,
@@ -429,7 +429,10 @@ const App = () => {
       basket.unshift({
         ...wishProduct,
         discountedPrice:wishProduct?.discountedPrice,
-        count:+(quantity  ? quantity: 1)
+        count:+(quantity  ? quantity: 1),
+        // 14.07
+        barCode: wishProduct?.barCode
+
       })
     }
     localStorage.setItem("bascket1", JSON.stringify(basket))
@@ -489,7 +492,6 @@ const App = () => {
     user?.confirmation === false && user?.showPaymentPage && !count && checkForNewNotification()
    
   },[t, user]);
-  // },[t,isLogin, user]);
 
   useEffect(() => {
     if(user?.isInDate === true &&
@@ -526,13 +528,6 @@ const App = () => {
   useEffect(() =>{
     searchValue && debounce && byBarCodeSearching(dataGroup, debounce)
   },[debounce]);
-
-  // useEffect(() => {
-  //   barcodeScanValue &&  debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
-  // },[debounceBasket, barcodeScanValue]);
-
-console.log(paymentInfo,"payment Info")
-console.log(paymentInfo?.emarks,"payment emarks")
 
   useEffect(() => {
     debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
@@ -606,6 +601,8 @@ console.log(paymentInfo?.emarks,"payment emarks")
                   setFetching={setFetching}
                   fetching={fetching}
                   setOpenBasket={setOpenBasket}
+
+                  loadBasket={loadBasket}
                 />
               }  
             />
@@ -636,6 +633,8 @@ console.log(paymentInfo?.emarks,"payment emarks")
                   setFetching={setFetching}
                   fetching={fetching}
                   setOpenBasket={setOpenBasket}
+
+                  setBasketContent={setBasketContent}
                 />
               }  
             />
@@ -656,6 +655,8 @@ console.log(paymentInfo?.emarks,"payment emarks")
               paymentInfo={paymentInfo}
               flag={flag}
               logOutFunc={logOutFunc}
+              setFrom={setFrom}
+              from={from}
             />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
             {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
@@ -696,6 +697,8 @@ console.log(paymentInfo?.emarks,"payment emarks")
             paymentInfo={paymentInfo}
             setPaymentInfo={setPaymentInfo}
             limitedUsing={limitedUsing}
+            debounceBasket={debounceBasket}
+            setBasketContent={setBasketContent}
           />}
           {notification.length ? 
             <Notification 
@@ -741,7 +744,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
           >
             <Alert 
             onClose={()=>{
-              // setBarcodeScanValue("")
               dispatch(setSearchBarCodeSlice({
                 name: from,
                 value: ""
@@ -762,7 +764,6 @@ console.log(paymentInfo?.emarks,"payment emarks")
             close={()=>setMessage({type:"",message:""})}
             content={message?.confirmMessage}
           />
-          {/* <EmarkInputForDeleteItem open={openEmarkInput} close={()=>setOpenEmarkInput(false)} /> */}
         </>
       }
     </div>

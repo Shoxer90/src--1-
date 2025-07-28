@@ -44,7 +44,10 @@ const BasketHeader = ({
         <CloseIcon />
       </IconButton>
       <ConfirmDialog 
-        question={t("basket.removeallprod")}
+        question={<>
+          {t("basket.removeallprod")} <br />
+          {t("basket.removeEmarks")}
+        </>}
         func={cleanAllGoods}
         title={t("settings.remove")}
         open={openDialog}

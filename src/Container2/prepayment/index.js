@@ -18,7 +18,9 @@ const PrePaymentList = ({
   setPaymentInfo,
   paymentInfo,
   flag,
-  logOutFunc
+  logOutFunc,
+  setFrom,
+  from
 }) => {
   const search = useLocation().search;
   const currentPage = + (new URLSearchParams(search).get("page")) || 1 ;
@@ -68,6 +70,8 @@ const PrePaymentList = ({
               setPaymentInfo={setPaymentInfo}
               paymentInfo={paymentInfo}
               getPrepaymentList={getPrepaymentList}
+              setFrom={setFrom}
+              from={from}
             />
           )}
         </div>

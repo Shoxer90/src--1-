@@ -66,7 +66,7 @@ const HeaderNotification = ({
         })
       }
     }else{
-      setMessage(`choose notification for ${oper}`)
+      setMessage(t("info.chooseNotifs"))
       setTimeout(() => {
         setMessage(``)
 

@@ -36,7 +36,8 @@ const UpdateProduct = ({
   getSelectData,
   typeCode,
   setTypeCode,
-  setCurrentPage
+  setCurrentPage,
+  deleteBasketItem
 }) => {
   const {t} = useTranslation();
 
@@ -45,7 +46,6 @@ const UpdateProduct = ({
   const [message, setMessage] =  useState({message:"",type:""});
   const [validPrice, setValidPrice] = useState(true);
   const [isEmptyField,setIsEmptyField] = useState(false);
-  const [titleName,setTitleName] = useState("");
   const [fixMessage,setFixMessage] = useState();
   const [metric,setMetric] = useState();
   const [flag,setFlag] = useState(0);
@@ -149,15 +149,20 @@ const UpdateProduct = ({
 
   const changeUpdatedProdInBasket = (id) => {
     const currBasket = JSON.parse(localStorage.getItem("bascket1")) || []
+    console.log(currBasket,"currBasket")
     const newBasketContent = currBasket?.map((prodInBasket) => {
       if(prodInBasket?.id === id) {
-        return currentProduct
+        return {
+          ...currentProduct,
+          count:prodInBasket?.count
+        }
       }else{
         return prodInBasket
       }
     })
     localStorage.setItem("bascket1", JSON.stringify(newBasketContent))
   }
+console.log(currentProduct,"product");
 
   const handleUpdate = async() => {
      const newArr = await content.map((item) => {
@@ -171,8 +176,8 @@ const UpdateProduct = ({
     updateProduct(currentProduct).then((res) => {
       if(res === 200) {
         setCurrentPage(1)
-        changeUpdatedProdInBasket(currentProduct?.id)
-
+        // changeUpdatedProdInBasket(currentProduct?.id)
+        deleteBasketItem(currentProduct?.id, currentProduct?.isEmark,currentProduct?.barCode)
         setFlag(!flag)
         setMessage({message:t("dialogs.welldone"),type:"success"});
         setTimeout(() => {
@@ -361,16 +366,16 @@ const UpdateProduct = ({
                   <Barcode value={currentProduct?.barCode} height={30} width={1} margin={1} fontSize={12} textAlign={"center"} />
                 }
           {message?.message && 
-          <Dialog open={!!message.message}>
-            <SnackErr 
-              message={message?.message} 
-              type={message?.type} 
-              close={()=>{
-                setMessage({message:"", type:""})
-                setConfirmation(false)
-              }}
-            />
-          </Dialog>
+            <Dialog open={!!message.message}>
+              <SnackErr 
+                message={message?.message} 
+                type={message?.type} 
+                close={()=>{
+                  setMessage({message:"", type:""})
+                  setConfirmation(false)
+                }}
+              />
+            </Dialog>
           }
         </Box>
           <div style={{height:"60px",color:"red",fontSize:"80%", width:"100%"}}>

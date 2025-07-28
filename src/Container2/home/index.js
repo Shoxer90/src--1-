@@ -51,6 +51,8 @@ const HomePage = ({
   fetching,
   setOpenBasket,
   
+
+  setBasketContent
 }) => {
   const {t} = useTranslation();
   const [openNewProd, setOpenNewProduct] = useState(false);
@@ -118,7 +120,6 @@ const HomePage = ({
   useEffect(() => {
     setFetching(true)
     queryFunction(status, page).then((res) => { 
-      console.log(res,"res")
       if(res){
         setFetching(false)
         setTotalCount(res?.headers["count"])
@@ -157,6 +158,10 @@ const HomePage = ({
         setContent={setContent}
         setCurrentPage={setCurrentPage}
         setOpenBasket={setOpenBasket}
+
+        setBasketContent={setBasketContent}
+        setFrom={setFrom}
+
       />
       { totalCount/perPage > 1 &&
         <PaginationSnip 

@@ -47,13 +47,13 @@ import { setNotifications, setReserveIds } from "./notificationSlice";
         method: "DELETE",
         body: credentials,
       }),
-      onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
-        try {
-          const { data, meta } = await queryFulfilled;
-          // dispatch(setNotifications({list:data[0]?.list, count:count}))
-        } catch(error) {
-        }
-      },
+      // onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
+      //   try {
+      //     const { data, meta } = await queryFulfilled;
+      //     dispatch(setNotifications({list:data[0]?.list, count:count}))
+      //   } catch(error) {
+      //   }
+      // },
     }),
   // }),
 
@@ -63,12 +63,12 @@ import { setNotifications, setReserveIds } from "./notificationSlice";
         method: "POST",
         body: credentials,
       }),
-      onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
-        try {
-          const { data, meta } = await queryFulfilled;
-        } catch(error) {
-        }
-      },
+      // onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
+      //   try {
+      //     const { data, meta } = await queryFulfilled;
+      //   } catch(error) {
+      //   }
+      // },
     })
   })
 });

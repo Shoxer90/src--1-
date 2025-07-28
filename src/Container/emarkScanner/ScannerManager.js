@@ -40,7 +40,6 @@ export async function connectScanner() {
           activeElement.setSelectionRange(cleaned.length, cleaned.length);
         }
         buffer = "";
-        console.log(activeElement?.value, "activeElement?.value")
         store.dispatch(setSearchBarCodeSlice({
           name: fromWhere,
           value: activeElement?.value

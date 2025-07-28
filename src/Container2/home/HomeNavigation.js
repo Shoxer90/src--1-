@@ -8,7 +8,6 @@ import ExcelBurger from "./excelLoader/buttonForAdd"
 import SearchBarcode from "../../SearchBarcode";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import OnOffScanner from "../../Container/emarkScanner/OnOffScanner";
 
 const HomeNavigation = ({
   byBarCodeSearching, 
@@ -99,7 +98,6 @@ const HomeNavigation = ({
         from={from}
         dataGroup={status}
       />
-      {/* <OnOffScanner /> */}
       { !limitedUsing && <ExcelBurger t={t} setOpenNewProduct={setOpenNewProduct}/> }
     </div>
   </div>

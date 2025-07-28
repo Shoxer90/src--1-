@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import InstallDesktopIcon from '@mui/icons-material/InstallDesktop';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
@@ -40,7 +41,8 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-const HistoryExcelBurger = ({t,fileReader, setValue, value}) => {
+const HistoryExcelBurger = ({fileReader, value}) => {
+  const {t} = useTranslation();
   const [anchorEl, setAnchorEl] = useState(false);
   const open = Boolean(anchorEl);
 
@@ -53,12 +55,6 @@ const HistoryExcelBurger = ({t,fileReader, setValue, value}) => {
         size='small'
         sx={{textTransform: "capitalize"}}
         onClick={(event) => setAnchorEl(event.currentTarget)}
-
-        // onClick={()=> fileReader({
-        //   endDate: format(new Date(value.endDate), 'MM-dd-yyyy'),
-        //   startDate: format(new Date(value.startDate), 'MM-dd-yyyy'),
-        //   products: false
-        // })}
       >
         <ControlPointIcon fontSize="small" style={{margin:"1px"}} />
         {window.innerWidth> 481 && t("history.excel")}

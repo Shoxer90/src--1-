@@ -110,12 +110,16 @@ const NotificationBell = ({
   if(canUsePush()){
     const messaging = getMessaging(firebaseApp);
     const permission = Notification.permission;
-    if(!localStorage.getItem("dt") ) {
+    if(!localStorage.getItem("dt") && permission !== "denied") {
 
       getToken(messaging, { vapidKey: "BL9M8IRH_J6IAHVHod8G0_aVhdQfSDlAJBQ76VIYpnfGeCxtsbMuV3uxrP0ZjLLN0SPWu2CigsToA-2KVW9JI5c"})
       .then((currentToken) => {
-        localStorage.setItem("dt", currentToken)
-        sendDeviceToken(currentToken)
+        if(currentToken) {
+          localStorage.setItem("dt", currentToken)
+          sendDeviceToken(currentToken)
+        }else{
+          return
+        }
       })
     }
     onMessage(messaging, (payload) => {

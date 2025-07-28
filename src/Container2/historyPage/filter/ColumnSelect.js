@@ -1,8 +1,10 @@
-import React, { useState, memo } from "react";
+import { useState, memo } from "react";
 
 import { Checkbox, FormControl, ListItemText, MenuItem, OutlinedInput, Select } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
-const ColumnSelect = ({t,columns,setColumns}) => {
+const ColumnSelect = ({columns,setColumns}) => {
+  const {t} = useTranslation();
   const [names,setNames] = useState([]);
 
   const handleChange = (event) => {
@@ -32,6 +34,7 @@ const ColumnSelect = ({t,columns,setColumns}) => {
     <div>
       <FormControl sx={{ m: 1, width: 200 }}>
         <Select
+          size="small"
           multiple
           name={columns?.title}
           value={[t("history.activeColumns")]}

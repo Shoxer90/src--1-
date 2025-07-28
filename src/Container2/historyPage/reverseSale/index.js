@@ -9,14 +9,13 @@ import SelectAll from "./SelectAll";
 import { editOrReversePrepaymentReceipt, getHistoryByIdForReverse, reverseProductNew } from "../../../services/user/userHistoryQuery";
 import Loader from "../../loading/Loader";
 import ReverseConditions from "./ReverseConditions";
+import EmarkInput from "./EmarkInput";
 
 const ReverseDialog = ({
   openDialog,
   setOpendDialog,
-  products,
   item,
   messageAfterReverse,
-  // revItem
 }) => {
 
   const {t} = useTranslation();
@@ -26,21 +25,19 @@ const ReverseDialog = ({
   const [reverseTotal, setReverseTotal] = useState(0);
   const [reverseContainer, setReverseContainer] = useState([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
-
   const [receiptAmountForPrepayment, setReceiptAmountForPrepayment] = useState(0);
-
+  const [checkedEmarkQRs, setCheckedEmarkQRs] = useState([]);
+  const [openEmarkInput, setOpenEmarkInput] = useState(false);
+  const [emarksForReverse, setEmarksForReverse] = useState([])
   const [conditionState, setConditionState] = useState({
     cashAmount: 0,
     cardAmount: 0,
-    prePaymentAmount: 0
+    prePaymentAmount: 0,
+    emarks: emarksForReverse
   });
 
   const selectAllProducts = (bool) => {
     const newArr = reverseContainer?.map((item) => {
-      // newArr.push({
-      //   ...item,
-      //   isChecked: bool,
-      // })
        return({
         ...item,
         isChecked: bool
@@ -54,19 +51,17 @@ const ReverseDialog = ({
     if(!value) {
       setIsAllSelected(false)
     }
-    // setReverseContainer(
     let newContainer = reverseContainer.map((item) =>{
-        if(item?.recieptId === i){
-          return {
-            ...item,
-            [name]: value
-          }
-        }else{
-          return item
+      if(item?.recieptId === i){
+        return {
+          ...item,
+          [name]: value
         }
-      })
-    // )
-      setReverseContainer(newContainer)
+      }else{
+        return item
+      }
+    })
+    setReverseContainer(newContainer)
   };
   
 const handleOk = async(func, body) => {
@@ -89,18 +84,40 @@ const handleOk = async(func, body) => {
   })
 };  
 
+const checkEmarksOrSubmit = () => {
+   if(checkedEmarkQRs?.length) {
+    return setOpenEmarkInput(true)
+  }else{
+    chooseFuncForSubmit()
+  }
+}
+
 const chooseFuncForSubmit = () => {
+  setOpenEmarkInput(false)
   if(item?.saleType !== 5) {
     reverse()
   }else {
     if(!conditionState?.cardAmount && !conditionState?.cashAmount) {
       reversePrepaymentProds()()
-      
     }else {
       reverse()
     }
   }
 };
+
+const defineEmarkQrs = () => {
+  console.log(reverseContainer, "reverseContainer");
+  let emarkList = []
+  const prodForReverse = reverseContainer.filter((item) => item?.isChecked);
+  if(prodForReverse?.length) {
+    prodForReverse.forEach((item) => {
+      if(item?.emarks?.length) {
+        emarkList.push(...item?.emarks)
+      }
+    })
+    setCheckedEmarkQRs(emarkList)
+  }
+}
 
 const reversePrepaymentProds = async () => {
   setLoad(true)
@@ -185,13 +202,6 @@ const reverse = async () => {
      }
   };
 
-  // useEffect(() => {
-  //   getHistoryByIdForReverse(item?.id).then((res)=> {
-  //     console.log(res,"res in reveerse")
-  //     // setRevItem(res)
-  //   })
-  // }, []);
-
   useEffect(() => {
     fillReverseContainer(item) 
     item?.saleType === 5 && createReceiptAmountForPrePayment()
@@ -201,9 +211,8 @@ const reverse = async () => {
   useEffect(() => {
     checkAllAdd()
     totalCounter()
+    defineEmarkQrs()
   }, [reverseContainer]);
-
-
 
   return(
     reverseContainer ? <Dialog
@@ -248,7 +257,18 @@ const reverse = async () => {
           receiptAmountForPrepayment={receiptAmountForPrepayment}
           chooseFuncForSubmit={chooseFuncForSubmit}
           isAllSelected={isAllSelected}
+          defineEmarkQrs={defineEmarkQrs}
+          checkEmarksOrSubmit={checkEmarksOrSubmit}
         />
+          <EmarkInput
+            open={openEmarkInput}
+            close={()=>setOpenEmarkInput(false)}
+            chooseFuncForSubmit={chooseFuncForSubmit}
+            emarksForReverse={emarksForReverse}
+            setEmarksForReverse={setEmarksForReverse}
+            checkedEmarkQRs={checkedEmarkQRs}
+            setCheckedEmarkQRs={setCheckedEmarkQRs}
+          />
 
         {ownMessage && 
           <Dialog open={Boolean(ownMessage)} >
