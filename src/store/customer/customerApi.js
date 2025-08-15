@@ -38,7 +38,6 @@ export const customerApi = createApi({
     paymentsDetails: builder.query({
       query: ({ storeId, sended, ...bodyData }) => ({
         url:`/GetPaymentsByPage?storeId=${storeId}&sended=${sended}`,
-        // url:`/GetPaymentsByPage?storeId=1&sended=${credentials.sended}`,
         method: "POST",
         body: bodyData 
       }),

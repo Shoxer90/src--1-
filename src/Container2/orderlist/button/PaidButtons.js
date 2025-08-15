@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import ActionMessage from "../../dialogs/ActionMessage";
 
 import { Button, ButtonGroup, TextField } from "@mui/material";
+import { printOrderReceipt } from "../../../services/pay/pay";
 
 const paidBtnStyle = {
   display:"flex",
@@ -16,14 +17,15 @@ const btnStyle={
   marginTop:"10px"
 };
 
-const PaidButtons = ({recieptLink}) => {
+const PaidButtons = ({recLink}) => {
   const {t} = useTranslation();
   const [mail, setMail] = useState("");
   const [message, setMessage] = useState("");
+  const [loadReceipt,setLoadReceipt] = useState(false);
 
-  const seeReciept = () => {
+  const seeReciept = async() => {
     const a = document.createElement("a");
-    a.href = recieptLink;
+    a.href = recLink;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
     a.click();
@@ -41,8 +43,9 @@ const PaidButtons = ({recieptLink}) => {
         variant="contained"
         style={btnStyle}
         onClick={seeReciept}
+        disabled={loadReceipt}
       >
-        {t("basket.seeReciept2")}
+        {loadReceipt ? "Loading ...": t("basket.seeReciept2")}
       </Button>
 
       <ButtonGroup sx={{pt:3}}>
@@ -58,7 +61,7 @@ const PaidButtons = ({recieptLink}) => {
           color="primary"
           target="_top"
           rel="noopener noreferrer"
-          href={`mailto:${mail}?subject=${recieptLink}`}
+          href={`mailto:${mail}?subject=${recLink}`}
           onClick={()=> setMail("")}
         >
           {t("basket.sendViaMail")}

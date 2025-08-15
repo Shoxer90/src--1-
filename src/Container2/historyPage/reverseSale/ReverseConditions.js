@@ -38,7 +38,6 @@ const ReverseConditions = ({
   const [emarkQrList,setEmarkQrList] = useState([]);
 
   const emarkInput = useSelector(state=>state?.barcode?.reverse);
-  console.log(emarkInput,"emarkInput");
 
   const fillEmarkQrs = (e) => {
     dispatch(setSearchBarCodeSlice({
@@ -95,12 +94,18 @@ const ReverseConditions = ({
   useEffect(() => {
     if(reverseTotal >  cashAmount + prePaymentAmount) {
       setConditionState({
+        // #emark
+       ...conditionState,
+
         cashAmount: +(cashAmount + prePaymentAmount).toFixed(2),
         cardAmount: +(reverseTotal-(+cashAmount + prePaymentAmount)).toFixed(2),
       })
 
     }else{
       setConditionState({
+        // #emark
+       ...conditionState,
+
         cashAmount: reverseTotal ? +(reverseTotal)?.toFixed(2) : 0,
         cardAmount: 0,
       })
@@ -123,7 +128,6 @@ const ReverseConditions = ({
     ])
   }, [emarkQr]);
 
-console.log(emarkInput, emarkQrList, "qr, list")
   return (
     <div>
     <div className={styles.conditions}>

@@ -32,11 +32,10 @@ const AddNewProduct = ({
   setTypeCode,
   selectContent,
   setFetching,
-  setContent,
   setGlobalMessage,
   setGlobalType,
-  flag,
-  setFlag
+  setFrom,
+  from
 }) => {
   const {t} = useTranslation();
   const [type, setType] = useState("success");
@@ -221,6 +220,7 @@ const AddNewProduct = ({
   }, [typeCode]);
 
   useEffect(() => {
+    setFrom("newProd")
     checkStorageSavedData()
     setTypeCode(newProduct?.type)
     setRegime(JSON.parse(localStorage.getItem("taxRegime")))
@@ -246,7 +246,10 @@ const AddNewProduct = ({
         <div>{t("productinputs.createtitle")}</div>
         <CloseIcon 
           sx={{":hover":{background:"#d6d3d3",borderRadius:"5px"}}}
-          onClick={()=>setOpenForSave(true)}
+          onClick={()=>{
+            setFrom("main")
+            setOpenForSave(true)
+          }}
         /> 
       </DialogTitle>
       <DialogContent
@@ -376,6 +379,7 @@ const AddNewProduct = ({
               isUniqBarCode={isUniqBarCode}
               setIsUniqBarcode={setIsUniqBarcode}
               setProduct={setProduct}
+              from={from}
             />
 
           </Box>

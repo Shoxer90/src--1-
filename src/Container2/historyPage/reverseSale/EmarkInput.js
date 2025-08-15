@@ -61,7 +61,7 @@ const EmarkInput = ({
         }
       })
       if(flag) {
-        setCheckedEmarkQRs(checkedEmarkQRs.filter((item) => item !==scannedEmark))
+        setCheckedEmarkQRs(checkedEmarkQRs.filter((item) => item !== scannedEmark))
         setMessage({
           type:"success",
           message: t("settings.removed")
@@ -94,7 +94,6 @@ const EmarkInput = ({
     registerEmarksForReverse(emarkInput)
   }, [emarkInput]);
 
-  console.log(emarksForReverse,"emarksForReverse")
   return (
     <Dialog open={open} onClose={close} > 
       { checkedEmarkQRs?.length ?

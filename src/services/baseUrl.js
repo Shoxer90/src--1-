@@ -1,6 +1,6 @@
 
-// export const baseUrl = "https://storex.payx.am/api/";
-export const baseUrl = "https://storextest.payx.am/api/";
+export const baseUrl = "https://storex.payx.am/api/";
+// export const baseUrl = "https://storextest.payx.am/api/";
 
 export const option = () => {
   const  option = {
@@ -15,10 +15,8 @@ export const CASH_LIMIT = +300000;
 let bazmapat = "×"
 
 export const replaceGS = (code) => {
-  // console.log(code,"code")
-  const input = code.trim(); 
-  const output = input.replace(/\x1d/g, "\\u001d");  
-  // console.log(output,"output")
+  const input = code?.trim(); 
+  const output = input?.replace(/\x1d/g, "\u001d");  
   return output
 };
 

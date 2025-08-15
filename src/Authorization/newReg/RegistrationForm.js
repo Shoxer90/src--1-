@@ -233,7 +233,7 @@ const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => {
           value={newUser?.isRegisteredForEhdm}
           name="isRegisteredForEhdm"
           control={<Checkbox sx={{margin:"0px"}} />}
-          label={t("authorize.ehdmConnect")}
+          label={t("authorize.ehdmConnect1")}
           labelPlacement="end"
           onChange={(e)=> {
             setNewUser({

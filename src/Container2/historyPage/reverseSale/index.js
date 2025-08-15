@@ -33,7 +33,7 @@ const ReverseDialog = ({
     cashAmount: 0,
     cardAmount: 0,
     prePaymentAmount: 0,
-    emarks: emarksForReverse
+    emarks: emarksForReverse || []
   });
 
   const selectAllProducts = (bool) => {
@@ -106,7 +106,6 @@ const chooseFuncForSubmit = () => {
 };
 
 const defineEmarkQrs = () => {
-  console.log(reverseContainer, "reverseContainer");
   let emarkList = []
   const prodForReverse = reverseContainer.filter((item) => item?.isChecked);
   if(prodForReverse?.length) {
@@ -152,6 +151,7 @@ const reverse = async () => {
       return newArr
     })
     await handleOk(reverseProductNew, {
+      emarks: emarksForReverse,
       saleDetailId: item?.id,
       products: [...newArr],
       cashAmount: Math.round(+conditionState?.cashAmount*100) /100,

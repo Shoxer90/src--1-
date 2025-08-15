@@ -6,16 +6,16 @@ let activeInput = null;
 let loop = true;
 let setStatusCallback =null;
 let port = null;
-let functionFromComponent = null;
 let fromWhere = null;
-export const getInputChangeFunction = (from,func) => {
+export const getInputChangeFunction = (from) => {
   fromWhere = from
-  functionFromComponent = func
 }
 
 export function setActiveInput(inputElement, onChangeHandler) {activeInput = {inputElement, onChangeHandler}}
 
 export async function connectScanner() {
+  //  const devices = await navigator.usb.getDevices();
+
   try {
 
     port = await navigator.serial.requestPort();
@@ -55,6 +55,8 @@ export async function connectScanner() {
 }
 
 export async function disconnectScanner() {
+
+
   loop = false;
   try {
     if (reader) {

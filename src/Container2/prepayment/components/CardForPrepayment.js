@@ -8,6 +8,7 @@ import Loader from "../../loading/Loader";
 import SnackErr from "../../dialogs/SnackErr";
 import ReversePrepaymentDialog from "../reverse/ReversePrepaymentDialog";
 import HdmStatus from "../../../modules/hdmStatus";
+import PdfReceiptDialog from "../../historyPage/newHdm/PdfReceiptDialog";
 
 const CardForPrepayment = ({
   item,
@@ -28,6 +29,11 @@ const CardForPrepayment = ({
     message:"", 
     type:""
   });
+  const [openPdfDial, setOpenPdfDial] = useState({
+    status: false,
+    link:""
+  })
+  
 
   const contentStyle = {
     overflowY: item?.products?.length > 8? "scroll": "",
@@ -101,8 +107,16 @@ const CardForPrepayment = ({
     setIsLoad(false)
       if(res?.status === 200) {
         // window.open(res?.data?.reverceLink, '_blank', 'noopener,noreferrer');
-        window.location.href = res?.data?.reverceLink
-        getPrepaymentList()
+        // window.location.href = res?.data?.reverceLink
+
+        setOpenPdfDial({
+          status:true,
+          link: res?.data?.reverceLink,
+          message: res?.data?.res?.message
+        })
+
+
+        // getPrepaymentList()
       }else {
         setMessage({message:t("dialogs.wrong"), type:"error"})
       }
@@ -195,6 +209,19 @@ const CardForPrepayment = ({
         <Dialog open={message?.message}><SnackErr message={message?.message} type={message?.type} close={closeDialog}/></Dialog>
         <Dialog open={messageEmpty?.message}><SnackErr message={messageEmpty?.message} type={messageEmpty?.type} close={setMessageEmpty}/></Dialog>
       </div>
+      <PdfReceiptDialog
+        open={openPdfDial?.link}
+        close={()=>{
+          setOpenPdfDial({status:false,link:""})
+          getPrepaymentList()
+        }}
+        func={()=>{
+          window.open( openPdfDial?.link, '_blank', 'noopener,noreferrer')
+          setOpenPdfDial({status:false,link:""})
+        }}
+        text={openPdfDial?.message}
+
+      />
     </div>
   )
 };

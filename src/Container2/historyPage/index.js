@@ -13,6 +13,7 @@ import HistoryContent from "./content/HistoryContent";
 import { columnNames } from "../../services/baseUrl";
 import { getPrepayment } from "../../services/products/productsRequests";
 import { useTranslation } from "react-i18next";
+import { mainFetch } from "../../services/interceptor";
 
 const HistoryPage = ({logOutFunc}) => {
   const {t} = useTranslation();
@@ -43,7 +44,8 @@ const HistoryPage = ({logOutFunc}) => {
     })
     let response = [];
     if(data === "Paid") {
-      response = await getSaleProducts("GetSaleProductsByPage", {page: page, count: perPage,byDate: date})
+      // response = await getSaleProducts("GetSaleProductsByPage", {page: page, count: perPage,byDate: date})
+      response = await mainFetch(getSaleProducts, ["GetSaleProductsByPage", {page: page, count: perPage,byDate: date}])
     }else if(data === "Unpaid") {
       response = await getSaleProducts("GetNotPaidSaleProductsByPage", {page: page, count: perPage,byDate: date})
     }else if(data === "Canceled") {

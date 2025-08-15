@@ -196,6 +196,9 @@ const HomePage = ({
         setGlobalType={setType}
         setFlag={setFlag}
         flag={flag}
+
+        setFrom={setFrom}
+        from={from}
       />}
       <Dialog open={Boolean(type)}>
         <SnackErr open={snackMessage} type={type} close={setType} message={snackMessage}/>

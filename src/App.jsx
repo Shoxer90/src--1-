@@ -55,6 +55,7 @@ import IframeReader from "./Container/iframe/iframeReader";
 import { removeDeviceToken } from "./services/notifications/notificatonRequests";
 import { setSearchBarCodeSlice } from "./store/searchbarcode/barcodeSlice";
 import { replaceGS } from "./services/baseUrl";
+import { getNewCode } from "./services/interceptor";
 
 const checkForUpdates = async () => {
   try {
@@ -131,15 +132,17 @@ const App = () => {
     partialAmount: 0,
     partnerTin: "",
     sales: [],
-    emarks: [],
     prePaymentSaleDetailId: JSON.parse(localStorage.getItem("endPrePayment"))?.id,
     isPrepayment: openWindow?.prepayment,
     customer_Name: "",
     customer_Phone: "",
+
     emarks: JSON.parse(localStorage.getItem("emarkList")) || []
   });
 
+
   const whereIsMyUs = async() => {
+    
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -250,7 +253,8 @@ const App = () => {
               }
             })
           } else {
-            setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
+            setMessage({message: res?.data?.message,type: "error"})
+            // setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
           }
         }else if(from === "main") {
           return res?.length ? setContent(res) : (
@@ -289,7 +293,8 @@ const App = () => {
           partialAmount: 0,
           partnerTin: "",
           sales: [],
-          emarks: [],
+          // emarks: [],
+          emarks: JSON.parse(localStorage.getItem("emarkList")) || [],
           prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id,
           isPrepayment: openWindow?.prepayment,
           customer_Name: "",
@@ -303,7 +308,6 @@ const App = () => {
   };
 
   const changeCountOfBasketItem = async(id,value) => {
-    console.log(value,"value app.js")
     let handleArr = [] 
     await  getBasketContent().then((res) => {
       res.map((prod) => {
@@ -367,7 +371,9 @@ const App = () => {
       partialAmount: 0,
       partnerTin: "",
       sales: [],
-      emarks: [],
+      // emarks: [],
+    emarks: JSON.parse(localStorage.getItem("emarkList")) || [],
+
       prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id || "",
       isPrepayment: openWindow?.prepayment,
       customer_Name: "",
@@ -384,7 +390,6 @@ const App = () => {
   };
   
   const setToBasket =async (wishProduct, quantity, isFromPrepaymentPage) => {
-    console.log(quantity,"quantity")
     const basket = basketContent || []
     if(quantity && quantity > wishProduct?.remainder && !isFromPrepaymentPage){
       setMessage({message:`${t("dialogs.havenot")} ${wishProduct?.remainder} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
@@ -393,15 +398,13 @@ const App = () => {
         setMessage({message: t("productcard.secondclick"), type:"success"})
         return
     }else{
-      console.log(+(quantity ? quantity: 1),"dsjdjdj")
       basket.unshift({
         ...wishProduct,
         discountedPrice: wishProduct?.discountedPrice,
         count:+(quantity ? quantity: 1)
       })
     }
-    console.log(basket,"basket fo ls")
-     localStorage.setItem("bascket1", JSON.stringify(basket))
+    localStorage.setItem("bascket1", JSON.stringify(basket))
     return loadBasket()
   };
 
@@ -451,6 +454,9 @@ const App = () => {
   }; 
 
   const getMeasure = async() => {
+
+   
+
     const str = await localStorage.getItem("lang")
     switch(str){
       case "eng":
@@ -521,7 +527,8 @@ const App = () => {
   useEffect(() => {
     setPaymentInfo({
       ...paymentInfo,
-      isPrepayment: openWindow?.prepayment
+      isPrepayment: openWindow?.prepayment,
+      emarks: openWindow?.prepayment? []: JSON.parse(localStorage.getItem("emarkList")) || []
     })
   },[openWindow]);
 

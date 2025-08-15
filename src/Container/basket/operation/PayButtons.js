@@ -20,8 +20,6 @@ const PayButtons = ({
   limitedUsing,
   setOpenDialog,
   cleanEmarks,
-
-  // emarkVsProdCount
 }) => {
   const {t} = useTranslation()
   const navigate = useNavigate()
@@ -80,7 +78,6 @@ const PayButtons = ({
           break;
       }
     }else{
-      console.log("blocked click")
     }
   }
 

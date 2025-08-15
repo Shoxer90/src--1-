@@ -39,7 +39,6 @@ const EmarkInputForDeleteItem = ({
   const {t} = useTranslation();
   const fromStorage = JSON.parse(localStorage.getItem("emarkList")) || []
   const emarksNewList = JSON.parse(localStorage.getItem("emarkNewList")) || [];
-  const scannedEmark2 = useSelector(state => state.barcode);
   const ref = useRef();
 
   const addEmarkList = async(input) => {
@@ -66,7 +65,6 @@ const EmarkInputForDeleteItem = ({
     emarksNewList && emarksNewList.map((item) => {
       if(item?.barcode === bCode && !item?.emarks?.length ) {
         close()
-        // completeFunc()
       }
     })
   };
@@ -148,7 +146,7 @@ const EmarkInputForDeleteItem = ({
     localStorage.setItem("emarkNewList", JSON.stringify(newDataLS))
     setChange(!change)
     close()
-  }
+  };
 
   useEffect(() => {
     setMessage({type:null,message:""})
@@ -169,7 +167,6 @@ const EmarkInputForDeleteItem = ({
   },[count]);
 
   useEffect(() => {
-    getInputChangeFunction("emarkConfig")
     if(count > productCount) {
       return setOperation("decr")
     }
@@ -181,12 +178,11 @@ const EmarkInputForDeleteItem = ({
       name: "emarkConfig",
       value: ""
     }))
-
   }, [open,close,completeFunc]);
 
-  useEffect(() => {
-    ref?.current?.focus();
-  }, [scannedEmark,openInput,debounceBasket]);
+   useEffect(() => {
+    getInputChangeFunction("emarkConfig")
+  }, [scannedEmark,debounceBasket, open]);
 
   return(
     <Dialog open={open} fullWidth>
@@ -200,7 +196,6 @@ const EmarkInputForDeleteItem = ({
         <Box style={{display:"flex", justifyContent:"space-between", alignItems: "center", gap:"20px" }}>
           <h6 style={{padding:"10px 25px"}}>{`${name} ${t("emark.emarkMarked")}`}</h6>
           <Button onClick={close} style={{textTransform: "capitalize"}}><CloseIcon /></Button>
-          {/* <Button onClick={completeFunc} style={{textTransform: "capitalize"}}><CloseIcon /></Button> */}
         </Box>
         <Divider color="black" />
           <div style={{alignSelf:"center", padding:"10px",fontWeight:600, display:"flex", flexFlow:"column"}}>
@@ -227,9 +222,8 @@ const EmarkInputForDeleteItem = ({
               { openInput && 
                 <div>
                   <TextField
-                    ref={ref}
-                    onFocus={()=>getInputChangeFunction("emarkConfig")}
-                    focused={true}
+                    inputRef={ref}
+                    autoFocus
                     autoComplete="off"
                     size="small"
                     type="text"
@@ -246,18 +240,6 @@ const EmarkInputForDeleteItem = ({
                 
               }
             </div>
-            {/* { operation === "decr" && productCount < count ?
-              <Button 
-                size="small"
-                variant="contained" 
-                sx={{background:"orange", color:"white", m:2}}
-                onClick={completeFunc} 
-              >
-                {t("emark.makeCount")} {count} {t("units.pcs")}
-              </Button>:""
-            } */}
-            
-
             { (!openInput &&  operation === "incr") ?
               <Button size="small" onClick={changeScanRequired} variant="contained" sx={{background:"#3FB68A", color:"white", m:2,}}>
                 {t("emark.withoutScan")}      
@@ -269,7 +251,7 @@ const EmarkInputForDeleteItem = ({
               </Button>:""
             }
           </div>
-          {message?.message && <div style={{color:message?.type?"green":"red", alignSelf:"center"}}>{message?.message}</div>}
+          {message?.message && <div style={{color:message?.type?"green":"red", alignSelf:"center",padding:"10px", fontWeight:600, textAlign:"center"}}>{message?.message}</div>}
 
         
           <div style={{height:"40px", margin:"30px",display:"flex", justifyContent:"end"}}>

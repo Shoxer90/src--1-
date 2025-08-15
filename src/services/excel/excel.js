@@ -27,9 +27,7 @@ export const getExcelEmptyForm = async() => {
 
       try{
       const data = await axios.post(baseUrl + `Products/AddEmarks?productId=${prodId}`,file, option)
-      console.log(data,"CSV response")
       }catch(err){
-        console.log(err,"CSV response")
 
       }
    }

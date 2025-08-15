@@ -149,7 +149,6 @@ const UpdateProduct = ({
 
   const changeUpdatedProdInBasket = (id) => {
     const currBasket = JSON.parse(localStorage.getItem("bascket1")) || []
-    console.log(currBasket,"currBasket")
     const newBasketContent = currBasket?.map((prodInBasket) => {
       if(prodInBasket?.id === id) {
         return {
@@ -162,7 +161,6 @@ const UpdateProduct = ({
     })
     localStorage.setItem("bascket1", JSON.stringify(newBasketContent))
   }
-console.log(currentProduct,"product");
 
   const handleUpdate = async() => {
      const newArr = await content.map((item) => {

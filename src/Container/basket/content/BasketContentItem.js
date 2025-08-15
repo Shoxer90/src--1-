@@ -170,6 +170,7 @@ const handleChangeBasketCount = (val) => {
     (dataFromLS?.scanRequired && el?.count < dataFromLS?.emarks?.length && operation !=="incr")) &&
     el?.isEmark
   ) {
+
     return setOpenEmarkInput(true)
   }
   else{
@@ -232,6 +233,9 @@ const handleChangeBasketCount = (val) => {
        let data = allEmarkList?.filter((item) => item?.barcode === el?.barCode)
         if(data?.length){
           setDataFromLS(data[0])
+        }else{
+          setDataFromLS({})
+
         }
       }
     }
@@ -269,7 +273,7 @@ const handleChangeBasketCount = (val) => {
   }, [el]);
 
   useEffect(() => {
-    if(el?.count < dataFromLS?.emarks?.length) {
+    if(el?.count < dataFromLS?.emarks?.length && el?.barCode === dataFromLS?.barcode) {
       setOperation("decr")
       setOpenEmarkInput(true)
       setBlockTheButton(true)

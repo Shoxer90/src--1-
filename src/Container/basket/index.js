@@ -24,6 +24,7 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { useTranslation } from "react-i18next";
 import ConfirmDialog from "../../Container2/dialogs/ConfirmDialog.js";
 import PrepaymentEmarkDialog from "./emark/PrepaymentEmarkDialog.js";
+import { getNewCode } from "../../services/interceptor.js";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -54,7 +55,8 @@ const Bascket = ({
   setCurrentPage,
   openWindow,
   setOpenWindow,
-  paymentInfo, setPaymentInfo,
+  paymentInfo,
+  setPaymentInfo,
   limitedUsing,
   setOpenEmarkInput,
   isEmarkBarcode,
@@ -88,7 +90,6 @@ const Bascket = ({
   const [globalStorageList, setGlobalStorageList] = useState(()=>JSON.parse(localStorage.getItem("emarkNewList")) || []);
 
   const needEmark = JSON.parse(localStorage.getItem("needEmark"))
-console.log(basketContent,"basketContent")
 
   const closePhoneDialog = () => {
     setOpenPhonePay(false)
@@ -112,10 +113,8 @@ console.log(basketContent,"basketContent")
     const salesArr =  arr;
     let haveEmarkFlag = 0;
     if(salesArr?.length) {
-      // console.log(basketContent,"sdjsdj")
       setSingleClick({})
       basketContent?.forEach((item) => {
-        console.log(item?.count,"item?.count")
         total += (item?.discountedPrice ? item?.discountedPrice* item?.count: item?.price * item?.count )
         if(localStorage.getItem("endPrePayment") && item?.isEmark) {
           haveEmarkFlag+=1
@@ -145,14 +144,14 @@ console.log(basketContent,"basketContent")
         cardAmount: 0,
         partnerTin: "",
         sales:[],
-        emarks: JSON.parse(localStorage.getItem("emarkList")) || [],
-
+        emarks: [],
+        // emarks: JSON.parse(localStorage.getItem("emarkList")) || [],
         customer_Name: "",
         customer_Phone: ""
       })
     }
   };
-  console.log(basketContent,"basketContent")
+
   const multiSaleProducts = async(saletype) => {
     setSeeBtn(JSON.parse(localStorage.getItem("fromQRpay")))
     setSingleClick({
@@ -335,8 +334,8 @@ console.log(basketContent,"basketContent")
   };
  
   const checkPrepayment = () => {
-    setOpenDialog(false)
     setCleanEmarks(true)
+    setOpenDialog(false)
       setOpenWindow({
       ...openWindow,
       prepayment: true,
@@ -357,7 +356,7 @@ console.log(basketContent,"basketContent")
   useEffect(()=> {
     createPaymentSales()
     searchValue?.length && setSearchValue("")
-  }, [basketContent, flag, openBasket]);
+  }, [basketContent, flag, openBasket,needEmark]);
 
   const getFreezedCounts = async() => {
     if(localStorage.getItem("freezeBasketCounts")) {
@@ -441,6 +440,7 @@ console.log(basketContent,"basketContent")
                   <span style={{fontSize:"60%",fontWeight:700}}> {t("mainnavigation.newproduct")}</span>
                 </Button>
               }
+              {/* <Button onClick={getNewCode}> JJJJJJJ</Button> */}
             </div>
             <DialogContent 
               className={styles.bask_container_body_content}  

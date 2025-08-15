@@ -60,19 +60,6 @@ const CustomerSaleHistory = () => {
         >
           SEE
         </Button>
-      
-        {/* {(saleType === "1" || saleType === "4") &&
-        <Button 
-          variant="contained"  
-          onClick={()=>{
-            setReverse({
-              isOpen:true,
-              data:item
-            })
-          }}
-        >
-          Reverse
-        </Button>} */}
       </ButtonGroup>: null,
       
       collSlice?.collTitle.includes("recieptId") ? item?.recieptId: null,
@@ -127,18 +114,7 @@ const CustomerSaleHistory = () => {
           collumns={collSlice?.collumns}
         />
       }
-      {/* Ռեվերսի ֆոեւնկցիանգրված չէ,ուղղակի սթորիքսի ռեվերսն ա դրած */}
-      {/* { reverse?.isOpen &&
-        <ReverseReciept
-        open={reverse?.isOpen}
-        close={()=>
-          setReverse({
-          isOpen:false,
-          data:{}
-        })} 
-        data={reverse?.data}
-        /> 
-      } */}
+     
     </div>
   )
 };

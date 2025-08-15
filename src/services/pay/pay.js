@@ -39,7 +39,6 @@ export const payRequestQR = async(content) => {
 export const checkAndGetReceiptLink = async(saleId) => {
   try{
     const data = await axios.get(baseUrl + `Sale/CheckStatus?saleId=${saleId}`, option())
-    console.log(data, "DATA ADADDD")
     return data
   }catch(err){
     return err.response.status
@@ -130,7 +129,6 @@ export const saleProductFromBasket = async(content) => {
   };
   try{
     const data = await axios.put(baseUrl + `Sale/Sale`, content, option, { retry: 0 })
-    console.log(data,"DATA")
     return data.data
   }catch(err){
     return err.response
@@ -148,5 +146,15 @@ export const leftPrepaymentForProducts = async(content) => {
     return data.data
   }catch(err){
     return err.response.status
+  }
+}
+
+export const printOrderReceipt = async(id) => {
+
+  try{
+    const data = await axios.get(baseUrl + `Sale/PrintReceipt?saleId=${id}`, option())
+    return data
+  }catch(err){
+    return err
   }
 }

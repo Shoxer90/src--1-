@@ -105,8 +105,6 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
 
   const getInfo = async() => {
     await getPaymentCardServices().then((res) =>{
-      console.log(res,"123")
-      console.log(res,"123")
       setInternalPayments(res)
       if(!res?.isInDate && !res?.days) {
         setMessage({type:"error", message:t("cardService.notInDate")})

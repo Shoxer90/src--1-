@@ -1,5 +1,6 @@
 import axios from "axios";
 import { baseUrl, option } from "../baseUrl";
+import { getNewCode } from "../interceptor";
 
 // get not filtered data Paid,Unpaid,Canceled by page
 export async function getSaleProducts(page, pagination) {
@@ -13,7 +14,10 @@ export async function getSaleProducts(page, pagination) {
     response.data = data.data
     return response
   }catch(err){
-    return err
+    if(err?.response?.status === 401) {
+      return getNewCode()
+    }
+    return err?.response?.status
   }
 };
 // get filtered data
@@ -127,7 +131,6 @@ export async function getHistoryById(id) {
 export async function getHistoryByIdForReverse(id) {
   try {
     const data = await axios.get(baseUrl + `History/FixReceiptIds?saleDetailId=${id}`,option())
-    console.log(data, "DATA FOR NEW API")
     return data?.data
   }catch(err) {
     return err?.response?.status

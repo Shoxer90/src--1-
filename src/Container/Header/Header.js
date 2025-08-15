@@ -5,15 +5,12 @@ import Logo from "./Logo";
 import MenuBurger from "./MenuBurger";
 import {LimitContext} from "../../context/Context";
 
-import { Badge, Button, IconButton, Tooltip } from "@mui/material";
+import { Badge, Button } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import HistoryIcon from '@mui/icons-material/History';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import { styled, alpha } from '@mui/material/styles';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 
 import styles from "./index.module.scss";
 
@@ -21,38 +18,6 @@ import UserInfo from "./userAvatar/index"
 import { useTranslation } from "react-i18next";
 import NotificationBell from "../../notification/NotificationBell";
 import OnOffScanner from "../emarkScanner/OnOffScanner";
-
-// const StyledMenu = styled((props) => (
-//   <Menu
-//     elevation={0}
-//     anchorOrigin={{
-//       vertical: 'bottom',
-//     }}
-//     {...props}
-//   />
-// ))(({ theme }) => ({
-//   '& .MuiPaper-root': {
-//     borderRadius: 4,
-//     marginTop: theme.spacing(1),
-//     color:
-//     theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
-//     boxShadow: 'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-//     '& .MuiMenu-list': {
-//     },
-//     '& .MuiMenuItem-root': {
-//       '& .MuiSvgIcon-root': {
-//         color: theme.palette.text.secondary,
-//       },
-//       '&:active': {
-//         position: "none",
-//         backgroundColor: alpha(
-//         theme.palette.primary.main,
-//         theme.palette.action.selectedOpacity,
-//         ),
-//       },
-//     },
-//   },
-// }));
 
 const Header = ({
   setOpenBasket,
@@ -69,7 +34,6 @@ const Header = ({
   const {t} = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const [windWidth, setWidWidth] = useState(window.screen.availWidth)
   const {limitedUsing} = useContext(LimitContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -77,7 +41,6 @@ const Header = ({
     setActiveBtn(location.pathname)
   },[]);
 
-  window.addEventListener("resize", ()=>setWidWidth(window.screen.availWidth));
   return (
       <div className={styles.containerXX}> 
         <div 
@@ -191,7 +154,6 @@ const Header = ({
                 {background:"#3FB68A",
                 borderRadius:"8px",
                 textTransform: "capitalize",
-                // fontWeight: "bold",    
               }}
               onClick={()=>{
                 setFrom("basket")
