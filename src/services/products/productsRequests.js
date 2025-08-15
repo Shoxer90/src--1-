@@ -2,12 +2,6 @@ import axios from "axios";
 import { baseUrl, option } from "../baseUrl";
 
 
-export const getProducts = () => axios.get(baseUrl + "Products/GetProducts", option)
-
-export const getNotAvProducs = (option) => axios.get(baseUrl + "Products/GetNotAvailableProducts", option)
-
-export const getAvProducts = (option) => axios.get(baseUrl + "Products/GetAvailableProducts", option)
-
 export const getAdg = async(type) => {
   const option = {
     headers: {
@@ -57,30 +51,6 @@ export const productQuery = async(type,page) =>{
     return err.response.status
   }
 };
-// Search Products by date and barcode
-// export const byBarCode = async(status, barcode) =>{
-//   let statusCount = 0;
-//   if (status === "GetAvailableProducts") {
-//     statusCount = 0
-//   }else if(status === "GetNotAvailableProducts") {
-//     statusCount = 1
-//   }else if(status === "GetFavoriteProducts") {
-//     statusCount = 2
-//   }else {
-//     return
-//   }
-//   const option = {
-//     headers: {
-//       Authorization: localStorage.getItem("token"),
-//     },
-//   };
-//   try{
-//     const query = await axios.post(baseUrl + `Products/SearchByBarCode`,{q:barcode,productType:statusCount}, option);
-//     return query.data
-//   }catch(err) {
-//     return err.response.status
-//   }
-// };
 
 export const byBarCode = async(status, barcode) =>{
   let statusCount = 0;
@@ -103,7 +73,8 @@ export const byBarCode = async(status, barcode) =>{
     const query = await axios.post(baseUrl + `Products/SearchByBarCode`,{q:barcode,productType:statusCount}, option);
     return query.data
   }catch(err) {
-    return err.response.status
+    return err.response
+    
   }
 };
 
@@ -119,13 +90,6 @@ export const cheackProductCount = async(body) => {
 
 // check product available count and price
 export const cheackProductCountnPrice = async(body) => {
-  // [
-  //   {
-  //     "id": 20248,
-  //     "count": 2141,
-  //     "price": 12
-  //   }
-  // ]
   try{
     const data = await axios.put( baseUrl + "Products/CheackProduct", body, option());
     return data?.data
@@ -188,6 +152,7 @@ export const createProduct = async(product) => {
     "coment": "",
     "category": 0,
     "description": "",
+    "isEmark": product?.isEmark,
     "keyWords": [
       {
         "id": 0,
@@ -233,6 +198,7 @@ export const createProductList = async(body) => {
     "discountType": +(product?.discountType),
     "discount": +(product?.discount),
     "lastUpdate": new Date().toISOString(),
+    "isEmark": product?.isEmark,
     "dep": product?.dep,
     "isFavorite": product?.isFavorite,
     "coment": product?.coment,

@@ -39,7 +39,6 @@ const UpdateForm = ({data, setNewData, newData}) => {
  
   const handleChange = (e) => {
     setSubmitClick(false)
-    // setMessage({message:"", type:""})
     setInfoDialog({
       isOpen: false,
       message:"",
@@ -70,7 +69,6 @@ const UpdateForm = ({data, setNewData, newData}) => {
       message:"",
       type:"",
     })
-    // setMessage({message:"",type:""})
     handleChange(e)
      const res= await mailValidate(e.target.value)
       setValidMail(res)

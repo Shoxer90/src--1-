@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import { memo, useState } from "react";
 
 import CloseIcon from '@mui/icons-material/Close';
 import { Button, IconButton } from "@mui/material";
@@ -13,6 +13,7 @@ const BasketHeader = ({
   basketContent, 
   setSingleClick,
   freezeCount,
+  closeBasketDialog,
 }) => {
 
   const [openDialog,setOpenDialog] = useState(false);
@@ -39,11 +40,14 @@ const BasketHeader = ({
         </Button>: ""
       }
       </>
-      <IconButton onClick={()=>setOpenBasket(false)} style={{color:"gray", left:2}}> 
+      <IconButton onClick={()=>closeBasketDialog()} style={{color:"gray", left:2}}> 
         <CloseIcon />
       </IconButton>
       <ConfirmDialog 
-        question={t("basket.removeallprod")}
+        question={<>
+          {t("basket.removeallprod")} <br />
+          {t("basket.removeEmarks")}
+        </>}
         func={cleanAllGoods}
         title={t("settings.remove")}
         open={openDialog}

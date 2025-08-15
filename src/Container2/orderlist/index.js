@@ -1,37 +1,57 @@
-import React, { useState , useEffect , memo } from "react";
+import { useState , useEffect , memo } from "react";
 import { useLocation } from "react-router-dom";
 
-import { basketListCreator, checkAndGetReceiptLink } from "../../services/pay/pay";
+import { basketListCreator, checkAndGetReceiptLink, printOrderReceipt } from "../../services/pay/pay";
 import DenseTable from "./table";
 import OrderListPayInfo from "./payInfo";
 import LangSelect from "../langSelect";
 import Loader from "../loading/Loader";
 
-import { Divider} from "@mui/material";
+import { Dialog, Divider} from "@mui/material";
 
 import styles from "./index.module.scss";
-import PaymentRedirector from "./appJS";
-import { checkStatus } from "../../services/products/productsRequests";
 
 const BasketList = ({t, logOutFunc}) => {
   const search = useLocation().search;
   const saleId = new URLSearchParams(search).get('saleId')
   const [basketContent, setBasketContent] = useState([]);
   const [load,setLoad] = useState(false);
-  const [recieptLink,setRecieptLink] = useState("");
-  const [isInAppBrowser, setIsInAppBrowser] = useState(false);
- 
+  const [isPaid,setIsPaid] = useState(false);
+  const [recLink,setRecLink] = useState(false);
+  const [validPage, setValidPage] = useState(true)
+
+
+  const getRecUrl = async() => {
+    setLoad(true)
+    await printOrderReceipt(saleId).then((res) => {
+      setLoad(false)
+      if(res){
+        setRecLink(res?.data?.link)
+      }
+    })
+  }
 
   const getBasketList = async() => {
+    setLoad(true)
+
     await basketListCreator(new URLSearchParams(search).get('saleId'))
     .then((res) => {
-      setLoad(true)
-      if(res?.data?.status === 1 && res?.data?.receiptLink) {
-        setRecieptLink(res?.data?.receiptLink)
+      if(res?.data) {
+        setLoad(false)
         setBasketContent(res?.data)
-        // return window.location.href = res?.data?.receiptLink
+
+        if(res?.data?.orderStatus === "2") {
+          setIsPaid(true)
+
+          if(res?.data?.receiptLink) {
+            setRecLink(res?.data?.receiptLink)
+          }else{
+            setLoad(false)
+            getRecUrl()
+          }
+        }
       }else{
-        setBasketContent(res?.data)
+        setValidPage(false)
       }
    })
   };
@@ -47,33 +67,29 @@ const BasketList = ({t, logOutFunc}) => {
     });
   }
     
-
+    
   useEffect(() => {
     logOutFunc()
     getBasketList() 
   }, []);
 
-  useEffect(() => {
-    const handlePageShow = (event) => {
-      if (event.persisted || performance.getEntriesByType("navigation")[0]?.type === "back_forward") {
-        // Safari iOS: принудительно обновить при возврате "назад"
-        window.location.reload();
-      }
-    };
 
-    window.addEventListener("pageshow", handlePageShow);
-    return () => window.removeEventListener("pageshow", handlePageShow);
-  }, []);
-console.log(!recieptLink,"receiptLink")
-  useEffect(()=> {
-    if(!recieptLink && basketContent?.orderStatus === "2") {
-      checkAndGetReceiptLink(saleId)
+useEffect(() => {
+  const handlePageShow = (event) => {
+    if (event.persisted || performance.getEntriesByType("navigation")[0]?.type === "back_forward") {
+      // Safari iOS: принудительно обновить при возврате "назад"
+      window.location.reload();
     }
-  }, []);
+  };
 
-  return (
-    !load ? <Loader /> :
-      basketContent?.mainVpos ? 
+  window.addEventListener("pageshow", handlePageShow);
+  return () => window.removeEventListener("pageshow", handlePageShow);
+}, []);
+
+
+  return(
+    
+      basketContent && basketContent?.mainVpos  ? 
         <div className={styles.orderContainer}> 
           <span style={{display:"flex", justifyContent:"flex-end"}}>
             <LangSelect size={"22px"} />
@@ -93,15 +109,17 @@ console.log(!recieptLink,"receiptLink")
           <DenseTable basketContent={basketContent} />
           <Divider sx={{bcolor:"black"}} />
           <OrderListPayInfo 
-            t={t} 
             basketContent={basketContent} 
-            saleId={saleId} 
-            recieptLink={basketContent?.receiptLink} 
             orderStatus={basketContent?.orderStatus} 
             status={basketContent?.status}
+            recLink={recLink}
+            isPaid={isPaid}
+            saleId={saleId}
           />
-      </div>
-      :<h5 style={{textAlign:"center",margin:"150px"}}> Էջը հասանելի չէ </h5>
+          {load && <Dialog open={load}> <Loader /></Dialog> }
+        </div>
+      :
+      !validPage ? <h5 style={{textAlign:"center",margin:"150px"}}>{t("info.notValidPage")} </h5>:""
   )
 };
 

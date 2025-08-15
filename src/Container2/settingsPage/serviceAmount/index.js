@@ -19,8 +19,10 @@ import AutoPaymentSwitch from "./autoPayment"
 import CreditCardNewName from './creditCard/CreditCardNewName.js';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ServicesV2 from './services/ServicesV2.js';
 // import ServicesV2 from './services/servicesV2.js';
-import ServicesV2 from "./services/ServicesV2.js"
+
+
 
 const stylesCard = {
   m: window.innerWidth > 1000 ? 2 : .2,
@@ -31,7 +33,6 @@ const stylesCard = {
   padding:"10px 20px"
 };
 
-
 const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate}) => {
   const [internalPayments, setInternalPayments] = useState(); 
   const [payData, setPayData] = useState({
@@ -40,11 +41,11 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
     months: 1,
     web: true
   });
-  const {t} = useTranslation()
+  const {t} = useTranslation();
+  const theme = useTheme();
   const [message, setMessage] = useState({message:"", type:""});
   const [isDelete,setIsDelete] = useState(false);
   const [refresh,setRefresh] = useState(false);
-  const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [operationWithCard, setOperationWithCard] = useState({text:"",function:"", cardId:""});
   const [openDialog,setOpenDialog] = useState(false);
@@ -52,8 +53,6 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
   const [cardName, setCardName] = useState({name:"",id:""});
   const [openRename, setRename] = useState(false);
   const [openAttachInfo,setOpenAttachInfo] = useState(false);
-
-
   const [isOpenHistory, setOpenHistory] = useState(false);
 
   const successFetch = () => {
@@ -131,6 +130,8 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
 
   useEffect(() => {
     getInfo()
+  
+  
   }, [refresh, isDelete]);
 
   return (
@@ -217,7 +218,7 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
       onClose={()=>setOpenHistory(false)}
       fullScreen={fullScreen}
     >
-      <HistoryTable  history={internalPayments?.history} setOpenHistory={setOpenHistory} />
+      <HistoryTable history={internalPayments?.history} setOpenHistory={setOpenHistory} />
     </Dialog>
 
    {message?.message &&
@@ -227,7 +228,8 @@ const ClientCardContainer = ({logOutFunc, isBlockedUser, serviceType, lastDate})
     }
 
     <Dialog open={!!isLoad}>
-        <Loader close={setIsLoad} />
+      <Loader close={setIsLoad} />
+      <Loader close={setIsLoad} />
     </Dialog>
     <CreditCardNewName 
       open={openRename} 

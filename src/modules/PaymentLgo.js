@@ -5,16 +5,15 @@ const divStyle = {
   flexFlow:"row nowrap",
   alignItems:"center",
   gap: "3px", 
-  width:"40%",
   marginLeft: "0px",
   marginRight: "30px"
 }
-
+// new
 const master = {
   height: "18px",
 }
 const visa = {
-  height: "14.5px",
+  height: "15px",
 }
 const arca = {
   height: "13px",
@@ -22,11 +21,11 @@ const arca = {
 
 const PaymentLogo = () => {
   return(
-    <div style={divStyle}>
+    <span style={divStyle}>
       <img src="/visaNew.png" alt="visaNew" style={visa} />
       <img src="/master2New.png" alt="masterNew" style={master} />
       <img src="/arcaNew.png" alt="arcaNew" style={arca} />
-    </div>
+    </span>
   )
 };
 

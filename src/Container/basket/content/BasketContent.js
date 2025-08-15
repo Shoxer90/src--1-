@@ -14,6 +14,13 @@ const BasketContent = ({
   flag,
   createMessage,
   freezeCount,
+  setOpenEmarkInput,
+  setOpenBasket,
+  setFrom,
+
+  globalStorageList,
+blockTheButton,
+setBlockTheButton
 }) => {
   return (
   <div className={styles.bask_container_body}>
@@ -30,6 +37,14 @@ const BasketContent = ({
           flag={flag}
           createMessage={createMessage}
           freezeCount={freezeCount}
+          setOpenEmarkInput={setOpenEmarkInput}
+          setOpenBasket={setOpenBasket}
+          setFrom={setFrom}
+          globalStorageList={globalStorageList}
+
+          blockTheButton={blockTheButton}
+          setBlockTheButton={setBlockTheButton}
+
         />
         <Divider sx={{backgroundColor:"gray"}} color="black" />
       </span>

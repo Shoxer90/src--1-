@@ -6,29 +6,51 @@ import Loader from '../loading/Loader';
 import PaidButtons from './button/PaidButtons';
 
 import styles from "./index.module.scss";
+import { useTranslation } from 'react-i18next';
+import { isIOSSafari } from '../../modules/modules';
 
-const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status, orderStatus}) => {
+const OrderListPayInfo = ({
+  basketContent, 
+  saleId, 
+  status, 
+  recLink, 
+  isPaid
+}) => {
   const payLinkRef = useRef()
   const [activeBtn, setActiveBtn] = useState();
   const [paymentUrl, setPaymentUrl] = useState();
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isIOS, setIsIOS] = useState();
+  const {t} = useTranslation();
   const createActiveBtn = (id, url) => {
     setPaymentUrl()
     setActiveBtn(id)
   };
-
   const payForOrder = () => {
     setIsLoading(true)
     completePaymentForOrder(saleId, activeBtn).then((res) => {
       setIsLoading(false)
       if(res?.formUrl) {
         setPaymentUrl(res?.formUrl)
-      }else{
-       console.log("something went wrong. Try later")
       }
-      console.log(res,"rewsss")
     })
+  };
+ const isIOSSafari = () => {
+    // const ua = navigator.userAgent;
+    // return /iPad|iPhone|iPod/.test(ua) && /Safari/.test(ua)
+    // return /iPad|iPhone|iPod/.test(ua) && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+
+    const ua = navigator.userAgent;
+    const platform = navigator.platform;
+    const isIOS = /iPad|iPhone|iPod/.test(ua);
+    const isIPadOS = platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+    const isMac = platform === 'MacIntel' && navigator.maxTouchPoints === 0;
+
+    return isIOS || isIPadOS || isMac;
+  };
+  const getDevice = async() => {
+    const res = isIOSSafari()
+    setIsIOS(res)
   }
 
   useEffect(()=> {
@@ -37,11 +59,12 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status, orderS
     }
   }, [paymentUrl]);
 
-    useEffect(()=> {
-    if(!basketContent?.paymentTypes.length && !recieptLink) {
-      setActiveBtn(basketContent?.mainVpos?.paymentType)
-    }
+  useEffect(()=> {
+   getDevice()
   }, []);
+
+
+  
 
 
   return (
@@ -105,10 +128,9 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status, orderS
       <Divider style={{ background: '#343a40', width:"60%", fontWight:600, margin:"10px 0px" }} />
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center", gap:"10px",margin:"20px"}}>
 
-        {/* { recieptLink || status ?   */}
-        { orderStatus === "2" ?
+        { isPaid && recLink ?
           <>
-            { (status === 1 || (status === 2 && basketContent?.isPrepayment)) && <PaidButtons recieptLink={recieptLink} />}
+            <PaidButtons recLink={recLink} />
             { status === 3 && <h6>{t("history.reverse")}</h6> }
           </> :
           <div>
@@ -118,7 +140,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status, orderS
               </strong>
             </div>
             <div style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"10px",margin:"20px"}}>
-              {basketContent?.mainVpos && 
+              { basketContent?.mainVpos && 
                 <BankButton
                   {...basketContent?.mainVpos}
                   createActiveBtn={createActiveBtn} 
@@ -126,13 +148,16 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status, orderS
                   myTitle="Arca"
                 />
               }
-              {basketContent?.paymentTypes &&
+              { basketContent?.paymentTypes &&
                 basketContent?.paymentTypes?.map((item) => {
-                  return <BankButton
-                    createActiveBtn={createActiveBtn} 
-                    activeBtn={activeBtn}
-                    {...item}
-                  />
+                  if(!isIOS && item?.paymentType === 4 )return
+                  else{
+                    return <BankButton
+                      createActiveBtn={createActiveBtn} 
+                      activeBtn={activeBtn}
+                      {...item}
+                    />
+                  }
                 })
               }
             </div>
@@ -147,8 +172,7 @@ const OrderListPayInfo = ({basketContent, t, saleId, recieptLink, status, orderS
         />
 
       </div>
-      {activeBtn && orderStatus !=="2" ?
-
+      {activeBtn  || (!basketContent?.receiptLink && basketContent?.isPrepayment) ?
       <div onClick={payForOrder}>
         <Button variant="contained" style={{color:"white",letterSpacing:"5px", background:"#63B48D",width:"200px",textTransform: "capitalize"}}>
           {t("basket.linkPayment")}

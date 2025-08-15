@@ -28,8 +28,8 @@ const DatePickerRTK  = () => {
   })
   if(end) {
     dispatch(setStartEndDate({
-      startDate: start.toISOString(),
-      endDate: end.toISOString()
+      startDate: start?.toISOString(),
+      endDate: end?.toISOString()
     }))
     changeUrl(start,end)
       setOpenDatePicker(false)      

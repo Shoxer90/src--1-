@@ -1,10 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setUserNew } from "./userNewSlice";
+import { baseUrl } from "../../../services/baseUrl";
 
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://storextest.payx.am/api/User",
+    baseUrl: baseUrl,
+    // baseUrl: "https://storextest.payx.am/api/User",
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token"); 
       if (token) {
@@ -26,7 +28,6 @@ export const userApi = createApi({
           const { data, meta } = await queryFulfilled;
           dispatch(setUserNew(data?.data))
         } catch(error) {
-          console.log(error,"error from customerApi")
         }
       },
     }),

@@ -19,12 +19,16 @@ const HomeContent = ({
   setTypeCode,
   setFetching,
   setContent,
-  setCurrentPage
+  setCurrentPage,
+  setOpenBasket,
+  setBasketContent,
+        setFrom
+
 }) => {
   return (
-    <div className={styles.productContent} style={{marginLeft:"25px"}}>
+    content && <div className={styles.productContent} style={{marginLeft:"25px"}}>
      
-      { content && content?.map((product, index) => {
+      {content?.map((product, index) => {
         return   <HomeContentItem
           key={index}
           setToBasket={setToBasket}
@@ -41,6 +45,11 @@ const HomeContent = ({
           setContent={setContent}
           content={content}
           setCurrentPage={setCurrentPage}
+          setOpenBasket={setOpenBasket}
+
+          setBasketContent={setBasketContent}
+          setFrom={setFrom}
+
         />
       })}
     </div>

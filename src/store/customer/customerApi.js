@@ -19,7 +19,6 @@ export const customerApi = createApi({
   endpoints: (builder) => ({
     saleDetails: builder.query({
       query:(credentials) => ({
-        // url:`/GetSaleDetailsByStore?storeId=${credentials?.storeId}&historyType=${credentials?.historyType}`,
         url:`/GetSaleDetailsByStore?storeId=${1}&historyType=${credentials?.historyType}`,
         method: "POST",
         body: credentials 
@@ -39,7 +38,6 @@ export const customerApi = createApi({
     paymentsDetails: builder.query({
       query: ({ storeId, sended, ...bodyData }) => ({
         url:`/GetPaymentsByPage?storeId=${storeId}&sended=${sended}`,
-        // url:`/GetPaymentsByPage?storeId=1&sended=${credentials.sended}`,
         method: "POST",
         body: bodyData 
       }),
@@ -76,7 +74,6 @@ export const customerApi = createApi({
 
     cashiersDetails: builder.query({
       query: (credentials) => ({
-        // url:`/GetCashiersByStore?storeId=${credentials?.id}`,
         url:`/GetCashiersByStore?storeId=1`,
         method: "POST",
         body: credentials 

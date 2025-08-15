@@ -12,7 +12,9 @@ export async function loginAPI (username, password){
     try {
       const res = await axios.post(baseUrl + "Login/Login", body, option);
         localStorage.setItem("role", res?.data?.role);
-        localStorage.setItem("token", res.headers["token"]);
+        // localStorage.setItem("token", res.headers["token"]);
+        localStorage.setItem("token", res.data?.token);
+        localStorage.setItem("rcode", res.data?.rcode);
         return res;
     } catch(err) {
       return err;
@@ -144,7 +146,7 @@ export const getNews = async(lang) => {
     const data = await axios.get(baseUrl + `Login/GetNews?language=${lang}`, {});
     return data.data
   }catch(err){
-    return err
+    return console.log(err)
   }
 }
 

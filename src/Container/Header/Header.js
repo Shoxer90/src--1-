@@ -1,23 +1,23 @@
-import React, { useEffect , useContext, memo, useState} from "react";
+import { useEffect , useContext, memo, useState} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 
 import Logo from "./Logo";
 import MenuBurger from "./MenuBurger";
 import {LimitContext} from "../../context/Context";
 
-import { Badge, Button, IconButton, Tooltip } from "@mui/material";
+import { Badge, Button } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import HistoryIcon from '@mui/icons-material/History';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 
 import styles from "./index.module.scss";
 
 import UserInfo from "./userAvatar/index"
 import { useTranslation } from "react-i18next";
 import NotificationBell from "../../notification/NotificationBell";
-// import NotificationBell from "../../notification/NotificationBell";
-// import NotificationFireBase from "../../firebase/notification/NotificationFireBase";
+import OnOffScanner from "../emarkScanner/OnOffScanner";
 
 const Header = ({
   setOpenBasket,
@@ -28,19 +28,19 @@ const Header = ({
   activeBtn,
   setActiveBtn,
   setNotifTrigger,
-  notifTrigger
+  notifTrigger,
+  setFrom,
 }) => {
   const {t} = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const [windWidth, setWidWidth] = useState(window.screen.availWidth)
   const {limitedUsing} = useContext(LimitContext);
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
   useEffect(() => {
     setActiveBtn(location.pathname)
   },[]);
 
-  window.addEventListener("resize", ()=>setWidWidth(window.screen.availWidth));
   return (
       <div className={styles.containerXX}> 
         <div 
@@ -92,19 +92,22 @@ const Header = ({
               />
               <span className={styles.routeName}>{t("menubar.history")}</span>
             </h6>
-            {/* {!limitedUsing && <h6 
+            <h6 
               style={{
-                color:(activeBtn === "/product-info/updates"? "#FFA500" : "#383838"),
-                fontSize:(activeBtn === "/product-info/updates" && "140%")
+                color:(anchorEl? "#FFA500" : "#383838"),
+                fontSize:(anchorEl && "140%")
               }}
-              onClick={() => {
-                setActiveBtn("/product-info/updates")
-                navigate("/product-info")
+              onClick={(e) => {
+                setAnchorEl(e.currentTarget)
               }}
             >
-              <InventorySharpIcon fontSize="large"/>
-              <span className={styles.routeName}>{t("menubar.product")}</span>
-            </h6>} */}
+              <QrCodeScannerIcon  
+                fontSize="large"  
+                sx={{ color:(anchorEl? "#FFA500": "#3FB68A")}}
+              />
+
+              <span className={styles.routeName}>Emark</span>
+            </h6>
             <h6 
               style={{
                 color:(activeBtn === "/prepayment"? "#FFA500" : "#383838"),
@@ -151,15 +154,21 @@ const Header = ({
                 {background:"#3FB68A",
                 borderRadius:"8px",
                 textTransform: "capitalize",
-                // fontWeight: "bold",    
               }}
-              onClick={()=>setOpenBasket(true)}
+              onClick={()=>{
+                setFrom("basket")
+                setOpenBasket(true)
+              }}
             >
               <ShoppingCartIcon/>
               <span className={styles.routeName}>{t("menubar.basket")}</span> 
             </Button>
           </Badge>
           <MenuBurger logout={logOutFunc} setActiveBtn={setActiveBtn} user={user}/>
+          <OnOffScanner
+            open={anchorEl}
+            close={() => setAnchorEl(null)}
+          />
         </div>
      </div>
   );

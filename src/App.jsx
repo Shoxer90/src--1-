@@ -46,16 +46,16 @@ import ForgotPassword from "./Authorization/loginAuth/forgotPass";
 import ResetPassword from "./Authorization/loginAuth/resetpass/ResetPassword";
 import ConfirmationV2 from "./Authorization/loginAuth/confirmation/Confirmation";
 import PrePaymentList from "./Container2/prepayment/";
-import { QrSoccet } from "./QrSoccet";
 import ConfirmDialog from "./Container2/dialogs/ConfirmDialog";
 import PrivacyPayx from "./payxPrivacyRemove/PrivacyPayx";
 import NewContract from "./Container2/dialogs/notifications/NewContract";
 
-import { addNotification } from "./store/notification/notificationSlice";
 import AddNewClientInfo from "./Container2/dialogs/AddNewClientInfo";
 import IframeReader from "./Container/iframe/iframeReader"; 
 import { removeDeviceToken } from "./services/notifications/notificatonRequests";
-import { onMessage } from "firebase/messaging";
+import { setSearchBarCodeSlice } from "./store/searchbarcode/barcodeSlice";
+import { replaceGS } from "./services/baseUrl";
+import { getNewCode } from "./services/interceptor";
 
 const checkForUpdates = async () => {
   try {
@@ -77,7 +77,7 @@ const checkForUpdates = async () => {
 
 
 const App = () => {
- const search = useLocation().search;
+  const search = useLocation().search;
   const status = new URLSearchParams(search).get("status") || "GetAvailableProducts";
   const [limitedUsing, setLimitedUsing] = useState();
   const [basketGoodsqty, setBasketGoodsqty] = useState();
@@ -98,10 +98,13 @@ const App = () => {
   const [from, setFrom] = useState("");
   const dispatch = useDispatch();
   const {user} = useSelector(state => state.user);
+  const inputSlice = useSelector(state => state?.barcode?.basket);
+  const debounceBasket = useDebonce(inputSlice, 500);
+
 
   const [isBlockedUser,setBlockedUser] = useState(false);
   const debounce = useDebonce(searchValue, 1000);
-  const debounceBasket = useDebonce(barcodeScanValue, 20);
+  // const debounceBasket = useDebonce(barcodeScanValue, 20);
   const [activeBtn, setActiveBtn] = useState("/");
   const [lastDate,setLastDate] = useState("");
   const [fetching, setFetching] = useState(true);
@@ -109,8 +112,8 @@ const App = () => {
   const [count, setCount] = useState(0);
   const [searchedNotAvailableProd, setSearchedNotAvailableProd] = useState();
   const [openAddDialog,setOpenAddDialog] = useState(false);
-  const [updateAvailable, setUpdateAvailable] = useState(false);
-  const [ notifTrigger, setNotifTrigger] = useState(false)
+  const [ notifTrigger, setNotifTrigger] = useState(false);
+
   const [openWindow, setOpenWindow] = useState({
     prepayment: false,
     payment: false,
@@ -132,11 +135,14 @@ const App = () => {
     prePaymentSaleDetailId: JSON.parse(localStorage.getItem("endPrePayment"))?.id,
     isPrepayment: openWindow?.prepayment,
     customer_Name: "",
-    customer_Phone: ""
+    customer_Phone: "",
+
+    emarks: JSON.parse(localStorage.getItem("emarkList")) || []
   });
 
+
   const whereIsMyUs = async() => {
-    console.log("02.07.2025 100% fast idram")
+    
     await dispatch(fetchUser()).then(async(res) => {
       const date = new Date(res?.payload?.nextPaymentDate);
       setLastDate(
@@ -177,35 +183,79 @@ const App = () => {
       return setLimitedUsing(true)
     }
   };
+ 
+  const isEmarkBarcode = (barcodeOrEmark) => {
+    let input = barcodeOrEmark
+    if(input?.substring(0, 2) === "01" && input?.substring(16, 18) === "21") {
+      input = replaceGS(barcodeOrEmark)
+      const emarkList = JSON.parse(localStorage.getItem("emarkList")) || [];
+      const emarkNewList = JSON.parse(localStorage.getItem("emarkNewList")) || [];
+      const currentBarcode = input?.slice(3,16)
+      if(!emarkList?.includes(input)) {
+        localStorage.setItem("emarkList", JSON.stringify([ ...emarkList, input]));
+        let flag = 0
+        let newDataForStorage = [];
+        newDataForStorage = emarkNewList?.map((prod) => {
+          if(prod?.barcode === currentBarcode) {
+            flag+=1
+            return {
+              ...prod,
+              emarks:[...prod?.emarks,input]
+            }
+          }else{
+            return prod
+          }
+        });
+        if(!flag) {
+          newDataForStorage?.push({barcode:currentBarcode,emarks:[input],scanRequired:true})
+        }
+        localStorage.setItem("emarkNewList", JSON.stringify(newDataForStorage))
+        return true
+      }else {
+        setMessage({message:t("emark.qrInBasket"), type:"error"})
+        return false
+        // return setBarcodeScanValue("")
+      }
+    } 
+    // return false
+    return true
+  };
 
   const byBarCodeSearching = async(group,barcode) => {
-  
     if(barcode === "" || barcode === " "){
       await queryFunction(status, 1).then((res) => {
         setContent(res?.data)
       })
       setCurrentPage(2)
       return
-    }else{
+    } else {
       setMessage("")
       await byBarCode(group, barcode).then((res) => {
-        // await byBarCode(group, barcode).then((res) => {
         if(from === "basket"){
           if(res?.length) {
-            res.forEach((item) =>{
-              if(item?.barCode === barcode){
-              // if(item?.barCode === barcode || item?.emark === barcode){
+            let isEmarkBC = isEmarkBarcode(barcode)
+            if(!isEmarkBC) {
+              return setBarcodeScanValue("")
+            }
+            res.forEach((item) => {
+              if(item?.barCode === barcode || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")){
                 if(item?.remainder){
                   setSearchValue("")
+                  dispatch(setSearchBarCodeSlice({
+                    name: from,
+                    value: ""
+                  }))
                   setToBasketFromSearchInput(item, 1)
+               
                 }else{
                   return setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
                 }
               }
             })
-          }else(
-           setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
-          )
+          } else {
+            setMessage({message: res?.data?.message,type: "error"})
+            // setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
+          }
         }else if(from === "main") {
           return res?.length ? setContent(res) : (
             setContent([]) ,
@@ -243,6 +293,8 @@ const App = () => {
           partialAmount: 0,
           partnerTin: "",
           sales: [],
+          // emarks: [],
+          emarks: JSON.parse(localStorage.getItem("emarkList")) || [],
           prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id,
           isPrepayment: openWindow?.prepayment,
           customer_Name: "",
@@ -256,12 +308,10 @@ const App = () => {
   };
 
   const changeCountOfBasketItem = async(id,value) => {
-   
     let handleArr = [] 
     await  getBasketContent().then((res) => {
       res.map((prod) => {
         if(prod.id === id) {
-          
           return handleArr?.push({...prod, count: value})
         }else{
          return handleArr?.push(prod)
@@ -272,8 +322,16 @@ const App = () => {
     loadBasket()
   };
 
-  const deleteBasketItem = async(id) => {
-    let handleArr = await basketContent.filter(prod => prod.id !== id)
+  const deleteBasketItem = async(id,isEmark, barcode) => {
+    let handleArr =  basketContent.filter(prod => prod.id !== id)
+    if(isEmark && localStorage.getItem("emarkNewList")){
+      const emarkNewList = JSON.parse(localStorage.getItem("emarkNewList")) || []
+      const emarkList = JSON.parse(localStorage.getItem("emarkList")) || []
+      let newEmarkArr = emarkList?.filter((emark) => emark?.slice(3,16) !== barcode)
+      let newList = emarkNewList?.filter((item) => item?.barcode !== barcode)
+      localStorage.setItem("emarkNewList",JSON.stringify(newList))
+      localStorage.setItem("emarkList",JSON.stringify(newEmarkArr))
+    }
    
 // handling freze prods when you want to close prepayment transaction
       let freeze = await JSON.parse(localStorage.getItem("freezeBasketCounts"))
@@ -285,6 +343,7 @@ const App = () => {
     if(!handleArr?.length) {
       localStorage.removeItem("endPrePayment")
       localStorage.removeItem("isEditPrepayment")
+      localStorage.removeItem("emarkList")
       setOpenWindow({
         prepayment: false ,
         payment: false,
@@ -301,7 +360,9 @@ const App = () => {
     !localStorage.getItem("endPrePayment") && setFlag(flag+1);
     localStorage.removeItem("endPrePayment")
     localStorage.removeItem("isEditPrepayment")
-    localStorage.removeItem("freezeBasketCounts")
+    localStorage.removeItem("endPrePayment")
+    localStorage.removeItem("emarkList")
+    localStorage.removeItem("emarkNewList")
     setPaymentInfo({
       discountType: 0,
       cashAmount: 0,
@@ -310,6 +371,9 @@ const App = () => {
       partialAmount: 0,
       partnerTin: "",
       sales: [],
+      // emarks: [],
+    emarks: JSON.parse(localStorage.getItem("emarkList")) || [],
+
       prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id || "",
       isPrepayment: openWindow?.prepayment,
       customer_Name: "",
@@ -325,19 +389,17 @@ const App = () => {
     !localStorage.getItem("endPrePayment") && loadBasket()
   };
   
-  const setToBasket = (wishProduct, quantity, isFromPrepaymentPage) => {
-    const basket = basketContent
+  const setToBasket =async (wishProduct, quantity, isFromPrepaymentPage) => {
+    const basket = basketContent || []
     if(quantity && quantity > wishProduct?.remainder && !isFromPrepaymentPage){
-      setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
+      setMessage({message:`${t("dialogs.havenot")} ${wishProduct?.remainder} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
       return
     }else if(basketExist.includes(wishProduct?.id)){
         setMessage({message: t("productcard.secondclick"), type:"success"})
         return
     }else{
-     
       basket.unshift({
         ...wishProduct,
-        discountedPrice: wishProduct?.discountedPrice,
         discountedPrice: wishProduct?.discountedPrice,
         count:+(quantity ? quantity: 1)
       })
@@ -352,25 +414,28 @@ const App = () => {
       setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
       return
     }else if(basketExist.includes(wishProduct?.id)){
-      const newBasket = basket.map((prod) => {
-        if(prod?.id === wishProduct?.id){
-          return {
-            ...prod,
-            count:prod?.count + 1,
-            discountedPrice:wishProduct?.discountedPrice,
+        const newBasket = basket.map((prod) => {
+          if(prod?.productId === wishProduct?.id){
+            return {
+              ...prod,
+              count:prod?.count + 1,
+              discountedPrice:wishProduct?.discountedPrice,
+            }
+          }else{
+            return prod
           }
-        }else{
-          return prod
-        }
-      })
-      localStorage.setItem("bascket1", JSON.stringify(newBasket))
-      setSearchValue("")
-      return loadBasket()
+        })
+        localStorage.setItem("bascket1", JSON.stringify(newBasket))
+        setSearchValue("")
+        return loadBasket()
     }else{
       basket.unshift({
         ...wishProduct,
         discountedPrice:wishProduct?.discountedPrice,
-        count:+(quantity  ? quantity: 1)
+        count:+(quantity  ? quantity: 1),
+        // 14.07
+        barCode: wishProduct?.barCode
+
       })
     }
     localStorage.setItem("bascket1", JSON.stringify(basket))
@@ -380,8 +445,8 @@ const App = () => {
 
   const logOutFunc = async() =>{
     const language = localStorage.getItem("lang");
-    setIsLogIn(false)
     removeDeviceToken(localStorage.getItem("dt"))
+    setIsLogIn(false)
     setContent([]);
     setCount(false)
     localStorage.clear();
@@ -389,6 +454,9 @@ const App = () => {
   }; 
 
   const getMeasure = async() => {
+
+   
+
     const str = await localStorage.getItem("lang")
     switch(str){
       case "eng":
@@ -429,7 +497,7 @@ const App = () => {
     isLogin && getMeasure()
     user?.confirmation === false && user?.showPaymentPage && !count && checkForNewNotification()
    
-  },[t,isLogin, user]);
+  },[t, user]);
 
   useEffect(() => {
     if(user?.isInDate === true &&
@@ -451,7 +519,6 @@ const App = () => {
   },[user]);
 
   useEffect(() => {
-    console.log("in effect for get user")
     whereIsMyUs() 
     if(user &&  user.isChangedPassword === false) { return setOpenAddDialog(true) }
     setCount(false)
@@ -460,7 +527,8 @@ const App = () => {
   useEffect(() => {
     setPaymentInfo({
       ...paymentInfo,
-      isPrepayment: openWindow?.prepayment
+      isPrepayment: openWindow?.prepayment,
+      emarks: openWindow?.prepayment? []: JSON.parse(localStorage.getItem("emarkList")) || []
     })
   },[openWindow]);
 
@@ -469,8 +537,8 @@ const App = () => {
   },[debounce]);
 
   useEffect(() => {
-    barcodeScanValue &&  debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
-  },[debounceBasket]);
+    debounceBasket && byBarCodeSearching("GetAvailableProducts",debounceBasket)
+  }, [debounceBasket]);
 
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>
@@ -485,7 +553,7 @@ const App = () => {
           <Route path="/confirmation/*" element={<ConfirmationV2 />} />
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
-          <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
+          <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc}/>} />
           <Route path="/kuku" element={<IframeReader />} />
           {/* ADMIN PAGE */}
           {/* <Route path="/admin/*" element={<AdminPage />} />
@@ -497,6 +565,7 @@ const App = () => {
           <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} /> */}
         </Routes> :
         <>
+         
           <Header
             setOpenBasket={setOpenBasket}
             basketGoodsqty={basketGoodsqty}
@@ -507,6 +576,9 @@ const App = () => {
             setActiveBtn={setActiveBtn}
             setNotifTrigger={setNotifTrigger}
             notifTrigger={notifTrigger}
+            setFrom={setFrom}
+            from={from}
+
 
           />
           {!isBlockedUser  && user ? <Routes>
@@ -527,6 +599,7 @@ const App = () => {
                   currentPage={currentPage}
                   setCurrentPage={setCurrentPage}
                   setFrom={setFrom}
+                  from={from}
                   searchValue={searchValue}
                   setSearchValue={setSearchValue}
                   byBarCodeSearching={byBarCodeSearching}
@@ -534,6 +607,9 @@ const App = () => {
                   setFlag={setFlag}
                   setFetching={setFetching}
                   fetching={fetching}
+                  setOpenBasket={setOpenBasket}
+
+                  loadBasket={loadBasket}
                 />
               }  
             />
@@ -555,14 +631,17 @@ const App = () => {
                   currentPage={currentPage}
                   setCurrentPage={setCurrentPage}
                   setFrom={setFrom}
+                  from={from}
                   searchValue={searchValue}
                   setSearchValue={setSearchValue}
                   byBarCodeSearching={byBarCodeSearching}
                   flag={flag}
                   setFlag={setFlag}
-
                   setFetching={setFetching}
                   fetching={fetching}
+                  setOpenBasket={setOpenBasket}
+
+                  setBasketContent={setBasketContent}
                 />
               }  
             />
@@ -571,8 +650,8 @@ const App = () => {
             <Route path="/setting/cashiers" element={<Cashiers cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
             <Route path="/setting/user" element={<SettingsUser user={user} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc} limitedUsing={limitedUsing}/>} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} />} />
-            <Route path="/qrsoccet" element={<QrSoccet />} />
             {/* <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} /> */}
+            <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
             <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
             <Route path="/prepayment" element={<PrePaymentList 
               setOpenBasket={setOpenBasket} 
@@ -583,10 +662,12 @@ const App = () => {
               paymentInfo={paymentInfo}
               flag={flag}
               logOutFunc={logOutFunc}
+              setFrom={setFrom}
+              from={from}
             />} />
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-            {user?.showPaymentPage &&<Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
-            {user?.showPaymentPage &&<Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
+            {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
+            {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
           </Routes> :
           <Routes>
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
@@ -611,6 +692,7 @@ const App = () => {
             setContent={setContent}
             byBarCodeSearching={byBarCodeSearching}
             setFrom={setFrom}
+            from={from}
             searchValue={barcodeScanValue}
             setSearchValue={setBarcodeScanValue}
             user={user}
@@ -622,6 +704,8 @@ const App = () => {
             paymentInfo={paymentInfo}
             setPaymentInfo={setPaymentInfo}
             limitedUsing={limitedUsing}
+            debounceBasket={debounceBasket}
+            setBasketContent={setBasketContent}
           />}
           {notification.length ? 
             <Notification 
@@ -653,13 +737,27 @@ const App = () => {
             sx={{ height: "100%" }}
             open={!!message?.message} 
             autoHideDuration={6000} 
-            onClose={()=>setMessage({type:"", message:""})}
+            onClose={()=>{
+             dispatch(setSearchBarCodeSlice({
+                name: from,
+                value: ""
+              }))
+              setMessage({type:"", message:""})
+            }}
             anchorOrigin={{   
               vertical: "top",
               horizontal: "center"
             }} 
           >
-            <Alert onClose={()=>setMessage({type:"",message:""})} severity={message?.type || "success"} sx={{ width: '100%' }}>
+            <Alert 
+            onClose={()=>{
+              dispatch(setSearchBarCodeSlice({
+                name: from,
+                value: ""
+              }))
+              setMessage({type:"",message:""})
+            }}
+             severity={message?.type || "success"} sx={{ width: '100%' }}>
               <strong style={{fontSize:"150%"}}>{message?.message}</strong>
             </Alert>
           </Snackbar>
@@ -673,13 +771,6 @@ const App = () => {
             close={()=>setMessage({type:"",message:""})}
             content={message?.confirmMessage}
           />
-          {updateAvailable && (
-            <Dialog open={updateAvailable}>
-              <Button onClick={() => window.location.reload(true)}>
-                🔄 Обновить сайт
-              </Button>
-            </Dialog>
-          )}
         </>
       }
     </div>

@@ -93,7 +93,6 @@ const CustomerPayments = () => {
       <UniversalTable 
         rows={rows} 
         collumns={collSlice?.collumns} 
-        // clickToRow={()=>console.log("click to payment row")} 
       />
     </div>
   )

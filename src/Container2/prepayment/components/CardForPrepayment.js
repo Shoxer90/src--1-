@@ -8,6 +8,7 @@ import Loader from "../../loading/Loader";
 import SnackErr from "../../dialogs/SnackErr";
 import ReversePrepaymentDialog from "../reverse/ReversePrepaymentDialog";
 import HdmStatus from "../../../modules/hdmStatus";
+import PdfReceiptDialog from "../../historyPage/newHdm/PdfReceiptDialog";
 
 const CardForPrepayment = ({
   item,
@@ -17,7 +18,8 @@ const CardForPrepayment = ({
   setOpenWindow,
   setPaymentInfo,
   paymentInfo,
-  getPrepaymentList
+  getPrepaymentList,
+  from, setFrom
 }) => {
   const {t} = useTranslation();
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -27,6 +29,11 @@ const CardForPrepayment = ({
     message:"", 
     type:""
   });
+  const [openPdfDial, setOpenPdfDial] = useState({
+    status: false,
+    link:""
+  })
+  
 
   const contentStyle = {
     overflowY: item?.products?.length > 8? "scroll": "",
@@ -45,6 +52,7 @@ const CardForPrepayment = ({
       "partnerTin": item?.partnerTin,
       "customer_Name": item?.customer_Name,
       "customer_Phone": item?.customer_Phone,
+      "emarks": []
     })
     if(!localStorage.getItem("endPrePayment")) {
       localStorage.setItem("endPrePayment", JSON.stringify({
@@ -52,11 +60,18 @@ const CardForPrepayment = ({
         prepayment: item?.prePaymentAmount,
         id: item?.id
       })) 
-      // createEditPrepContent()
       // here is new solution will be
       if(item?.products?.length){
+        let emarkCount = 0
         localStorage.setItem("freezeBasketCounts", JSON.stringify(item?.products))
-        item?.products?.forEach((prod) => setToBasket(prod, prod?.count, true))
+        // item?.products?.forEach((prod) => setToBasket(prod, prod?.count, true))
+        item?.products?.forEach((prod) =>{
+          if(prod?.isEmark) {
+            emarkCount+=1*prod?.count
+          }
+           setToBasket(prod, prod?.count, true)
+        })
+        localStorage.setItem('needEmark', emarkCount)
       }
       setOpenBasket(true)
       return setOpenWindow({
@@ -92,8 +107,16 @@ const CardForPrepayment = ({
     setIsLoad(false)
       if(res?.status === 200) {
         // window.open(res?.data?.reverceLink, '_blank', 'noopener,noreferrer');
-        window.location.href = res?.data?.reverceLink
-        getPrepaymentList()
+        // window.location.href = res?.data?.reverceLink
+
+        setOpenPdfDial({
+          status:true,
+          link: res?.data?.reverceLink,
+          message: res?.data?.res?.message
+        })
+
+
+        // getPrepaymentList()
       }else {
         setMessage({message:t("dialogs.wrong"), type:"error"})
       }
@@ -155,34 +178,16 @@ const CardForPrepayment = ({
               fontSize:"80%"
             }}
             variant="contained" 
-            // size="small"
             onClick={()=>setOpenConfirm(true)}
           >
             {t("history.reverse")}
           </Button>
-          {/* <Button 
-            variant="contained" 
-            size="small"
-            sx={{
-              background:"rgb(63, 182, 138)", 
-              fontSize:"70%",
-              textTransform: "capitalize",
-              letterSpacing:"1px"
-            }}
-            onClick={()=>{
-              createBasketContent(1)
-              localStorage.setItem("isEditPrepayment", JSON.stringify({
-                prePaymentSaleDetailId:  item?.id,
-                sales:[]
-              }))
-            }}
-          >
-            {t("buttons.edit")}
-          </Button> */}
           <Button 
             variant="contained" 
-            onClick={()=>createBasketContent(0)}
-            // size="small"
+            onClick={()=>{
+              setFrom("")
+              createBasketContent(0)
+            }}
             sx={{
               background:"#6C757D",
               width:"34%",
@@ -204,6 +209,19 @@ const CardForPrepayment = ({
         <Dialog open={message?.message}><SnackErr message={message?.message} type={message?.type} close={closeDialog}/></Dialog>
         <Dialog open={messageEmpty?.message}><SnackErr message={messageEmpty?.message} type={messageEmpty?.type} close={setMessageEmpty}/></Dialog>
       </div>
+      <PdfReceiptDialog
+        open={openPdfDial?.link}
+        close={()=>{
+          setOpenPdfDial({status:false,link:""})
+          getPrepaymentList()
+        }}
+        func={()=>{
+          window.open( openPdfDial?.link, '_blank', 'noopener,noreferrer')
+          setOpenPdfDial({status:false,link:""})
+        }}
+        text={openPdfDial?.message}
+
+      />
     </div>
   )
 };

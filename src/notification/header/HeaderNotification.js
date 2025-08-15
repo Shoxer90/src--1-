@@ -66,7 +66,7 @@ const HeaderNotification = ({
         })
       }
     }else{
-      setMessage(`choose notification for ${oper}`)
+      setMessage(t("info.chooseNotifs"))
       setTimeout(() => {
         setMessage(``)
 
@@ -149,15 +149,6 @@ const HeaderNotification = ({
         </span>
       </div>  
       <Divider color="black" />
-{/* search for notification */}
-      {/* <FormControl style={{width:"100%"}} variant="standard" size="small">
-        <Input
-          placeholder={t("buttons.search")}
-          endAdornment={
-            <SearchIcon onClick={()=>console.log("search")}  style={{cursor:"pointer",color:"lightgrey"}} /> 
-          }
-        />
-      </FormControl> */}
       <div style={{display:"flex", justifyContent:"space-between"}}>
 
         <span 

@@ -129,15 +129,9 @@ export const saleProductFromBasket = async(content) => {
   };
   try{
     const data = await axios.put(baseUrl + `Sale/Sale`, content, option, { retry: 0 })
-    console.log(data,"DATA")
     return data.data
   }catch(err){
-    console.log(err?.code,"err")
-    if(err?.code === "ERR_NETWORK"){
-      return "ERR_NETWORK"
-    }else{
-      return err.response.status
-    }
+    return err.response
   }
 }
 
@@ -152,5 +146,15 @@ export const leftPrepaymentForProducts = async(content) => {
     return data.data
   }catch(err){
     return err.response.status
+  }
+}
+
+export const printOrderReceipt = async(id) => {
+
+  try{
+    const data = await axios.get(baseUrl + `Sale/PrintReceipt?saleId=${id}`, option())
+    return data
+  }catch(err){
+    return err
   }
 }

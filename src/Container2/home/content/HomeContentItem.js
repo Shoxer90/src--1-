@@ -12,6 +12,9 @@ import ModeIcon from '@mui/icons-material/Mode';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import { useTranslation } from "react-i18next";
 import { editPrepaymentCountsModule } from "../../../modules/editPrepayment";
+import EmarkInputForDeleteItem from "../../../Container/basket/emark/EmarkInputForDeletItem";
+import QrCode2Icon from '@mui/icons-material/QrCode2';
+
 
 const style = {
   display:"flex",
@@ -42,17 +45,19 @@ const HomeContentItem = ({
   setToBasket,
   basketExist,
   deleteAndRefresh,
-  product,
   deleteBasketItem,
+  product,
   measure,
   index,
   getSelectData,
   typeCode,
   setTypeCode,
-  setFetching,
   setContent,
   content,
-  setCurrentPage
+  setCurrentPage,
+  setOpenBasket,
+          setFrom
+
 }) => {
   const {t} = useTranslation();
   const {limitedUsing} = useContext(LimitContext);
@@ -61,8 +66,11 @@ const HomeContentItem = ({
   const [starSynth,setStarSynth] = useState();
   const [message,setMessage] = useState();
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openEmarkInput, setOpenEmarkInput] = useState(false);
   const [newPrice, setNewPrice] = useState(product?.discountedPrice);
-  // const [newPrice, setNewPrice] = useState(product?.price - (product?.price * product?.discount / 100));
+  const [change, setChange] = useState(false);
+  const [scanRequired, setScanRequired] = useState();
+  const [prodCount, setProdCount] = useState(0);
   
   const handleStarChange = (bool) => {
     setStarSynth(bool)
@@ -74,8 +82,12 @@ const HomeContentItem = ({
       setOpenConfirm(true)
       return
     }
+    if(product?.isEmark && scanRequired) {
+      return setOpenEmarkInput(true)
+    }
+    setFrom("basket")
     setToBasket(product, quantity, false)
-    setQuantity("")
+    // setQuantity("")
   };
 
   const addToBasketWithPrep = async() => {
@@ -116,15 +128,33 @@ const HomeContentItem = ({
   useEffect(() => {
     setStarSynth(product?.isFavorite)
   },[]);
-  
+
+
+  useEffect(() => {
+    const emarkNew = localStorage.getItem("emarkNewList")
+    let parseEmarkNew = JSON.parse(emarkNew) || [];
+    let flag=0
+    parseEmarkNew?.map((item) => {
+      if(item?.barcode === product?.barCode) {
+        flag+=1
+        return setScanRequired(item?.scanRequired)
+      }
+    });
+
+    if(!flag) {
+      setScanRequired(true)
+    }
+  },[change,localStorage.getItem("emarkNewList")])
   return (
     <Card style={{ border:"solid orange 2px",padding:"7px", cursor:"pointer"}}>
         <div style={{display:"flex", justifyContent:"space-between", padding:"2px 5px"}}>
+
         <div 
           className={product?.name?.length > 22 ? styles.hovertext : undefined}
-          style={{fontSize:"90%", fontWeight:700}}
+          style={{fontSize:"90%", fontWeight:700,alignItems:"center"}}
           data-hover={`${product?.name} ${product?.brand}`}
         >
+            {product?.isEmark ? <QrCode2Icon fontSize="small" sx={{mr:0.21,color:"green"}} />: ""}
           {product?.name?.length > 25 ? `${product?.name.slice(0,24)}...` : `${product?.name}`} {" "}
           {product?.name?.length+product?.brand?.length < 25 && product?.brand ?`"${product?.brand}"`:""}
         </div>
@@ -210,20 +240,41 @@ const HomeContentItem = ({
         product={product} 
         deleteAndRefresh={deleteAndRefresh}
         setNewPrice={setNewPrice}
-        deleteBasketItem={deleteBasketItem}
-        setFetching={setFetching}
         setContent={setContent}
         content={content}
         getSelectData={getSelectData}
         typeCode={typeCode}
         setTypeCode={setTypeCode}
         setCurrentPage={setCurrentPage}
+        deleteBasketItem={deleteBasketItem}
       />}
       {message ? 
         <Dialog open={Boolean(message)}>
           <SnackErr message={message} type="info" close={setMessage} />
         </Dialog>
       :""}
+      {openEmarkInput && <EmarkInputForDeleteItem 
+        open={openEmarkInput} 
+        close={()=>setOpenEmarkInput(false)} 
+        setFrom={setFrom}
+        count={""} 
+        operation={"incr"}
+        bCode={product?.barCode}
+        setChange={setChange}
+        change={change}
+        setOpenBasket={setOpenBasket}
+        name={product?.name}
+        productCount={prodCount} 
+
+        completeFunc = {()=>{
+          setToBasket(product, prodCount, false)
+          setOpenEmarkInput(false)
+        }}
+        setToBasket={setToBasket}
+        product={product}
+        quantity={quantity} 
+
+      />}
       <ConfirmDialog
         func={addToBasketWithPrep}
         open={openConfirm}

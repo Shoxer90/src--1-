@@ -2,8 +2,7 @@ import React, { memo } from "react";
 import PayStatusSelect from "./PayStatusSelect";
 import ColumnSelect from "./ColumnSelect";
 
-const HistoryFilter = ({t,
-  // initialFunc, 
+const HistoryFilter = ({
   initDate,
   setInitDate, 
   getHistoryByStartAndEndDates, 
@@ -16,15 +15,13 @@ const HistoryFilter = ({t,
   return(
     <div style={{display:"flex", }}>
       <PayStatusSelect 
-        t={t} 
-        // initialFunc={initialFunc} 
         getHistoryByStartAndEndDates={getHistoryByStartAndEndDates} 
         setStatus={setStatus} 
         status={status}
         initDate={initDate}
         setInitDate={setInitDate}
       />
-      <ColumnSelect t={t} columns={columns} setColumns={setColumns}/>
+      <ColumnSelect columns={columns} setColumns={setColumns}/>
     </div>
 )
 };

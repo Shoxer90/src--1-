@@ -96,7 +96,6 @@ const Step3 = ({
       <Button
         variant="contained"
         onClick={servicePay}  
-        // onClick={payForCompleteEhdmRegistration}  
         sx={{m:2,background:"#3FB68A",textTransform: "capitalize", width:"40%"}}
         disabled={payData?.attach === undefined && payData?.cardId === undefined }
       >

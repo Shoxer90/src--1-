@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { payForEhdm, payForEhdmWithUsingCard } from "../../../../services/auth/auth";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
+import PdfReceiptDialog from "../../../historyPage/newHdm/PdfReceiptDialog";
 
 const langEnum = () => {
   let lang = localStorage.getItem("lang") || localStorage.getItem("i18nextLng")
@@ -23,7 +24,6 @@ const langEnum = () => {
     return "arm"
   }
 };
-console.log("IN PAY COMPONENT")
 
 const PayComponent = ({
   openPay,
@@ -48,6 +48,10 @@ const PayComponent = ({
   const [method,setMethod] = useState(1)
   const [openBankInfo,setOpenBankInfo] = useState();
   const [loader,setLoader] = useState(false);
+  const [openPdfDial, setOpenPdfDial] = useState({
+    status: false,
+    link:""
+  })
   
   const closeDialog = () => {
     setMethod(1)
@@ -57,8 +61,7 @@ const PayComponent = ({
       isBinding: content?.autopayment?.hasAutoPayment,
       serviceType: serviceType,
       cardId: content?.autopayment?.defaultCard?.cardId,
-      paymentType: 1
-
+      paymentType: ""
     })
     setOpenPay(false)
   };
@@ -73,21 +76,22 @@ const PayComponent = ({
     if(billsData?.cardId) {
       payForEhdmWithUsingCard(billsData?.cardId).then((res) => {
         setLoader(false)
-        if(res?.status !== 200) {
-        }else{
+        if(res?.status === 200) {
+       
           setUrl(res?.data?.formUrl)
           setOpenSuccess(true)
         }
       })
     }else{
-      if(billsData?.attach) {
-      }else{
-      }
+      
       payForEhdm().then((res) => {
         setLoader(false)
-        if(res?.status !== 200) {
-        }else{
+        if(res?.status === 200) {
           window.location.href = res?.data?.formUrl;
+          // setOpenPdfDial({
+          //   status:true,
+          //   link: res?.data?.formUrl
+          // })
           // window.open( res?.data?.formUrl, '_blank', 'noopener,noreferrer');
         }
       })
@@ -98,7 +102,6 @@ const PayComponent = ({
   const servicePay = async() => {
     if(activateEhdm) {
         if(!user?.isRegisteredForEhdm){
-        // return setOpenCompleteUserInfo(true)
         return 
       }else{
         return payForCompleteEhdmRegistration()
@@ -130,13 +133,14 @@ const PayComponent = ({
   };
 
  
-
+// for redirect to pay inputs
   const payUsingNewCard = () => {
     payForServiceWithNewCard(billsData).then((res) => {
       setLoader(false)
         // window.open( res?.formUrl, '_blank', 'noopener,noreferrer');
         // openUrl(res?.formUrl)
         window.location.href = res?.formUrl
+        
       })
   };
 
@@ -200,7 +204,7 @@ const PayComponent = ({
         variant="contained"
         onClick={servicePay}  
         sx={{m:2,background:"#3FB68A",textTransform: "capitalize"}}
-        disabled={billsData?.attach === undefined && billsData?.cardId === undefined }
+        disabled={!billsData?.paymentType}
       >
         {t("basket.totalndiscount")} {formatNumberWithSpaces(billsData?.daysEnum * price)} ֏ 
       </Button>
@@ -227,7 +231,14 @@ const PayComponent = ({
         question={<strong>{t("settings.done30000")}</strong>}
         nobutton={true}
       />
-    
+      <PdfReceiptDialog
+        open={openPdfDial?.link}
+        close={()=>setOpenPdfDial({status:false,link:""})}
+        func={()=>{
+          window.open( openPdfDial?.link, '_blank', 'noopener,noreferrer')
+          setOpenPdfDial({status:false,link:""})
+        }}
+      />
     </Dialog>
   )
 };

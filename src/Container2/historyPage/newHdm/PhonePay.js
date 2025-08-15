@@ -7,7 +7,6 @@ import { Box } from "@mui/system";
 import MobileScreenShareIcon from '@mui/icons-material/MobileScreenShare';
 import { useState } from "react";
 import SnackErr from "../../dialogs/SnackErr";
-import { sendSmsForPay } from "../../../services/pay/pay";
 import { formatNumberWithSpaces } from "../../../modules/modules";
 
 const PhonePay = ({
@@ -17,11 +16,6 @@ const PhonePay = ({
   setPaymentInfo,
   closePhoneDialog,
   price,
-  setLoader,
-  responseTreatment,
-  deleteBasketGoods,
-  loadBasket,
-  logOutFunc,
   multiSaleProducts
 }) => {
   const [response,setResponse] = useState({message:"",status:""});
@@ -37,21 +31,6 @@ const PhonePay = ({
       return
     }
     multiSaleProducts(3)
-    // await sendSmsForPay({
-    //   ...paymentInfo,
-    //   phone: `+374${paymentInfo.phone}`
-    // }).then((res) => {
-    //   if(res?.status === 203) {
-    //     setResponse({
-    //       message: t("authorize.errors.bank_agreement"),
-    //       status: "error"
-    //     })
-    //   }else{
-        
-    //     closePhoneDialog()
-    //     responseTreatment(res, 3)
-    //   }
-    // })
   };
   
   const handleChangeInput = (e) => {

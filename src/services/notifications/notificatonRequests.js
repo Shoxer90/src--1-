@@ -4,16 +4,16 @@ import { baseUrl, option } from "../baseUrl";
 export  async function removeDeviceToken(token) {
     try{
         const  data = await axios.get(baseUrl + `User/RemoveDeviceToken?deviceToken=${token}`, option());
+        return data
     }catch(err){
-        console.log(err.response, "dt err")
     }
 };
 
 export  async function sendDeviceToken(token) {
     try{
-        const  data = await axios.get(baseUrl + `User/AddDeviceToken?deviceToken=${token}`, option());
+        const data = await axios.get(baseUrl + `User/AddDeviceToken?deviceToken=${token}`, option());
+        return data
     }catch(err){
-        console.log(err.response, "dt err")
     }
 };
 

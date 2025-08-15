@@ -13,7 +13,8 @@ import Loader from "../../../loading/Loader";
 import ActivateStepByStep from "../pay/ActivatStepByStep"
 import { setPayForEhdm } from "../../../../store/storex/openPaySlice";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
-import { getPaymenTypesArcaOther } from "../../../../services/internal/InternalPayments";
+
+
 
 const ServiceItemV2 = ({
   service,
@@ -38,9 +39,11 @@ const ServiceItemV2 = ({
     web: true,
     daysEnum: 1,
     isBinding: content?.autopayment?.hasAutoPayment,
-    serviceType: user?.activeServiceType,
+    serviceType: "",
+    // serviceType: user?.activeServiceType,
     cardId: content?.autopayment?.defaultCard?.cardId,
-    paymentType: 1
+    paymentType: ""
+    // paymentType: 1
   });
   const disableStyle={opacity: 0.3};
   const {t} = useTranslation();
@@ -56,6 +59,10 @@ const ServiceItemV2 = ({
 
 
   const notAvailableService = () => {
+    setBills({
+      ...billsData,
+      serviceType: service?.id
+    })
     if(service?.id === 3) {
       if(!user?.isRegisteredInEhdm && !service?.isActive) {
         setActivateEhdm(true)
@@ -66,7 +73,8 @@ const ServiceItemV2 = ({
     if(service?.isActive && !isOpenPayForEhdm) {
       setOpenPay(true)
     }
-  }
+  };
+
   useEffect(() =>{
     service?.isActive &&
     setPayData({

@@ -103,9 +103,9 @@ const ProductPayment = ({
           />
         </div>:""
       }
-      {paymentInfo?.prePaymentAmount ? <div style={{color:'orangered',fontSize:"100%",fontWeight:"800", marginTop:"10px"}}>
+      {paymentInfo?.prePaymentAmount && totalPrice - paymentInfo?.prePaymentAmount>0 ? <div style={{color:'orangered',fontSize:"100%",fontWeight:"800", marginTop:"10px"}}>
         <span>
-          {t("basket.amount")} {`${( totalPrice - paymentInfo?.prePaymentAmount).toFixed(2)}  ${t("units.amd")}`}
+          {t("basket.amount")} { `${( totalPrice - paymentInfo?.prePaymentAmount).toFixed(2)}  ${t("units.amd")}`}
         </span>
       </div>:""}
       <div>
@@ -117,12 +117,14 @@ const ProductPayment = ({
             size="small" 
             style={{background:"#F69221", color:"white", padding:"1px 3px"}} 
             onClick={ () => {
-              setBlockTheButton(false)
-              setPaymentInfo({
-                ...paymentInfo,
-                "cashAmount": totalPrice - paymentInfo?.prePaymentAmount,
-                "cardAmount": 0,
-              })
+              if( totalPrice - paymentInfo?.prePaymentAmount>0){
+                setBlockTheButton(false)
+                setPaymentInfo({
+                  ...paymentInfo,
+                  "cashAmount": totalPrice - paymentInfo?.prePaymentAmount,
+                  "cardAmount": 0,
+                })
+              }
             }
             }
           >
@@ -153,12 +155,14 @@ const ProductPayment = ({
 
           style={{background:"#F69221", color:"white", padding:"1px 3px"}}  
           onClick={ () => {
-            setBlockTheButton(false)
-            setPaymentInfo({
-              ...paymentInfo,
-              "cashAmount": 0,
-              "cardAmount":totalPrice - paymentInfo?.prePaymentAmount,
-            })
+            if( totalPrice - paymentInfo?.prePaymentAmount>0){
+              setBlockTheButton(false)
+              setPaymentInfo({
+                ...paymentInfo,
+                "cashAmount": 0,
+                "cardAmount":totalPrice - paymentInfo?.prePaymentAmount,
+              })
+            }
           }
           }
         >

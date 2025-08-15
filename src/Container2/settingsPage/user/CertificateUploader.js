@@ -21,11 +21,6 @@ const CertificateUploader = ({isRegisteredInEhdm, activeServiceType, switchStatu
   const handleChange = (event) => {
     setFile(event.target.files[0]);
     event.target.value = ""
-    // if(!isRegisteredInEhdm && activeServiceType !==3) {
-    //   setContentText(t(""))
-    //   setOpenConfirm(true)
-    //   switchStatus(true)
-    // }else 
     if(!isRegisteredInEhdm && activeServiceType ===3){
       setContentText(t("updates.fileUpld") )
       setOpenConfirm(true)
@@ -33,7 +28,6 @@ const CertificateUploader = ({isRegisteredInEhdm, activeServiceType, switchStatu
   };
 
    const checkConditions = () => { 
-    console.log(isRegisteredInEhdm , activeServiceType)
     if(!isRegisteredInEhdm && activeServiceType !==3) {
       switchStatus(true)
     } else{
@@ -43,15 +37,13 @@ const CertificateUploader = ({isRegisteredInEhdm, activeServiceType, switchStatu
 
   const handleUpload = async () => {
     if (!file) {
-        setMessage({message:"Please upload the file", type:"error"})
+        setMessage({message:t("info.uploadFile"), type:"error"})
       return;
     }else{
       sendCertificate(file).then((res) => {
         if(res?.status !== 200) {
-          console.log(res,"RESPONSE")
           setMessage({message:res?.data?.message, type:"error"})
         }else{
-          console.log(res,"RESPONSE")
           setUploadedCrt(true)
           setMessage({message:res?.data?.message, type:"success"})
 

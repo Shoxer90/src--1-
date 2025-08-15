@@ -9,11 +9,15 @@ const PaymentContainer = ({
   openWindow, 
   setOpenWindow, 
   setPaymentInfo, 
-  paymentInfo
+  paymentInfo,
+
+  clickToPrepayment,
+  setCleanEmarks
 }) => {
   const {t} = useTranslation();
   
   const comeBackBtnFunc = () => {
+    setCleanEmarks(false)
     setOpenWindow({
       ...openWindow,
       prepayment: false ,
@@ -26,6 +30,7 @@ const PaymentContainer = ({
       cardAmount: 0
     })
   };
+ 
 
   return (
     <div>
@@ -33,11 +38,7 @@ const PaymentContainer = ({
         <div className={styles.buttonGroup}>
           <Button 
             variant="contained"
-            onClick={()=> setOpenWindow({
-              ...openWindow,
-              prepayment: true,
-              isOpen: true
-            })}
+            onClick={ clickToPrepayment }
             sx={{
               background:"orange",
               textTransform: "capitalize",
@@ -48,11 +49,13 @@ const PaymentContainer = ({
           </Button>
           <Button 
             variant="contained"
-            onClick={()=> setOpenWindow({
+            onClick={()=> {
+               setCleanEmarks(false)
+              setOpenWindow({
               ...openWindow,
               payment: true,
               isOpen: true
-            })}
+            })}}
             sx={{
               background:"#3FB68A",
               textTransform: "capitalize",
@@ -78,16 +81,17 @@ const PaymentContainer = ({
           <h5>{t("basket.usepayment")}</h5>
         </div>
       }
+
       {openWindow?.isOpen && openWindow?.prepayment &&
         <div className={styles.buttonGroup_2}>
-         <Button 
-           startIcon={<ArrowBackIcon fontSize="large" />} 
-           onClick={comeBackBtnFunc}
-           sx={{
-            textTransform: "capitalize",
-            fontWeight: "bold",    
-          }}
-         >
+          <Button 
+            startIcon={<ArrowBackIcon fontSize="large" />} 
+            onClick={comeBackBtnFunc}
+            sx={{
+              textTransform: "capitalize",
+              fontWeight: "bold",    
+            }}
+          >
          </Button>
          
          <h5>{t("basket.useprepayment")}</h5>

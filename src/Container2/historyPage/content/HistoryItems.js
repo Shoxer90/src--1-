@@ -45,17 +45,17 @@ const HistoryItems = ({
 
   const openCloseHDM = async(id) => {
     if(pageName?.status === "Unpaid") {
-    return setOpenDetails(true)
+      return setOpenDetails(true)
     }else if(pageName?.status === "Canceled"){
-    return item?.link ? window.location.href = item?.link: setOpenDetails(true)
-    // return item?.link ? window.open(item?.link, "_blank", 'noopener,noreferrer') : setOpenDetails(true)
+      // return item?.link ? window.location.href = item?.link: setOpenDetails(true)
+    return item?.link ? window.open(item?.link, "_blank", 'noopener,noreferrer') : setOpenDetails(true)
     }else{
     setLoad(true)
       // it can be physical HDM
       if(item?.hdmMode === 2) {
         setLoad(false)
-          return item?.link ? window.location.href = item?.link: setOpenDetails(true)
-      //  return item?.link ? window.open(item?.link, "_blank",  'noopener,noreferrer') : setOpenDetails(true)
+          // return item?.link ? window.location.href = item?.link: setOpenDetails(true)
+       return item?.link ? window.open(item?.link, "_blank",  'noopener,noreferrer') : setOpenDetails(true)
       }
       await hdm_generate(id).then((resp) => {
         setLoad(false)

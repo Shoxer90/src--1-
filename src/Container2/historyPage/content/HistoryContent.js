@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import HistoryItems from "./HistoryItems";
 
 import { Alert, Dialog, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import PdfReceiptDialog from "../newHdm/PdfReceiptDialog";
 
 const HistoryContent = ({
   content,
@@ -17,7 +18,10 @@ const HistoryContent = ({
   const {t} = useTranslation();
 
   const [filterBody, setFilterBody] = useState([]);
-  const [message, setMessage] = useState({m:"",t:""})
+  const [openPdfDial, setOpenPdfDial] = useState({
+    status: false,
+    link:""
+  })
 
   const filterBodyFill = () => {
     const newBody = [];
@@ -26,17 +30,12 @@ const HistoryContent = ({
   };
 
   const messageAfterReverse = (urlString) => {
-    setFlag((flag) => urlString)
-    setMessage({m:t("dialogs.welldone"),t:"success"})
-
+    setFlag( urlString)
+    setOpenPdfDial({
+       status:true,
+       link: urlString
+    })
   };
-
-  const handleCloseMessage = () => {
-    setMessage({m:"",t:""})
-    
-    window.location.href = flag 
-    // window.open(flag, '_blank', 'noopener,noreferrer');
-  }
 
   useEffect(() => {
     filterBodyFill()
@@ -67,11 +66,15 @@ const HistoryContent = ({
               </TableBody>
           </Table>
         </TableContainer>
-      {message?.m && 
-        <Dialog open={Boolean(message?.m)}>
-          <Alert type={message?.t} onClose={() =>handleCloseMessage({m:"",t:""})}>{message?.m}</Alert> 
-        </Dialog>
-      }
+      <PdfReceiptDialog
+        open={openPdfDial?.status}
+        close={()=>setOpenPdfDial({status:false,link:""})}
+        text={t("dialogs.welldone")}
+        func={()=>{
+          window.open( openPdfDial?.link, '_blank', 'noopener,noreferrer')
+          setOpenPdfDial({status:false,link:""})
+        }}
+      />
     </div>
   )
 };

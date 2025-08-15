@@ -62,11 +62,11 @@ const PaymentConfirm = ({
       <Divider sx={{bgcolor:"black"}} />
      
       <div 
-        className={styles.subscription_item} style={ payData?.paymentType === 1 && !payData?.cardId? activeStyle :null}>
+        className={styles.subscription_item} style={payData?.paymentType === 1 && !payData?.cardId && method === 2? activeStyle :null}>
         <label htmlFor="no attach" style={{display:"flex",justifyContent:"flex-start",width:"100%"}}>
         <input 
           id="no attach"
-          checked={!payData?.cardId &&  payData?.paymentType === 1 }
+          checked={!payData?.cardId && payData?.paymentType === 1 && method===2}
           type="radio"
           name="pay operation"
           onChange={()=>{
@@ -80,9 +80,9 @@ const PaymentConfirm = ({
             })
           }}
         />
-          <div style={{marginLeft:"10px", width:"100%", display:"flex"}}>
+          <div style={{marginLeft:"10px", width:"100%",display:"flex", justifyContent:"flex-start"}}>
             <PaymentLogo />
-            <span>{t("settings.payWithNewCard")}</span>
+            {t("settings.payWithNewCard")} 
           </div>
         </label>
       </div>

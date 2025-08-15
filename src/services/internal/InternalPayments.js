@@ -14,9 +14,7 @@ export const getPaymentCardServices = async() => {
 export const postNewCreditCard = async() => {
   try{
     const data = await axios.post( baseUrl + `InternalPayments/AddNewCard?Web=true`, {}, option());
-    console.log(data,"DATA +card")
     return data?.data?.formUrl
-
   }catch(err){
     return err?.code
   }

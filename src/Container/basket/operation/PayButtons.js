@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import { memo, useState } from "react";
 
 import styles from "../index.module.scss";
 import { useTranslation } from "react-i18next";
@@ -17,7 +17,9 @@ const PayButtons = ({
   setSingleClick,
   setOpenBasket,
   saleMode,
-  limitedUsing
+  limitedUsing,
+  setOpenDialog,
+  cleanEmarks,
 }) => {
   const {t} = useTranslation()
   const navigate = useNavigate()
@@ -44,11 +46,40 @@ const PayButtons = ({
     return navigate("/setting/user")
   };
 
+
   const buttonBlock = {
     opacity: "0.3",
     border:"red",
     pointerEvents:"none"
   };
+
+  const payMiddleWare = (operation) => {
+    const isLsQr = JSON.parse(localStorage.getItem("emarkList"))
+    if(paymentInfo?.isPrepayment && !cleanEmarks && isLsQr?.length) {
+      setOpenDialog(true)
+    }else{
+      payBySaleType(operation)
+    }
+  };
+
+  const payBySaleType = (operation) => {
+    if(!singleClick?.pointerEvents) {
+      setSingleClick(buttonBlock)
+      
+      switch (operation) {
+        case 1:
+          checkSaleMode(1)
+          break;
+        case 4:
+          checkSaleMode(4)
+          break;
+        case 5:
+          handleOpenPhoneDialog()
+          break;
+      }
+    }else{
+    }
+  }
 
   return(
     <div 
@@ -64,12 +95,7 @@ const PayButtons = ({
         <img
           src="/image/cash.png"
           alt="cash pay"
-          onClick={()=>{
-          if(!singleClick?.pointerEvents) {
-            setSingleClick(buttonBlock)
-            checkSaleMode(1)
-            } 
-          }}
+          onClick={()=>payMiddleWare(1)}
         />
         <div>
           {t("history.cash")}
@@ -79,10 +105,7 @@ const PayButtons = ({
         <img
           src="/image/card.png"
           alt="card pay"
-          onClick={()=>{
-            setSingleClick(buttonBlock)
-            checkSaleMode(1)
-          }}
+          onClick={()=>payMiddleWare(1)}
         />  
         <div>
           {t("history.card")}
@@ -92,14 +115,7 @@ const PayButtons = ({
         <img
           src="/image/qr.png"
           alt="pay by QR"
-          onClick={()=>{
-            if(!singleClick?.pointerEvents) {
-              setSingleClick(buttonBlock)
-              // multiSaleProducts(2)
-              localStorage.setItem("fromQRpay", false)
-              checkSaleMode(4)
-            }
-          }}
+          onClick={()=>payMiddleWare(4)}
         />
         <div>
           QR
@@ -109,13 +125,7 @@ const PayButtons = ({
         <img
           src="/image/sms.png"
           alt="sms link"
-          onClick={()=>{
-            if(!singleClick?.pointerEvents) {
-              setSingleClick(buttonBlock)
-              handleOpenPhoneDialog()
-            }
-          }}
-          
+          onClick={()=>payMiddleWare(5)}
         />
         <div>
           SMS

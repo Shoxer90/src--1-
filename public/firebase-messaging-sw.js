@@ -9,6 +9,8 @@ firebase.initializeApp( {
   messagingSenderId: "931894215046",
   appId: "1:931894215046:web:be53ad4dccb7373a93ac07"
 });
+
+
 const messaging = firebase.messaging();
     
 navigator.serviceWorker.register('/firebase-messaging-sw.js').then((registration) => {

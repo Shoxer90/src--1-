@@ -14,9 +14,11 @@
 }
 
 .history_searchBar {
+    position :relative;
     padding: 0 7px;
+    align-items: center;
     display: flex;
-    justify-content: flex-end ;
+    justify-content: space-between;
     align-items: center;
     color: rgb(185, 59, 59);
     &_date{

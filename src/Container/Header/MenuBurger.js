@@ -6,6 +6,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import MenuIcon from '@mui/icons-material/Menu';
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
@@ -13,12 +14,15 @@ import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import DoneIcon from '@mui/icons-material/Done';
 import { Box } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 import { LimitContext } from '../../context/Context';
 import styles from "./index.module.scss";
 import Flags from '../../Container2/language/Flags';
 import ConfirmDialog from "../../Container2/dialogs/ConfirmDialog"
+import { connectScanner, disconnectScanner } from '../emarkScanner/ScannerManager';
 
 const StyledMenu = styled((props) => (
   <Menu

@@ -70,7 +70,6 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
       changeEHDM(newStatus).then((res)=>{
         setIsLoad(false)
         whereIsMyUs()
-        // setMessage({m: res?.data?.message, t:"success"})
         setConfirmSwitch(false)
       })
 
@@ -120,7 +119,6 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
             checked={user?.isEhdmStatus}
             onClick={()=>{
               if(user?.isEhdmStatus) {
-                console.log("at")
               }else {
                 if(!user?.isRegisteredInEhdm){
                   if(user?.activeServiceType === 3){
@@ -149,7 +147,6 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
             checked={!user?.isEhdmStatus}
             onClick={()=>{
               if(!user?.isEhdmStatus){
-                console.log("et")
               }else{
                 questionForConfirmText(1)
               }

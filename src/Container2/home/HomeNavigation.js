@@ -19,6 +19,7 @@ const HomeNavigation = ({
   dataGroup,
   status,
   setFrom,
+  from,
   setContent,
 }) => {
   const {t} = useTranslation();
@@ -94,6 +95,7 @@ const HomeNavigation = ({
         byBarCodeSearching={byBarCodeSearching}
         setFrom={setFrom}
         stringFrom="main"
+        from={from}
         dataGroup={status}
       />
       { !limitedUsing && <ExcelBurger t={t} setOpenNewProduct={setOpenNewProduct}/> }

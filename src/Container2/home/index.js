@@ -41,13 +41,18 @@ const HomePage = ({
   queryFunction,
   setCurrentPage,
   setFrom,
+  from,
   searchValue, 
   setSearchValue, 
   byBarCodeSearching,
   flag,
   setFlag,
   setFetching,
-  fetching
+  fetching,
+  setOpenBasket,
+  
+
+  setBasketContent
 }) => {
   const {t} = useTranslation();
   const [openNewProd, setOpenNewProduct] = useState(false);
@@ -115,9 +120,11 @@ const HomePage = ({
   useEffect(() => {
     setFetching(true)
     queryFunction(status, page).then((res) => { 
-    setFetching(false)
-      setTotalCount(res?.headers["count"])
-      setContent(res?.data)
+      if(res){
+        setFetching(false)
+        setTotalCount(res?.headers["count"])
+        setContent(res?.data)
+      }
     })
   }, [page, flag, status]);
 
@@ -133,6 +140,8 @@ const HomePage = ({
         dataGroup={dataGroup}
         status={status}
         setFrom={setFrom}
+
+        from={from}
         setContent={setContent}
       />
       <HomeContent
@@ -148,6 +157,11 @@ const HomePage = ({
         setFetching={setFetching} 
         setContent={setContent}
         setCurrentPage={setCurrentPage}
+        setOpenBasket={setOpenBasket}
+
+        setBasketContent={setBasketContent}
+        setFrom={setFrom}
+
       />
       { totalCount/perPage > 1 &&
         <PaginationSnip 
@@ -182,6 +196,9 @@ const HomePage = ({
         setGlobalType={setType}
         setFlag={setFlag}
         flag={flag}
+
+        setFrom={setFrom}
+        from={from}
       />}
       <Dialog open={Boolean(type)}>
         <SnackErr open={snackMessage} type={type} close={setType} message={snackMessage}/>
