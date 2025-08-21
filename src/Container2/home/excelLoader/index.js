@@ -54,7 +54,7 @@ const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
         "measure": prod?.["Չափման միավոր / Measure / Мера *"],
         "otherLangMeasure": "",
         "photo": "",
-        "barCode":  prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"] || "",
+        "barCode":  `${prod?.["Ներքին կոդ , Բարկոդ / Internal code , Barcode / Внутренний код , Штрих-код *"]}` || "",
         "remainder": +prod?.["Ապրանքի քանակը / Product Count / Количество товара"] || 0,
         "purchasePrice": +(prod?.[" Ապրանքի ինքնարժեք / Purchase price / Закупочная цена "])?.toFixed(2) || +(prod?.["Ապրանքի ինքնարժեք / Purchase price / Закупочная цена"])?.toFixed(2) || 0,
         "price": +(prod?.[" Վաճառքի գին / Product price / Цена продукта * "])?.toFixed(2)|| +(prod?.["Վաճառքի գին / Product price / Цена продукта *"])?.toFixed(2)|| 0,
@@ -94,7 +94,7 @@ const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
     }
   };
 
-
+console.log(uploadFile,"upload")
   const confirmExcelList = async(res) => {
     createProductList(res).then((res)=> {
       setIsLoad(false)
@@ -181,16 +181,15 @@ const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
           {uploadFile.map((prod,index) => {
             return <tbody autoComplete="off">
               <ExcelRow
-                prod={prod} 
                 key={index+1} 
+                prod={prod} 
                 inputValue={uploadFile}
                 setInputValue={setUploadFile}
                 checkRowStatus={checkRowStatus}
                 row={index+1}
-                t={t}
+                allAdgs={allAdgs}
                 setBarCodes={setBarCodes}
                 barCodes={barCodes}
-                allAdgs={allAdgs}
               />
             </tbody>
           })}
