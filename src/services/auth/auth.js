@@ -10,7 +10,7 @@ export async function loginAPI (username, password){
   };
   const body = { username: username, password: password, isLastVersion:true };
     try {
-      const res = await axios.post(baseUrl + "Login/Login", body, option);
+      const res = await axios.post(baseUrl + "Login/Login ", body, option);
         localStorage.setItem("role", res?.data?.role);
         // localStorage.setItem("token", res.headers["token"]);
         localStorage.setItem("token", res.data?.token);

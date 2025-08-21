@@ -35,14 +35,17 @@ const LogInFormNew = ({
 
     loginAPI( userData?.username, userData?.password).then((token) => {
       setLoading(false)
+      console.log((token, "token from loginAPI"))
       if(token?.response?.status === 402){
-        setMessage(t("authorize.blockremove"))
+        return setMessage(token?.response?.data?.message)
+        // setMessage(t("authorize.blockremove"))
       }else if(token?.response?.status === 400) {
         return setMessage(token?.response?.data?.message)
       }else if(token?.response?.status === 419){
         return  setMessage(t("authorize.errors.loginLimit419"))
       }else if(token?.response?.status === 415 ||token?.response?.status === 500){
-        return  setMessage(t("dialogs.wrong"))
+        return setMessage(token?.response?.data?.message)
+        // return  setMessage(t("dialogs.wrong"))
       }
       return !token?.data?.token ? ( 
       setTimeout(() => {

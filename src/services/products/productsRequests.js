@@ -341,3 +341,24 @@ export const SavePrePaymentBasket = async(obj) => {
   }
 };
 
+
+export const getProductHistory = async(id, stockNumber=0,queryData) => {
+  try{
+    const data = await axios.post(baseUrl + `ProductHistory/GetProductHistory?productId=${id}&stockNumber=${stockNumber}`, queryData, option());
+    console.log("Product History Data: ", data);
+    return data?.data
+  }catch(err) {
+    console.error("Error fetching product history: ", err);
+    return err?.response?.status 
+  }
+};
+export const getProductSaleHistory = async(id, stockNumber=0,queryData) => {
+  try{
+    const data = await axios.post(baseUrl + `ProductHistory/GetProductSaleHistory?productId=${id}&stockNumber=${stockNumber}`, queryData, option());
+    console.log("Product SALE Data: ", data);
+    return data?.data
+  }catch(err) {
+    console.error("Error fetching product SALE: ", err);
+    return err?.response?.status 
+  }
+};

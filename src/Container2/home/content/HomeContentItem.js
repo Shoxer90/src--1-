@@ -15,7 +15,8 @@ import { editPrepaymentCountsModule } from "../../../modules/editPrepayment";
 import EmarkInputForDeleteItem from "../../../Container/basket/emark/EmarkInputForDeletItem";
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 
-
+import InfoIcon from '@mui/icons-material/Info';
+import ProductMotion from "../productHistory/ProductMotion";
 const style = {
   display:"flex",
   justifyContent:"flex-start",
@@ -71,6 +72,8 @@ const HomeContentItem = ({
   const [change, setChange] = useState(false);
   const [scanRequired, setScanRequired] = useState();
   const [prodCount, setProdCount] = useState(0);
+  const [openProdInfo, setOpenProdInfo] = useState(false);
+
   
   const handleStarChange = (bool) => {
     setStarSynth(bool)
@@ -168,7 +171,14 @@ const HomeContentItem = ({
             onClick = {()=>handleStarChange(true)}
             fontSize="small"
             sx={{color:"orange"}}/>
-          }
+        }
+        { !limitedUsing && 
+          <InfoIcon 
+            fontSize="medium" 
+            sx={{color:"orange"}}
+            onClick={()=>setOpenProdInfo(true)}
+          />
+        }
         { !limitedUsing && 
           <ModeIcon 
             fontSize="medium" 
@@ -176,6 +186,7 @@ const HomeContentItem = ({
             onClick={()=>setOpenUpdateProduct(true)}
           />
         }
+     
       </span>
       </div>
       <Divider style={{margin:1, backgroundColor:"gray",width:"90%",alignSelf:"center",}}/>
@@ -282,6 +293,13 @@ const HomeContentItem = ({
         close={setOpenConfirm}
         question={t("basket.add_to_prep")}
       />
+      {openProdInfo && <ProductMotion 
+        open={!!openProdInfo}
+        close={()=>setOpenProdInfo(false)}
+        id={product?.id}
+        product={product}
+      />}
+
     </Card>
   )
 };
