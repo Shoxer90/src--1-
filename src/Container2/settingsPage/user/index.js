@@ -163,8 +163,9 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
             style={{color:"darkgrey"}}
             checked={user?.ehdmMode === 2}
             readOnly
+            onClick={()=>questionForConfirmText(2)}
           />
-      <span style={{marginLeft:"10px"}}>{t("history.hdm")} <span style={{fontSize:"70%", color:"green"}}> ({t("settings.notAvailableInWeb")})</span> </span> 
+           <span style={{marginLeft:"10px"}}>{t("history.hdm")} <span style={{fontSize:"70%", color:"green"}}> ({t("settings.notAvailableInWeb")})</span> </span> 
         </label>
       </h5>
       {!limitedUsing && 
@@ -182,6 +183,8 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
       >
         {t("updates.seeContract")}
       </Button>
+
+    
     </div>
     {user && 
       <ClientInfo 

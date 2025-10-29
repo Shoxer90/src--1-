@@ -428,10 +428,14 @@
     "noPrepaymentReciepts":"Չկան կանխավճարային գործարքներ",
     "reverseLimit": "Կանխավճարը գերազանցում է կտրոնի արժեքը։Կատարեք կտրոնի ամբողջական վերադարձ։",
     "receiptAmount": "Կտրոնի արժեք վերադարձի արդյունքում",
-    "afterReverse": "վերադարձից հետո"
-
+    "afterReverse": "վերադարձից հետո",
+    "initialRemainder":"Սկզբ․ մնացորդ",
+    "finalRemainder":"Վերջն․ մնացորդ",
+    "inventory":"Պաշարների կառավարում"
   },
   "updates": {
+    "invoiceButtonCreate": "Մուտք E-Invoice",
+    "invoiceButtonUpdate": "E-Invoice-ի խմբագրում",
     "seeContract":"Տեսնել պայմանագիրը",
     "uploadCRT": "Բեռնել ԷՀԴՄ CRT ֆայլը",
     "uploadedCRT": "CRT ֆայլը կցված է",

@@ -425,10 +425,15 @@
     "noPrepaymentReciepts": "Нет сделок с предоплатой",
     "reverseLimit": "Предоплата превышает стоимость чека. Оформите полный возврат чека.",
     "receiptAmount": "Сумма чека в результате возврата",
-    "afterReverse": "после возврата"
+    "afterReverse": "после возврата",
+    "initialRemainder":"Начальный остаток",
+    "finalRemainder":"Конечный остаток",
+    "inventory":"Управление запасами"
 
   },
   "updates": {
+    "invoiceButtonCreate": "Вход E-Invoice",
+    "invoiceButtonUpdate": "Редактировать E-Invoice",
     "seeContract":"Просмотр контракта",
     "uploadCRT": "Загрузить ЭККM CRT файл",
     "uploadedCRT": "CRT файл прикреплен",

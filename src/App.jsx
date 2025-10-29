@@ -556,13 +556,13 @@ const App = () => {
           <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc}/>} />
           <Route path="/kuku" element={<IframeReader />} />
           {/* ADMIN PAGE */}
-          {/* <Route path="/admin/*" element={<AdminPage />} />
+          <Route path="/admin/*" element={<AdminPage />} />
           <Route path="/admin/info/customer" element={<AdminPanel children={<CustomerInfo />} />} />
           <Route path="/admin/stores" element={<AdminPanel children={<UsersContainer />} />} />
           <Route path="/admin/transactions/customer" element={<AdminPanel children={<CustomerPage children={<CustomerSaleHistory />} />} />} />
           <Route path="/admin/invoices/customer" element={<AdminPanel children={<CustomerPage children={<AdminInvoices />} />} />} />
           <Route path="/admin/payments/customer" element={<AdminPanel children={<CustomerPage children={<CustomerPayments />} />} />} />
-          <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} /> */}
+          <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} />
         </Routes> :
         <>
          

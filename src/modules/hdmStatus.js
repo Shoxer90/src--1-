@@ -7,8 +7,8 @@ const HdmStatus = ({status,mode}) => {
   const [screen, setScreenWidth] = useState(window.innerWidth);
 
   const styling={
-      width:screen<600 ? "10px":"auto",
-      height:screen<600? "10px" : "20px",
+      width: screen<600 ? "10px":"auto",
+      height: screen<600 ? "10px" : "20px",
       borderRadius:"4px",
       // backgroundColor: (status || mode !== 1) ? "green": "orangered",
       backgroundColor: mode === 0 ? "green":mode === 1 ? "orangered":mode === 2 && "orange",

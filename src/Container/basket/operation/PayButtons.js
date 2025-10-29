@@ -27,13 +27,16 @@ const PayButtons = ({
   const [openConfirm, setOpenConfirm] = useState();
 
   const checkSaleMode = (type) => {
-    if(saleMode === 2){
-      if(limitedUsing) {
-        setMessage(t("dialogs.changeEhdmModeForCashiere"))
-      }else{
-        setMessage(t("dialogs.changeEhdmMode"))
-        setOpenConfirm(true)
-      }
+    if(saleMode === 2 && limitedUsing) {
+      setMessage(t("dialogs.changeEhdmModeForCashiere"))
+      // if(saleMode === 2){
+      //   if(limitedUsing) {
+      //     setMessage(t("dialogs.changeEhdmModeForCashiere"))
+      //   }
+      //   else{
+      //     setMessage(t("dialogs.changeEhdmMode"))
+      //     setOpenConfirm(true)
+      //   }
     }else{
       multiSaleProducts(type)
     }

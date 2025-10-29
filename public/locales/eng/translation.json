@@ -426,10 +426,15 @@
     "noPrepaymentReciepts":"No prepayment transactions",
     "reverseLimit": "Advance payment exceeds the value of the receipt. Make a full refund of the receipt.",
     "receiptAmount": "Receipt value as a result of return",
-    "afterReverse": "after reverse"
+    "afterReverse": "after reverse",
+    "initialRemainder":"Initial Remainder",
+    "finalRemainder":"Final Remainder",
+    "inventory":"Inventory management"
 
   }, 
   "updates": {
+    "invoiceButtonCreate": "Login E-Invoice",
+    "invoiceButtonUpdate": "Update E-Invoice",
     "seeContract":"See the contract",
     "uploadCRT": "Upload the ETRM CRT file",
     "uploadedCRT": "CRT file is attached",

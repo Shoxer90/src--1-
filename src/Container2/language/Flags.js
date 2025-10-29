@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 
 const Flags = () => {
   const [lang, setLang] = useState();
-  const { i18n} = useTranslation();
+  const {i18n} = useTranslation();
 
   useEffect(() => {
     setLang(localStorage.getItem("lang"))

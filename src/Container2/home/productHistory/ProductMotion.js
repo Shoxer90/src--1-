@@ -9,15 +9,53 @@ import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import { getProductHistory, getProductSaleHistory } from "../../../services/products/productsRequests";
 import HistoryFilter from "./HistoryFilter";
-import { Card } from "@mui/material";
-import ProductHistoryItem from "./ProductHistoryItem";
+import { Box, Card, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import ProductHistoryItem from "./ProductHistory";
+import { useTranslation } from "react-i18next";
+import { Image } from "@mui/icons-material";
+import ProductSaleHistory from "./ProductSaleHistory";
+import ProductHistory from "./ProductHistory";
 
 const Transition =forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+
+const changeColumns = [];
+
+const dateFormat = (str) => {
+  const date = new Date(str);
+  const formatted = new Intl.DateTimeFormat("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+
+  return formatted
+    // return new Intl.DateTimeFormat("ru-RU", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(date)
+  // }else if (lang === "ru") {
+  //   return date.toLocaleDateString("ru-RU", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" })
+  // }else {
+  //   return  date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" , hour: "2-digit", minute: "2-digit", second: "2-digit" })
+  // }
+};
+
 const ProductMotion =  ({open, close, id, product}) => {
-  const [dataType, setDataType] = useState("changes"); 
+  const {t}= useTranslation();
+  const saleColumns = [
+  "№",
+  t("history.date"),
+  t("history.checkNum"),
+  t("updates.count"),
+  t("basket.totalndiscount2"),
+  t("basket.recieptPrice"),
+  t("history.initialRemainder"),
+  t("history.finalRemainder"),
+  t("settings.paymentMethods")
+];
+  const [dataType, setDataType] = useState("sales"); 
   const [pageCount, setPageCount] = useState(0);
   const [content, setContent] = useState([]);  //"changes" / "sales"
   const [queryData, setQueryData] = useState({
@@ -34,9 +72,9 @@ const ProductMotion =  ({open, close, id, product}) => {
   const getProductMotion = async(date) => {
     let data = []
     if(dataType === "changes") {
-      data = await getProductHistory(id, 0, {...queryData,byDate: date});
+      data = await getProductHistory(id, 1, {...queryData,byDate: date});
     }else {
-      data = await getProductSaleHistory(id, 0, {...queryData,byDate: date});
+      data = await getProductSaleHistory(id, 1, {...queryData,byDate: date});
     }
     setPageCount(data?.pageCount)
     setContent(data?.result)
@@ -76,12 +114,13 @@ const ProductMotion =  ({open, close, id, product}) => {
       onClose={close}
       TransitionComponent={Transition}
     >
-      <AppBar sx={{ position: 'relative' }}>
+      <AppBar sx={{ position: 'relative', color:"white", backgroundColor:"#F69221" }}>
         <Toolbar sx={{width:"100%", height:"100%" }}>
           
-          <Typography sx={{ ml: 2, flex: 1 }} variant="h4" component="div">
-            Inventory management {id}
+          <Typography sx={{ ml: 2, flex: 1 }} variant="h5" component="div">
+            {t("history.inventory")}
           </Typography>
+          
          <IconButton
             edge="start"
             color="inherit"
@@ -93,26 +132,35 @@ const ProductMotion =  ({open, close, id, product}) => {
         </Toolbar>
       </AppBar>
       <List>
-        <HistoryFilter  />         
+        <Box style={{display:"flex", alignItems:"center",marginBottom:"0px"}}>
+          <img src="https://storex.payx.am/Images/616830_829.jpeg" style={{width:"80px", height:"50px", objectFit:"contain", marginLeft:"20px"}} />
+          <Typography sx={{ ml: 5, flex: 1 }} variant="h4" component="div">
+              {product?.name} "{product?.brand}"
+          </Typography>
+          <HistoryFilter  />         
+        </Box>
         <Card style={{margin:"20px"}}>
           {content?.length &&  dataType === "changes" && content?.map((item, index) => {
-            return <ProductHistoryItem key={item.id} item={item} product={product} index={index} />
-          })}
-
-          {content?.length &&  dataType === "sales" && content?.map((item, index) => {
-            return <ProductHistoryItem key={item.id} item={item} product={product} index={index} />
+            return <ProductHistoryItem key={item.id} item={item} product={product} index={index} dateFormat={dateFormat} />
           })}
         </Card>
-        {/* <ListItemButton>
-          <ListItemText primary="Phone ringtone" secondary="Titania" />
-        </ListItemButton>
-        <Divider />
-        <ListItemButton>
-          <ListItemText
-            primary="Default notification ringtone"
-            secondary="Tethys"
-          />
-        </ListItemButton> */}
+
+    {/* <TableContainer component={Paper}> */}
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            {
+              saleColumns.map((col) => (
+                <TableCell key={col} align="right">{col}</TableCell>
+              ))
+            }
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {/* <ProductHistory content={content} dateFormat={dateFormat} /> */}
+          <ProductSaleHistory content={content} dateFormat={dateFormat} />
+        </TableBody>
+      </Table>
       </List>
     </Dialog>
   )
