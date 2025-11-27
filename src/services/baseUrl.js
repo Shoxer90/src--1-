@@ -7,7 +7,7 @@ export const option = () => {
   const  option = {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
-      accept_language: localStorage.getItem("i18nextLng") ||localStorage.getItem("lang") 
+      accept_language: localStorage.getItem("i18nextLng") || localStorage.getItem("lang") 
     }}
   return option
 };

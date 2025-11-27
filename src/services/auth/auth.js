@@ -157,4 +157,29 @@ export const getDataByTin = async(tin) => {
   }catch(err){
     return err
   }
+};
+
+
+export const taxRegistration = async(body) => {
+   const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+  }
+    try{
+    const data = await axios.put(baseUrl + `Store/SetTaxServiceDetails`, body, option, { retry: 0 })
+    return {
+      text:data.data?.message,
+      type:"success"
+    }
+  }catch(err){
+    return {
+      text:err.message,
+      type:"error"
+    }
+  }
+}
+
+export const taxRegistrationUpdate = async(body) => {
+
 }

@@ -24,7 +24,7 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { useTranslation } from "react-i18next";
 import ConfirmDialog from "../../Container2/dialogs/ConfirmDialog.js";
 import PrepaymentEmarkDialog from "./emark/PrepaymentEmarkDialog.js";
-import { getNewCode } from "../../services/interceptor.js";
+import ProductInvoice from "./payment/ProductInvoice.js";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -88,6 +88,7 @@ const Bascket = ({
   const [cleanEmarks, setCleanEmarks] = useState(false);
   const [openEmarkPrepayment, setOpenEmarkPrepayment] = useState(false);
   const [globalStorageList, setGlobalStorageList] = useState(()=>JSON.parse(localStorage.getItem("emarkNewList")) || []);
+  const [openInvoiceDialog, setOpenInvoiceDialog] = useState(false);
 
   const needEmark = JSON.parse(localStorage.getItem("needEmark"))
 
@@ -245,6 +246,11 @@ const Bascket = ({
       return createMessage("error", t("authorize.errors.bank_agreement"))
 
     }else if(saletype === 1 && result?.res?.printResponseInfo ) {
+      if(openWindow?.invoice) {
+        setLoader(false)
+        window.open( result?.link, '_blank', 'noopener,noreferrer');
+        return closeRecieptAndRefresh()
+      }
       setSaleData(result)
       setLoader(false)
       setOpenHDM(true)
@@ -345,12 +351,27 @@ const Bascket = ({
 
   const clickToPrepayment = () => {
     const dataFromLS = JSON.parse(localStorage.getItem("emarkList"))
-    
     if(dataFromLS?.length) {
       setOpenDialog(true)
     }else{
       checkPrepayment()
     }
+  };
+
+  const comeBackBtnFunc = () => {
+    setCleanEmarks(false)
+    setOpenWindow({
+      ...openWindow,
+      prepayment: false ,
+      invoice:false,
+      payment: false,
+      isOpen: false
+    })
+    setPaymentInfo({
+      ...paymentInfo,
+      cashAmount: 0,
+      cardAmount: 0
+    })
   };
  
   useEffect(()=> {
@@ -380,6 +401,7 @@ const Bascket = ({
     setGlobalStorageList(ff)
   }, [searchValue]);
 
+// console.log(paymentInfo, "paymentInfo")
   return (
     <Dialog
       open={openBasket}
@@ -440,7 +462,6 @@ const Bascket = ({
                   <span style={{fontSize:"60%",fontWeight:700}}> {t("mainnavigation.newproduct")}</span>
                 </Button>
               }
-              {/* <Button onClick={getNewCode}> JJJJJJJ</Button> */}
             </div>
             <DialogContent 
               className={styles.bask_container_body_content}  
@@ -461,7 +482,6 @@ const Bascket = ({
                 setOpenBasket={setOpenBasket}
                 setFrom={setFrom}
                 globalStorageList={globalStorageList}
-
                 blockTheButton={blockTheButton}
                 setBlockTheButton={setBlockTheButton}
 
@@ -472,6 +492,7 @@ const Bascket = ({
               { basketContent?.length  && !localStorage.getItem("endPrePayment") ? 
                 <>
                   <PaymentContainer 
+                    user={user}
                     openWindow={openWindow} 
                     setOpenWindow={setOpenWindow}
                     paymentInfo={paymentInfo}
@@ -485,9 +506,8 @@ const Bascket = ({
 
             {/* you choose prepayment or sell */}
 {/* if sell */}
-            {((openWindow?.isOpen && openWindow?.payment  ) || localStorage.getItem("endPrePayment")) &&
+            {((openWindow?.isOpen && openWindow?.payment  ) || localStorage.getItem("endPrePayment")) &&  
               <ProductPayment  
-                t={t} 
                 totalPrice={totalPrice}
                 paymentInfo={paymentInfo}
                 setPaymentInfo={setPaymentInfo}
@@ -496,16 +516,33 @@ const Bascket = ({
              />}
 
 {/* if prepayment */}
-             {openWindow?.isOpen && openWindow?.prepayment &&
+            {openWindow?.isOpen && openWindow?.prepayment && 
               <ProductPrePayment  
-                t={t} 
                 totalPrice={totalPrice}
                 paymentInfo={paymentInfo}
                 setPaymentInfo={setPaymentInfo}
                 setBlockTheButton={setBlockTheButton}
              />}
+{/* if invoicing */}
+
+            {openWindow?.isOpen && openWindow?.invoice &&
+              <ProductInvoice  
+                totalPrice={totalPrice}
+                paymentInfo={paymentInfo}
+                setPaymentInfo={setPaymentInfo}
+                setBlockTheButton={setBlockTheButton}
+                prepayment = {openWindow?.prePaymentAmount}
+                setOpenInvoiceDialog={setOpenInvoiceDialog}
+                openInvoiceDialog={openInvoiceDialog}
+                
+                basketContent={basketContent}
+                deleteBasketItem={deleteBasketItem}
+                setOpenBasket={setOpenBasket}
+                changeCountOfBasketItem={changeCountOfBasketItem}
+
+             />}
         
-            { basketContent?.length ? 
+            { basketContent?.length ?
               <div className={styles.bask_container_body_footer}>
               <Divider flexItem  sx={{bgcolor:"black"}} />
                 <PayButtons
@@ -521,6 +558,8 @@ const Bascket = ({
                   limitedUsing={limitedUsing}
                   setOpenDialog={setOpenDialog}
                   cleanEmarks={cleanEmarks}
+
+                  isInvoice={openWindow?.invoice}
                 />
               </div>
             :""}
