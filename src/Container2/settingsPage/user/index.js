@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ClientShopAvatar from "./ClientShopAvatar";
 import { Button, Dialog } from "@mui/material";
 import ClientInfo from "./ClientInfo";
@@ -17,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { setPayForEhdm } from "../../../store/storex/openPaySlice";
 
 import styles from "./index.module.scss";
+import InvoiceAuth from "../../../Container/invoice/InvoiceAuth";
 
 const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
   const {t} = useTranslation();
@@ -28,6 +30,8 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
   const [operation, setOperation] = useState("")
   const [isLoad, setIsLoad] = useState(false);
   const [message,setMessage] = useState({m:"", t:""});
+  const [openInvoiceAuth, setOpenInvoiceAuth] = useState(false);
+  const [openPass,seOpenPass] = useState(false);
 
   const questionForConfirmText = (num) => {
     switch (num){
@@ -168,10 +172,13 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
            <span style={{marginLeft:"10px"}}>{t("history.hdm")} <span style={{fontSize:"70%", color:"green"}}> ({t("settings.notAvailableInWeb")})</span> </span> 
         </label>
       </h5>
+      <div style={{display:"flex", justifyContent:"space-between", }}>
+
       {!limitedUsing && 
         <Button 
         startIcon={<ModeIcon />}
-        onClick={()=>setOpenAddDialog(true)} variant="contained"  sx={{textTransform: "capitalize",m:2, background: "#fd7e14",border:"#fd7e14"}}>
+        onClick={()=>setOpenAddDialog(true)} variant="contained"  
+        sx={{textTransform: "capitalize",m:2, background: "#fd7e14",border:"#fd7e14"}}>
           {t("settings.changepassword")} 
         </Button>
       }
@@ -179,11 +186,26 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
         variant="contained"
         startIcon={<ListAltIcon />}
         onClick={()=>window.location.href = user?.contractLink}
-        style={{letterSpacing:"1px",background: "#fd7e14",textTransform: "capitalize", border:"orange"}} 
+        sx={{letterSpacing:"1px",background: "#fd7e14",textTransform: "capitalize",m:2, border:"orange"}} 
       >
         {t("updates.seeContract")}
       </Button>
-
+      <Button 
+        variant="contained"
+        startIcon={user?.isRegisteredForTaxService ? <BorderColorIcon /> :<PostAddIcon  />}
+        onClick={()=>setOpenInvoiceAuth(true)}
+        sx={{letterSpacing:"1px",background: "#fd7e14",m:2,textTransform: "capitalize", border:"orange"}} 
+      >
+        {user?.isRegisteredForTaxService ? t("updates.invoiceButtonUpdate") : t("updates.invoiceButtonCreate")}
+      </Button>
+      </div>
+      { openInvoiceAuth && 
+        <InvoiceAuth 
+          isReg={user?.isRegisteredForTaxService}
+          open={openInvoiceAuth}
+          close={()=>setOpenInvoiceAuth(false)}
+        />
+      }
     
     </div>
     {user && 

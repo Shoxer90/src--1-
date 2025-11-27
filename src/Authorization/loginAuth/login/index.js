@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useState } from "react";
 import PrivacyForgotLinks from "./PrivacyForgotLinks";
 import SocialMediaGroup from "../../../Container2/social";
 import LogInFormNew from "../login/LoginForm";
@@ -27,7 +27,7 @@ const Login = ({whereIsMyUs,setIsLogIn}) => {
         <h5>Storex On - line</h5>
         <LangSelect size={"22px"} />
       </div>
-      <LogInFormNew 
+      <LogInFormNew
         screenWidth={screenWidth} 
         t={t} 
         setMessage={setMessage}

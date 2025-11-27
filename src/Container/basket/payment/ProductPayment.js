@@ -2,15 +2,17 @@ import React, { useEffect, useState, memo} from "react";
 import styles from "../index.module.scss";
 import { numberSpacing } from "../../../modules/numberSpacing";
 import { Button, ButtonGroup, Divider } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const ProductPayment = ({
-  t, 
   totalPrice,
   paymentInfo, 
   setPaymentInfo,
   setBlockTheButton,
   prepayment
 }) => {
+  const {t} = useTranslation()
+  
   const [val, setVal] = useState(totalPrice);
   const [flag, setFlag] = useState();
 

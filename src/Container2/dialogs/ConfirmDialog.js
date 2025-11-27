@@ -1,5 +1,4 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import React from "react";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -14,7 +13,6 @@ const ConfirmDialog = ({
 }) => {
   const {t} = useTranslation();
   
-
   return(
     <Dialog
       open={!!open}
@@ -26,10 +24,14 @@ const ConfirmDialog = ({
         <strong>{content}</strong> 
       </DialogContent>
       <DialogActions>
-        <Button onClick={()=>close(false)} sx={{textTransform: "capitalize"}}>
-          {nobutton || t("buttons.close")}
+        {nobutton || 
+          <Button onClick={()=>close(false)} sx={{textTransform: "capitalize"}}>
+            {t("buttons.close")}
+          </Button>
+        }
+        <Button onClick={func} sx={{textTransform: "capitalize"}}>
+          {t("buttons.yes")}
         </Button>
-        <Button onClick={func} sx={{textTransform: "capitalize"}}>{t("buttons.yes")}</Button>
       </DialogActions>
     </Dialog>
   )

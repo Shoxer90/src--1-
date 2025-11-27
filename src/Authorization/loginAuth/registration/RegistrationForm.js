@@ -119,18 +119,18 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
         })
       }
     }
-    if(newUser?.password !== confirmPass){
+    if(newUser?.password !== confirmPass) {
       setIsIdentity(false)
       setInfoDialog({
-        isOpen:true,
-        message:t("dialogs.mismatch"),
+        isOpen: true,
+        message: t("dialogs.mismatch"),
         type: "error"
       })
-    }else if(!errorMessage?.ok){
+    }else if(!errorMessage?.ok) {
       return  setInfoDialog({
         isOpen: true,
         message: t("dialogs.novalidatepass"),
-        type:"error",
+        type: "error",
       })
       // return setMessage({message: t("dialogs.novalidatepass"),type:"error"})
 
@@ -138,7 +138,7 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
       return  setInfoDialog({
         isOpen: true,
         message: t("authorize.errors.notMail"),
-        type:"error",
+        type: "error",
       })
       // return setMessage({message:t("authorize.errors.notMail"),type:"error"})
     }else{
@@ -222,11 +222,10 @@ const RegistrationForm = ({newUser, setNewUser, t, successSubmit,  setIsLoad}) =
           value={newUser?.tin}
           placeholder={`${t("authorize.tin")} (8 ${t("productinputs.symb")}) *`} 
           onChange={(e)=>limitChar(e,8)}     
-          />
-          <span style={{fontSize:"70%",marginLeft:"5px"}} className={!unique? styles.errorMessage: styles.successMessage}>
-            {newUser?.tin?.length >7 && !unique && t("authorize.existTin")}
-
-          </span>
+        />
+        <span style={{fontSize:"70%",marginLeft:"5px"}} className={!unique? styles.errorMessage: styles.successMessage}>
+          {newUser?.tin?.length >7 && !unique && t("authorize.existTin")}
+        </span>
       </>
 
       <TextField sx={{m:.6}} 

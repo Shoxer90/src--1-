@@ -107,7 +107,8 @@
     "reverse": "Refund",
     "createMultiProds": "Import Catalog",
     "view": "View",
-    "noEmark":"Return without scanning"
+    "noEmark":"Return without scanning",
+    "continue": "Continue"
   },
     "intro": {
     "privacyPolicy": "Privacy And Policy",
@@ -278,6 +279,7 @@
     "brand": "Brand",
     "name": "Product Name",
     "count": "Count",
+    "pricePcs": "Unit Price",
     "purchase": "Purchase price",
     "purchase1": "Purchase price",
     "price": "Product price",
@@ -339,6 +341,7 @@
     "remainder":"Remainder",
     "remainder1":"Prepayment balance",
     "customer": "Customer",
+    "supplier": "Supplier",
     "seeReciept": "Receipt",
     "seeReciept2": "See the Receipt",
     "sendViaMail": "Send",
@@ -519,7 +522,14 @@
     "operation": "Operation",
     "30000inProcess":"The payment can be done via card or bank transfer, then CSR certificate and registration guide for ETRM registration will be send to your email.",
     "done30000": "Done. The CSR certificate and registration guide for ETRM registration have been sent to your email.",
-    "clickEhdmAfterDone30000": "The ETRM registration guide has been sent to your email. Please follow the instructions in the guide."
+    "clickEhdmAfterDone30000": "The ETRM registration guide has been sent to your email. Please follow the instructions in the guide.",
+    "invoiceAuthTitle": "LogIn for Tax registration",
+    "invoicingAuthUpdate": "Change Tax registration information",
+    "needInvoiceAuth": "To issue a tax invoice, it is necessary to fill in the data provided by the tax authority (login and password) on the user's personal page.",
+    "createInvoice": "Tax invoice creation",
+    "cleanInvoiceData": "Remove all recorded data and close?",
+    "seeInvoiceData":"See tax invoice data",
+    "addInvoiceData":"Add tax invoice data"
   },
   "cardService":{
     "btnTitle" : "Activation of services",
@@ -658,29 +668,11 @@
     "notValidPage":"Page not available",
     "uploadFile": "Please upload the file",
     "chooseNotifs": "Choose notifications"
-
   },
-  "admin":{
-    "stores": "Customs, Stores",
-    "invoices": "Invoices",
-    "payments": "Payments",
-    "collumn3": "",
-    "collumn4": "",
-    "collumn5": "",
-    "collumn6": "",
-    "collumn7": "",
-    "collumn8": "",
-    "collumn9": "",
-    "collumn10": "",
-    "collumn11": "",
-    "collumn12": "",
-    "collumn13": "",
-    "collumn14": "",
-    "collumn15": "",
-    "collumn16": "",
-    "collumn17": "",
-    "collumn18": "",
-    "collumn19": ""
-
+  "invoice": {
+    "affordWithoutTin": "In cases specified by RA legislation, having a TIN is not mandatory.",
+    "region":"Region",
+    "community":"Community",
+    "residence": "Residence"
   }
 }

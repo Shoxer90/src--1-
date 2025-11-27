@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import SnackErr from "../../../Container2/dialogs/SnackErr";
 import ConfirmDialog from "../../../Container2/dialogs/ConfirmDialog";
 import { useNavigate } from "react-router-dom";
-import { Dialog } from "@mui/material";
+import { Button, Dialog } from "@mui/material";
 
 const PayButtons = ({
   paymentInfo, 
@@ -20,6 +20,8 @@ const PayButtons = ({
   limitedUsing,
   setOpenDialog,
   cleanEmarks,
+
+  isInvoice
 }) => {
   const {t} = useTranslation()
   const navigate = useNavigate()
@@ -85,6 +87,22 @@ const PayButtons = ({
   }
 
   return(
+    isInvoice ?
+     <div>
+      <Button 
+        variant="contained"
+        onClick={()=>payMiddleWare(1)}
+        style={{
+          justifyContent:"space-between",
+          margin:"20px auto",
+          background:"#3FB68A", 
+          color:"white",
+          display: paymentInfo?.isInvoice? "flex": "none"
+        }}
+      >
+        Create invoice
+      </Button>
+      </div>:
     <div 
       className={styles.bask_container_body_footer_icons}
       style={blockTheButton ? buttonBlock : null}

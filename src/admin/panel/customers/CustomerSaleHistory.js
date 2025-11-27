@@ -53,9 +53,9 @@ const CustomerSaleHistory = () => {
         <Button 
           variant="contained"  
           onClick={()=>{
-            window.location.href = item?.link
+            // window.location.href = item?.link
 
-            // window.open( item?.link, '_blank', 'noopener,noreferrer');
+            window.open( item?.link, '_blank', 'noopener,noreferrer');
           }}
         >
           SEE

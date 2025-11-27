@@ -33,7 +33,7 @@ import { fetchUser } from "./store/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import PasteExcelToReact from "./Container2/home/excelLoader";
 
-import { Alert, Button, Dialog, Snackbar } from "@mui/material";
+import { Alert, Snackbar } from "@mui/material";
 import useDebonce from "./Container2/hooks/useDebonce";
 import Cashiers from "./Container2/settingsPage/cashiers/Cashiers";
 import SettingsUser from "./Container2/settingsPage/user"
@@ -55,7 +55,6 @@ import IframeReader from "./Container/iframe/iframeReader";
 import { removeDeviceToken } from "./services/notifications/notificatonRequests";
 import { setSearchBarCodeSlice } from "./store/searchbarcode/barcodeSlice";
 import { replaceGS } from "./services/baseUrl";
-import { getNewCode } from "./services/interceptor";
 
 const checkForUpdates = async () => {
   try {
@@ -116,6 +115,7 @@ const App = () => {
 
   const [openWindow, setOpenWindow] = useState({
     prepayment: false,
+    invoice:false,
     payment: false,
     isOpen: false,
     isEdit: false,
@@ -214,7 +214,6 @@ const App = () => {
       }else {
         setMessage({message:t("emark.qrInBasket"), type:"error"})
         return false
-        // return setBarcodeScanValue("")
       }
     } 
     // return false
@@ -254,7 +253,6 @@ const App = () => {
             })
           } else {
             setMessage({message: res?.data?.message,type: "error"})
-            // setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
           }
         }else if(from === "main") {
           return res?.length ? setContent(res) : (
@@ -293,7 +291,6 @@ const App = () => {
           partialAmount: 0,
           partnerTin: "",
           sales: [],
-          // emarks: [],
           emarks: JSON.parse(localStorage.getItem("emarkList")) || [],
           prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id,
           isPrepayment: openWindow?.prepayment,
@@ -371,7 +368,6 @@ const App = () => {
       partialAmount: 0,
       partnerTin: "",
       sales: [],
-      // emarks: [],
     emarks: JSON.parse(localStorage.getItem("emarkList")) || [],
 
       prePaymentSaleDetailId:JSON.parse(localStorage.getItem("endPrePayment"))?.id || "",
@@ -454,9 +450,6 @@ const App = () => {
   }; 
 
   const getMeasure = async() => {
-
-   
-
     const str = await localStorage.getItem("lang")
     switch(str){
       case "eng":
@@ -565,7 +558,6 @@ const App = () => {
           <Route path="/admin/cashiers/customer" element={<AdminPanel children={<CustomerPage children={<CustomerCashiers />} />} />} />
         </Routes> :
         <>
-         
           <Header
             setOpenBasket={setOpenBasket}
             basketGoodsqty={basketGoodsqty}
@@ -578,8 +570,6 @@ const App = () => {
             notifTrigger={notifTrigger}
             setFrom={setFrom}
             from={from}
-
-
           />
           {!isBlockedUser  && user ? <Routes>
             <Route
@@ -608,7 +598,6 @@ const App = () => {
                   setFetching={setFetching}
                   fetching={fetching}
                   setOpenBasket={setOpenBasket}
-
                   loadBasket={loadBasket}
                 />
               }  
@@ -640,7 +629,6 @@ const App = () => {
                   setFetching={setFetching}
                   fetching={fetching}
                   setOpenBasket={setOpenBasket}
-
                   setBasketContent={setBasketContent}
                 />
               }  
