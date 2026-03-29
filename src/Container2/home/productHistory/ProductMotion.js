@@ -97,10 +97,6 @@ const ProductMotion =  ({open, close, id, product}) => {
     })
   };
     
- 
-
-    console.log(content, "CONTENT")
-
  useEffect(() => {
   if (open) {
     initialDateCreator();

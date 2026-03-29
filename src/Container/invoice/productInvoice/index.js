@@ -1,10 +1,10 @@
-import { memo } from 'react';
-import ProductTableItem from './ProductTableItem';
+import { memo, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { numberSpacing } from '../../../modules/numberSpacing';
 import { IconButton, Tooltip } from '@mui/material';
-import AddShoppingCartTwoToneIcon from '@mui/icons-material/AddShoppingCartTwoTone';
 import { useNavigate } from 'react-router-dom';
+import AddShoppingCartTwoToneIcon from '@mui/icons-material/AddShoppingCartTwoTone';
+import ProductTableItem from './ProductTableItem';
 
 const actionButtonStyle = {
   padding: '4px 8px',
@@ -24,9 +24,20 @@ const headerStyle = {
   backgroundColor: '#fafafa'
 };
                 
-const ProductTableInvoice = ({basketContent, totalPrice, deleteBasketItem , setOpenBasket, closeInvoiceDialog, changeCountOfBasketItem}) => {
+  const ProductTableInvoice = ({
+  basketContent, 
+  deleteBasketItem , 
+  changeCountOfBasketItem,
+  paymentInfo,
+  invoicePaymentInfo, setInvoicePaymentInfo,
+  printInvoice,
+  setNewTotal
+}) => {
+
   const {t} = useTranslation();
   const navigate = useNavigate();
+  const [isService, setIsService] = useState(); 
+  const [tableContent, setTableContent] = useState([]);
 
   const columnNames = [{
     title:t("history.number"),
@@ -60,27 +71,29 @@ const ProductTableInvoice = ({basketContent, totalPrice, deleteBasketItem , setO
     key:"7",
     width: "80px",
   },{
+    title:t("basket.totalndiscount2"),
+    key:"9",
+    width: "100px",
+  },{
+    title: t("invoice.taxRate"),
+    key:"8.1",
+    width: "70px",
+  },
+  {
+    title: t("invoice.taxAmount"),
+    key:"8.1",
+    width: "100px",
+  },{
     title: t("history.transactionType"),
     key:"8",
     width: "150px",
   },{
-    title:t("basket.totalndiscount2"),
-    key:"9",
-    width: "100px",
-  // },{
-  //   title:"Տարա*",
-  //   key:"10",
-  //   width: "80px",
-  // },{
-  //   title:"Այդ թվում ակց. հարկի գումար",
-  //   key:"11",
-  //   width: "120px",
-  },{
-    title:t("productinputs.code"),
-    // title:"Ներքին կոդ/բառկոդ",
+    title:t("basket.recieptPrice"),
     key:"12",
     width: "120px",
-  },{
+  },
+
+  {
     title:" ",
     key:"13",
     width: "20px",
@@ -99,62 +112,56 @@ const ProductTableInvoice = ({basketContent, totalPrice, deleteBasketItem , setO
         ]
       }
     }
-  }]
+  }];
+  const filterProdsServices = async() => {
+    const isService = await JSON.parse(localStorage.getItem("isServiceSale"));
+    let filteredContent = [];
+    let invoiceItems = []
+    let totalFiltered = 0
+    basketContent.map((item) => {
+      if(isService &&  item?.type.includes(".")) {
+          filteredContent.push(item)
+          invoiceItems.push({
+            "dealType": item?.dep === 1 ? null : 1,
+            "goodCode":  item?.barCode,
+            "name": item?.name,
+            "vatRate": item?.dep === 1 ? 1 : 0,
+            "withoutVat": item?.dep === 1 ? 0 : 1
+          })
+          totalFiltered += item?.count * item?.discountedPrice
+      }else if(!isService && !item?.type.includes(".")) {
+        filteredContent.push(item)
+         invoiceItems.push({
+            "dealType": item?.dep === 1 ? null : 1,
+            "goodCode":  item?.barCode,
+            "name": item?.name,
+            "vatRate": item?.dep === 1 ? 1 : 0,
+            "withoutVat": item?.dep === 1 ? 0 : 1
+          })
+        totalFiltered += item?.count * item?.discountedPrice
+      }
+    })
+    setTableContent(filteredContent)
+    setInvoicePaymentInfo({
+      ...invoicePaymentInfo,
+      sales:filteredContent?.map(item => ({id: item?.id, count: item?.count})),
+      invoiceInfo: {
+        ...invoicePaymentInfo.invoiceInfo,
+        items: invoiceItems
+      }
+    })
+    setNewTotal(totalFiltered)
+  }
+
+  useEffect(() => {
+    filterProdsServices()
+  },[basketContent])
 
   return (
-    <div style={{ 
-      marginTop: '30px', 
-      fontFamily: 'Arial, sans-serif'
-    }}>
-      {/* Header */}
-      {/* <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'flex-start',
-        marginBottom: '24px',
-        backgroundColor: 'white',
-        padding: '16px',
-        borderRadius: '8px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-      }}>
-        <div>
-          <h2 style={{ 
-            margin: 0, 
-            marginBottom: '8px',
-            fontSize: '18px',
-            fontWeight: '600'
-          }}>
-            Ապրանքառից (առաքիր) ապրանքների քանակի և կենտրական եռակա գումարի հաշվառք
-          </h2>
-          <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
-            Առկա է հետագծելիության եռակա արդյունք
-          </p>
-        </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button style={{
-            padding: '8px 12px',
-            backgroundColor: '#1890ff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}>
-            ↑
-          </button>
-          <button style={{
-            padding: '8px 12px',
-            backgroundColor: '#1890ff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}>
-            ✎
-          </button>
-        </div>
-      </div> */}
-
-      {/* Table */}
+    <div style={{marginTop: '10px', fontFamily: 'Arial, sans-serif'}}>
+       <div style={{display:"flex", justifyContent:"flex-start",fontWeight:600,fontSize:"120%",margin:"5px 0px",color:"#308ac5"}}>
+        Մատակարարվող (առաքվող) ապրանքների քանակի և վճարման ենթակա գումարի հաշվարկ
+       </div>
       <div style={{ 
         backgroundColor: 'white', 
         borderRadius: '8px', 
@@ -172,54 +179,22 @@ const ProductTableInvoice = ({basketContent, totalPrice, deleteBasketItem , setO
               </tr>
             </thead>
             <ProductTableItem 
-              basketContent={basketContent} 
+              tableContent={tableContent}
               deleteBasketItem={deleteBasketItem}
               changeCountOfBasketItem={changeCountOfBasketItem}
+              invoicePaymentInfo={invoicePaymentInfo}
             />
           </table>
         </div>
+
         <div style={{display:'flex', justifyContent:"end", margin:"5px 10px",}}>
           <Tooltip title={t("mainnavigation.newproduct")}>
             <IconButton sx={{color:"green"}} onClick={()=> {
-              closeInvoiceDialog()
-              setOpenBasket(false)
               navigate("/")
             }}>
               <AddShoppingCartTwoToneIcon />
             </IconButton>
           </Tooltip>
-        </div>
-
-        {/* Info Message */}
-        {/* <div style={{ 
-          marginTop: '16px',
-          padding: '5px 12px',
-          backgroundColor: '#e6f7ff',
-          border: '1px solid #91d5ff',
-          borderRadius: '4px',
-          fontSize: '11px',
-          color: '#0050b3',
-          opacity: '0.8'
-        }}>
-          * Տարա սյունակը լրացնում է այն դեպքում, երբ տարան չի ծառայում:
-        </div> */}
-
-        {/* Summary */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'flex-end', 
-          marginTop: '16px' 
-        }}>
-          <span style={{
-            padding: '8px 24px',
-            fontSize: '16px',
-            backgroundColor: '#f0f0f0',
-            border: '1px solid #d9d9d9',
-            borderRadius: '4px',
-            cursor: 'default'
-          }}>
-            {t("basket.recieptPrice")} {numberSpacing(totalPrice)}{t("units.amd")}
-          </span>
         </div>
         </div>
     </div>

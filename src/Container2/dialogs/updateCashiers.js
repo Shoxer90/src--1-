@@ -6,6 +6,7 @@ import { Button,  Dialog, DialogTitle,Divider } from "@mui/material";
 
 import SnackErr from "./SnackErr";
 import { updateCashiersData } from "../../services/user/userInfoQuery";
+import { useSuccessSound } from "../../modules/PlaySound";
 
 import styles from "./index.module.scss";
 
@@ -18,12 +19,14 @@ const UpdateCashiers = ({
   createMessage
   }) => {
   const {t} = useTranslation();
+  const playSuccess = useSuccessSound();
 
  const handleUpdateCashier = async() => {
   if(updateContent?.email && updateContent?.firstName && updateContent?.userName) {
 
     await updateCashiersData(updateContent).then((res) => {
       if(res?.status === 200) {
+        playSuccess()
         createMessage({
           type:"success",
           message: t("dialogs.done")

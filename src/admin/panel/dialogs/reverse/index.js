@@ -13,6 +13,7 @@ import SelectAll from "../../../../Container2/historyPage/editsales/SelectAll";
 import { editOrReversePrepaymentReceipt, reverseProductNew } from "../../../../services/user/userHistoryQuery";
 import ReverseConditions from "../../../../Container2/historyPage/editsales/ReverseConditions";
 import Loader from "../../../../Container2/loading/Loader";
+import { useSuccessSound } from "../../../../modules/PlaySound";
 
 const ReverseReciept = ({open, close, data}) => {
 const {t} = useTranslation();
@@ -61,16 +62,18 @@ const checkedProduct = (i, name, value) => {
     })
   )
 };
+  const playSuccess = useSuccessSound();
 
 const handleOk = async(func, body) => {
-setLoad(true)
+  setLoad(true)
   await func(body).then((res) => {
   setLoad(false)
   if(res?.status === 400 || res?.status === 406 || res?.status === 403) {
     setType("error")
     setOwnMessage(res?.data?.message)
   }else if(res.status === 200 && res?.data?.reverceLink){
-   return close
+    playSuccess()
+    return close
   }
 })
 };  

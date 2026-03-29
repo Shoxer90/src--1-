@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
-import sound from "../modules/sound_notification.wav";
+import sound from "../modules/Done5.wav";
+// import sound from "../modules/sound_notification.wav";
 import Notifications from './content/Notifications';
 import { useLazyGetNotificationHistoryQuery } from '../store/notification/notificationApi';
 import { firebaseConfig} from '../firebase/firebase-config';
@@ -144,6 +145,7 @@ const NotificationBell = ({
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
+      console.log("SW is supported")
       navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data?.type === 'REFRESH_PAGE') {
           audioRef?.current?.click()

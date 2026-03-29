@@ -8,6 +8,7 @@ import Loader from "../loading/Loader";
 import { sendMail } from "../../services/user/hdm_query";
 
 import styles from "./index.module.scss";
+import { useSuccessSound } from "../../modules/PlaySound";
 
 const FeedBackPage = () => {
   const {t} = useTranslation();
@@ -26,6 +27,7 @@ const FeedBackPage = () => {
       [e.target.name]: e.target.value
     })
   };
+  const playSuccess = useSuccessSound();
 
   const handleSend = () => {
     if(isSent)return
@@ -33,8 +35,8 @@ const FeedBackPage = () => {
     sendMail(mailContent).then((res)=> {
       setIsLoad(false)
       if(res.status === 200){
+        playSuccess()
         setIsSent(true)
-
         setMailContent({ 
           text:"",
           subject:""

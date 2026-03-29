@@ -14,6 +14,7 @@ import InfoDialog from "./InfoDialog";
 import CloseIcon from '@mui/icons-material/Close';
 import validator from "validator";
 import Loader from "../loading/Loader";
+import { useSuccessSound } from "../../modules/PlaySound";
 
 
 
@@ -32,7 +33,9 @@ const NewCashier = ({
   limitOver
 }) => {
 
-	// const [cashierUserName, setCashierUserName] = useState("");
+       
+    const playSuccess = useSuccessSound();
+
   const [load, setLoad] = useState(false);
   const [message, setMessage] = useState();
   const [errorMail, setErrorMail] = useState();
@@ -69,7 +72,8 @@ const NewCashier = ({
         }else if(user?.response?.status === 408){
           limitOver()
         }else if(user?.status === 200){
-          createMessage({
+          playSuccess()
+          createMessage({ 
             type:"success",
             message: t("dialogs.newcashierSuccess"),
           })

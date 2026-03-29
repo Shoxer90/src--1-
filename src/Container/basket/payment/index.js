@@ -3,8 +3,8 @@ import { memo, useState } from "react"
 import { useTranslation } from "react-i18next";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import styles from "./index.module.scss";
 import SnackErr from "../../../Container2/dialogs/SnackErr";
+import styles from "./index.module.scss";
 
 const PaymentContainer = ({
   user,
@@ -73,7 +73,8 @@ const PaymentContainer = ({
           >
             {t("basket.usepayment")}
           </Button>
-           <Button 
+          {/* 10.12.2025 */}
+           {/* <Button 
             variant="contained"
             onClick={()=> {
               if(user?.isRegisteredForTaxService) {
@@ -98,8 +99,8 @@ const PaymentContainer = ({
               fontWeight: "bold",
             }}
           >
-            e-Invoicing
-          </Button>
+            e-Invoicing */}
+          {/* </Button> */}
         </div>
       }
 
@@ -134,7 +135,7 @@ const PaymentContainer = ({
        </div>
       }
 
-       {openWindow?.isOpen && openWindow?.invoice &&
+       {/* {openWindow?.isOpen && openWindow?.invoice &&
         <div className={styles.buttonGroup_2}>
           <Button 
             startIcon={<ArrowBackIcon fontSize="large" />} 
@@ -147,7 +148,7 @@ const PaymentContainer = ({
           </Button>
           <h5>e-Invoice</h5>
         </div>
-      }
+      } */}
       <Dialog open={infoDialog?.isOpen} onClose={()=>setInfoDialog({isOpen: false, message:"",type:"info"})}>
         <SnackErr type={infoDialog?.type} message={infoDialog?.message}  close={()=>setInfoDialog({isOpen: false, message:"",type:"info"})}/>
       </Dialog>

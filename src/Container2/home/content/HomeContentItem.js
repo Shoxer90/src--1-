@@ -149,7 +149,8 @@ const HomeContentItem = ({
     }
   },[change,localStorage.getItem("emarkNewList")])
   return (
-    <Card style={{ border:"solid orange 2px",padding:"7px", cursor:"pointer"}}>
+    <Card style={{ border:product?.type.includes(".")? "solid #3FB68A 2px": "solid orange 2px",padding:"7px", cursor:"pointer"}}>
+    {/* <Card style={{ border:"solid orange 2px",padding:"7px", cursor:"pointer"}}> */}
         <div style={{display:"flex", justifyContent:"space-between", padding:"2px 5px"}}>
 
         <div 
@@ -172,13 +173,14 @@ const HomeContentItem = ({
             fontSize="small"
             sx={{color:"orange"}}/>
         }
-        { !limitedUsing && 
+        {/* 10.12.2025 */}
+        {/* { !limitedUsing && 
           <InfoIcon 
             fontSize="medium" 
             sx={{color:"orange"}}
             onClick={()=>setOpenProdInfo(true)}
           />
-        }
+        } */}
         { !limitedUsing && 
           <ModeIcon 
             fontSize="medium" 

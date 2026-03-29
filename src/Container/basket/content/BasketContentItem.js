@@ -229,8 +229,11 @@ const handleChangeBasketCount = (val) => {
     const data = localStorage.getItem("emarkNewList")
     if(el?.isEmark && data){
       const allEmarkList = JSON.parse(data) || []
+      console.log(allEmarkList, "allEmarkList")
       if (allEmarkList?.length) {
        let data = allEmarkList?.filter((item) => item?.barcode === el?.barCode)
+        console.log("data0", data)
+
         if(data?.length){
           setDataFromLS(data[0])
         }else{

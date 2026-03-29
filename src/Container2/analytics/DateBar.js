@@ -60,23 +60,6 @@ const DateBar = ({
           />
         </LocalizationProvider>
       </div>
-      {/* <div className={styles.products_sells_datebar_btn}>
-        <Button
-          variant="contained"
-          onClick={handleFilter}
-          style={{
-            backgroundColor: "darkgreen",
-            // margin: "auto",
-            padding: "4px"
-          }}
-          sx={{
-            textTransform: "capitalize",
-            // fontWeight: "bold",    
-          }}
-        >
-          {t("history.filterbydate")}
-        </Button>
-      </div> */}
    </>
   )
 };

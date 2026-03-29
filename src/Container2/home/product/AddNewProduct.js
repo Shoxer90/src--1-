@@ -15,6 +15,7 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 
 import styles from "../index.module.scss";
 import { useTranslation } from 'react-i18next';
+import { useSuccessSound } from '../../../modules/PlaySound';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -37,6 +38,8 @@ const AddNewProduct = ({
   setFrom,
   from
 }) => {
+    const playSuccess = useSuccessSound();
+
   const {t} = useTranslation();
   const [type, setType] = useState("success");
   const [regime, setRegime] = useState();
@@ -83,6 +86,8 @@ const AddNewProduct = ({
     }
   };
 
+  
+
   const create = async() => {
     if(!newProduct?.barCode ||
       !newProduct?.name ||
@@ -117,6 +122,8 @@ const AddNewProduct = ({
             setMessage(t("dialogs.pricezero")) 
             return
           }else{
+            playSuccess()
+
             handleClose()
             changeStatus("GetAvailableProducts")
             setGlobalMessage(t("productinputs.productadded"))
@@ -179,7 +186,8 @@ const AddNewProduct = ({
   const saveData = async() => {
     await localStorage.setItem("newProduct", JSON.stringify(newProduct))
     setType("success")
-    handleClose()
+    handleClose() 
+    playSuccess()
     setGlobalMessage(t("dialogs.done"))
     setGlobalType("success")
     setTimeout(()=>{

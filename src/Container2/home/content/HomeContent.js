@@ -22,7 +22,7 @@ const HomeContent = ({
   setCurrentPage,
   setOpenBasket,
   setBasketContent,
-        setFrom
+  setFrom
 
 }) => {
   return (

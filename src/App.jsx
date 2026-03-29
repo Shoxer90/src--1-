@@ -55,6 +55,8 @@ import IframeReader from "./Container/iframe/iframeReader";
 import { removeDeviceToken } from "./services/notifications/notificatonRequests";
 import { setSearchBarCodeSlice } from "./store/searchbarcode/barcodeSlice";
 import { replaceGS } from "./services/baseUrl";
+import InVoiceMainDialog from "./Container/invoice";
+// import InVoiceMainDialog from "./Container/Header/invoice";
 
 const checkForUpdates = async () => {
   try {
@@ -99,8 +101,7 @@ const App = () => {
   const {user} = useSelector(state => state.user);
   const inputSlice = useSelector(state => state?.barcode?.basket);
   const debounceBasket = useDebonce(inputSlice, 500);
-
-
+  const [totalPrice,setTotalPrice] = useState();
   const [isBlockedUser,setBlockedUser] = useState(false);
   const debounce = useDebonce(searchValue, 1000);
   // const debounceBasket = useDebonce(barcodeScanValue, 20);
@@ -185,12 +186,14 @@ const App = () => {
   };
  
   const isEmarkBarcode = (barcodeOrEmark) => {
+    console.log(barcodeOrEmark, "barcodeOrEmark ")
     let input = barcodeOrEmark
     if(input?.substring(0, 2) === "01" && input?.substring(16, 18) === "21") {
       input = replaceGS(barcodeOrEmark)
       const emarkList = JSON.parse(localStorage.getItem("emarkList")) || [];
       const emarkNewList = JSON.parse(localStorage.getItem("emarkNewList")) || [];
-      const currentBarcode = input?.slice(3,16)
+      const currentBarcode = input?.slice(2,16)
+      // const currentBarcode = input?.slice(3,16)
       if(!emarkList?.includes(input)) {
         localStorage.setItem("emarkList", JSON.stringify([ ...emarkList, input]));
         let flag = 0
@@ -232,12 +235,17 @@ const App = () => {
       await byBarCode(group, barcode).then((res) => {
         if(from === "basket"){
           if(res?.length) {
+            console.log(res,"res")
             let isEmarkBC = isEmarkBarcode(barcode)
+            console.log(isEmarkBC, "isEmarkBC")
             if(!isEmarkBC) {
               return setBarcodeScanValue("")
             }
             res.forEach((item) => {
-              if(item?.barCode === barcode || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")){
+              // if(item?.barCode === barcode || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")){
+              if(item?.barCode === barcode || item?.barCode.includes(barcode) || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")){
+                console.log(barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")
+                console.log(item?.barCode === barcode)
                 if(item?.remainder){
                   setSearchValue("")
                   dispatch(setSearchBarCodeSlice({
@@ -360,6 +368,7 @@ const App = () => {
     localStorage.removeItem("endPrePayment")
     localStorage.removeItem("emarkList")
     localStorage.removeItem("emarkNewList")
+    localStorage.removeItem("saleData")
     setPaymentInfo({
       discountType: 0,
       cashAmount: 0,
@@ -405,6 +414,7 @@ const App = () => {
   };
 
   const setToBasketFromSearchInput = (wishProduct, quantity) => {
+    console.log("wishProduct", wishProduct)
     const basket = basketContent
       if(quantity && quantity > wishProduct?.remainder){
       setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
@@ -570,6 +580,11 @@ const App = () => {
             notifTrigger={notifTrigger}
             setFrom={setFrom}
             from={from}
+
+            paymentInfo={paymentInfo} 
+            setPaymentInfo={setPaymentInfo}
+            setMessage={setMessage} 
+            message={message} 
           />
           {!isBlockedUser  && user ? <Routes>
             <Route
@@ -639,7 +654,7 @@ const App = () => {
             <Route path="/setting/user" element={<SettingsUser user={user} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc} limitedUsing={limitedUsing}/>} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} />} />
             {/* <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} /> */}
-            <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
+            {/* <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} /> */}
             <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
             <Route path="/prepayment" element={<PrePaymentList 
               setOpenBasket={setOpenBasket} 
@@ -653,6 +668,24 @@ const App = () => {
               setFrom={setFrom}
               from={from}
             />} />
+
+            <Route
+              path="/invoicing" 
+              element={<InVoiceMainDialog 
+                setPaymentInfo={setPaymentInfo} 
+                paymentInfo={paymentInfo} 
+                user={user}
+                totalPrice={totalPrice}
+                deleteBasketItem={deleteBasketItem}
+                changeCountOfBasketItem={changeCountOfBasketItem}
+                basketContent={basketContent}
+                setBasketContent={setBasketContent}
+                loadBasket={loadBasket}
+                setBasketGoodsqty={setBasketGoodsqty}
+               
+              />} 
+            />
+
             <Route path="/privacy_policy" element={<PrivacyPolicy />} />
             {user?.showPaymentPage && <Route path="/setting/services/*" element={<CheckStatusArCa logOutFunc={logOutFunc}/>} />}
             {user?.showPaymentPage && <Route path="/setting/services" element={<ClientCardContainer logOutFunc={logOutFunc} serviceType={user?.activeServiceType} lastDate={lastDate}/>} />}
@@ -694,6 +727,9 @@ const App = () => {
             limitedUsing={limitedUsing}
             debounceBasket={debounceBasket}
             setBasketContent={setBasketContent}
+
+            totalPrice={totalPrice}
+            setTotalPrice={setTotalPrice}
           />}
           {notification.length ? 
             <Notification 

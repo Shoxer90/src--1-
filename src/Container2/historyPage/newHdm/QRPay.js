@@ -11,6 +11,7 @@ import { Alert, Button, Dialog, DialogContent, Divider } from "@mui/material";
 
 import styles from "./index.module.scss";
 import { transferQuery } from "../../../services/pay/pay";
+import { useSuccessSound } from "../../../modules/PlaySound";
 
 const QRPay = ({
   t,
@@ -24,11 +25,13 @@ const QRPay = ({
   paymentInfo
 }) => {
   const [message,setMessage] = useState();
+    const playSuccess = useSuccessSound();
   
   useEffect(() => {
     let interval = setInterval(() => {
       transferQuery(trsf).then((res) => {
         if(res?.status === 200){
+          playSuccess()
           setMessage(t("basket.paymentsuccess"))
           clearInterval(interval)
           deleteBasketGoods()

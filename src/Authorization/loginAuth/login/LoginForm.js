@@ -35,7 +35,7 @@ const LogInFormNew = ({
 
     loginAPI( userData?.username, userData?.password).then((token) => {
       setLoading(false)
-      console.log((token, "token from loginAPI"))
+      // console.log((token, "token from loginAPI"))
       if(token?.response?.status === 402){
         return setMessage(token?.response?.data?.message)
         // setMessage(t("authorize.blockremove"))

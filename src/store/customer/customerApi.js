@@ -30,7 +30,6 @@ export const customerApi = createApi({
           dispatch(setPagination({length:count, perPage: credentials?.count}))
           dispatch(setCustomerHistory(data));
         } catch(error) {
-          console.log(error,"error from customerApi")
         }
       },
     }),
@@ -141,5 +140,4 @@ export const {
   useLazyInvoicesDetailsQuery,
   useBlockCustomerMutation,
   useUpdateCustomerMutation,
-
 } = customerApi

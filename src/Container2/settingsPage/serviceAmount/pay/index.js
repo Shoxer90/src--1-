@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { payForEhdm, payForEhdmWithUsingCard } from "../../../../services/auth/auth";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
 import PdfReceiptDialog from "../../../historyPage/newHdm/PdfReceiptDialog";
+import { useSuccessSound } from "../../../../modules/PlaySound";
 
 const langEnum = () => {
   let lang = localStorage.getItem("lang") || localStorage.getItem("i18nextLng")
@@ -40,6 +41,7 @@ const PayComponent = ({
   setBills
 }) => {
   const {t} = useTranslation();
+  const playSuccess = useSuccessSound();
 
   const user = useSelector(state => state?.user?.user)
   const [url, setUrl] = useState("");
@@ -77,7 +79,7 @@ const PayComponent = ({
       payForEhdmWithUsingCard(billsData?.cardId).then((res) => {
         setLoader(false)
         if(res?.status === 200) {
-       
+       playSuccess()
           setUrl(res?.data?.formUrl)
           setOpenSuccess(true)
         }
@@ -87,6 +89,7 @@ const PayComponent = ({
       payForEhdm().then((res) => {
         setLoader(false)
         if(res?.status === 200) {
+          playSuccess()
           window.location.href = res?.data?.formUrl;
           // setOpenPdfDial({
           //   status:true,
@@ -112,6 +115,7 @@ const PayComponent = ({
       payForServiceWithAttachedCard(billsData).then((res) => {
         setLoader(false)
         if(res?.status === 200) {
+          playSuccess()
           setMessage({type:"success", message:t("dialogs.checkCardStatus200")})
         }else if(res?.status === 201) {
           setMessage({type:"success", message:t("dialogs.checkCardStatus201")})

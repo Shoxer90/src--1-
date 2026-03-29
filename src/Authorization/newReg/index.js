@@ -5,6 +5,8 @@ import RegistrationForm from "./RegistrationForm";
 import SnackErr from "../../Container2/dialogs/SnackErr";
 import { Dialog } from "@mui/material";
 import Loader from "../../Container2/loading/Loader";
+import { useNavigate } from "react-router-dom";
+
   const initialUserData = {
     "email": "",
     "phoneNumber": "",
@@ -27,27 +29,27 @@ const NewSimpleRegistration = ({logOutFunc}) => {
   const {t} = useTranslation();
   const [registerMessage,setRegisterMessage] = useState({m:"",t:""});
   const [isLoad,setIsLoad] = useState(false);
-
+  const navigate = useNavigate()
   const [newUser, setNewUser] = useState(initialUserData);
 
   const successSubmit = (res) => {
     setIsLoad(false)
-    if (res === 200) {
+    if (res?.status === 200) {
       setRegisterMessage({
-        m: t("authorize.success"),
+        m: res?.data?.message,
         t:"success"
       })
-      setNewUser(initialUserData)
+      return setNewUser(initialUserData)
     }else if(res?.response?.data?.message){
       setRegisterMessage({
         m: res?.response?.data?.message,
         t:"error"
       })
     }else{
-        setRegisterMessage({
-        m: t("dialogs.wrong"),
-        t:"error"
-      })
+      setRegisterMessage({
+      m: t("dialogs.wrong"),
+      t:"error"
+    })
     }
   }
 
@@ -75,7 +77,12 @@ const NewSimpleRegistration = ({logOutFunc}) => {
         <SnackErr 
           message={registerMessage.m} 
           type={registerMessage?.t} 
-          close={()=>setRegisterMessage({m:"",t:""})} 
+          close={()=>{
+            if(registerMessage?.t === "success") {
+              navigate("/login")
+            }
+            setRegisterMessage({m:"",t:""})
+          }} 
         />
       </Dialog>
 

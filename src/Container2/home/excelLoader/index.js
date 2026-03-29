@@ -10,6 +10,7 @@ import Loader from '../../loading/Loader';
 import SnackErr from '../../dialogs/SnackErr';
 import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
+import { useSuccessSound } from '../../../modules/PlaySound';
 
 const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
   const navigate = useNavigate();
@@ -93,12 +94,13 @@ const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
       })
     }
   };
+  const playSuccess = useSuccessSound();
 
-console.log(uploadFile,"upload")
   const confirmExcelList = async(res) => {
     createProductList(res).then((res)=> {
       setIsLoad(false)
       if(res === 200){
+        playSuccess()
         setMessage({m: t("dialogs.done"),t: "success"})
       }else if(res === 401){
         logOutFunc()

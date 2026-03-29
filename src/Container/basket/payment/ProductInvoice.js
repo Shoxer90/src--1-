@@ -3,7 +3,6 @@ import styles from "../index.module.scss";
 import { numberSpacing } from "../../../modules/numberSpacing";
 import { Button, Divider } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import NewCustomerContainer from "../../invoice/NewCustomerContainer";
 
 const ProductInvoice = ({
   totalPrice,
@@ -68,26 +67,9 @@ const ProductInvoice = ({
         </div>
       :""}
   
-      { openInvoiceDialog && 
-        <NewCustomerContainer
-          open={openInvoiceDialog}
-          isFormValid={isFormValid} 
-          setIsFormValid={setIsFormValid}
-          setPaymentInfo={setPaymentInfo}
-          paymentInfo={paymentInfo}
-          validTin={validTin}
-          setValidTin={setValidTin}
-          close={()=>setOpenInvoiceDialog(false)}
-          totalPrice={totalPrice}
-          basketContent={basketContent}
-          deleteBasketItem={deleteBasketItem}
-          setOpenBasket={setOpenBasket}
-          changeCountOfBasketItem={changeCountOfBasketItem}
-
-        />
-      }
+    
             
-      <Button 
+      {/* <Button 
         size="small"
         style={{
           background:"orange", 
@@ -99,7 +81,7 @@ const ProductInvoice = ({
         >
          {paymentInfo?.isInvoice ? t("settings.seeInvoiceData"):t("settings.addInvoiceData")}
         </Button>
-        
+         */}
         <div style={{height:"20px", color:"orange", display:"flex", justifyContent:"flex-start"}}>
           <span>{paymentInfo?.customer_Name}</span>
           <span style={{marginLeft:"10px"}}> {paymentInfo?.customer_Phone}</span>

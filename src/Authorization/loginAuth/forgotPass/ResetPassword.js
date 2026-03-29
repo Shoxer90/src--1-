@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styles from "../index.module.scss";
 import { Alert, Button, Dialog } from "@mui/material";
 import { updateUserPassword } from "../../services/auth/auth";
+import { useSuccessSound } from "../../../modules/PlaySound";
 
 const ResetPassword = ({t}) => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const ResetPassword = ({t}) => {
   const [tokenBase64, setToken] = useState();
   const [password, setPassword] = useState({});
   const [message, setMessage] = useState();
+  const playSuccess = useSuccessSound();
 
   const changePassword = async() => {
     if(!password?.password?.length || !password?.confirmPassword?.length) {
@@ -21,6 +23,7 @@ const ResetPassword = ({t}) => {
     }else{
       tokenBase64 && await updateUserPassword({"password":password?.password}, tokenBase64).then((res) => {
         if(res.status === 200){
+          playSuccess()
           setMessage({type:"success", message: t("dialogs.done")})
           setTimeout(() => {
           setMessage({})

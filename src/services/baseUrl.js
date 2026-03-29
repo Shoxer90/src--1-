@@ -13,7 +13,15 @@ export const option = () => {
 };
 
 export const CASH_LIMIT = +300000;
-let bazmapat = "×"
+
+// export const replaceGS = (code) => {
+//   console.log(code,"FIND GS")
+//   if (!code) return "";
+//  const output =code.replace(/\x1D/g, "\\u001d");
+//   console.log(output,"output FIND GS")
+//   console.log([...code].map(c => c.charCodeAt(0)),"efrse");
+//   return output
+// };
 
 export const replaceGS = (code) => {
   const input = code?.trim(); 
@@ -83,12 +91,5 @@ export const columnNames = [{
   key: "cashier",
   checked:  true
 },
-// {
-//   title: "settings.operation",
-//   id: 15,
-//   key: "operation",
-//   checked:  true
-// },
-
 ];
 

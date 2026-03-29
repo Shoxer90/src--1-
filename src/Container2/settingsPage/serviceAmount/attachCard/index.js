@@ -4,12 +4,14 @@ import SnackErr from "../../../dialogs/SnackErr";
 import { Dialog } from "@mui/material";
 import Loader from "../../../loading/Loader";
 import { useTranslation } from "react-i18next";
+import { useSuccessSound } from "../../../../modules/PlaySound";
 
 const CheckStatusArCa = ({logOutFunc}) => {
   
   const {t} = useTranslation();
   const navigate = useNavigate();
   const [message,setMessage] = useState();
+  const playSuccess = useSuccessSound();
   
   const search = useLocation().search;
   const queryParams = new URLSearchParams(search)
@@ -27,10 +29,9 @@ const CheckStatusArCa = ({logOutFunc}) => {
     setMessage({message:"", type:""})
     navigate("/setting/services")
   };
-
     const getResponse = (statusCall) => {
     if(statusCall === "1") {
-      // VJARVAC E
+      playSuccess();
       return setMessage({type:"success", message:t("dialogs.checkCardStatus200")})
     }else if(statusCall === "2") {
       return setMessage({type:"error", message:t("dialogs.checkCardStatus410")}) 

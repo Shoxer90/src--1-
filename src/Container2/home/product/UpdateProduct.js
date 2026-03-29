@@ -19,6 +19,10 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import ImageLoad from "./ImageLoad";
 import Barcode from "react-barcode";
 import { useTranslation } from "react-i18next";
+import { useSuccessSound } from "../../../modules/PlaySound";
+import BarcodeInput from "./BarcodeInput";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchBarCodeSlice } from "../../../store/searchbarcode/barcodeSlice";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -40,7 +44,8 @@ const UpdateProduct = ({
   deleteBasketItem
 }) => {
   const {t} = useTranslation();
-
+  const playSuccess = useSuccessSound();
+  const dispatch = useDispatch()
   const [currentProduct,setCurrentProduct] = useState();
   const [confirmation, setConfirmation] = useState(false);
   const [message, setMessage] =  useState({message:"",type:""});
@@ -49,6 +54,11 @@ const UpdateProduct = ({
   const [fixMessage,setFixMessage] = useState();
   const [metric,setMetric] = useState();
   const [flag,setFlag] = useState(0);
+
+    const [isUniqBarCode, setIsUniqBarcode] = useState(true);
+    const [emptyValidate, setEmptyValidate] = useState(false);
+    const barInput = useSelector(state => state?.barcode?.newProd);
+  
 
   const updateImage = (e) => {
     let reader = new FileReader();
@@ -130,6 +140,7 @@ const UpdateProduct = ({
     if(currentProduct?.remainderPrePayment) {
       return setMessage({message:t("productinputs.prodInPrepayment"), type:"info"})
     }else{
+      playSuccess()
       deleteAndRefresh(currentProduct.id).then(()=> {
         setFlag(!flag)
       })
@@ -173,7 +184,9 @@ const UpdateProduct = ({
     setContent(newArr)
     updateProduct(currentProduct).then((res) => {
       if(res === 200) {
+        playSuccess()
         setCurrentPage(1)
+
         // changeUpdatedProdInBasket(currentProduct?.id)
         deleteBasketItem(currentProduct?.id, currentProduct?.isEmark,currentProduct?.barCode)
         setFlag(!flag)
@@ -234,6 +247,35 @@ const UpdateProduct = ({
     setNewPrice(product?.price - (product?.price * product?.discount / 100))
 
   }, [product?.discount, product?.price]);
+
+    const barcodeValidation = (event) => {
+      const valid = /^[a-zA-Z0-9_]+$/
+      const text = event.target.value;  
+      if(valid.test(text)){
+        dispatch(setSearchBarCodeSlice({
+          name: "newProd",
+          value: event.target.value
+        }))
+        setCurrentProduct({
+          ...currentProduct,
+          barCode: event.target.value
+        })
+      }else if(event.target.value.trim() === ""){
+        setCurrentProduct({
+          ...currentProduct,
+          barCode: event.target.value.trim()
+        })
+        dispatch(setSearchBarCodeSlice({
+          name: "newProd",
+          value: event.target.value.trim()
+        }))
+  
+        setIsUniqBarcode(false)
+        return
+      }else{
+        return 
+      }
+    }
 
   useEffect(() => {
     currentProduct && functionInit()
@@ -360,9 +402,26 @@ const UpdateProduct = ({
                   {currentProduct?.discount ? `${(currentProduct?.discount/100*currentProduct?.price).toFixed(2)} ${t("units.amd")}`: ""}
                 </span> 
               </Box>
-                {currentProduct?.barCode && 
-                  <Barcode value={currentProduct?.barCode} height={30} width={1} margin={1} fontSize={12} textAlign={"center"} />
-                }
+              {/* { currentProduct?.barCode && 
+                <Barcode value={currentProduct?.barCode} height={30} width={1} margin={1} fontSize={12} textAlign={"center"} />
+              } */}
+
+    
+                <TextField 
+                  error={(emptyValidate && !currentProduct?.barCode) || !isUniqBarCode}
+                  style={{marginBottom:"10px",width:"250px"}}
+                  size="small"
+                  variant="outlined"
+                  name="barCode" 
+                  value={currentProduct?.barCode}
+                  // value={currentProduct?.barCode}
+                  label={`${t("productinputs.barcode")} (max 20 ${t("productinputs.symb")})*`}
+                  onChange={(e)=>{
+                    if(e.target.value?.length>20) return
+                    setIsUniqBarcode(true)
+                    barcodeValidation(e)
+                  }} 
+                />
           {message?.message && 
             <Dialog open={!!message.message}>
               <SnackErr 
@@ -409,8 +468,8 @@ const UpdateProduct = ({
             </div>
 
             <ImageLoad 
-            setProduct={setCurrentProduct}
-            newProduct={currentProduct}
+            setCurrentProduct={setCurrentProduct}
+            currentProduct={currentProduct}
             func={updateImage} 
             content={currentProduct?.photo} 
             />

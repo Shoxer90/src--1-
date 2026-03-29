@@ -18,7 +18,7 @@ const BasketHeader = ({
 
   const [openDialog,setOpenDialog] = useState(false);
 
-   const cleanAllGoods = () => {
+  const cleanAllGoods = () => {
    setSingleClick({pointerEvents:"none"})
    deleteBasketGoods()
     setOpenDialog(false)

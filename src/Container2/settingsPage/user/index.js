@@ -18,7 +18,8 @@ import { useDispatch } from "react-redux";
 import { setPayForEhdm } from "../../../store/storex/openPaySlice";
 
 import styles from "./index.module.scss";
-import InvoiceAuth from "../../../Container/invoice/InvoiceAuth";
+import InVoiceAuth from "../../../Container/invoice/InVoiceAuth";
+import { useSuccessSound } from "../../../modules/PlaySound";
 
 const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
   const {t} = useTranslation();
@@ -49,13 +50,16 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
       break;
     }
     setConfirmSwitch(true)
-  }
+  };
+  
+  const playSuccess = useSuccessSound();
 
   const switchToHDM = (num) => {
     setIsLoad(true)
     changeToPhysicalHDM(num).then((res) => {
     setIsLoad(false)
       if(res?.status=== 200) {
+        playSuccess()
         whereIsMyUs()
         setMessage({m: res?.data?.message, t:"success"})
       }
@@ -67,11 +71,13 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
     dispatch(setPayForEhdm(true))
     navigate( "/setting/services")
   }
+  // const playSuccess = useSuccessSound();
 
   const switchStatus = async(newStatus) => {
     if(user?.isRegisteredInEhdm || !newStatus){
       setIsLoad(true)
       changeEHDM(newStatus).then((res)=>{
+        playSuccess()
         setIsLoad(false)
         whereIsMyUs()
         setConfirmSwitch(false)
@@ -96,8 +102,6 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
     setMessage({m:"", t:""})
     setIsLoad(false)
     setConfirmSwitch(false)
-
-
   }
 
   useEffect(() => {
@@ -190,6 +194,7 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
       >
         {t("updates.seeContract")}
       </Button>
+        {/* 10.12.2025 */}
       <Button 
         variant="contained"
         startIcon={user?.isRegisteredForTaxService ? <BorderColorIcon /> :<PostAddIcon  />}
@@ -200,7 +205,7 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
       </Button>
       </div>
       { openInvoiceAuth && 
-        <InvoiceAuth 
+        <InVoiceAuth 
           isReg={user?.isRegisteredForTaxService}
           open={openInvoiceAuth}
           close={()=>setOpenInvoiceAuth(false)}

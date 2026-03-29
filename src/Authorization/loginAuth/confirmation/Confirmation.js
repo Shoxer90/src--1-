@@ -8,6 +8,7 @@ import { finishRegistration, newConfirmCode } from "../../../services/auth/auth"
 import SnackErr from "../../../Container2/dialogs/SnackErr";
 import Loader from "../../../Container2/loading/Loader";
 import LangSelect from "../../../Container2/langSelect";
+import { useSuccessSound } from "../../../modules/PlaySound";
 
 const ConfirmationV2 = () => {
 const {t} = useTranslation();
@@ -25,6 +26,7 @@ const {t} = useTranslation();
     await finishRegistration(tokenBase64, confirmCode).then((res) => {
       setLoad(false)
       if(res === 200) {
+
         return setRedirectMessage({type: "success", message: t("authorize.successLogin")})
       }else{
         return setMessage( {type: "error", message: t("authorize.sms")})
@@ -42,6 +44,9 @@ const {t} = useTranslation();
     navigate("/")
   };
   
+    const playSuccess = useSuccessSound();
+  
+
   const resendCodeToPhone = async() => {
     setLoad(true)
     await newConfirmCode(tokenBase64).then((res) => {
@@ -49,6 +54,7 @@ const {t} = useTranslation();
       if(res === 401){
         setRedirectMessage({type:"error",message:t("dialogs.deprecated")})
       }else if(res === 200){
+        playSuccess()
         setMessage({type:"success",message:t("authorize.confirmation2")})
       }
     })

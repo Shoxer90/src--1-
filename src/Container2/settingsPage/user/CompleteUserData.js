@@ -15,6 +15,7 @@ import AddNewClientInfo from "../../dialogs/AddNewClientInfo";
 import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import BusinessIcon from '@mui/icons-material/Business';
 import Loader from "../../loading/Loader";
+import { useSuccessSound } from "../../../modules/PlaySound";
 
 
 const CompleteUserData = ({formatPhone ,logOutFunc, setMessage, switchStatus}) => { 
@@ -62,6 +63,7 @@ const [newUser, setNewUser] = useState({});
       [e.target.name]:e.target.value
     })
   };
+  const playSuccess = useSuccessSound();
 
   const completeReg = () => {
     setOpenConfirmation(false)
@@ -89,6 +91,7 @@ const [newUser, setNewUser] = useState({});
     }).then((res) => {
       setLoaded(false)
       if(res.status === 200) {
+        playSuccess()
         setChangeInfo(false)
         return setMessage({
           t:"success",
@@ -125,6 +128,7 @@ const [newUser, setNewUser] = useState({});
           getDataByTin(e.target.value).then((res) => {
             setLoaded(false)
             if(res?.status === 200) {
+              playSuccess()
               setChangeInfo(true)
               setSubmitClick(false)
               setNewUser({
