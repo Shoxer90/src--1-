@@ -213,6 +213,8 @@ const Bascket = ({
       if(saleResponse) {
         setLoader(false)
         if(saleResponse?.status === 400) {
+          setSingleClick({})
+
           return createMessage("error", saleResponse?.data?.message)
 
         }

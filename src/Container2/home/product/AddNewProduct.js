@@ -196,8 +196,8 @@ const AddNewProduct = ({
     },3000)
   };
   
-  const closeSaver = () => {
-    setOpenForSave(false)
+  const closeSaver = (arg) => {
+    setOpenForSave(arg)
     handleClose()
     setProduct({
       purchasePrice: "",
@@ -438,7 +438,8 @@ const AddNewProduct = ({
         close={closeSaver}
         content={""}
         t={t}
-        nobutton={t("buttons.no")}
+        nobutton={false}
+        // nobutton={t("buttons.no")}
       />
       <Button 
         variant="contained" 

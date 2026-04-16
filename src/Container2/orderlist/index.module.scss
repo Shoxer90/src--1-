@@ -1,5 +1,6 @@
 .orderContainer{
-  width: 85%;
+  width: 95%;
+  // width: 85%;
   margin:80px auto;
   padding: 15px;
   text-align: flex-start;
@@ -35,21 +36,111 @@
   }
 }
 
+/* tbody и thead делят класс; первая ячейка только в теле — влево у картинки, без «отлипания» текста */
+tbody.table_titles > tr > :first-child {
+  text-align: left;
+}
+
 .row{
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   > div{
     padding-top: 5px;
-    border:solid black 1px;
+    // border:solid black 1px;
     border-bottom: none;
     border-right: none;
   }
 };
 .prod_img{
-  width:60px;
-  height: 45px;
-  margin:0 10px;
+  width: 48px;
+  height: 36px;
+  margin: 0 6px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+/* Keep td as table-cell (no display:flex on Mui TableCell) — borders stay one continuous line per row */
+.tableNameCellWrap {
+  vertical-align: middle;
+  text-align: left;
+}
+
+/* Явное центрирование: в fixed-таблице text-align на td часто недостаточно */
+.tableCellBodyInner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tableCellNumeric {
+  white-space: nowrap;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.tableCellPrice {
+  vertical-align: middle;
+  text-align: center;
+  white-space: normal;
+  min-width: 0;
+}
+
+/* Базовая и скидочная цена столбиком, по центру ячейки */
+.priceStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  line-height: 1.2;
+  width: 100%;
+}
+
+.priceStackBase,
+.priceStackDiscount {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.priceStackDiscount {
+  font-weight: 600;
+  font-size: 0.9em;
+  color: red;
+}
+
+.tableNameCell {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 5px;
+  min-width: 0;
+  width: 100%;
+}
+
+.tableNameIndex {
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+
+.tableNameCellInner {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.tableNameText {
+  margin-right: 2px;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: normal;
+  line-height: 1.35;
+  text-align: left;
 }
 
 
@@ -85,8 +176,94 @@
   }
   
   .prod_img{
-    margin: 0px;
-    width: 40px;
-    height: 30px;
-  };
+    margin: 0 3px 0 0;
+    width: 32px;
+    height: 24px;
+  }
+
+}
+
+/* Unpaid block: full width in flex row + column so summary and buttons stay centered */
+.orderPaymentUnpaidColumn {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Full row so flex parent does not leave block stuck to one side */
+.orderPaymentSummaryWrap {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Order payment line: centered on desktop and mobile */
+.orderPaymentSummary {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.35rem;
+  line-height: 1.35;
+  color: #000;
+}
+
+.orderPaymentSummaryLabel {
+  font-weight: 600;
+  flex-shrink: 0;
+  max-width: 100%;
+  text-align: center;
+}
+
+.orderPaymentSummaryAmountRow {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  gap: 0.2em;
+  max-width: 100%;
+  line-height: 1.2;
+}
+
+.orderPaymentSummaryAmount {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(0.85rem, 3.4vw + 0.35vmin, 1.2rem);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.orderPaymentSummaryCurrency {
+  font-weight: 600;
+  font-size: clamp(0.78rem, 2.6vw + 0.25vmin, 0.95rem);
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+@media screen and (max-width: 480px) {
+  /* Одна линия «сумма + դրամ»; шрифт чуть меньше, чтобы не переносило */
+  .orderPaymentSummaryAmount {
+    font-size: clamp(0.8rem, 3.2vw + 0.45vmin, 1.1rem);
+  }
+
+  .orderPaymentSummaryCurrency {
+    font-size: clamp(0.72rem, 2.5vw + 0.3vmin, 0.88rem);
+  }
 }

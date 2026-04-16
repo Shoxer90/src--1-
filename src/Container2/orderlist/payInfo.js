@@ -7,7 +7,7 @@ import PaidButtons from './button/PaidButtons';
 
 import styles from "./index.module.scss";
 import { useTranslation } from 'react-i18next';
-import { isIOSSafari } from '../../modules/modules';
+import { formatOrderNumber } from "./formatOrderNumbers";
 
 const OrderListPayInfo = ({
   basketContent, 
@@ -84,7 +84,7 @@ const OrderListPayInfo = ({
              ({t("basket.useprepayment").toLowerCase()})
           </span>: ""} */}
         </span>
-        <span style={{margin:"0px 7px"}}> {basketContent?.allProductTotalPrice}{t("units.amd")} </span> 
+        <span style={{margin:"0px 7px"}}> {formatOrderNumber(basketContent?.allProductTotalPrice)}{t("units.amd")} </span> 
       </div>
 
        {basketContent?.isPrepayment ? 
@@ -92,25 +92,25 @@ const OrderListPayInfo = ({
               <span style={{color:"green", fontWeight:800}}>
                 {t("basket.useprepayment")}
               </span>
-            <span style={{margin:"0px 7px",color:"green", fontWeight:800}}> {basketContent?.total}{t("units.amd")} </span> 
+            <span style={{margin:"0px 7px",color:"green", fontWeight:800}}> {formatOrderNumber(basketContent?.total)}{t("units.amd")} </span> 
           </div>
           :""
         }
 
       <div className={styles.orderContainer_payContainer_item}>
       {t("history.cash")} 
-      <span style={{margin:"0px 7px"}}> {basketContent?.cashAmount}  {t("units.amd")}</span> 
+      <span style={{margin:"0px 7px"}}> {formatOrderNumber(basketContent?.cashAmount)}  {t("units.amd")}</span> 
       </div>
 
       <div  className={styles.orderContainer_payContainer_item}>
         {t("history.card")} 
-        <span style={{margin:"0px 7px"}}> {basketContent?.cardAmount}  {t("units.amd")} </span>
+        <span style={{margin:"0px 7px"}}> {formatOrderNumber(basketContent?.cardAmount)}  {t("units.amd")} </span>
       </div>
 
       {!basketContent?.isPrepayment  && basketContent?.prePayment ? 
         <div className={styles.orderContainer_payContainer_item}>
           {t("basket.prepaymentTitle")}
-          <span style={{margin:"0px 7px"}}> {basketContent?.prePayment}  {t("units.amd")} </span>
+          <span style={{margin:"0px 7px"}}> {formatOrderNumber(basketContent?.prePayment)}  {t("units.amd")} </span>
         </div> : ""
       }
             <Divider style={{ background: '#343a40', width:"60%", fontWight:600, margin:"2px" }} />
@@ -120,7 +120,7 @@ const OrderListPayInfo = ({
               <span style={{fontWight:700}}>
                 {t("basket.remainder")}
               </span>
-            <span style={{margin:"0px 7px"}}> {basketContent?.remainderOfTheTotalPrice}{t("units.amd")} </span> 
+            <span style={{margin:"0px 7px"}}> {formatOrderNumber(basketContent?.remainderOfTheTotalPrice)}{t("units.amd")} </span> 
           </div>
           :""
         }
@@ -133,11 +133,21 @@ const OrderListPayInfo = ({
             <PaidButtons recLink={recLink} />
             { status === 3 && <h6>{t("history.reverse")}</h6> }
           </> :
-          <div>
-            <div style={{fontSize:"98%",color:"EE8D1C"}} >
-              <strong> 
-                {t("basket.orderPayment")} {basketContent?.cardAmount} {t("units.amd")} 
-              </strong>
+          <div className={styles.orderPaymentUnpaidColumn}>
+            <div className={styles.orderPaymentSummaryWrap}>
+              <div className={styles.orderPaymentSummary}>
+                <span className={styles.orderPaymentSummaryLabel}>
+                  {t("basket.orderPayment")}
+                </span>
+                <div className={styles.orderPaymentSummaryAmountRow}>
+                  <strong className={styles.orderPaymentSummaryAmount}>
+                    {formatOrderNumber(basketContent?.cardAmount)}
+                  </strong>
+                  <span className={styles.orderPaymentSummaryCurrency}>
+                    {t("units.amd")}
+                  </span>
+                </div>
+              </div>
             </div>
             <div style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"10px",margin:"20px"}}>
               { basketContent?.mainVpos && 

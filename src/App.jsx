@@ -235,17 +235,20 @@ const App = () => {
       await byBarCode(group, barcode).then((res) => {
         if(from === "basket"){
           if(res?.length) {
-            console.log(res,"res")
             let isEmarkBC = isEmarkBarcode(barcode)
-            console.log(isEmarkBC, "isEmarkBC")
             if(!isEmarkBC) {
               return setBarcodeScanValue("")
             }
             res.forEach((item) => {
-              // if(item?.barCode === barcode || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")){
-              if(item?.barCode === barcode || item?.barCode.includes(barcode) || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")){
-                console.log(barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")
-                console.log(item?.barCode === barcode)
+              if(item?.barCode === barcode || 
+                (barcode?.substring(0, 2) === "01" && 
+                  barcode?.substring(16, 18) === "21" 
+                  && ( 
+                    barcode.substring(2, 16) ===item?.barCode  || barcode.substring(2, 16).replace(/^0+/, '') ===item?.barCode
+                ) )){
+              // if(item?.barCode === barcode || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21" )){
+              // if(item?.barCode === barcode || item?.barCode.includes(barcode) || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")){
+                // console.log(item?.barCode === barcode)
                 if(item?.remainder){
                   setSearchValue("")
                   dispatch(setSearchBarCodeSlice({
@@ -327,7 +330,7 @@ const App = () => {
     loadBasket()
   };
 
-  const deleteBasketItem = async(id,isEmark, barcode) => {
+  const deleteBasketItem = async(id, isEmark, barcode) => {
     let handleArr =  basketContent.filter(prod => prod.id !== id)
     if(isEmark && localStorage.getItem("emarkNewList")){
       const emarkNewList = JSON.parse(localStorage.getItem("emarkNewList")) || []

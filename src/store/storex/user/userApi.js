@@ -25,9 +25,12 @@ export const userApi = createApi({
       }),
       onQueryStarted: async (credentials, { dispatch, queryFulfilled }) => {
         try {
+
           const { data, meta } = await queryFulfilled;
+          console.log("data", data)
           dispatch(setUserNew(data?.data))
         } catch(error) {
+          console.error("Error fetching user data:", error);
         }
       },
     }),

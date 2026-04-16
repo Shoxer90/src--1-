@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import Slide from '@mui/material/Slide';
-import { updateProduct } from "../../../services/products/productsRequests";
+import { updateProduct, uniqueBarCode } from "../../../services/products/productsRequests";
 import { Box } from "@mui/system";
 import { Checkbox, Divider, FormControl, FormControlLabel, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
@@ -174,6 +174,23 @@ const UpdateProduct = ({
   }
 
   const handleUpdate = async() => {
+    const bc = String(currentProduct?.barCode ?? "").trim()
+    if (!bc) {
+      setIsEmptyField(true)
+      setMessage({ message: t("authorize.errors.emptyfield"), type: "error" })
+      return
+    }
+    const originalBc = String(product?.barCode ?? "").trim()
+    if (bc !== originalBc) {
+      const isUniq = await uniqueBarCode(bc)
+      if (isUniq === false) {
+        setIsUniqBarcode(false)
+        setMessage({ message: t("dialogs.unicBarCode"), type: "error" })
+        return
+      }
+      setIsUniqBarcode(true)
+    }
+
      const newArr = await content.map((item) => {
       if(item?.id === currentProduct?.id){
            return currentProduct

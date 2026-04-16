@@ -587,7 +587,6 @@
     "mainCard" : "Main Card",
     "editName": "Edit Credit Card Name",
     "bankTransfer" : "Bank payment",
-    "bankMessage":"Payment can be done on bank account 1510030268626300. Access will be granted during 1 working day after the amount is credited on the mentioned account.",
     "inputs":{    
       "cardName":"Card Name",
       "cardNumber":"Card Number",
