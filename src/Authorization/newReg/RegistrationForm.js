@@ -2,8 +2,8 @@ import React, { memo, useEffect } from "react";
 
 import styles from "./index.module.scss";
 import { useState } from "react";
-import { getDataByTin, registrationNew } from "../../services/auth/auth";
-import { Checkbox, Dialog, FormControl, FormControlLabel, InputAdornment, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from "@mui/material";
+import { getDataByTin, registrationNew , requestVerifyEmail,requestVerifyPhone} from "../../services/auth/auth";
+import { Box, Button, Checkbox, Dialog, FormControl, FormControlLabel, Input, InputAdornment, InputLabel, MenuItem, OutlinedInput, Radio, RadioGroup, Select, styled, TextField } from "@mui/material";
 import { mailValidate } from "../../modules/mailValidate";
 import TermsConditionsLink from "../loginAuth/preRegistrate/TermsConditionsLink";
 import PreRegistrateAgreement from "../loginAuth/preRegistrate/PreRegistrateAgreement";
@@ -11,11 +11,15 @@ import PreRegistrateAgreement from "../loginAuth/preRegistrate/PreRegistrateAgre
 import SnackErr from "../../Container2/dialogs/SnackErr";
 import BackAndOk from "../loginAuth/buttonGroup/backAndOk";
 import { useTranslation } from "react-i18next";
+import VerifyDialoge from "./verify/VerifyDialoge";
+import { useSuccessSound } from "../../modules/PlaySound";
+// import styled from "styled-components";
 
 const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => { 
   const {t} = useTranslation();
   const [message,setMessage] = useState({message:"", type:""});
-  const [confirmPass,setConfirmPass]= useState("");
+  const [verifyCode, setVerifyCode] = useState("");
+
   const [submitClick, setSubmitClick] = useState(false);
   const [validMail, setValidMail] = useState(false);
   const [agree,setAgree] = useState(false);
@@ -23,7 +27,25 @@ const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => {
     isOpen: false,
     message:"",
     type:"info",
-  })
+  });
+  const [isVerify,setIsVerify] = useState({
+    email: false,
+    phone: false,
+  });
+
+
+  const [openVerify, setOpenVerify] = useState({
+    type:"",  //email or phone,
+    isOpen:false
+  });
+
+
+  const GreenDisabledButton = styled(Button)({
+    '&.Mui-disabled': {
+      color: 'green'
+    }
+  });
+
   const taxtType = [
     {
       id: 1,
@@ -107,16 +129,31 @@ const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => {
   };
 
   const registrateNewUserV2 = () => {
+    setIsLoad(true)
     registrationNew(newUser).then((res) => {
+    setIsLoad(false)
       setSubmitClick(false)
       successSubmit(res)
-      setConfirmPass("")
     }) 
   };
 
 
   const reg = () => {
     setSubmitClick(true)
+    if(!isVerify?.email) {
+      return  setInfoDialog({
+        isOpen: true,
+        message:t("authorize.notVerifiedEmail"),
+        type:"error"
+      })
+    }
+    if(!isVerify?.phone) {
+      return  setInfoDialog({
+        isOpen: true,
+        message:t("authorize.notVerifiedPhone"),
+        type:"error"
+      })
+    }
     if(!agree){
       return setInfoDialog({
         isOpen: true,
@@ -163,47 +200,124 @@ const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => {
     }
   };
 
+  const playSuccess = useSuccessSound();
+
+  const sendVerifyCodeRequest = async(str) => {
+    setIsLoad(true)
+    setVerifyCode("")
+
+    let data = null
+    if(str === "email") {
+       data = await requestVerifyEmail({
+        email:newUser?.email
+      })
+    }else if(str === "phone") {
+      data = await requestVerifyPhone({
+        phone:newUser?.phoneNumber
+      })
+    }
+    setIsLoad(false)
+
+    data && data?.status !== 200 && 
+    setInfoDialog({
+      message:data?.data?.message,
+      type:"error",
+      isOpen:true
+    })
+    if( data && data?.status === 200) {
+      playSuccess()
+      setOpenVerify({
+       type:str,
+       isOpen:true
+     })
+    setInfoDialog({
+      message:data?.message,
+      type:"success",
+      isOpen:true
+    })
+
+    }
+  }
+
 
   return(
     <div className={styles.reg_form} autoComplete="off"> 
-      <TextField sx={{m:.6}} 
-        inputProps={{
-          style: {
-            height: "26px",
-            padding:"1px 10px",
-            fontSize:"85%"
-          }
-        }}
-        error={(!newUser?.email && submitClick) || (newUser?.email && !validMail)}
-        name="email"
-        type="email"
-        value={newUser?.email}
-        placeholder={`${t("authorize.email")} *`}
-        onChange={(e)=>isValidMail(e)}
-      />
-    <TextField  sx={{m:.6}} 
-        inputProps={{
-          style: {
-            height: "26px",
-            padding:"1px"
-          }
-        }}
-          error={(!newUser?.phoneNumber && submitClick) ||(newUser?.phoneNumber && newUser?.phoneNumber?.length !==8)}
+      <div style={{display:"flex",padding:"6px"}}>
+        <TextField
+          inputProps={{style: {height: "26px",padding:"1px 10px"}}}
+          style={{flex:1}}
+          error={(!newUser?.email && submitClick) || (newUser?.email && !validMail) || (!isVerify?.email&& submitClick )}
+          name="email"
+          type="email"
+          value={newUser?.email}
+          placeholder={`${t("authorize.email")} *`}
+          onChange={(e)=>{
+            setIsVerify({
+              ...isVerify,
+              [e.target.name]: false
+            })
+            isValidMail(e)
+          }}
+        />
+  { !isVerify?.email ? <Button 
+            size="small"
+            variant="contained" 
+            style={{height: "27px",textTransform: "capitalize",width:"100px", marginLeft:"10px"}}
+            onClick={()=> sendVerifyCodeRequest("email")}
+          >
+            {t("buttons.confirm")}
+          </Button>:
+          <GreenDisabledButton 
+            variant="contained" 
+            size="small"
+            style={{height: "27px",textTransform: "capitalize",width:"100px", marginLeft:"10px"}}
+            disabled
+          >
+           {t("buttons.confirmed")}
+          </GreenDisabledButton>
+        }
+      </div>
+
+      <div style={{display:"flex", padding:"6px"}}>
+        <TextField 
+          inputProps={{style: {height: "26px",padding:"1px 10px"}}}
+          error={(!newUser?.phoneNumber && submitClick) ||(newUser?.phoneNumber && newUser?.phoneNumber?.length !==8) || (!isVerify?.phone && submitClick )}
           name="phoneNumber"
           value={newUser?.phoneNumber}
           label={`${t("authorize.phone")} *`}
+          style={{flex:1}}
           onChange={(e)=>{
+            setIsVerify({
+              ...isVerify,
+              phone: false
+            })
             limitChar(e,8)
-          }
-          }
-          InputProps={{
-            startAdornment: <InputAdornment position="start">+374</InputAdornment>,
           }}
+          InputProps={{startAdornment: <InputAdornment position="start">+374</InputAdornment>}}
         />
+        { !isVerify?.phone ? <Button 
+            size="small"
+            variant="contained" 
+            style={{height: "27px",textTransform: "capitalize",width:"100px", marginLeft:"10px"}}
+            onClick={()=> sendVerifyCodeRequest("phone")}
+          >
+            {t("buttons.confirm")}
+          </Button>:
+          <GreenDisabledButton 
+            variant="contained" 
+            size="small"
+            style={{height: "27px",textTransform: "capitalize",width:"100px", marginLeft:"10px"}}
+            disabled
+          >
+           {t("buttons.confirmed")}
+          </GreenDisabledButton>
+        }
 
-       
+      </div>
 
-        <TextField sx={{m:.6}} 
+
+
+       <TextField sx={{m:.6}} 
           error={!newUser?.tradeName && submitClick}
           inputProps={{
             style: {
@@ -228,6 +342,7 @@ const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => {
           placeholder={t("authorize.businessAddress")}
           onChange={(e)=>handleChange(e)}
         />
+
         <FormControlLabel
           sx={{margin:"10px 0px", color:"black"}}
           value={newUser?.isRegisteredForEhdm}
@@ -243,15 +358,15 @@ const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => {
           }}
         />
         {newUser?.isRegisteredForEhdm && <>
-         <TextField sx={{m:.6}} 
-            autoComplete="off"
+        <TextField sx={{m:.6}} 
+          autoComplete="off"
           inputProps={{
             style: {
               height: "26px",
               padding:"1px 10px"
             }
           }}
-          error={(!newUser?.tin && submitClick)|| (newUser?.tin && newUser?.tin?.length !==8)}
+          error={(!newUser?.tin && submitClick)|| (newUser?.tin && newUser?.tin?.length !==8 )}
           name="tin"
           value={newUser?.tin}
           placeholder={`${t("authorize.tin")} (8 ${t("productinputs.symb")}) *`} 
@@ -267,28 +382,6 @@ const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => {
               <span>{newUser?.legalAddress}</span>
             </div>
           </span>
-          {/* <FormControl sx={{ width: "60%", margin:"10px"}}>
-            <InputLabel>{`${t("authorize.taxType")}*`}</InputLabel>
-            <Select
-              error={!newUser?.taxRegime && submitClick}
-              size="small"
-              name="taxRegime"
-              value={newUser?.taxRegime}
-              // label={`${t("authorize.taxType") }*`}
-              onChange={(e)=>handleChange(e)}
-              renderValue={(value) => (value ? value : `${t("authorize.taxType") } *`)} 
-
-            >
-              {taxtType && taxtType.map((item, index) => (
-                <MenuItem 
-                  key={item?.id} 
-                  value={item?.id}
-                >
-                  {item?.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl> */}
 
           <h5 style={{textAlign:"start",marginLeft:"25px",color:"black"}}>{`${t("authorize.taxType") } *`}</h5>
           <FormControl sx={{color:"black"}}>
@@ -309,18 +402,31 @@ const RegistrationForm = ({newUser, setNewUser, successSubmit,  setIsLoad}) => {
         
       <BackAndOk func={reg} btnName={t("authorize.register")} link={"/login"} />
       </div>
-      
-      <div style={{display:"flex",justifyContent:"space-between",fontSize:"85%"}}>
-        <span className={styles.errorMessage} >
-          {message?.message &&  message?.message}
-        </span>
-      </div>
-      
+          
       {infoDialog?.message &&
         <Dialog open={infoDialog?.isOpen} onClose={()=>setInfoDialog({isOpen: false, message:"",type:"info"})}>
           <SnackErr type={infoDialog?.type} message={infoDialog?.message}  close={()=>setInfoDialog({isOpen: false, message:"",type:"info"})}/>
         </Dialog>
       }
+      <VerifyDialoge
+        open={openVerify?.isOpen}
+        close={()=>{
+          setOpenVerify({
+            isOpen:false,
+            type:""
+          })
+        }}
+        content={openVerify}
+        newUser={newUser}
+        isVerify={isVerify} 
+        setIsVerify={setIsVerify}
+        setInfoDialog={setInfoDialog}
+        sendVerifyCodeRequest={sendVerifyCodeRequest}
+        verifyCode={verifyCode} 
+        setVerifyCode={setVerifyCode}
+
+      />
+
     </div>
   )
 };

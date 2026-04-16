@@ -10,6 +10,7 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import styles from "../index.module.scss";
 import StartEndDatePicker from "./DatePicker";
 import SearchInHistory from "./input/SearchInHistory";
+import { useSuccessSound } from "../../../modules/PlaySound";
 
 const SearchHistory = ({
   getHistoryByStartAndEndDates,
@@ -25,9 +26,11 @@ const SearchHistory = ({
 
   const [ownDate, setOwnDate] = useState({});
   const [openDatePicker, setOpenDatePicker] = useState(false);
+  const playSuccess = useSuccessSound();
 
   const fileReader = async(argument) => {
     await generateToExcel(argument).then((resp) => {
+      playSuccess()
       saveAs(new Blob([resp], {type: 'application/octet-stream'}), `StoreX.xlsx`)
     })
   };

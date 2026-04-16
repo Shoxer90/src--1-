@@ -53,10 +53,14 @@ export async function updateUserPassword (password, token){
 
 
 export async function registrationNew(user) {
-
+ const option = {
+    headers: {
+      accept_language: localStorage.getItem("i18nextLng") ||localStorage.getItem("lang") ,
+    },
+  }
   try{
     const  data = await axios.post(baseUrl + `Registration/RegistrationNew`,user, option);
-    return data.status
+    return data
   }catch(err){
     return err
   }
@@ -180,6 +184,59 @@ export const taxRegistration = async(body) => {
   }
 }
 
-export const taxRegistrationUpdate = async(body) => {
 
+export const requestVerifyEmail = async(inputs) =>{
+  const option = {
+    headers: {
+      accept_language: localStorage.getItem("i18nextLng") ||localStorage.getItem("lang") ,
+    },
+  }
+  try {
+    const data = await axios.post(baseUrl + `Registration/RequestEmailVerification`,inputs, option)
+    return data
+  }catch(err) {
+    return err?.response
+  }
+};
+
+export const requestVerifyPhone = async(inputs) =>{   
+  const option = {
+    headers: {
+      accept_language: localStorage.getItem("i18nextLng") ||localStorage.getItem("lang") ,
+    },
+  }
+  try {
+    const data = await axios.post(baseUrl + `Registration/RequestPhoneVerification`,inputs, option)
+    return data
+  }catch(err) {
+    return err?.response
+  }
+};
+
+export const sendEmailVerifyCode = async(inputs) => {
+   const option = {
+    headers: {
+      accept_language: localStorage.getItem("i18nextLng") ||localStorage.getItem("lang") ,
+    },
+  }
+  try {
+    const data = await axios.post(baseUrl + `Registration/VerifyEmail`,inputs, option)
+    return data
+  }catch(err) {
+    return err?.response
+  }
+};
+
+export const sendPhoneVerifyCode = async(inputs) => {
+   const option = {
+    headers: {
+      accept_language: localStorage.getItem("i18nextLng") ||localStorage.getItem("lang") ,
+    },
+  }
+  try {
+    const data = await axios.post(baseUrl + `Registration/VerifyPhone`,inputs, option)
+    return data
+  }catch(err) {
+    return err?.response
+  }
 }

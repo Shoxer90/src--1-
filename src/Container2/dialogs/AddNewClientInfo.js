@@ -12,6 +12,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Loader from "../loading/Loader";
+import { useSuccessSound } from "../../modules/PlaySound";
 
 const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutFunc, noWay}) => {
   const {t} = useTranslation();
@@ -40,6 +41,7 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
     })
   };
   
+  const playSuccess = useSuccessSound();
 
   const createNewPass = async() => {
     setSubmitClick(true)
@@ -65,6 +67,7 @@ const AddNewClientInfo = ({ setMessage, openAddDialog, setOpenAddDialog, logOutF
       await updateUserPassword({password: newPass?.password}).then((resp) => {
         setSetIsLoad(false)
         if(resp === 200) {
+          playSuccess()
           setMessage({m: t("dialogs.done"), t: "success",message:`${t("dialogs.done")}`, type:"success"})
           setOpenAddDialog(!openAddDialog)
         }else if(resp === 401){

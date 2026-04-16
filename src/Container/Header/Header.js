@@ -11,7 +11,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import styles from "./index.module.scss";
 
 import UserInfo from "./userAvatar/index"
@@ -30,12 +30,17 @@ const Header = ({
   setNotifTrigger,
   notifTrigger,
   setFrom,
+
+  paymentInfo, setPaymentInfo,
+  message,
+  setMessage,
 }) => {
   const {t} = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const {limitedUsing} = useContext(LimitContext);
   const [anchorEl, setAnchorEl] = useState(null);
+
   const open = Boolean(anchorEl);
   useEffect(() => {
     setActiveBtn(location.pathname)
@@ -124,6 +129,34 @@ const Header = ({
               />
               <span className={styles.routeName}>{t("basket.useprepayment")}</span>
             </h6>
+
+            <h6 
+              style={{
+                color:(activeBtn === "/invoicing"? "#FFA500" : "#383838"),
+                fontSize:(activeBtn === "/invoicing" &&"140%")
+              }}
+              onClick={()=> {
+                if(user?.isRegisteredForTaxService) {
+                  navigate("/invoicing")
+                  setActiveBtn("/invoicing")
+                } else{
+                  setMessage({
+                    // isOpen: true,
+                    message: t("settings.needInvoiceAuth"),
+                    type:"error"
+                  })
+                }
+              }}
+            >
+              <AssignmentIcon 
+                fontSize="large"  
+                sx={{ color:(activeBtn === "/invoicing"? "#FFA500": "#3FB68A")}} 
+              />
+              <span className={styles.routeName}>E-invoicing</span>
+            </h6>
+
+
+
              <NotificationBell 
                 user={user} 
                 setNotifTrigger={setNotifTrigger}

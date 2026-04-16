@@ -10,6 +10,7 @@ import { editOrReversePrepaymentReceipt, getHistoryByIdForReverse, reverseProduc
 import Loader from "../../loading/Loader";
 import ReverseConditions from "./ReverseConditions";
 import EmarkInput from "./EmarkInput";
+import { useSuccessSound } from "../../../modules/PlaySound";
 
 const ReverseDialog = ({
   openDialog,
@@ -63,26 +64,29 @@ const ReverseDialog = ({
     })
     setReverseContainer(newContainer)
   };
-  
-const handleOk = async(func, body) => {
-  setLoad(true)
-    await func(body).then((res) => {
-    setLoad(false)
-    if(res === 400) {
-      setType("error")
-      setOwnMessage(`${t("dialogs.sorry")}, ${t("dialogs.wrong")}`)
-    }else if(res === 406) {
-      setType("error")
-      setOwnMessage(`${t("dialogs.sorry")}, ${t("dialogs.choose")}`)
-    }else if(res === 403) {
-      setType("error")
-      setOwnMessage(`${t("dialogs.sorry")}, ${t("dialogs.noReverse")}`)
-    }else if(res.status === 200 && res?.data?.reverceLink){
-      messageAfterReverse(res?.data?.reverceLink);
-      setOpendDialog(false)
-    }
-  })
-};  
+
+  const playSuccess = useSuccessSound();
+    
+  const handleOk = async(func, body) => {
+    setLoad(true)
+      await func(body).then((res) => {
+      setLoad(false)
+      if(res === 400) {
+        setType("error")
+        setOwnMessage(`${t("dialogs.sorry")}, ${t("dialogs.wrong")}`)
+      }else if(res === 406) {
+        setType("error")
+        setOwnMessage(`${t("dialogs.sorry")}, ${t("dialogs.choose")}`)
+      }else if(res === 403) {
+        setType("error")
+        setOwnMessage(`${t("dialogs.sorry")}, ${t("dialogs.noReverse")}`)
+      }else if(res.status === 200 && res?.data?.reverceLink){
+        playSuccess()
+        messageAfterReverse(res?.data?.reverceLink);
+        setOpendDialog(false)
+      }
+    })
+  };  
 
 const checkEmarksOrSubmit = () => {
    if(checkedEmarkQRs?.length) {
@@ -107,7 +111,7 @@ const chooseFuncForSubmit = () => {
 
 const defineEmarkQrs = () => {
   let emarkList = []
-  const prodForReverse = reverseContainer.filter((item) => item?.isChecked);
+  const prodForReverse = reverseContainer?.filter((item) => item?.isChecked) || [];
   if(prodForReverse?.length) {
     prodForReverse.forEach((item) => {
       if(item?.emarks?.length) {

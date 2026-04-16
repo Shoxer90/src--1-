@@ -8,6 +8,8 @@ import PhoneInput from "../historyPage/newHdm/PhoneInput";
 import MailInput from "../historyPage/newHdm/MailInput";
 import ActionMessage from "./ActionMessage";
 import { Dialog } from "@mui/material";
+import { useSuccessSound } from "../../modules/PlaySound";
+
 
 const ShareUsingPhone = ({
   t,
@@ -31,6 +33,8 @@ const ShareUsingPhone = ({
     })
   };
 
+  const playSuccess = useSuccessSound();
+
   const sendLink = async() => {
     if(plchld === "email" && !validator.isEmail(sendData[plchld])){
       setMessage(t("authorize.errors.notMail"))
@@ -39,9 +43,9 @@ const ShareUsingPhone = ({
     } 
     await sendSmsPDF(plchld, sendData).then((resp) => {
       if(resp.status === 200) {
+        playSuccess()
         setMessage(t("basket.sent"))
         setSendData({})
-
       }else{
         setMessage(t("authorize.errors.fail"))
       }

@@ -89,7 +89,7 @@ const PayButtons = ({
   return(
     isInvoice ?
      <div>
-      <Button 
+      {/* <Button 
         variant="contained"
         onClick={()=>payMiddleWare(1)}
         style={{
@@ -101,7 +101,7 @@ const PayButtons = ({
         }}
       >
         Create invoice
-      </Button>
+      </Button> */}
       </div>:
     <div 
       className={styles.bask_container_body_footer_icons}

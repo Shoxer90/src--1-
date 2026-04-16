@@ -1,0 +1,204 @@
+import { memo, useEffect, useState } from 'react';
+import ConfirmDialog from '../../../Container2/dialogs/ConfirmDialog';
+import { useTranslation } from 'react-i18next';
+import { Tooltip } from 'antd';
+import { IconButton } from '@mui/material';
+import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
+import { getInvoiceTableDataByName } from '../../../services/invoice/customerData';
+import { numberSpacing } from '../../../modules/numberSpacing';
+import { useNavigate } from 'react-router-dom';
+
+const cellStyle = {
+  padding: '8px',
+  fontSize: '13px'
+};
+
+export const inputStyle = { 
+  width: '100%',
+  padding: '4px 8px',
+  border: '1px solid #d9d9d9',
+  borderRadius: '4px',
+  fontSize: '13px'
+};
+
+const selectStyle = {
+  width: '100%',
+  padding: '4px 8px',
+  border: '1px solid #d9d9d9',
+  borderRadius: '4px',
+  fontSize: '13px',
+  backgroundColor: 'white'
+};
+
+const ActProductTableItem = ({
+  tableContent,
+  deleteBasketItem,
+  changeCountOfBasketItem,
+  invoicePaymentInfo
+}) => {
+  const {t} = useTranslation();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [activeProd, setActiveProd] = useState({
+    id:"",
+    isEmark: false,
+    barCode:""
+  });
+  // gorcarqi tesak
+  const [dealTypes, setDealTypes] = useState([]); 
+  const [taxType, setTaxType] = useState([]); 
+ 
+
+  const getSaleTypes = async() => {
+    const data = await getInvoiceTableDataByName("DealType", !!invoicePaymentInfo?.invoiceInfo?.invoiceType);
+    if(data?.length) {
+      setDealTypes(data)
+    }
+  };
+
+   const getTaxTypes = async() => {
+    const data = await getInvoiceTableDataByName("VatRate", !!invoicePaymentInfo?.invoiceInfo?.invoiceType);
+    if(data?.length) {
+      setTaxType(data)
+    }
+  }
+
+
+  const removeOneProduct = async() => {
+    deleteBasketItem(activeProd.id, activeProd?.isEmark, activeProd?.barCode)
+    setOpenDialog(false)
+  };
+
+  useEffect(() => {
+    getSaleTypes()
+    getTaxTypes()
+  },[])
+  
+  return (
+    <>
+    <tbody>
+     {tableContent.map((record, index) => (
+        <tr key={record.key} style={{ 
+          borderBottom: '1px solid #f0f0f0',
+          transition: 'background-color 0.2s'
+        }}>
+          <td style={cellStyle}>{index + 1}</td>
+          <td style={cellStyle}>
+            <input
+              type="text"
+              value={record.type}
+              style={inputStyle}
+            />
+          </td>
+
+          {/* Name */}
+          <td style={cellStyle}>
+            <input
+              type="text"
+              value={`${record.name} ${record?.brand}`}
+              // value={record.name}
+              style={inputStyle}
+              readOnly
+            />
+          </td>
+
+          {/* Type */}
+          <td style={cellStyle}>
+            <input
+              type="text"
+              value={record.measure}
+              style={inputStyle}
+              readOnly
+            />
+          </td>
+
+          {/* Quantity */}
+          <td style={cellStyle}>
+            <input
+              type="number"
+              value={record.count}
+              onChange={(e) =>changeCountOfBasketItem(record.id, e.target.value)}
+              style={inputStyle}
+            />
+          </td>
+
+          {/* Price */}
+          <td style={cellStyle}>
+            <input
+              type="number"
+              value={record.price}
+              style={inputStyle}
+              readOnly
+            /> 
+          </td>
+
+          {/* Discount */}
+          <td style={cellStyle}>
+            <input
+              type="number"
+              value={record.discount}
+              min="0"
+              max="100"
+              style={inputStyle}
+              readOnly
+            />
+          </td>
+      
+         
+
+          <td style={cellStyle}>
+            {!(record?.dep === 1) ?
+              <select
+                value={record?.dep===1 ? " " : 1}
+                style={selectStyle}
+                disabled={true}
+              >
+                {dealTypes && dealTypes.map((type) => <option value={type?.id} selected={1}>{type?.title}</option>  )}
+              </select>: 
+               <input
+                value=" "
+                style={{...inputStyle}}
+                readOnly
+              />
+            }
+          </td>
+           <td style={cellStyle}>
+            <input
+              type="text"
+              value={record.discountedPrice*record.count}
+              style={inputStyle}
+              readOnly
+            />
+          </td>
+        
+          {/* Actions */}
+          <td style={{...cellStyle, textAlign: 'center'}}>
+             <Tooltip title={t("buttons.remove")}>
+              <IconButton 
+                onClick={() =>   {
+                  setOpenDialog(true)
+                  setActiveProd({id:record.id, isEmark: record.isEmark, barCode: record.barCode})
+                }}
+                sx={{ color: '#ff4d4f' }}
+              >
+                <DeleteTwoToneIcon />
+              </IconButton>
+            </Tooltip>
+          </td>
+        </tr>
+      ))}
+
+    </tbody>
+      <ConfirmDialog
+        question={t("basket.removeoneprod")}
+        func={removeOneProduct}
+        title={t("settings.remove")}
+        open={openDialog}
+        close={setOpenDialog}
+        content={" "}
+        t={t}
+      />
+    </>
+  )
+}
+
+export default memo(ActProductTableItem);

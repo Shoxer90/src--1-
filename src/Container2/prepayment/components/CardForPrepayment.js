@@ -9,6 +9,7 @@ import SnackErr from "../../dialogs/SnackErr";
 import ReversePrepaymentDialog from "../reverse/ReversePrepaymentDialog";
 import HdmStatus from "../../../modules/hdmStatus";
 import PdfReceiptDialog from "../../historyPage/newHdm/PdfReceiptDialog";
+import { useSuccessSound } from "../../../modules/PlaySound";
 
 const CardForPrepayment = ({
   item,
@@ -100,12 +101,16 @@ const CardForPrepayment = ({
     })
   };
 
+
+  const playSuccess = useSuccessSound();
+  
   const removePartReciept = (dataInput) => {
     setOpenConfirm(false)
     setIsLoad(true)
     reverseProductNew(dataInput).then((res) => {
     setIsLoad(false)
       if(res?.status === 200) {
+        playSuccess()
         // window.open(res?.data?.reverceLink, '_blank', 'noopener,noreferrer');
         // window.location.href = res?.data?.reverceLink
 
@@ -114,11 +119,8 @@ const CardForPrepayment = ({
           link: res?.data?.reverceLink,
           message: res?.data?.res?.message
         })
-
-
-        // getPrepaymentList()
       }else {
-        setMessage({message:t("dialogs.wrong"), type:"error"})
+        setMessage({message: res?.data?.message, type:"error"})
       }
     })
   };

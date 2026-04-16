@@ -8,6 +8,7 @@ import SnackErr from "../SnackErr";
 import Loader from "../../loading/Loader";
 import LogoutIcon from '@mui/icons-material/Logout';
 import ConfirmDialog from "../ConfirmDialog";
+import { useSuccessSound } from "../../../modules/PlaySound";
 
 
 const NewContract = ({
@@ -55,12 +56,14 @@ const NewContract = ({
     })
     setDataForNotification(obj)
   };
+  const playSuccess = useSuccessSound();
 
 	const submitNewContract = async() => {
 		setIsLoad(true)
 		await SignNewContract().then((res) => {
 		setIsLoad(false)
 		if(res?.status === 200) {
+        playSuccess()
 				dispatch(setMessage({type:"success", text:t("dialogs.done")}))
         func()
 			}else{

@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 import ConfirmDialog from "../../Container2/dialogs/ConfirmDialog.js";
 import PrepaymentEmarkDialog from "./emark/PrepaymentEmarkDialog.js";
 import ProductInvoice from "./payment/ProductInvoice.js";
+import { useSuccessSound } from "../../modules/PlaySound.js";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -60,13 +61,15 @@ const Bascket = ({
   limitedUsing,
   setOpenEmarkInput,
   isEmarkBarcode,
-  debounceBasket
+  debounceBasket,
+  totalPrice,
+  setTotalPrice
 }) => {
   const {t} = useTranslation();
   const [screen, setScreen] = useState(window.innerWidth);
   const [saleData, setSaleData] = useState();
   const [loader, setLoader] = useState(false);
-  const [totalPrice,setTotalPrice] = useState();
+  // const [totalPrice,setTotalPrice] = useState();
   const [openHDM, setOpenHDM] = useState(false);
   const [openQr,setOpenQr] = useState(false);
   const [openLinkQR, setOpenLinkQr] = useState(false);
@@ -103,7 +106,7 @@ const Bascket = ({
    return setTrsf()
   };
 
-  const createPaymentSales = async() => {
+   const createPaymentSales = async() => {
     setIsEmpty(false)
     createMessage("","")
     let total = 0
@@ -210,6 +213,8 @@ const Bascket = ({
       if(saleResponse) {
         setLoader(false)
         if(saleResponse?.status === 400) {
+          setSingleClick({})
+
           return createMessage("error", saleResponse?.data?.message)
 
         }
@@ -225,6 +230,7 @@ const Bascket = ({
       createMessage("error", t("dialogs.badInet"))
     }
   }
+       const playSuccess = useSuccessSound();
 
   const responseTreatment = async(result, saletype) => {
     if(result === 401){
@@ -246,6 +252,7 @@ const Bascket = ({
       return createMessage("error", t("authorize.errors.bank_agreement"))
 
     }else if(saletype === 1 && result?.res?.printResponseInfo ) {
+          playSuccess();
       if(openWindow?.invoice) {
         setLoader(false)
         window.open( result?.link, '_blank', 'noopener,noreferrer');
@@ -256,15 +263,18 @@ const Bascket = ({
       setOpenHDM(true)
       loadBasket()
     }else if(saletype === 2 && result?.status === 200) {
+          playSuccess();
       setQrString(result?.data?.content?.qr_text)
       setTrsf(result?.data?.content?.px_transfer_id)
       setOpenQr(true)
     }
     else if(saletype === 3 && result?.status === 200) {
+          playSuccess();
       loadBasket()
       closePhoneDialog()
       setMesFromHead({type:"success", message:t("basket.sent")})
     }else if(saletype === 4 && result?.data?.message) {
+          playSuccess();
       setDataQr(result?.data?.message);
       setOpenLinkQr(true)
     }
@@ -522,24 +532,6 @@ const Bascket = ({
                 paymentInfo={paymentInfo}
                 setPaymentInfo={setPaymentInfo}
                 setBlockTheButton={setBlockTheButton}
-             />}
-{/* if invoicing */}
-
-            {openWindow?.isOpen && openWindow?.invoice &&
-              <ProductInvoice  
-                totalPrice={totalPrice}
-                paymentInfo={paymentInfo}
-                setPaymentInfo={setPaymentInfo}
-                setBlockTheButton={setBlockTheButton}
-                prepayment = {openWindow?.prePaymentAmount}
-                setOpenInvoiceDialog={setOpenInvoiceDialog}
-                openInvoiceDialog={openInvoiceDialog}
-                
-                basketContent={basketContent}
-                deleteBasketItem={deleteBasketItem}
-                setOpenBasket={setOpenBasket}
-                changeCountOfBasketItem={changeCountOfBasketItem}
-
              />}
         
             { basketContent?.length ?

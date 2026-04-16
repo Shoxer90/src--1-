@@ -13,6 +13,7 @@ import styles from "./index.module.scss";
 import HomeContent from "./content/HomeContent";
 import { useLocation } from "react-router-dom";
 import { loadResources } from "i18next";
+import { PlaySound, useSuccessSound } from "../../modules/PlaySound";
 
 const initState = {
   purchasePrice: "",
@@ -77,10 +78,12 @@ const HomePage = ({
     
     setProduct(initState)
   };
-  
+  const playSuccess = useSuccessSound();
+
   const deleteAndRefresh = async(id) => {
     await removeProduct(id).then((res) => {
       if(res?.status === 200) {
+        playSuccess()
         deleteBasketItem(id)
         const newArr = content.filter(item => item?.id !== id)
         setContent(newArr)
@@ -121,6 +124,7 @@ const HomePage = ({
     setFetching(true)
     queryFunction(status, page).then((res) => { 
       if(res){
+        // playSuccess();
         setFetching(false)
         setTotalCount(res?.headers["count"])
         setContent(res?.data)
@@ -140,7 +144,6 @@ const HomePage = ({
         dataGroup={dataGroup}
         status={status}
         setFrom={setFrom}
-
         from={from}
         setContent={setContent}
       />

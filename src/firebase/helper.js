@@ -7,6 +7,7 @@ export const canUsePush = () => {
   const isWebView = (window.navigator.standalone === false && isIOS) || isInstagram || isTelegram || isFacebook;
 
   if(isWebView) {
+    // return true
     return false
   }else{
     return true

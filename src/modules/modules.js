@@ -96,22 +96,6 @@ export const taxCounting = (arr) => {
   return tax.toFixed(2)
 };
 
-export const getResponseAfterPay = (statusCall) => {
-  if(statusCall === 200) {
-    return {type:"success", message:t("dialogs.checkCardStatus200")}
-  }else if(statusCall === 201) {
-    return {type:"success", message:t("dialogs.checkCardStatus201")}
-  }else if(statusCall === 410) {
-    return {type:"error", message:t("dialogs.checkCardStatus410")}
-  }else if(statusCall === 400) {
-    return {type:"error", message:t("dialogs.checkCardStatus400")}
-  }else if(statusCall === 411) {
-    return {type:"error", message:t("dialogs.checkCardStatus412")}
-  }else {
-    return {type:"error", message:t("dialogs.checkCardStatus400")}
-  }
-};
-
 export const formatNumberWithSpaces = (number) => {
   return number.toLocaleString('en').replace(/,/g, ' ');
 }

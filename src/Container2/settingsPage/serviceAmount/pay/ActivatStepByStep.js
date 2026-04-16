@@ -10,6 +10,7 @@ import styles from "./index.module.scss";
 import SnackErr from "../../../dialogs/SnackErr";
 import Loader from "../../../loading/Loader";
 import { payForServiceWithAttachedCard, payForServiceWithNewCard } from "../../../../services/internal/InternalPayments";
+import { useSuccessSound } from "../../../../modules/PlaySound";
 
 const ActivateStepByStep = ({
   open, 
@@ -74,6 +75,9 @@ const ActivateStepByStep = ({
   })
   };
   // this is new in this component
+    const playSuccess = useSuccessSound();
+  
+
     const servicePay = async() => {
       if(activateEhdm) {
         if(!user?.isRegisteredForEhdm){
@@ -88,6 +92,7 @@ const ActivateStepByStep = ({
         payForServiceWithAttachedCard(payData).then((res) => {
           setLoader(false)
           if(res?.status === 200) {
+            playSuccess()
             setMessage({type:"success", message:t("dialogs.checkCardStatus200")})
           }else if(res?.status === 201) {
             setMessage({type:"success", message:t("dialogs.checkCardStatus201")})

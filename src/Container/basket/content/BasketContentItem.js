@@ -227,11 +227,19 @@ const handleChangeBasketCount = (val) => {
 
   const emarkQrCounting = () => {
     const data = localStorage.getItem("emarkNewList")
+    // console.log("data", data)
     if(el?.isEmark && data){
       const allEmarkList = JSON.parse(data) || []
+      // console.log(allEmarkList, "allEmarkList")
+      // console.log(el, "el")
       if (allEmarkList?.length) {
-       let data = allEmarkList?.filter((item) => item?.barcode === el?.barCode)
+      //  let data = allEmarkList?.filter((item) =>item?.barcode.replace(/^0+/, '') === el?.barCode)
+       let data = allEmarkList?.filter((item) => item?.barcode === el?.barCode || item?.barcode.replace(/^0+/, '') === el?.barCode)
+      //  let data = allEmarkList?.filter((item) => item?.barcode === el?.barCode)
+        // console.log("data0", data)
+
         if(data?.length){
+          // setDataFromLS(data[0].emarks)
           setDataFromLS(data[0])
         }else{
           setDataFromLS({})
