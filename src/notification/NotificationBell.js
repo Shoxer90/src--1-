@@ -160,7 +160,7 @@ const NotificationBell = ({
   });
 
   return (
-    <div>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
       <OpenBtn clickFunc={handleClick} notificationCount={notificationCount} buttonRef={buttonRef} open={anchorEl} />        
       <StyledMenu
         anchorEl={anchorEl}

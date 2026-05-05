@@ -11,7 +11,7 @@ import { Dialog, Divider} from "@mui/material";
 
 import styles from "./index.module.scss";
 
-const BasketList = ({t, logOutFunc}) => {
+const BasketList = ({t}) => {
   const search = useLocation().search;
   const saleId = new URLSearchParams(search).get('saleId')
   const [basketContent, setBasketContent] = useState([]);
@@ -69,7 +69,6 @@ const BasketList = ({t, logOutFunc}) => {
     
     
   useEffect(() => {
-    logOutFunc()
     getBasketList() 
   }, []);
 

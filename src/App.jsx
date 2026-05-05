@@ -105,6 +105,9 @@ const App = () => {
   const [isBlockedUser,setBlockedUser] = useState(false);
   const debounce = useDebonce(searchValue, 1000);
   // const debounceBasket = useDebonce(barcodeScanValue, 20);
+  const location = useLocation();
+  /** Страница оплаты по ссылке: без Header и основной навигации. */
+  const isBasketOrderPublicView = location.pathname.startsWith("/basket");
   const [activeBtn, setActiveBtn] = useState("/");
   const [lastDate,setLastDate] = useState("");
   const [fetching, setFetching] = useState(true);
@@ -549,7 +552,11 @@ const App = () => {
   return (
   <LimitContext.Provider value={{limitedUsing, setLimitedUsing}}>
     <div className="App" autoComplete="off">
-      {! isLogin  && !localStorage.getItem("token")?
+      <Routes>
+        <Route path="/basket/*" element={<BasketList t={t} />} />
+      </Routes>
+
+      {!isBasketOrderPublicView && (! isLogin  && !localStorage.getItem("token")?
         <Routes>
           <Route path="*" element={<LoginAuthContainer children={<Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />} />
           <Route path="/login" element={<LoginAuthContainer children={<Login setIsLogIn={setIsLogIn} whereIsMyUs={whereIsMyUs} />} />}  />
@@ -559,7 +566,6 @@ const App = () => {
           <Route path="/confirmation/*" element={<ConfirmationV2 />} />
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
           <Route path="/privacy_policy_payx" element={<PrivacyPayx />} />
-          <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc}/>} />
           <Route path="/kuku" element={<IframeReader />} />
           {/* ADMIN PAGE */}
           <Route path="/admin/*" element={<AdminPage />} />
@@ -657,8 +663,6 @@ const App = () => {
             <Route path="/setting/user" element={<SettingsUser user={user} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc} limitedUsing={limitedUsing}/>} />
             <Route path="/history" element={<HistoryPage logOutFunc={logOutFunc} />} />
             {/* <Route path="/product-info/*" element={<ProductChanges t={t} logOutFunc={logOutFunc} measure={measure} />} /> */}
-            {/* <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} /> */}
-            <Route path="/basket/*" element={<BasketList t={t} logOutFunc={logOutFunc} />} />
             <Route path="/prepayment" element={<PrePaymentList 
               setOpenBasket={setOpenBasket} 
               setToBasket={setToBasket}
@@ -799,7 +803,7 @@ const App = () => {
             content={message?.confirmMessage}
           />
         </>
-      }
+      )}
     </div>
   </LimitContext.Provider>
   );

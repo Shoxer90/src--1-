@@ -61,7 +61,7 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-const MenuBurger = ({logout,setActiveBtn, user}) => {
+const MenuBurger = ({ logout, setActiveBtn, user, collapsedNavRender }) => {
   const {limitedUsing} = useContext(LimitContext);
   const {t} = useTranslation();
   const navigate = useNavigate();
@@ -69,6 +69,7 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
   const open = Boolean(anchorEl);
   const [logoutConfirm, setOpenLogoutConfirm] = useState(false);
 
+  const closeMenu = () => setAnchorEl(null);
 
   return (
     <div>
@@ -91,9 +92,13 @@ const MenuBurger = ({logout,setActiveBtn, user}) => {
       <StyledMenu
         anchorEl={anchorEl}
         open={open}
-        onClose={() => setAnchorEl(null)}
+        onClose={closeMenu}
         style={{minWidth:"350px"}}
       >
+        {typeof collapsedNavRender === "function" ? collapsedNavRender(closeMenu) : null}
+        {typeof collapsedNavRender === "function" ? (
+          <Divider flexItem style={{margin:4, backgroundColor:"gray"}}/>
+        ) : null}
         {!limitedUsing && 
           <Box style={{display:'flex'}}>
             <AccountCircleIcon style={{marginLeft:"10px",marginTop:"6px"}}/>

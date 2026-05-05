@@ -195,14 +195,14 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
         {t("updates.seeContract")}
       </Button>
         {/* 10.12.2025 */}
-      <Button 
+      {/* <Button 
         variant="contained"
         startIcon={user?.isRegisteredForTaxService ? <BorderColorIcon /> :<PostAddIcon  />}
         onClick={()=>setOpenInvoiceAuth(true)}
         sx={{letterSpacing:"1px",background: "#fd7e14",m:2,textTransform: "capitalize", border:"orange"}} 
       >
         {user?.isRegisteredForTaxService ? t("updates.invoiceButtonUpdate") : t("updates.invoiceButtonCreate")}
-      </Button>
+      </Button> */}
       </div>
       { openInvoiceAuth && 
         <InVoiceAuth 
