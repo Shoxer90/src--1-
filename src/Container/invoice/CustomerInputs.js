@@ -334,7 +334,6 @@ const CustomerInputs = ({
             value={invoicePaymentInfo?.invoiceInfo?.destinationRegionId}
             onChange={(value,opt)=>{
               const option = regions.find((opt) => opt.value === value)
-              console.log(opt.label, "ABEL")
               onChange("destinationRegionId", option || value, opt.label)
               getSelectData2("destinationRegionId")
             }}

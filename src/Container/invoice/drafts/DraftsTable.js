@@ -143,7 +143,6 @@ const createTableContent = () => {
 
 const removeInvoiceDraft = (id) => {
   removeInvoice(id).then((res) => {
-    console.log(res, "res after remove")
     if(res?.status === 200){
 
       setMessage({text:res?.data?.message, type:"success"})
@@ -170,14 +169,9 @@ const removeInvoiceDraft = (id) => {
   });
 
   const handleClick = (transaction, id) => {
-    console.log(transaction, "trtrtr");
-
     let transact = content?.filter((item) => item?.id === id)
     setTransaction(transact)
-    // setOpenInvoiceItem({
-    //   id: id,
-    //   isOpen:true
-    // })
+  
   };
 
   useEffect(() => {

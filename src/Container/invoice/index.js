@@ -129,7 +129,6 @@ console.log("invoicePaymentInfo", invoicePaymentInfo);
   }
 
   const printInvoice = async(saleData) => {
-    console.log(JSON.stringify({...paymentInfo,...saleData}))
     setLoading(true)
     saleProductFromBasket({...paymentInfo, ...saleData}).then((res)=>{
       setLoading(false)

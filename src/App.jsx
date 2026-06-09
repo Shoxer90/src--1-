@@ -189,14 +189,13 @@ const App = () => {
   };
  
   const isEmarkBarcode = (barcodeOrEmark) => {
-    console.log(barcodeOrEmark, "barcodeOrEmark ")
     let input = barcodeOrEmark
     if(input?.substring(0, 2) === "01" && input?.substring(16, 18) === "21") {
       input = replaceGS(barcodeOrEmark)
       const emarkList = JSON.parse(localStorage.getItem("emarkList")) || [];
       const emarkNewList = JSON.parse(localStorage.getItem("emarkNewList")) || [];
-      const currentBarcode = input?.slice(2,16)
-      // const currentBarcode = input?.slice(3,16)
+      // const currentBarcode = input?.slice(2,16)
+      const currentBarcode = input?.slice(3,16)
       if(!emarkList?.includes(input)) {
         localStorage.setItem("emarkList", JSON.stringify([ ...emarkList, input]));
         let flag = 0
@@ -226,62 +225,187 @@ const App = () => {
     return true
   };
 
-  const byBarCodeSearching = async(group,barcode) => {
-    if(barcode === "" || barcode === " "){
-      await queryFunction(status, 1).then((res) => {
-        setContent(res?.data)
-      })
-      setCurrentPage(2)
-      return
-    } else {
-      setMessage("")
-      await byBarCode(group, barcode).then((res) => {
-        if(from === "basket"){
-          if(res?.length) {
-            let isEmarkBC = isEmarkBarcode(barcode)
-            if(!isEmarkBC) {
-              return setBarcodeScanValue("")
-            }
-            res.forEach((item) => {
-              if(item?.barCode === barcode || 
-                (barcode?.substring(0, 2) === "01" && 
-                  barcode?.substring(16, 18) === "21" 
-                  && ( 
-                    barcode.substring(2, 16) ===item?.barCode  || barcode.substring(2, 16).replace(/^0+/, '') ===item?.barCode
-                ) )){
-              // if(item?.barCode === barcode || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21" )){
-              // if(item?.barCode === barcode || item?.barCode.includes(barcode) || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")){
-                // console.log(item?.barCode === barcode)
-                if(item?.remainder){
-                  setSearchValue("")
-                  dispatch(setSearchBarCodeSlice({
-                    name: from,
-                    value: ""
-                  }))
-                  setToBasketFromSearchInput(item, 1)
+  // const byBarCodeSearching = async(group,barcode) => {
+  //   if(barcode === "" || barcode === " "){
+  //     await queryFunction(status, 1).then((res) => {
+  //       setContent(res?.data)
+  //     })
+  //     setCurrentPage(2)
+  //     return
+  //   } else {
+  //     setMessage("")
+  //     await byBarCode(group, barcode).then((res) => {
+  //       if(from === "basket"){
+  //         if(res?.length) {
+  //           let isEmarkBC = isEmarkBarcode(barcode)
+  //           if(!isEmarkBC) {
+  //             return setBarcodeScanValue("")
+  //           }
+  //           res.forEach((item) => {
+  //             if(item?.barCode === barcode || 
+  //               (barcode?.substring(0, 2) === "01" && 
+  //                 barcode?.substring(16, 18) === "21" 
+  //                 && ( 
+  //                   barcode.substring(2, 16) ===item?.barCode  || barcode.substring(2, 16).replace(/^0+/, '') ===item?.barCode
+  //               ) )){
+  //             // if(item?.barCode === barcode || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21" )){
+  //             // if(item?.barCode === barcode || item?.barCode.includes(barcode) || (barcode?.substring(0, 2) === "01" && barcode?.substring(16, 18) === "21")){
+  //               // console.log(item?.barCode === barcode)
+  //               if(item?.remainder){
+  //                 setSearchValue("")
+  //                 dispatch(setSearchBarCodeSlice({
+  //                   name: from,
+  //                   value: ""
+  //                 }))
+  //                 setToBasketFromSearchInput(item, 1)
                
-                }else{
-                  return setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
-                }
-              }
-            })
-          } else {
-            setMessage({message: res?.data?.message,type: "error"})
-          }
-        }else if(from === "main") {
-          return res?.length ? setContent(res) : (
-            setContent([]) ,
-            byBarCode("GetNotAvailableProducts", barcode).then((res) => {
-              setSearchedNotAvailableProd(res)
-              res?.length ? 
-              setMessage({confirmMessage: t("mainnavigation.searchconclOutOfStock"), type: "success"}):
-              setMessage({message: t("mainnavigation.searchconcl"), type: "error"})
-            })
-          )
-        }
-      })
+  //               }else{
+  //                 return setMessage({message: t("mainnavigation.searchconcl"),type: "error"})
+  //               }
+  //             }
+  //           })
+  //         } else {
+  //           setMessage({message: res?.data?.message,type: "error"})
+  //         }
+  //       }else if(from === "main") {
+  //         return res?.length ? setContent(res) : (
+  //           setContent([]) ,
+  //           byBarCode("GetNotAvailableProducts", barcode).then((res) => {
+  //             setSearchedNotAvailableProd(res)
+  //             res?.length ? 
+  //             setMessage({confirmMessage: t("mainnavigation.searchconclOutOfStock"), type: "success"}):
+  //             setMessage({message: t("mainnavigation.searchconcl"), type: "error"})
+  //           })
+  //         )
+  //       }
+  //     })
+  //   }
+  // };
+  const emarkChecking = (input) => {
+    if(input?.substring(0, 2) === "01" && input?.substring(16, 18) === "21") {
+      return true
+    }else {
+      return false
     }
   };
+
+  const setEmarkToStorage = (emark , barcode) => {
+    let replacedGs = replaceGS(emark)
+    const emarkList = JSON.parse(localStorage.getItem("emarkList")) || [];
+    const emarkNewList = JSON.parse(localStorage.getItem("emarkNewList")) || [];
+    if(!emarkList?.includes(replacedGs)) {
+      let flag = 0;
+      let newDataForStorage = [];
+      newDataForStorage = emarkNewList?.map((prod) => {
+        if(prod?.barcode === barcode) {
+          flag+=1
+          return {
+            ...prod,
+            emarks:[...prod?.emarks,replacedGs]
+          }
+        }
+        return prod
+      })
+      if(!flag) {
+        newDataForStorage?.push({barcode:barcode, emarks:[replacedGs], scanRequired:true})
+
+      }
+      localStorage.setItem("emarkNewList", JSON.stringify(newDataForStorage));
+      localStorage.setItem("emarkList", JSON.stringify([ ...emarkList, replacedGs]));
+
+    }else {
+      setMessage({message:t("emark.qrInBasket"), type:"error"})
+      return false
+    }
+    return true
+  }
+
+
+  const byBarCodeSearching = async(group,barcode) => {
+    const normalizedBarcode = barcode?.trim();
+    const normalizedGroup = group?.trim();
+    const defaultSearchError = t("mainnavigation.searchconcl");
+
+    if(!normalizedBarcode){
+      const res = await queryFunction(status, 1);
+      setContent(res?.data);
+      setCurrentPage(2);
+      return;
+    }
+
+    const res = await byBarCode(normalizedGroup, normalizedBarcode);
+
+    if(from === "basket"){
+      if(!res?.length) {
+        return setMessage({
+          message: res?.data?.message || defaultSearchError,
+          type: "error"
+        });
+      }
+
+      const isEmarkBC = emarkChecking(normalizedBarcode);
+
+      for (const item of res) {
+        if(!item?.remainder) {
+          setMessage({message: defaultSearchError, type: "error"});
+          return;
+        }
+
+        if(item?.barCode !== item?.emark && isEmarkBC) {
+          const isEmarkBCInStorage = setEmarkToStorage(normalizedBarcode, item?.barCode);
+
+          if(!isEmarkBCInStorage) {
+            setMessage({message: t("emark.qrInBasket"), type:"error"});
+            return;
+          }
+        }
+
+        setSearchValue("");
+        dispatch(setSearchBarCodeSlice({
+          name: from,
+          value: ""
+        }));
+        setToBasketFromSearchInput(item, 1);
+        return;
+      }
+
+      return setMessage({message: defaultSearchError, type: "error"});
+    }
+
+    if(from === "main") {
+      if(res?.length) {
+        setContent(res);
+        return;
+      }
+
+      setContent([]);
+      const notAvailableRes = await byBarCode("GetNotAvailableProducts", normalizedBarcode);
+      setSearchedNotAvailableProd(notAvailableRes);
+
+      if(notAvailableRes?.length) {
+        setMessage({
+          confirmMessage: t("mainnavigation.searchconclOutOfStock"),
+          type: "success"
+        });
+        return;
+      }
+
+      setMessage({
+        message: res?.data?.message || defaultSearchError,
+        type: "error"
+      });
+    }
+  }
+      
+      
+     
+
+
+
+
+
+
+
 
   const loadBasket = () => {
     let existArr = []
@@ -338,7 +462,9 @@ const App = () => {
     if(isEmark && localStorage.getItem("emarkNewList")){
       const emarkNewList = JSON.parse(localStorage.getItem("emarkNewList")) || []
       const emarkList = JSON.parse(localStorage.getItem("emarkList")) || []
-      let newEmarkArr = emarkList?.filter((emark) => emark?.slice(3,16) !== barcode)
+      let newEmarkArr = emarkList?.filter((emark) => emark?.slice(3,16) !== barcode || emark?.slice(2,16) !== barcode)
+      console.log(emarkNewList, "emarkNewList")
+      console.log(barcode, "barcode")
       let newList = emarkNewList?.filter((item) => item?.barcode !== barcode)
       localStorage.setItem("emarkNewList",JSON.stringify(newList))
       localStorage.setItem("emarkList",JSON.stringify(newEmarkArr))
@@ -420,20 +546,20 @@ const App = () => {
   };
 
   const setToBasketFromSearchInput = (wishProduct, quantity) => {
-    console.log("wishProduct", wishProduct)
     const basket = basketContent
-      if(quantity && quantity > wishProduct?.remainder){
+    if(quantity && quantity > wishProduct?.remainder){
       setMessage({message:`${t("dialogs.havenot")} ${quantity} ${t(`units.${wishProduct?.measure}`)}`, type:"error" })
       return
     }else if(basketExist.includes(wishProduct?.id)){
         const newBasket = basket.map((prod) => {
-          if(prod?.productId === wishProduct?.id){
+          if(prod?.productId === wishProduct?.id && prod?.count < wishProduct?.remainder){
             return {
               ...prod,
               count:prod?.count + 1,
               discountedPrice:wishProduct?.discountedPrice,
             }
           }else{
+            setMessage({message:`${t("mainnavigation.searchEmarkconcl2")} `, type:"error" })
             return prod
           }
         })

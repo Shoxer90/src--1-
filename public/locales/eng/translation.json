@@ -255,6 +255,7 @@
     "placeholder2": "Add to basket",
     "searchconcl": "Product with this barcode (name, label) is not available in the list has been sold.",
     "searchEmarkconcl": "The product with the given e-Mark is not in the basket or has already been removed.",
+    "searchEmarkconcl2":"You have exhausted your available store balance.",
     "searchconclOutOfStock":"Products with this barcode or name were found in the unavailable products section. Do you want to go?",
     "newproduct": "Add new product",
     "multipleproduct": "Add multiple products",

@@ -27,7 +27,6 @@ export const userApi = createApi({
         try {
 
           const { data, meta } = await queryFulfilled;
-          console.log("data", data)
           dispatch(setUserNew(data?.data))
         } catch(error) {
           console.error("Error fetching user data:", error);
