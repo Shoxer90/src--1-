@@ -56,6 +56,7 @@ import { removeDeviceToken } from "./services/notifications/notificatonRequests"
 import { setSearchBarCodeSlice } from "./store/searchbarcode/barcodeSlice";
 import { replaceGS } from "./services/baseUrl";
 import InVoiceMainDialog from "./Container/invoice";
+import { restoreScannerIfEnabled } from "./Container/emarkScanner/ScannerManager";
 // import InVoiceMainDialog from "./Container/Header/invoice";
 
 const checkForUpdates = async () => {
@@ -583,12 +584,16 @@ const App = () => {
 
   const logOutFunc = async() =>{
     const language = localStorage.getItem("lang");
+    const scannerEnabled = localStorage.getItem("scannerEnabled");
     removeDeviceToken(localStorage.getItem("dt"))
     setIsLogIn(false)
     setContent([]);
     setCount(false)
     localStorage.clear();
     localStorage.setItem("lang", language)
+    if (scannerEnabled) {
+      localStorage.setItem("scannerEnabled", scannerEnabled);
+    }
   }; 
 
   const getMeasure = async() => {
@@ -627,6 +632,16 @@ const App = () => {
     })
   };
   
+  useEffect(() => {
+    restoreScannerIfEnabled();
+  }, []);
+
+  useEffect(() => {
+    if (isLogin) {
+      restoreScannerIfEnabled();
+    }
+  }, [isLogin]);
+
   useEffect(() => { 
     checkForUpdates()
     isLogin && getMeasure()

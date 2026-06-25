@@ -26,42 +26,48 @@
 .dialogHeader{
   display: flex;
   justify-content: space-between;
-  padding: 5px 10px;
+  padding: 12px 20px;
   align-items: center;
+  font-weight: 600;
 }
 
-.update{
-  margin: 15px;
-  display: flex;
-  justify-content: space-around;
-  flex-direction: column;
-  &_item{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin: 10px 0px;
-    &>div{
-      margin-right: 8px;
-      min-width: 70px;
-    }
+.dialogClose{
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 4px;
+
+  &:hover{
+    background-color: #d6d3d3;
   }
 }
 
+.update{
+  display: flex;
+  flex-direction: column;
+  padding: 8px 4px 4px;
+  gap: 14px;
+  min-width: 280px;
+
+  &_actions{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid #e0e0e0;
+  }
+}
 
 @media screen and (max-width: 425px) {
   .update{
-  font-size: 90%;
-    &_item{
-      margin: 5px 0px;
-    }
+    font-size: 90%;
+    gap: 12px;
   }
 }
 
 @media screen and (max-width: 350px) {
   .update{
-  font-size: 80%;
-    &_item{
-      margin: 5px 0px;
-    }
+    font-size: 80%;
+    gap: 10px;
   }
 }
