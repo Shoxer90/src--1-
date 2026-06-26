@@ -26,6 +26,7 @@ import ConfirmDialog from "../../Container2/dialogs/ConfirmDialog.js";
 import PrepaymentEmarkDialog from "./emark/PrepaymentEmarkDialog.js";
 import ProductInvoice from "./payment/ProductInvoice.js";
 import { useSuccessSound } from "../../modules/PlaySound.js";
+import { printSaleReceipt } from "../../printer/printSaleReceipt";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -258,9 +259,19 @@ const Bascket = ({
         window.open( result?.link, '_blank', 'noopener,noreferrer');
         return closeRecieptAndRefresh()
       }
+      if (user?.ehdmMode === 2 && !openWindow?.invoice) {
+        printSaleReceipt(result, userName).then((printResult) => {
+          if (printResult.success === false && !printResult.skipped) {
+            const errText = printResult.error?.includes('fetch')
+              ? 'Տերմոպրինտերը հասանելի չէ։ Գործարկեք՝ npm run printer'
+              : printResult.error || 'Չհաջողվեց տպել չեկը';
+            createMessage('error', errText);
+          }
+        });
+      }
       setSaleData(result)
       setLoader(false)
-      setOpenHDM(true)
+      setOpenHDM(user?.ehdmMode !== 2)
       loadBasket()
     }else if(saletype === 2 && result?.status === 200) {
           playSuccess();

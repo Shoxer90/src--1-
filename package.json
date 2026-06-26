@@ -24,6 +24,7 @@
     "cors": "^2.8.5",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.5",
+    "express": "^4.22.2",
     "file-saver": "^2.0.5",
     "firebase": "^11.4.0",
     "framer-motion": "^10.12.18",
@@ -53,6 +54,7 @@
     "react-spinners": "^0.13.6",
     "react-to-print": "^2.14.7",
     "styled-components": "^5.3.6",
+    "usb": "^2.18.0",
     "validator": "^13.12.0",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
@@ -61,7 +63,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "printer": "node src/printer/index.js",
+    "printer:windows": "set WINDOWS_PRINTER_NAME=Printer-80&& node src/printer/index.js"
   },
   "eslintConfig": {
     "extends": [
