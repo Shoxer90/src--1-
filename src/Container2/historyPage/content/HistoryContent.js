@@ -51,7 +51,7 @@ const HistoryContent = ({
               </TableRow>
             </TableHead>
             <TableBody style={{fontSize:"60%"}}>
-              {content &&  content.map((item, index) => (
+              {content &&  content?.map((item, index) => (
                 <HistoryItems
                   key={index}
                   item={item} 

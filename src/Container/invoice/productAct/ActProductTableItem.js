@@ -76,7 +76,7 @@ const ActProductTableItem = ({
   return (
     <>
     <tbody>
-     {tableContent.map((record, index) => (
+     {tableContent?.map((record, index) => (
         <tr key={record.key} style={{ 
           borderBottom: '1px solid #f0f0f0',
           transition: 'background-color 0.2s'

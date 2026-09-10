@@ -26,6 +26,8 @@ import ConfirmDialog from "../../Container2/dialogs/ConfirmDialog.js";
 import PrepaymentEmarkDialog from "./emark/PrepaymentEmarkDialog.js";
 import ProductInvoice from "./payment/ProductInvoice.js";
 import { useSuccessSound } from "../../modules/PlaySound.js";
+import PayDialogue from "../payByte";
+import { buildSalePaymentPayload } from "../payByte/buildSalePaymentPayload";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -92,6 +94,7 @@ const Bascket = ({
   const [openEmarkPrepayment, setOpenEmarkPrepayment] = useState(false);
   const [globalStorageList, setGlobalStorageList] = useState(()=>JSON.parse(localStorage.getItem("emarkNewList")) || []);
   const [openInvoiceDialog, setOpenInvoiceDialog] = useState(false);
+  const [openPayDialog, setOpenPayDialog] = useState(false);
 
   const needEmark = JSON.parse(localStorage.getItem("needEmark"))
 
@@ -163,7 +166,7 @@ const Bascket = ({
       border:"red",
       pointerEvents:"none"
     })
-    basketContent.map((item) => {
+    basketContent?.map((item) => {
       if(item?.count * item?.price < 1){
         createMessage("error", t("basket.total_zero"))
       }
@@ -190,14 +193,19 @@ const Bascket = ({
 // here I must check is it payment or prepayment sale
   const sale = async(saletype) => {
     let saleResponse = "";
+    const salePayload = buildSalePaymentPayload(
+      paymentInfo,
+      totalPrice,
+      openWindow?.prePaymentAmount
+    );
     if(navigator.onLine) {
       if(saletype === 1) {
-        saleResponse =  await saleProductFromBasket({...paymentInfo})
+        saleResponse =  await saleProductFromBasket(salePayload)
       }else if(saletype === 2) {
-        saleResponse =  await payRequestQR({...paymentInfo})
+        saleResponse =  await payRequestQR(salePayload)
       }else if(saletype === 3) {
         saleResponse = await sendSmsForPay({
-          ...paymentInfo,
+          ...salePayload,
           phone: `+374${paymentInfo.phone}`
         })
           if(saleResponse?.status === 203) {
@@ -208,7 +216,7 @@ const Bascket = ({
           }
         setOpenPhonePay(true)
       }else if(saletype === 4) {
-        saleResponse = await basketListUrl({...paymentInfo})
+        saleResponse = await basketListUrl(salePayload)
       }
       if(saleResponse) {
         setLoader(false)
@@ -509,6 +517,7 @@ const Bascket = ({
                     setPaymentInfo={setPaymentInfo}
                     clickToPrepayment={clickToPrepayment}
                     setCleanEmarks={setCleanEmarks}
+                    setOpenPayDialog={setOpenPayDialog}
                   />
                   <Divider style={{margin:2, backgroundColor:"gray"}}/>
                 </>:""
@@ -592,6 +601,34 @@ const Bascket = ({
             logOutFunc={logOutFunc}
             multiSaleProducts={multiSaleProducts}
           />
+        <PayDialogue
+          open={openPayDialog}
+          close={() => {
+            setOpenPayDialog(false);
+            setPaymentInfo({
+              ...paymentInfo,
+              cashAmount: 0,
+              cardAmount: 0,
+            });
+          }}
+          basketContent={basketContent}
+          totalPrice={totalPrice}
+          paymentInfo={paymentInfo}
+          setPaymentInfo={setPaymentInfo}
+          setBlockTheButton={setBlockTheButton}
+          prepayment={openWindow?.prePaymentAmount}
+          handleOpenPhoneDialog={handleOpenPhoneDialog}
+          multiSaleProducts={multiSaleProducts}
+          blockTheButton={blockTheButton}
+          singleClick={singleClick}
+          setSingleClick={setSingleClick}
+          setOpenBasket={setOpenBasket}
+          saleMode={user?.ehdmMode}
+          limitedUsing={limitedUsing}
+          setOpenDialog={setOpenDialog}
+          cleanEmarks={cleanEmarks}
+          isInvoice={openWindow?.invoice}
+        />
         {openLinkQR &&
           <PayQRLink 
             t={t}

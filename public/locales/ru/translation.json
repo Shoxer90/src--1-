@@ -344,6 +344,8 @@
     "prepaymentTitle": "Использование предоплаты",
     "prepaymentGenerate":"Получить предоплату",
     "remainder":"Остаток",
+    "change": "Сдача",
+    "payChange": "Сдача к выплате",
     "remainder1":"Остаток предоплаты",
     "useprepayment":"Предоплата",
     "usepayment": "Продажа",

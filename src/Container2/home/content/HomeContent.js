@@ -28,7 +28,7 @@ const HomeContent = ({
   return (
     content && <div className={styles.productContent} style={{marginLeft:"25px"}}>
      
-      {content?.map((product, index) => {
+      {content && content?.map((product, index) => {
         return   <HomeContentItem
           key={index}
           setToBasket={setToBasket}

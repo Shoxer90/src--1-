@@ -348,6 +348,8 @@
     "nullishQuant": "There is a quantity mismatch in the basket",
     "emptyPayInfo": "There are empty or incorrect fields",
     "remainder":"Remainder",
+    "change": "Change",
+    "payChange": "Change to pay",
     "remainder1":"Prepayment balance",
     "customer": "Customer",
     "supplier": "Supplier",

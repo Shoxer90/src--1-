@@ -118,7 +118,7 @@ const ServiceTableInvoice = ({
     let filteredContent = [];
     let invoiceItems = []
     let totalFiltered = 0
-    basketContent.map((item) => {
+    basketContent?.map((item) => {
       if(isService &&  item?.type.includes(".")) {
           filteredContent.push(item)
           invoiceItems.push({

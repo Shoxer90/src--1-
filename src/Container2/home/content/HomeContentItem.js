@@ -202,7 +202,8 @@ const HomeContentItem = ({
                 {product?.discount > 0 ? 
                   <div style={{color:"red", fontWeight:800}}>
                     {t("productcard.newprice")}
-                    { (Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice) } { t("units.amd") }
+                    {/* { (Boolean(newPrice%1) ? newPrice.toFixed(2): newPrice) } { t("units.amd") } */}
+                    {product?.discountedPrice} { t("units.amd") }
                   </div>: <div style={{height:"18px"}}>{""}</div>
                 }
             </div>

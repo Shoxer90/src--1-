@@ -47,7 +47,7 @@ const ChangesAnalyses = ({open, setOpen, content, name, t}) => {
         </DialogTitle>
         <Divider color="initial" style={{margin:1}} />
         <Divider color="initial" style={{margin:1}} />
-        {content && content.map((item, index) => (
+        {content && content?.map((item, index) => (
           <div key={index} style={{display:"flex",flexFlow:"column" , fontSize:"medium"}}>
             <span>
             { t("productinputs.date")}   {item.changeDate.slice(0,10)}  /  {item.changeDate.slice(11,item.changeDate?.length-3)}

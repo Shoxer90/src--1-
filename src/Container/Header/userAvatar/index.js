@@ -24,8 +24,8 @@ const UserInfo = ({ user,logo,mode,setActiveBtn,limitedUsing}) => {
         onClick={()=>{
           setActiveBtn("")
 
-        // return  navigate("/setting/user")
-        return  !limitedUsing ? navigate("/setting/user"):null
+        return  navigate("/setting/user")
+        // return  !limitedUsing ? navigate("/setting/user"):null
       }} 
     > 
       {screen < 785 ?

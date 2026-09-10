@@ -14,6 +14,7 @@ const PaymentContainer = ({
   paymentInfo,
   clickToPrepayment,
   setCleanEmarks,
+  setOpenPayDialog,
 }) => {
   const {t} = useTranslation();
   const [infoDialog, setInfoDialog] = useState({
@@ -73,6 +74,21 @@ const PaymentContainer = ({
           >
             {t("basket.usepayment")}
           </Button>
+
+          {/* <Button 
+            variant="contained"
+            onClick={() => {
+              setCleanEmarks(false);
+              setOpenPayDialog(true);
+            }}
+            sx={{
+              background:"#3FB68A",
+              textTransform: "capitalize",
+              fontWeight: "bold",
+            }}
+          >
+            NEW PAY DIALOG
+          </Button> */}
           {/* 10.12.2025 */}
            {/* <Button 
             variant="contained"

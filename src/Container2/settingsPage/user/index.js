@@ -214,6 +214,7 @@ const SettingsUser = ({user, whereIsMyUs, logOutFunc, limitedUsing}) => {
     
     </div>
     {user && 
+    // {user && !limitedUsing && 
       <ClientInfo 
       isLoad={isLoad} setIsLoad={setIsLoad} limitedUsing={limitedUsing} logOutFunc={logOutFunc} switchStatus={switchStatus} />}
 

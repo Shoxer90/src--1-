@@ -191,7 +191,7 @@ const UpdateProduct = ({
       setIsUniqBarcode(true)
     }
 
-     const newArr = await content.map((item) => {
+     const newArr = await content?.map((item) => {
       if(item?.id === currentProduct?.id){
            return currentProduct
       }else{

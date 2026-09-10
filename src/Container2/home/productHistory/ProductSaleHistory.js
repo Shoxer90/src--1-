@@ -17,7 +17,7 @@ const ProductSaleHistory = ({ content, dateFormat, index}) => {
 
   return (
     <>
-      {content.map((row, index) => (
+      {content?.map((row, index) => (
         <TableRow
           key={row.name}
           sx={{background: index%2 ? "#f0f0f0":"#ffffff"}}
