@@ -6,12 +6,15 @@ import HomeNavigation from "./HomeNavigation";
 import PaginationSnip from "../pagination";
 import AddNewProduct from "./product/AddNewProduct";
 import { getAdg, removeProduct } from "../../services/products/productsRequests";
+import { normalizeCategoryTree } from "../../services/categories/categoriesRequests";
+import { seedRealisticCategories } from "../../services/categories/seedCategories";
+import { assignProductCategories } from "../../services/categories/seedProductCategories";
 import { Dialog } from "@mui/material";
 import SnackErr from "../dialogs/SnackErr";
 
 import styles from "./index.module.scss";
 import HomeContent from "./content/HomeContent";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { loadResources } from "i18next";
 import { PlaySound, useSuccessSound } from "../../modules/PlaySound";
 
@@ -27,7 +30,8 @@ const initState = {
   photo:"",
   measure:"",
   pan: 0,
-  dep: 0
+  dep: 0,
+  categoryIds: []
 };
 
 const HomePage = ({
@@ -51,11 +55,12 @@ const HomePage = ({
   setFetching,
   fetching,
   setOpenBasket,
-  
-
+  productCategoryId,
+  setProductCategoryId,
   setBasketContent
 }) => {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
+  const navigate = useNavigate();
   const [openNewProd, setOpenNewProduct] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const perPage = 20;
@@ -68,6 +73,9 @@ const HomePage = ({
   const [type, setType] = useState();
 
   const [newProduct,setProduct] = useState(initState); 
+  const [categories, setCategories] = useState([]);
+  const [selectedMainId, setSelectedMainId] = useState(null);
+  const [selectedSubId, setSelectedSubId] = useState(null); 
 
   const changeStatus = async(str) => {
     setFlag(flag+1)
@@ -121,8 +129,25 @@ const HomePage = ({
   };
 
   useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const tree = await seedRealisticCategories();
+      if (cancelled) return;
+      const normalized = normalizeCategoryTree(tree);
+      setCategories(normalized);
+      const assigned = await assignProductCategories(normalized);
+      if (!cancelled && assigned) setFlag(flag + 1);
+    })();
+    return () => { cancelled = true; };
+  }, [i18n.language]);
+
+  useEffect(() => {
+    setProductCategoryId?.(selectedSubId || selectedMainId || null);
+  }, [selectedMainId, selectedSubId, setProductCategoryId]);
+
+  useEffect(() => {
     setFetching(true)
-    queryFunction(status, page).then((res) => { 
+    queryFunction(status, page, productCategoryId).then((res) => { 
       if(res){
         // playSuccess();
         setFetching(false)
@@ -130,7 +155,7 @@ const HomePage = ({
         setContent(res?.data)
       }
     })
-  }, [page, flag, status]);
+  }, [page, flag, status, productCategoryId]);
 
   return(
     <div className={styles.productPage}>
@@ -146,6 +171,20 @@ const HomePage = ({
         setFrom={setFrom}
         from={from}
         setContent={setContent}
+        categories={categories}
+        selectedMainId={selectedMainId}
+        selectedSubId={selectedSubId}
+        onSelectMain={(id) => {
+          setSelectedMainId(id);
+          setSelectedSubId(null);
+          setCurrentPage(1);
+          navigate(`/prods?status=${status}&page=1`);
+        }}
+        onSelectSub={(id) => {
+          setSelectedSubId(id);
+          setCurrentPage(1);
+          navigate(`/prods?status=${status}&page=1`);
+        }}
       />
       <HomeContent
         measure={measure}

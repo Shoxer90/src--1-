@@ -267,7 +267,8 @@
     "measureCorrectForm" : "Attention «Measure» field has a clear format",
     "barcodeCorrectForm": "The product's internal code/barcode may include only Latin letters and numbers.",
     "vatCorrectForm":"If there are products not subject to VAT in the product list, mark «yes» in the column, otherwise, leave it empty.",
-    "prod": " products"
+    "prod": " products",
+    "allCategories": "All"
   },
   "productcard": {
     "outofstock": "Out of stock",
@@ -310,7 +311,19 @@
     "productadded":"The product is available in your store",
     "symb": "symbols", 
     "orderList": "Shopping list",
-    "prodInPrepayment": "There is a pending transaction for this product in the prepaid section. Please complete the transaction or return to remove this product."
+    "prodInPrepayment": "There is a pending transaction for this product in the prepaid section. Please complete the transaction or return to remove this product.",
+    "category": "Category",
+    "addCategory": "Add category",
+    "editCategory": "Edit category",
+    "titleHy": "Title (HY)",
+    "titleEn": "Title (EN)",
+    "titleRu": "Title (RU)",
+    "parentCategory": "Parent category",
+    "mainCategory": "Main category",
+    "categoryAdded": "Category added",
+    "categoryUpdated": "Category updated",
+    "subCategoriesOf": "Subcategories of {{name}}",
+    "subCategory": "Subcategory"
   },
   "basket": {
     "title": "Basket",

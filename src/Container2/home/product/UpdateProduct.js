@@ -21,6 +21,7 @@ import Barcode from "react-barcode";
 import { useTranslation } from "react-i18next";
 import { useSuccessSound } from "../../../modules/PlaySound";
 import BarcodeInput from "./BarcodeInput";
+import ProductCategorySelect from "./ProductCategorySelect";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchBarCodeSlice } from "../../../store/searchbarcode/barcodeSlice";
 
@@ -341,6 +342,15 @@ const UpdateProduct = ({
             label={t("productinputs.brand")}
             onChange={(e)=>handleChangeInput(e)} 
           />
+          <Box sx={{ gridColumn: "1 / -1", justifySelf: "start", width: "100%" }}>
+            <ProductCategorySelect
+              value={currentProduct?.categoryIds}
+              onChange={(categoryIds) => setCurrentProduct({
+                ...currentProduct,
+                categoryIds
+              })}
+            />
+          </Box>
           <TextField 
             error={isEmptyField && !currentProduct?.remainder}
             size="small"

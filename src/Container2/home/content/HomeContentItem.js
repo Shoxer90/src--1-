@@ -189,7 +189,7 @@ const HomeContentItem = ({
           />
         }
      
-      </span>
+        </span>
       </div>
       <Divider style={{margin:1, backgroundColor:"gray",width:"90%",alignSelf:"center",}}/>
         <Box style={style}>

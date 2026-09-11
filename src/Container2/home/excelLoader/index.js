@@ -66,6 +66,7 @@ const PasteExcelToReact = ({logOutFunc, setCurrentPage}) => {
         "isFavorite": false,
         "comment":  "",
         "category": 0,
+        "categoryIds": [],
         "description":  "",
         "__rowNum__": prod?.__rowNum__,
         "keyWords": [{

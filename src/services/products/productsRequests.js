@@ -1,5 +1,6 @@
 import axios from "axios";
 import { baseUrl, option } from "../baseUrl";
+import { toCategoryIds } from "../categories/categoriesRequests";
 
 
 export const getAdg = async(type) => {
@@ -34,7 +35,7 @@ export const getAllAdgCode = async() => {
 
 // PRODUCT QUERY
 
-export const productQuery = async(type,page) =>{
+export const productQuery = async(type,page, categoryId) =>{
   const option = {
     headers: {
       Authorization: localStorage.getItem("token"),
@@ -42,6 +43,7 @@ export const productQuery = async(type,page) =>{
     params: {
       page: page,
       count: 20,
+      ...(categoryId ? { categoryId } : {}),
     },
   };
   try{
@@ -52,7 +54,7 @@ export const productQuery = async(type,page) =>{
   }
 };
 
-export const byBarCode = async(status, barcode) =>{
+export const byBarCode = async(status, barcode, categoryId) =>{
   let statusCount = 0;
   if (status === "GetAvailableProducts") {
     statusCount = 0
@@ -67,10 +69,10 @@ export const byBarCode = async(status, barcode) =>{
     headers: {
       Authorization: localStorage.getItem("token"),
     },
+    params: categoryId ? { categoryId } : {},
   };
   try{
-    // const query = await axios.get(baseUrl + `Products/SearchByBarCode?q=${barcode}&productType=${statusCount}`, option);
-    const query = await axios.post(baseUrl + `Products/SearchByBarCode`,{q:barcode,productType:statusCount}, option);
+    const query = await axios.post(baseUrl + `Products/SearchByBarCode`,{q:barcode,productType:statusCount, ...(categoryId ? { categoryId } : {})}, option);
    
    console.log("query: ", query);
     return query.data
@@ -101,14 +103,18 @@ export const cheackProductCountnPrice = async(body) => {
   }
 } 
 
-export const searchByName = async(input) =>{
+export const searchByName = async(input, categoryId) =>{
   const option = {
     headers: {
       Authorization: localStorage.getItem("token"),
     },
+    params: {
+      q: input,
+      ...(categoryId ? { categoryId } : {}),
+    },
   };
   try{
-    const query = await axios.get(baseUrl + `Products/SearchByProductName?q=${input}`, option);
+    const query = await axios.get(baseUrl + `Products/SearchByProductName`, option);
     return query.data
   }catch(err) {
     return err.response.status
@@ -153,7 +159,7 @@ export const createProduct = async(product) => {
     "dep": +product?.dep,
     "isFavorite": false,
     "coment": "",
-    "category": 0,
+    "categoryIds": toCategoryIds(product?.categoryIds),
     "description": "",
     "isEmark": product?.isEmark,
     "keyWords": [
@@ -205,7 +211,7 @@ export const createProductList = async(body) => {
     "dep": product?.dep,
     "isFavorite": product?.isFavorite,
     "coment": product?.coment,
-    "category": product.category,
+    "categoryIds": toCategoryIds(product?.categoryIds),
     "description": product?.description,
     "keyWords": [
       {

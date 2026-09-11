@@ -88,6 +88,7 @@ const App = () => {
   const [isLogin, setIsLogIn] = useState(Boolean(localStorage.getItem("token")));
   const [content, setContent] = useState([]);
   const [dataGroup, setDataGroup] = useState(status);
+  const [productCategoryId, setProductCategoryId] = useState(null);
   const [basketExist, setBasketExist] = useState([]);
   const [flag, setFlag] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -327,14 +328,16 @@ const App = () => {
     const normalizedGroup = group?.trim();
     const defaultSearchError = t("mainnavigation.searchconcl");
 
+    const categoryFilter = from === "main" ? productCategoryId : undefined;
+
     if(!normalizedBarcode){
-      const res = await queryFunction(status, 1);
+      const res = await queryFunction(status, 1, categoryFilter);
       setContent(res?.data);
       setCurrentPage(2);
       return;
     }
 
-    const res = await byBarCode(normalizedGroup, normalizedBarcode);
+    const res = await byBarCode(normalizedGroup, normalizedBarcode, categoryFilter);
 
     if(from === "basket"){
       if(!res?.length) {
@@ -380,7 +383,7 @@ const App = () => {
       }
 
       setContent([]);
-      const notAvailableRes = await byBarCode("GetNotAvailableProducts", normalizedBarcode);
+      const notAvailableRes = await byBarCode("GetNotAvailableProducts", normalizedBarcode, categoryFilter);
       setSearchedNotAvailableProd(notAvailableRes);
 
       if(notAvailableRes?.length) {
@@ -621,8 +624,8 @@ const App = () => {
       }
   };
 
-  const queryFunction = async(name, page=1) => {
-    const data = await productQuery(name, page)
+  const queryFunction = async(name, page=1, categoryId) => {
+    const data = await productQuery(name, page, categoryId ?? productCategoryId)
     return data === 401 ? logOutFunc() : data
   };
 
@@ -764,6 +767,8 @@ const App = () => {
                   fetching={fetching}
                   setOpenBasket={setOpenBasket}
                   loadBasket={loadBasket}
+                  productCategoryId={productCategoryId}
+                  setProductCategoryId={setProductCategoryId}
                 />
               }  
             />
@@ -795,6 +800,8 @@ const App = () => {
                   fetching={fetching}
                   setOpenBasket={setOpenBasket}
                   setBasketContent={setBasketContent}
+                  productCategoryId={productCategoryId}
+                  setProductCategoryId={setProductCategoryId}
                 />
               }  
             />

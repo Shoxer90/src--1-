@@ -11,6 +11,7 @@ import { getMeasureByNum } from "../../../modules/modules";
 import ImageLoad from "./ImageLoad";
 import ProductAdg2 from "./ProductAdg2";
 import BarcodeInput from "./BarcodeInput";
+import ProductCategorySelect from "./ProductCategorySelect";
 import ConfirmDialog from "../../dialogs/ConfirmDialog";
 
 import styles from "../index.module.scss";
@@ -211,7 +212,8 @@ const AddNewProduct = ({
       photo:"",
       measure:"",
       pan: 0,
-      dep: 0
+      dep: 0,
+      categoryIds: []
     })
     localStorage.removeItem("newProduct")
   };
@@ -298,6 +300,14 @@ const AddNewProduct = ({
             label={`${t("productinputs.brand")}`}
             onChange={(e)=>handleChangeInput(e)} 
             autoComplete="off"
+          />
+          <ProductCategorySelect
+            width="90%"
+            value={newProduct?.categoryIds}
+            onChange={(categoryIds) => setProduct({
+              ...newProduct,
+              categoryIds
+            })}
           />
           <div className={styles.duoInput}>
             <TextField 

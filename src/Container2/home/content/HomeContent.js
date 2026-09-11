@@ -1,7 +1,6 @@
 
 
 import { memo } from "react";
-import { Card } from "@mui/material";
 
 import HomeContentItem from "./HomeContentItem";
 
@@ -23,7 +22,6 @@ const HomeContent = ({
   setOpenBasket,
   setBasketContent,
   setFrom
-
 }) => {
   return (
     content && <div className={styles.productContent} style={{marginLeft:"25px"}}>
