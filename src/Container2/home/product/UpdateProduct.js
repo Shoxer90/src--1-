@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import Slide from '@mui/material/Slide';
-import { updateProduct, uniqueBarCode } from "../../../services/products/productsRequests";
+import { updateProduct, uniqueBarCode, uniqueInnerCode } from "../../../services/products/productsRequests";
 import { Box } from "@mui/system";
 import { Checkbox, Divider, FormControl, FormControlLabel, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
@@ -57,6 +57,7 @@ const UpdateProduct = ({
   const [flag,setFlag] = useState(0);
 
     const [isUniqBarCode, setIsUniqBarcode] = useState(true);
+    const [isUniqInnerCode, setIsUniqInnerCode] = useState(true);
     const [emptyValidate, setEmptyValidate] = useState(false);
     const barInput = useSelector(state => state?.barcode?.newProd);
   
@@ -109,6 +110,9 @@ const UpdateProduct = ({
     setIsEmptyField(false)
     setMessage({message:"", type:""})
     setFixMessage("")
+    if(e.target.name === "innerCode") {
+      setIsUniqInnerCode(true)
+    }
     if(e.target.name === "measure") {
       setMetric(e.target.value)
       await getMeasureByNum(e.target.value).then((res) => {
@@ -192,6 +196,22 @@ const UpdateProduct = ({
       setIsUniqBarcode(true)
     }
 
+    const inner = String(currentProduct?.innerCode ?? "").trim()
+    const originalInner = String(product?.innerCode ?? "").trim()
+    if (inner && inner !== originalInner) {
+      const isUniqInner = await uniqueInnerCode(inner)
+      if (isUniqInner === false) {
+        setIsUniqInnerCode(false)
+        setMessage({ message: t("dialogs.unicInnerCode"), type: "error" })
+        return
+      }
+      if (isUniqInner !== true) {
+        setMessage({ message: t("dialogs.wrong"), type: "error" })
+        return
+      }
+      setIsUniqInnerCode(true)
+    }
+
      const newArr = await content.map((item) => {
       if(item?.id === currentProduct?.id){
            return currentProduct
@@ -215,6 +235,9 @@ const UpdateProduct = ({
       }else if(res === 400) {
         setIsEmptyField(true)
         setFixMessage(t("authorize.errors.emptyfield"))
+        setMessage({message:t("authorize.errors.emptyfield"), type:"error"})
+      }else {
+        setMessage({message:t("dialogs.wrong"), type:"error"})
       }
     })
   };
@@ -434,6 +457,16 @@ const UpdateProduct = ({
               } */}
 
     
+                <TextField
+                  error={!isUniqInnerCode}
+                  size="small"
+                  variant="outlined"
+                  name="innerCode"
+                  value={currentProduct?.innerCode || ""}
+                  label={t("productinputs.code2")}
+                  onChange={(e)=>handleChangeInput(e)}
+                  autoComplete="off"
+                />
                 <TextField 
                   error={(emptyValidate && !currentProduct?.barCode) || !isUniqBarCode}
                   style={{marginBottom:"10px",width:"250px"}}
@@ -441,7 +474,6 @@ const UpdateProduct = ({
                   variant="outlined"
                   name="barCode" 
                   value={currentProduct?.barCode}
-                  // value={currentProduct?.barCode}
                   label={`${t("productinputs.barcode")} (max 20 ${t("productinputs.symb")})*`}
                   onChange={(e)=>{
                     if(e.target.value?.length>20) return

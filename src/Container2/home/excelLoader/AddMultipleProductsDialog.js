@@ -12,18 +12,23 @@ import MeasureCorrect from './MeasureCorrect';
 import VatCorrect from './VatCorrect';
 import ConfirmDialog from '../../dialogs/ConfirmDialog';
 import BarCodeCorrect from './BarCodeCorrect';
+import UpdateRemainderExcelDialog from './UpdateRemainderExcelDialog';
 
 
 const AddMultipleProductsDialog = ({
   readExcel, 
   uploadFile, 
   createMultipleProds,
-  setCurrentPage
+  setCurrentPage,
+  excelMode,
+  pageMode = "add",
+  onSelectRemainderFile,
 }) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
   const ref = useRef();
   const [openConfirm, setOpenConfirm] = useState(0);
+  const isUpdate = pageMode === "update" || excelMode === "update";
 
 // download excel
   const fileReader = async() => {
@@ -39,8 +44,12 @@ const AddMultipleProductsDialog = ({
 
   return (
     <div>
-      <h5>{t("mainnavigation.multipleproduct")}</h5>
-      {!uploadFile &&
+      <h5>
+        {isUpdate
+          ? t("mainnavigation.quantityChange")
+          : t("mainnavigation.multipleproduct")}
+      </h5>
+      {!uploadFile && !isUpdate &&
         <DialogContent dividers className={styles.excelLoaderContent}>
           <div className={styles.excelLoaderContent_item}>
             <p>{t("mainnavigation.multipleProductText1")}</p>
@@ -73,6 +82,7 @@ const AddMultipleProductsDialog = ({
           </div>
         </DialogContent>
       }
+      {!uploadFile && isUpdate && <UpdateRemainderExcelDialog onSelectFile={onSelectRemainderFile} />}
       <DialogActions>
         {uploadFile && 
           <Button 
@@ -80,7 +90,7 @@ const AddMultipleProductsDialog = ({
             style={{margin:"2px 20px",background:"green",textTransform: "capitalize"}} 
             onClickCapture={()=> setOpenConfirm(1)}
           >
-            {t("buttons.createMultiProds")}
+            {isUpdate ? t("buttons.confirmRemainderChanges") : t("buttons.createMultiProds")}
           </Button>
         }
         <Button 
@@ -93,12 +103,16 @@ const AddMultipleProductsDialog = ({
       </DialogActions>
 
       <ConfirmDialog 
-        question={openConfirm===1?t("dialogs.excelAddProds"): t("dialogs.excelCancelList")}
+        question={openConfirm===1
+          ? (isUpdate ? t("dialogs.excelUpdateRemainders") : t("dialogs.excelAddProds"))
+          : t("dialogs.excelCancelList")}
         func={openConfirm===1? handleSubmit : ()=> {
           setCurrentPage(1)
           navigate("/")}
         }
-        title={openConfirm===1?t("buttons.submit"): t("buttons.cancel")}
+        title={openConfirm===1
+          ? (isUpdate ? t("buttons.confirmRemainderChanges") : t("buttons.submit"))
+          : t("buttons.cancel")}
         open={Boolean(openConfirm)}
         close={setOpenConfirm}
         t={t}

@@ -21,7 +21,10 @@ const HomeContent = ({
   setCurrentPage,
   setOpenBasket,
   setBasketContent,
-  setFrom
+  setFrom,
+  selectMode,
+  selectedProductIds,
+  onToggleSelect,
 }) => {
   return (
     content && <div className={styles.productContent} style={{marginLeft:"25px"}}>
@@ -47,7 +50,9 @@ const HomeContent = ({
 
           setBasketContent={setBasketContent}
           setFrom={setFrom}
-
+          selectMode={selectMode}
+          isSelected={selectedProductIds?.includes(product?.id)}
+          onToggleSelect={onToggleSelect}
         />
       })}
     </div>

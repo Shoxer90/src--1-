@@ -1,10 +1,13 @@
 
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { allLanguageMeasures, takeMeMeasureArr } from '../../../modules/modules';
 import { useTranslation } from "react-i18next";
+import Autocomplete from "@mui/material/Autocomplete";
+import { TextField } from "@mui/material";
 
 import styles from "./index.module.scss";
-import { barcodeValidation, measureValidation, nameLimitValidation, priceValidation, priceValidationNum } from '../../../modules/excelCeilValidation';
+import { barcodeValidation, innerCodeValidation, measureValidation, nameLimitValidation, priceValidation, priceValidationNum } from '../../../modules/excelCeilValidation';
+import { deepestCategory, idsWithAncestors } from '../../../services/categories/categoriesRequests';
 
 const ExcelRow = ({
   prod,
@@ -14,14 +17,25 @@ const ExcelRow = ({
   row, 
   allAdgs,
   setBarCodes,
-  barCodes
+  barCodes,
+  setInnerCodes,
+  innerCodes,
+  flatCategories,
+  categoryById,
+  updateMode,
 }) => {
   const {t} = useTranslation()
   const [measureLangArr,setMeasureLangArr] = useState([]);
   const [isValidCurrentProd, setIsValidCurrentProd] = useState({});
   const [ceilName, setCeilName] = useState("");
-  const [errorName,setErrorName] = useState("");
+  const [barCodeError,setBarCodeError] = useState("");
+  const [innerCodeError,setInnerCodeError] = useState("");
   const ref = useRef();
+
+  const skipUniqApi = (current, original) =>
+    Boolean(updateMode)
+    && String(current ?? "").trim() !== ""
+    && String(current ?? "").trim() === String(original ?? "").trim();
 
   const errorStyle = {
     border: "solid red 2px",
@@ -46,12 +60,12 @@ const ExcelRow = ({
   };
 
   const uniqBarcodeInExcel = async() => {
-    setErrorName("")
+    setBarCodeError("")
     let catchSameCode = 0
     const arr = barCodes;
     arr.map((item) => {
       if(item?.code === prod?.barCode && item?.row !== row) {
-        setErrorName("Կրկնվող բառկոդ/ ներքին կոդ")
+        setBarCodeError(t("authorize.errors.repeatbar"))
         catchSameCode++
         return false
       }
@@ -61,26 +75,29 @@ const ExcelRow = ({
         code: prod?.barCode,
         row: row
       })
-      // return barcodeValidation(prod?.barCode)
+      if(skipUniqApi(prod?.barCode, prod?.__originalBarCode)) {
+        return true
+      }
       return await barcodeValidation(prod?.barCode).then((res)=> {
         if(!res) {
-           setErrorName("Խանութում առկա է նույն ներքին կոդով ապրանք/ ծառայություն")
+           setBarCodeError(t("dialogs.unicBarCode"))
         }else if(res === "notValid"){
-          setErrorName("Ներքին կոդի/բառկոդի սխալ ֆորմատ")
+          setBarCodeError(t("authorize.errors.barnotvalid"))
           return false
         }
           return res
       })  
     }
+    return false
   }
 
   const barcodeCeilManagement = async() => {
-    setErrorName("")
+    setBarCodeError("")
     let catchSameCode = 0
     const arr = barCodes;
     arr.map((item) => {
       if(item?.code === prod?.barCode && item?.row !== row) {
-        setErrorName("Կրկնվող բառկոդ/ ներքին կոդ")
+        setBarCodeError(t("authorize.errors.repeatbar"))
         return catchSameCode++
       }
     })
@@ -89,12 +106,87 @@ const ExcelRow = ({
       }else{
           arr[`${row}`] = {code:prod?.barCode,row:row}
           setBarCodes(arr)
-      //  return barcodeValidation(prod?.barCode)
+          if(skipUniqApi(prod?.barCode, prod?.__originalBarCode)) {
+            return true
+          }
        return await barcodeValidation(prod?.barCode).then((res)=> {
         if(!res) {
-           setErrorName("Խանութում առկա է նույն ներքին կոդով ապրանք/ ծառայություն")
+           setBarCodeError(t("dialogs.unicBarCode"))
         }else if(res === "notValid"){
-          setErrorName("Ներքին կոդի/բառկոդի սխալ ֆորմատ")
+          setBarCodeError(t("authorize.errors.barnotvalid"))
+          return false
+        }
+          return res
+        
+      })  
+      }
+    };
+
+  const uniqInnerCodeInExcel = async() => {
+    setInnerCodeError("")
+    const inner = String(prod?.innerCode ?? "").trim()
+    if(!inner) {
+      return false
+    }
+    let catchSameCode = 0
+    const arr = innerCodes || [];
+    arr.map((item) => {
+      if(item?.code === inner && item?.row !== row) {
+        setInnerCodeError(t("authorize.errors.repeatbar"))
+        catchSameCode++
+        return false
+      }
+    })
+    if(!catchSameCode){
+      arr.push({
+        code: inner,
+        row: row
+      })
+      if(skipUniqApi(inner, prod?.__originalInnerCode)) {
+        return true
+      }
+      return await innerCodeValidation(inner).then((res)=> {
+        if(!res) {
+           setInnerCodeError(t("dialogs.unicInnerCode"))
+           return false
+        }else if(res === "notValid"){
+          setInnerCodeError(t("authorize.errors.barnotvalid"))
+          return false
+        }
+          return res
+      })  
+    }
+    return false
+  }
+
+  const innerCodeCeilManagement = async() => {
+    setInnerCodeError("")
+    const inner = String(prod?.innerCode ?? "").trim()
+    if(!inner) {
+      return false
+    }
+    let catchSameCode = 0
+    const arr = innerCodes || [];
+    arr.map((item) => {
+      if(item?.code === inner && item?.row !== row) {
+        setInnerCodeError(t("authorize.errors.repeatbar"))
+        return catchSameCode++
+      }
+    })
+      if(catchSameCode) {
+        return false
+      }else{
+          arr[`${row}`] = {code:inner,row:row}
+          setInnerCodes(arr)
+          if(skipUniqApi(inner, prod?.__originalInnerCode)) {
+            return true
+          }
+       return await innerCodeValidation(inner).then((res)=> {
+        if(!res) {
+           setInnerCodeError(t("dialogs.unicInnerCode"))
+           return false
+        }else if(res === "notValid"){
+          setInnerCodeError(t("authorize.errors.barnotvalid"))
           return false
         }
           return res
@@ -115,6 +207,7 @@ const ExcelRow = ({
       price: prod?.price < 1 ? false : await priceValidation(prod?.price),
       purchasePrice: await priceValidation(prod?.purchasePrice),
       remainder: await priceValidationNum(prod?.remainder, 3),
+      innerCode: await uniqInnerCodeInExcel(),
       barCode: await uniqBarcodeInExcel(),
     });
   };
@@ -157,6 +250,10 @@ const ExcelRow = ({
         response =  await barcodeCeilManagement()
         setDataToUploading(response)
       break;
+      case "innerCode": 
+        response =  await innerCodeCeilManagement()
+        setDataToUploading(response)
+      break;
       default:
         break;
     }
@@ -183,6 +280,11 @@ const ExcelRow = ({
       return handleChange(event.target.name, event.target.value)
     }
   };
+
+  const selectedCategory = useMemo(
+    () => deepestCategory(prod?.categoryIds, categoryById),
+    [prod?.categoryIds, categoryById]
+  );
 
   const getMeasureSelectOptions = async() => {
     const arr = await takeMeMeasureArr(localStorage.getItem("lang"));
@@ -254,6 +356,26 @@ const ExcelRow = ({
           name="brand" 
         />
       </td>
+      <td className={styles.categoryCell}>
+        <Autocomplete
+          size="small"
+          options={flatCategories || []}
+          value={selectedCategory || null}
+          onChange={(_, next) => {
+            handleChange("categoryIds", next ? idsWithAncestors(next.id, categoryById) : [])
+          }}
+          getOptionLabel={(option) => option?.pathLabel || option?.title || ""}
+          isOptionEqualToValue={(option, current) => option?.id === current?.id}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              placeholder={t("productinputs.category")}
+              autoComplete="off"
+              variant="outlined"
+            />
+          )}
+        />
+      </td>
       <td>
         <input 
           onChange={(e)=>{
@@ -311,7 +433,23 @@ const ExcelRow = ({
         />
       </td>
       <td>
-        <span className={errorName && styles.hovertext}  data-hover={errorName} >
+        <span className={innerCodeError && styles.hovertext}  data-hover={innerCodeError} >
+          <input 
+            onChange={(e)=>{
+              if(e.target.value.length < (prod?.innerCode || "").length){
+               handleChange(e.target.name,e.target.value)
+              }else{
+                onlyNumberAndLetters(e)
+              }
+            }}
+            value={prod?.innerCode || ""}
+            name="innerCode"
+            style={!isValidCurrentProd?.innerCode || !prod?.innerCode? errorStyle : undefined}
+          />
+        </span>
+      </td>
+      <td>
+        <span className={barCodeError && styles.hovertext}  data-hover={barCodeError} >
           <input 
             onChange={(e)=>{
               if(e.target.value.length < prod?.barCode.length){

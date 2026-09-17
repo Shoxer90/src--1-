@@ -1,4 +1,4 @@
-import { getAdg, uniqueBarCode } from "../services/products/productsRequests"
+import { getAdg, uniqueBarCode, uniqueInnerCode } from "../services/products/productsRequests"
 import { allLanguageMeasures } from "./modules"
 
 export const barcodeValidation = async(value) => {
@@ -8,6 +8,18 @@ export const barcodeValidation = async(value) => {
        return uniq
     }else{
       // return false
+      return "notValid"
+    }
+  };
+
+export const innerCodeValidation = async(value) => {
+     const valid = /^[a-zA-Z0-9_]+$/
+     if(valid.test(value)){
+       const uniq = await uniqueInnerCode(value)
+       if (uniq === true) return true
+       if (uniq === false) return false
+       return false
+    }else{
       return "notValid"
     }
   };

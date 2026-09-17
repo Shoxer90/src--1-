@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseUrl, option } from "../baseUrl";
+import { baseUrl, getMediaOrigin, isLocalHostName, option } from "../baseUrl";
 
 let categoriesCache = null;
 let categoriesInflight = null;
@@ -28,6 +28,35 @@ export const getCategoryTitle = (cat, lang = getCategoryLang()) => {
   return cat.titleHy || cat.titleEn || cat.titleRu || cat.title || "";
 };
 
+export const getCategoryIcon = (cat) => {
+  const raw = cat?.icon || cat?.Icon || cat?.iconUrl || cat?.image || cat?.photo || "";
+  if (raw && typeof raw === "object") {
+    return raw.url || raw.src || raw.path || "";
+  }
+  return typeof raw === "string" ? raw.trim() : "";
+};
+
+export const toCategoryIconSrc = (icon) => {
+  const value = typeof icon === "string" ? icon.trim() : "";
+  if (!value) return "";
+  if (/^data:/i.test(value) || /^blob:/i.test(value)) return value;
+
+  const mediaOrigin = getMediaOrigin();
+  let url;
+  try {
+    url = new URL(value, `${mediaOrigin}/`);
+  } catch {
+    return `${mediaOrigin}/${value.replace(/^\//, "")}`;
+  }
+
+  if (isLocalHostName(url.hostname)) {
+    const media = new URL(mediaOrigin);
+    url.protocol = media.protocol;
+    url.host = media.host;
+  }
+  return url.href;
+};
+
 export const collectDescendantIds = (node) => {
   if (!node?.children?.length) return [];
   return node.children.flatMap((child) => [child.id, ...collectDescendantIds(child)]);
@@ -48,9 +77,10 @@ export const normalizeCategoryTree = (categories = [], parentId = null, parentPa
       depth: parentPath.length,
       discount: cat.discount ?? 0,
       discountType: cat.discountType ?? 0,
+      icon: getCategoryIcon(cat),
       children: []
     };
-    node.children = normalizeCategoryTree(cat.childCategories, cat.id, path, lang);
+    node.children = normalizeCategoryTree(cat.childCategories || cat.children, cat.id, path, lang);
     return node;
   });
 
@@ -67,6 +97,49 @@ export const flattenCategories = (categories = []) => {
   };
   walk(tree);
   return result;
+};
+
+export const mapCategoriesById = (categories = []) => {
+  const map = {};
+  flattenCategories(categories).forEach((item) => {
+    map[item.id] = item;
+  });
+  return map;
+};
+
+export const idsWithAncestors = (id, byId = {}) => {
+  const ids = [];
+  const seen = new Set();
+  let currentId = Number(id);
+  while (Number.isFinite(currentId) && currentId !== 0 && !seen.has(currentId)) {
+    seen.add(currentId);
+    ids.push(currentId);
+    const parentId = byId[currentId]?.parentId;
+    currentId = parentId == null ? null : Number(parentId);
+  }
+  return ids;
+};
+
+export const expandCategoryIds = (value, byId = {}) => {
+  const unique = [];
+  const seen = new Set();
+  toCategoryIds(value).forEach((id) => {
+    idsWithAncestors(id, byId).forEach((nextId) => {
+      if (!seen.has(nextId)) {
+        seen.add(nextId);
+        unique.push(nextId);
+      }
+    });
+  });
+  return unique;
+};
+
+export const deepestCategory = (value, byId = {}) => {
+  const nodes = toCategoryIds(value)
+    .map((id) => byId[id])
+    .filter(Boolean);
+  if (!nodes.length) return null;
+  return nodes.reduce((deepest, item) => (item.depth >= deepest.depth ? item : deepest));
 };
 
 export const applyLevelChange = (selectedIds, parent, nextChildren) => {
@@ -120,6 +193,16 @@ export const createCategory = async (body) => {
 export const updateCategory = async (id, body) => {
   try {
     const data = await axios.put(baseUrl + `Categories/${id}`, body, option());
+    categoriesCache = null;
+    return { ok: true, data: data?.data, status: data?.status };
+  } catch (err) {
+    return { ok: false, status: err?.response?.status, data: err?.response?.data };
+  }
+};
+
+export const deleteCategory = async (id) => {
+  try {
+    const data = await axios.delete(baseUrl + `Categories/${id}`, option());
     categoriesCache = null;
     return { ok: true, data: data?.data, status: data?.status };
   } catch (err) {

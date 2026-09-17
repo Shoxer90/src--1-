@@ -61,7 +61,15 @@
     visibility: visible;
   }
 
-  .productContent_item_addBasket{
+  .cardSelectCheck{
+  padding: 0 !important;
+  margin-right: 4px;
+}
+.cardSelected{
+  background: rgba(255, 165, 0, 0.08);
+}
+
+.productContent_item_addBasket{
     margin-bottom: 5px;
     display: flex;
     justify-content: start;
@@ -76,3 +84,228 @@
       font-size: large;
     }
   }
+
+.card{
+  width: 320px;
+  min-height: 188px;
+  padding: 10px 12px 12px;
+  border-radius: 12px !important;
+  background: #fbfbfa;
+  cursor: pointer;
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: none;
+  border: 1px solid #e8e6e3 !important;
+  transition: border-color 0.18s ease, background 0.18s ease;
+  &:hover{
+    background: #fff;
+    border-color: #ddd9d3 !important;
+  }
+}
+.cardStd,
+.cardHs{
+  border: 1px solid #e8e6e3 !important;
+}
+.cardHead{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.cardTitleWrap{
+  min-width: 0;
+  flex: 1;
+}
+.cardTitle{
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #4a4a47;
+  letter-spacing: 0;
+}
+.cardEmark{
+  color: #7a9b88;
+  margin-right: 4px;
+  vertical-align: text-bottom;
+}
+.cardBrand{
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #9a9893;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cardActions{
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  padding: 0;
+  background: transparent;
+  svg{
+    padding: 2px;
+    border-radius: 6px;
+    cursor: pointer;
+    &:hover{
+      background: #f0eeea;
+    }
+  }
+}
+.cardBody{
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+.cardPhoto{
+  flex-shrink: 0;
+  width: 128px;
+  height: 128px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f3f1ee;
+  img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    padding: 6px;
+    box-sizing: border-box;
+  }
+}
+.cardInfo{
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.cardPrice{
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #3f3f3c;
+  letter-spacing: 0;
+  span{
+    margin-left: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #9a9893;
+    letter-spacing: 0;
+  }
+}
+.cardPriceOld{
+  font-size: 12px;
+  font-weight: 500;
+  color: #b0aea8;
+  text-decoration: line-through;
+}
+.cardPriceSale{
+  font-size: 16px;
+  font-weight: 600;
+  color: #8a5a55;
+}
+.cardStock{
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #7a7873;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.cardStockWarn{
+  background: transparent;
+  color: #9a6a66;
+}
+.cardReserved{
+  font-size: 12px;
+  font-weight: 500;
+  color: #6e8b7c;
+}
+.cardCode{
+  font-size: 11px;
+  font-weight: 500;
+  color: #b0aea8;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cardOut{
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9a6a66;
+}
+.cardAdd{
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  input{
+    width: 68px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid #ddd9d3;
+    padding: 0 8px;
+    font-weight: 500;
+    font-size: 13px;
+    color: #4a4a47;
+    background: #fff;
+    &:disabled{
+      opacity: 0.5;
+      background: #f5f4f2;
+    }
+    &:focus{
+      outline: none;
+      border-color: #c8c4bc;
+      box-shadow: none;
+    }
+  }
+}
+.cardAddSpacer{
+  height: 32px;
+  margin-top: auto;
+}
+.cardBasketBtn{
+  appearance: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd9d3;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #8a7b63;
+  background: #f5f3ef;
+  box-shadow: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  &:hover{
+    background: #ece8e1;
+    border-color: #d4cfc6;
+    transform: none;
+  }
+}
+.cardBasketBtnIn{
+  color: #5f7d6e;
+  background: #eef3f0;
+  border-color: #d5e0da;
+  box-shadow: none;
+  &:hover{
+    background: #e4ece8;
+  }
+}

@@ -17,6 +17,22 @@ export const getExcelEmptyForm = async() => {
     }
   };
 
+export const getProductsRemainderExcel = async(stockNumber = 1) => {
+    const option = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      responseType: "blob",
+      params: { stockNumber },
+    }
+    try{
+      const data = await axios.get(baseUrl + `Products/GetProductsRemainderExcel`, option)
+      return data.data
+    }catch(err) {
+      return err
+    }
+  };
+
    export const sendEmarkCSV = async(prodId, file) => {
       const option = {
         headers: {

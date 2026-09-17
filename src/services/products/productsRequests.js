@@ -35,6 +35,9 @@ export const getAllAdgCode = async() => {
 
 // PRODUCT QUERY
 
+const categoryQuery = (categoryId) =>
+  categoryId == null || categoryId === "" ? {} : { categoryId };
+
 export const productQuery = async(type,page, categoryId) =>{
   const option = {
     headers: {
@@ -43,7 +46,7 @@ export const productQuery = async(type,page, categoryId) =>{
     params: {
       page: page,
       count: 20,
-      ...(categoryId ? { categoryId } : {}),
+      ...categoryQuery(categoryId),
     },
   };
   try{
@@ -69,10 +72,10 @@ export const byBarCode = async(status, barcode, categoryId) =>{
     headers: {
       Authorization: localStorage.getItem("token"),
     },
-    params: categoryId ? { categoryId } : {},
+    params: categoryQuery(categoryId),
   };
   try{
-    const query = await axios.post(baseUrl + `Products/SearchByBarCode`,{q:barcode,productType:statusCount, ...(categoryId ? { categoryId } : {})}, option);
+    const query = await axios.post(baseUrl + `Products/SearchByBarCode`,{q:barcode,productType:statusCount, ...categoryQuery(categoryId)}, option);
    
    console.log("query: ", query);
     return query.data
@@ -110,7 +113,7 @@ export const searchByName = async(input, categoryId) =>{
     },
     params: {
       q: input,
-      ...(categoryId ? { categoryId } : {}),
+      ...categoryQuery(categoryId),
     },
   };
   try{
@@ -151,6 +154,7 @@ export const createProduct = async(product) => {
     "measure": product?.measure,
     "photo": product?.photo || "",
     "barCode": product?.barCode,
+    "innerCode": product?.innerCode || "",
     "remainder": +(product?.remainder),
     "purchasePrice": +(product?.purchasePrice),
     "price": +(product?.price),
@@ -184,8 +188,33 @@ export const createProductList = async(body) => {
     },
   }
 
+  const payload = (Array.isArray(body) ? body : []).map((product) => ({
+    ...product,
+    innerCode: product?.innerCode || "",
+  }));
+
   try{
-    const data =  await axios.post(baseUrl + `Products/AddProductList`, body, option)
+    const data =  await axios.post(baseUrl + `Products/AddProductList`, payload, option)
+    return data.status
+  }catch(err){
+    return err?.response?.status
+  }
+};
+
+export const updateProductList = async(body, stockNumber = 1) => {
+  const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+    params: { stockNumber },
+  };
+
+  try{
+    const data = await axios.post(
+      baseUrl + "Products/UpdateProductList",
+      Array.isArray(body) ? body : [],
+      option
+    );
     return data.status
   }catch(err){
     return err?.response?.status
@@ -201,6 +230,7 @@ export const createProductList = async(body) => {
     "measure": product?.measure,
     "photo": product?.photo,
     "barCode": product?.barCode,
+    "innerCode": product?.innerCode || "",
     "remainder": +(product?.remainder),
     "purchasePrice": +(product?.purchasePrice),
     "price": +(product?.price),
@@ -247,6 +277,24 @@ export const createProductList = async(body) => {
     }
 }
 
+export const removeProductList = async(ids) => {
+  const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+  };
+  try{
+    const data = await axios.post(
+      baseUrl + "Products/DeleteProductList",
+      Array.isArray(ids) ? ids : [],
+      option
+    );
+    return data;
+  }catch(err){
+    return err?.response;
+  }
+};
+
 export const uniqueBarCode = async(code) => {
   const option = {
     headers: {
@@ -258,6 +306,23 @@ export const uniqueBarCode = async(code) => {
     return data?.data?.isUniq
   }catch(err){
     return err
+  }
+};
+
+export const uniqueInnerCode = async(code) => {
+  const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+  }
+  try{
+    const data = await axios.get(
+      baseUrl + `Products/InnerCodeUniq?innerCode=${encodeURIComponent(code)}`,
+      option
+    )
+    return data?.data?.isUniq ?? data?.data
+  }catch(err){
+    return null
   }
 };
 

@@ -56,20 +56,22 @@ const Header = ({
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  const isHomeActive = location.pathname === "/" || location.pathname === "/prods";
+
   useEffect(() => {
     setActiveBtn(location.pathname)
-  }, []);
+  }, [location.pathname, setActiveBtn]);
 
   const collapsedNavRender = compactNav
     ? (closeMenu) => (
       <>
         <Box style={{ display: 'flex' }}>
-          <HomeIcon style={{ marginLeft: "10px", marginTop: "6px", color: activeBtn === "/" ? "#FFA500" : "#3FB68A" }} />
+          <HomeIcon style={{ marginLeft: "10px", marginTop: "6px", color: isHomeActive ? "#FFA500" : "#3FB68A" }} />
           <MenuItem
             fontSize="medium"
             onClick={() => {
               closeMenu();
-              if (activeBtn !== "/") {
+              if (!isHomeActive) {
                 navigate("/");
                 setActiveBtn("/");
               }
@@ -139,11 +141,11 @@ const Header = ({
           <div className={styles.headerLinkBtn}>
             <h6
               style={{
-                color: (activeBtn === "/" ? "#FFA500" : "#383838"),
-                fontSize: (activeBtn === "/" && "140%")
+                color: (isHomeActive ? "#FFA500" : "#383838"),
+                fontSize: (isHomeActive && "140%")
               }}
               onClick={() => {
-                if (activeBtn === "/") {
+                if (isHomeActive) {
                   return
                 } else {
                   navigate("/")
@@ -154,7 +156,7 @@ const Header = ({
               <HomeIcon
                 fontSize="large"
                 sx={{
-                  color: (activeBtn === "/" ? "#FFA500" : "#3FB68A"),
+                  color: (isHomeActive ? "#FFA500" : "#3FB68A"),
                 }}
               />
               <span className={styles.routeName}>{t("menubar.home")}</span>

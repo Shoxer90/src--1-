@@ -1,7 +1,32 @@
 
-// export const baseUrl = "https://storex.payx.am/api/";
-export const baseUrl = "https://storextest.payx.am/api/";
+export const baseUrl = "https://storex.payx.am/api/";
+// export const baseUrl = "https://storextest.payx.am/api/";
 // export const baseUrl = "https://localhost:7077/api/";
+
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
+
+export const getApiOrigin = () => {
+  try {
+    return new URL(baseUrl).origin;
+  } catch {
+    return String(baseUrl).replace(/\/api\/?$/, "").replace(/\/$/, "");
+  }
+};
+
+export const getMediaOrigin = () => {
+  const apiOrigin = getApiOrigin();
+  try {
+    const host = new URL(apiOrigin).hostname;
+    if (LOCAL_HOSTS.has(host)) {
+      return "https://storextest.payx.am";
+    }
+    return apiOrigin;
+  } catch {
+    return "https://storextest.payx.am";
+  }
+};
+
+export const isLocalHostName = (host = "") => LOCAL_HOSTS.has(host);
 
 export const option = () => {
   const  option = {

@@ -5,10 +5,8 @@ import Loader from "../loading/Loader";
 import HomeNavigation from "./HomeNavigation";
 import PaginationSnip from "../pagination";
 import AddNewProduct from "./product/AddNewProduct";
-import { getAdg, removeProduct } from "../../services/products/productsRequests";
-import { normalizeCategoryTree } from "../../services/categories/categoriesRequests";
-import { seedRealisticCategories } from "../../services/categories/seedCategories";
-import { assignProductCategories } from "../../services/categories/seedProductCategories";
+import { getAdg, removeProduct, removeProductList } from "../../services/products/productsRequests";
+import { flattenCategories, getCategories, normalizeCategoryTree } from "../../services/categories/categoriesRequests";
 import { Dialog } from "@mui/material";
 import SnackErr from "../dialogs/SnackErr";
 
@@ -17,6 +15,7 @@ import HomeContent from "./content/HomeContent";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loadResources } from "i18next";
 import { PlaySound, useSuccessSound } from "../../modules/PlaySound";
+import ConfirmDialog from "../dialogs/ConfirmDialog";
 
 const initState = {
   purchasePrice: "",
@@ -27,6 +26,7 @@ const initState = {
   discount: "",
   remainder: "",
   barCode: "",
+  innerCode: "",
   photo:"",
   measure:"",
   pan: 0,
@@ -75,7 +75,10 @@ const HomePage = ({
   const [newProduct,setProduct] = useState(initState); 
   const [categories, setCategories] = useState([]);
   const [selectedMainId, setSelectedMainId] = useState(null);
-  const [selectedSubId, setSelectedSubId] = useState(null); 
+  const [selectedSubId, setSelectedSubId] = useState(null);
+  const [bulkSelectMode, setBulkSelectMode] = useState(false);
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [openBulkDeleteConfirm, setOpenBulkDeleteConfirm] = useState(false); 
 
   const changeStatus = async(str) => {
     setFlag(flag+1)
@@ -99,6 +102,46 @@ const HomePage = ({
         setType("success")
       }
     })
+  };
+
+  const toggleBulkSelectMode = () => {
+    if (bulkSelectMode) {
+      setBulkSelectMode(false);
+      setSelectedProductIds([]);
+      return;
+    }
+    setBulkSelectMode(true);
+  };
+
+  const toggleProductSelect = (id) => {
+    setSelectedProductIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const deleteSelectedProducts = async () => {
+    const ids = selectedProductIds.filter(Boolean);
+    setOpenBulkDeleteConfirm(false);
+    if (!ids.length) return;
+    setFetching(true);
+    const res = await removeProductList(ids);
+    setFetching(false);
+    if (res?.status === 200) {
+      playSuccess();
+      ids.forEach((id) => {
+        const product = (content || []).find((item) => item?.id === id);
+        deleteBasketItem(id, product?.isEmark, product?.barCode);
+      });
+      setContent((prev) => (prev || []).filter((item) => !ids.includes(item?.id)));
+      setSnackMessage(t("dialogs.done"));
+      setType("success");
+      setBulkSelectMode(false);
+      setSelectedProductIds([]);
+      setFlag((current) => current + 1);
+      return;
+    }
+    setSnackMessage(t("dialogs.wrong"));
+    setType("error");
   };
 
   const getSelectData = () => {
@@ -131,19 +174,20 @@ const HomePage = ({
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const tree = await seedRealisticCategories();
+      const tree = await getCategories();
       if (cancelled) return;
-      const normalized = normalizeCategoryTree(tree);
-      setCategories(normalized);
-      const assigned = await assignProductCategories(normalized);
-      if (!cancelled && assigned) setFlag(flag + 1);
+      setCategories(normalizeCategoryTree(tree));
     })();
     return () => { cancelled = true; };
   }, [i18n.language]);
 
   useEffect(() => {
-    setProductCategoryId?.(selectedSubId || selectedMainId || null);
+    setProductCategoryId?.(selectedSubId ?? selectedMainId ?? null);
   }, [selectedMainId, selectedSubId, setProductCategoryId]);
+
+  useEffect(() => {
+    setSelectedProductIds([]);
+  }, [page, status, productCategoryId]);
 
   useEffect(() => {
     setFetching(true)
@@ -185,6 +229,20 @@ const HomePage = ({
           setCurrentPage(1);
           navigate(`/prods?status=${status}&page=1`);
         }}
+        onCategoriesChange={(nextTree) => {
+          setCategories(nextTree || []);
+          const ids = new Set(flattenCategories(nextTree || []).map((item) => item.id));
+          if (selectedMainId && selectedMainId !== 0 && !ids.has(selectedMainId)) {
+            setSelectedMainId(null);
+            setSelectedSubId(null);
+          } else if (selectedSubId && selectedSubId !== 0 && !ids.has(selectedSubId)) {
+            setSelectedSubId(null);
+          }
+        }}
+        bulkSelectMode={bulkSelectMode}
+        selectedCount={selectedProductIds.length}
+        onToggleBulkSelect={toggleBulkSelectMode}
+        onRequestBulkDelete={() => setOpenBulkDeleteConfirm(true)}
       />
       <HomeContent
         measure={measure}
@@ -203,7 +261,9 @@ const HomePage = ({
 
         setBasketContent={setBasketContent}
         setFrom={setFrom}
-
+        selectMode={bulkSelectMode}
+        selectedProductIds={selectedProductIds}
+        onToggleSelect={toggleProductSelect}
       />
       { totalCount/perPage > 1 &&
         <PaginationSnip 
@@ -242,6 +302,13 @@ const HomePage = ({
         setFrom={setFrom}
         from={from}
       />}
+      <ConfirmDialog
+        open={openBulkDeleteConfirm}
+        close={setOpenBulkDeleteConfirm}
+        func={deleteSelectedProducts}
+        title={t("buttons.remove")}
+        question={t("productinputs.confirmDeleteProducts")}
+      />
       <Dialog open={Boolean(type)}>
         <SnackErr open={snackMessage} type={type} close={setType} message={snackMessage}/>
       </Dialog>

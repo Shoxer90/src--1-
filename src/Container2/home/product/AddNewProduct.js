@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import React, { memo ,useState, useEffect } from "react";
-import { createProduct, uniqueBarCode } from "../../../services/products/productsRequests";
+import { createProduct, uniqueBarCode, uniqueInnerCode } from "../../../services/products/productsRequests";
 import { Box } from "@mui/system";
 import { Checkbox, DialogContent, Divider, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Slide, TextField } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
@@ -49,6 +49,7 @@ const AddNewProduct = ({
   const [openForSave, setOpenForSave] = useState(false);
   const [emptyValidate, setEmptyValidate] = useState(false);
   const [isUniqBarCode, setIsUniqBarcode] = useState(true);
+  const [isUniqInnerCode, setIsUniqInnerCode] = useState(true);
   
   const onlyNumberAndADot = (event,num) => {
     const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
@@ -106,38 +107,53 @@ const AddNewProduct = ({
       return
     }
     setFetching(true)
-    await uniqueBarCode(newProduct?.barCode).then((res) => {
-    setFetching(false)
-    if(res){
-        setIsUniqBarcode(true)
-        createProduct(newProduct).then((res)=> {
-          setEmptyValidate(true)
-          if(res === 400){
-            setType("error")
-            setMessage(t("authorize.errors.emptyfield"))
-          }else if(res === 500) {
-            setType("error")
-            setMessage(t("dialogs.wrong"))
-          }else if(newProduct.price < 1){
-            setType("error")
-            setMessage(t("dialogs.pricezero")) 
-            return
-          }else{
-            playSuccess()
-
-            handleClose()
-            changeStatus("GetAvailableProducts")
-            setGlobalMessage(t("productinputs.productadded"))
-            setGlobalType("success")
-          }
-        })
-      }else if(!res){
+    try {
+      const isUniqBc = await uniqueBarCode(newProduct?.barCode)
+      if (!isUniqBc) {
         setIsUniqBarcode(false)
-        setMessage(t("dialogs.unicBarCode"))
         setType("error")
+        setMessage(t("dialogs.unicBarCode"))
         return
       }
-    })
+      setIsUniqBarcode(true)
+
+      const inner = String(newProduct?.innerCode ?? "").trim()
+      if (inner) {
+        const isUniqInner = await uniqueInnerCode(inner)
+        if (isUniqInner === false) {
+          setIsUniqInnerCode(false)
+          setType("error")
+          setMessage(t("dialogs.unicInnerCode"))
+          return
+        }
+        if (isUniqInner !== true) {
+          setType("error")
+          setMessage(t("dialogs.wrong"))
+          return
+        }
+        setIsUniqInnerCode(true)
+      }
+
+      const res = await createProduct(newProduct)
+      setEmptyValidate(true)
+      if (res === 400) {
+        setType("error")
+        setMessage(t("authorize.errors.emptyfield"))
+        return
+      }
+      if (typeof res === "number") {
+        setType("error")
+        setMessage(t("dialogs.wrong"))
+        return
+      }
+      playSuccess()
+      handleClose()
+      changeStatus("GetAvailableProducts")
+      setGlobalMessage(t("productinputs.productadded"))
+      setGlobalType("success")
+    } finally {
+      setFetching(false)
+    }
   };
 
 	const setImage = (e) => {
@@ -155,6 +171,9 @@ const AddNewProduct = ({
   const handleChangeInput = async(e) => {
     setMessage("")
     setType()
+    if(e.target.name === "innerCode") {
+      setIsUniqInnerCode(true)
+    }
     if(e.target.name === "measure") {
       setMeasure(e.target.value)
       await getMeasureByNum(e.target.value).then((res) => {
@@ -209,6 +228,7 @@ const AddNewProduct = ({
       discount: "",
       remainder: "",
       barCode: "",
+      innerCode: "",
       photo:"",
       measure:"",
       pan: 0,
@@ -391,14 +411,27 @@ const AddNewProduct = ({
               content={newProduct?.photo}
              />
 
-            <BarcodeInput
-              emptyValidate={emptyValidate}
-              newProduct={newProduct}
-              isUniqBarCode={isUniqBarCode}
-              setIsUniqBarcode={setIsUniqBarcode}
-              setProduct={setProduct}
-              from={from}
-            />
+            <Box style={{display:"flex",flexDirection:"column"}}>
+              <TextField
+                error={!isUniqInnerCode}
+                size="small"
+                variant="outlined"
+                style={{marginBottom:"10px",width:"250px"}}
+                name="innerCode"
+                value={newProduct?.innerCode || ""}
+                label={t("productinputs.code2")}
+                onChange={(e)=>handleChangeInput(e)}
+                autoComplete="off"
+              />
+              <BarcodeInput
+                emptyValidate={emptyValidate}
+                newProduct={newProduct}
+                isUniqBarCode={isUniqBarCode}
+                setIsUniqBarcode={setIsUniqBarcode}
+                setProduct={setProduct}
+                from={from}
+              />
+            </Box>
 
           </Box>
 

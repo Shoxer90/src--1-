@@ -2,18 +2,35 @@ import { memo, useEffect, useRef, useState } from "react";
 import { IconButton } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import SettingsIcon from "@mui/icons-material/Settings";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useTranslation } from "react-i18next";
 import styles from "./index.module.scss";
+import CategorySettingsDialog from "./CategorySettingsDialog";
+import { toCategoryIconSrc } from "../../services/categories/categoriesRequests";
 
-const ChipBtn = ({ active, onClick, children }) => (
-  <button
-    type="button"
-    className={`${styles.chipBtn} ${active ? styles.chipBtn_active : ""}`}
-    onClick={onClick}
-  >
-    {children}
-  </button>
-);
+const UNCATEGORIZED_ID = 0;
+
+const ChipBtn = ({ active, onClick, icon, children }) => {
+  const iconSrc = toCategoryIconSrc(icon);
+  return (
+    <button
+      type="button"
+      className={`${styles.chipBtn} ${iconSrc ? styles.chipBtn_withIcon : ""} ${active ? styles.chipBtn_active : ""}`}
+      onClick={onClick}
+    >
+      {iconSrc ? (
+        <img
+          src={iconSrc}
+          alt=""
+          className={styles.chipBtn_icon}
+          onError={(event) => { event.currentTarget.style.display = "none"; }}
+        />
+      ) : null}
+      <span className={styles.chipBtn_label}>{children}</span>
+    </button>
+  );
+};
 
 const CategorySlide = ({ children }) => {
   const [canScroll, setCanScroll] = useState({ left: false, right: false });
@@ -68,9 +85,16 @@ const HomeCategoryBar = ({
   selectedMainId,
   selectedSubId,
   onSelectMain,
-  onSelectSub
+  onSelectSub,
+  onCategoriesChange,
+  showSettings,
+  bulkSelectMode,
+  selectedCount = 0,
+  onToggleBulkSelect,
+  onRequestBulkDelete,
 }) => {
   const { t } = useTranslation();
+  const [openSettings, setOpenSettings] = useState(false);
   const selectedMain = categories.find((item) => item.id === selectedMainId) || null;
   const [visibleMain, setVisibleMain] = useState(selectedMain);
 
@@ -83,49 +107,90 @@ const HomeCategoryBar = ({
     return () => clearTimeout(timer);
   }, [selectedMain]);
 
-  if (!categories.length) return null;
-
   return (
     <>
-      <CategorySlide>
-        <ChipBtn active={!selectedMainId} onClick={() => onSelectMain(null)}>
-          {t("mainnavigation.allCategories")}
-        </ChipBtn>
-        {categories.map((item) => (
-          <ChipBtn
-            key={item.id}
-            active={selectedMainId === item.id}
-            onClick={() => onSelectMain(item.id)}
-          >
-            {item.title}
+      <div className={styles.categoryBarRow}>
+        <CategorySlide>
+          <ChipBtn active={selectedMainId == null} onClick={() => onSelectMain(null)}>
+            {t("mainnavigation.allCategories")}
           </ChipBtn>
-        ))}
-      </CategorySlide>
+          {categories.map((item) => (
+            <ChipBtn
+              key={item.id}
+              icon={item.icon}
+              active={selectedMainId === item.id}
+              onClick={() => onSelectMain(item.id)}
+            >
+              {item.title}
+            </ChipBtn>
+          ))}
+          <ChipBtn
+            active={selectedMainId === UNCATEGORIZED_ID}
+            onClick={() => onSelectMain(UNCATEGORIZED_ID)}
+          >
+            {t("mainnavigation.uncategorized")}
+          </ChipBtn>
+        </CategorySlide>
+        {showSettings && (
+          <div className={styles.categoryBarActions}>
+            {selectedCount > 0 ? (
+              <button
+                type="button"
+                className={styles.bulkDeleteBtn}
+                onClick={onRequestBulkDelete}
+              >
+                {t("productinputs.deleteSelectedProducts")}
+              </button>
+            ) : (
+              <IconButton
+                size="small"
+                className={`${styles.categorySettingsBtn} ${bulkSelectMode ? styles.categorySettingsBtn_active : ""}`}
+                title={t("productinputs.selectProductsToDelete")}
+                onClick={onToggleBulkSelect}
+              >
+                <DeleteOutlineIcon fontSize="small" />
+              </IconButton>
+            )}
+            <IconButton
+              size="small"
+              className={styles.categorySettingsBtn}
+              title={t("productinputs.categorySettings")}
+              onClick={() => setOpenSettings(true)}
+            >
+              <SettingsIcon fontSize="small" />
+            </IconButton>
+          </div>
+        )}
+      </div>
       <div className={`${styles.categoryHeadingWrap} ${selectedMain ? styles.categoryHeadingWrap_open : ""}`}>
         <div className={styles.categoryHeading}>
           {visibleMain && (
             <>
               <h2 className={styles.categoryHeading_title}>{visibleMain.title}</h2>
-              {!!visibleMain.children?.length && (
-                <CategorySlide>
-                  <ChipBtn active={!selectedSubId} onClick={() => onSelectSub(null)}>
-                    {t("mainnavigation.allCategories")}
+              <CategorySlide>
+                <ChipBtn active={selectedSubId == null} onClick={() => onSelectSub(null)}>
+                  {t("mainnavigation.allCategories")}
+                </ChipBtn>
+                {(visibleMain.children || []).map((item) => (
+                  <ChipBtn
+                    key={item.id}
+                    icon={item.icon}
+                    active={selectedSubId === item.id}
+                    onClick={() => onSelectSub(item.id)}
+                  >
+                    {item.title}
                   </ChipBtn>
-                  {visibleMain.children.map((item) => (
-                    <ChipBtn
-                      key={item.id}
-                      active={selectedSubId === item.id}
-                      onClick={() => onSelectSub(item.id)}
-                    >
-                      {item.title}
-                    </ChipBtn>
-                  ))}
-                </CategorySlide>
-              )}
+                ))}
+              </CategorySlide>
             </>
           )}
         </div>
       </div>
+      <CategorySettingsDialog
+        open={openSettings}
+        onClose={() => setOpenSettings(false)}
+        onChanged={onCategoriesChange}
+      />
     </>
   );
 };

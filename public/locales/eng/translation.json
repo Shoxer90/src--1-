@@ -106,6 +106,7 @@
     "back" : "Back",
     "reverse": "Refund",
     "createMultiProds": "Import Catalog",
+    "confirmRemainderChanges": "Confirm changes",
     "view": "View",
     "noEmark":"Return without scanning",
     "continue": "Continue",
@@ -223,7 +224,10 @@
       "notMail": "E-mail is not valid",
       "noHdm": "Hdm is not available now",
       "fail": "Request failed․ Check Recipient Information",
-      "soldOut": "There are sold out or insufficient quantities of products in the basket finished product"
+      "soldOut": "There are sold out or insufficient quantities of products in the basket finished product",
+      "barnotvalid": "Invalid barcode / inner code format",
+      "repeatbar": "Duplicate barcode / inner code",
+      "repeatbarinshop": "A product with this barcode / inner code already exists in the store"
     }
   },
   "menuburger": {
@@ -258,9 +262,16 @@
     "searchEmarkconcl2":"You have exhausted your available store balance.",
     "searchconclOutOfStock":"Products with this barcode or name were found in the unavailable products section. Do you want to go?",
     "newproduct": "Add new product",
+    "productManagement": "Product management",
+    "quantityChange": "Change quantities",
     "multipleproduct": "Add multiple products",
     "multipleProductText1": "Download the excel form, fill in the appropriate fields (information about the product, service).",
     "multipleProductText2": "Upload the finished excel file with filled data",
+    "remainderUpdate": "Update product quantities",
+    "remainderUpdateText1": "Download the Excel file with all store products, make your changes, and save the file.",
+    "remainderUpdateText2": "Upload the modified Excel file",
+    "downloadRemainderForm": "Download product list",
+    "uploadRemainderForm": "Upload the modified Excel form",
     "downloadform":"Download a blank Excel form",
     "uploadform": "Upload the completed Excel form",
     "chooseExcel": "Choose Excel file",
@@ -268,7 +279,8 @@
     "barcodeCorrectForm": "The product's internal code/barcode may include only Latin letters and numbers.",
     "vatCorrectForm":"If there are products not subject to VAT in the product list, mark «yes» in the column, otherwise, leave it empty.",
     "prod": " products",
-    "allCategories": "All"
+    "allCategories": "All",
+    "uncategorized": "Other"
   },
   "productcard": {
     "outofstock": "Out of stock",
@@ -294,7 +306,8 @@
     "purchase1": "Purchase price",
     "price": "Product price",
     "discount": "Discount",
-    "barcode": "Internal code/ Barcode",
+    "barcode": "Barcode",
+    "innerCode": "Inner code",
     "ndsNone": "Excluding VAT",
     "isEmark": "contains e-Mark",
     "nds": "Including VAT",
@@ -323,7 +336,15 @@
     "categoryAdded": "Category added",
     "categoryUpdated": "Category updated",
     "subCategoriesOf": "Subcategories of {{name}}",
-    "subCategory": "Subcategory"
+    "subCategory": "Subcategory",
+    "categorySettings": "Category settings",
+    "addSubCategory": "Add subcategory",
+    "categoryIcon": "Icon",
+    "categoryDeleted": "Category deleted",
+    "confirmDeleteCategory": "Delete this category?",
+    "selectProductsToDelete": "Delete multiple products",
+    "deleteSelectedProducts": "Delete selected products",
+    "confirmDeleteProducts": "Delete selected products?"
   },
   "basket": {
     "title": "Basket",
@@ -635,12 +656,14 @@
     "havenot": "At this time available only ",
     "quantitynull": "This quantity is not available for purchase.",
     "unicBarCode": "A product with a similar barcode already exists.",
+    "unicInnerCode": "A product with a similar code already exists.",
     "activateEhdm":"Do you really want to activate ETRM register?",
     "activateEhdm2":"Do you really want to activate TRM register?",
     "activateEhdm3":"Turn of ETRM ?",
     "deprecated": "The data is deprecated․ Please, confirm registration again",
     "saveData": "Do you want to save the collected data?",
     "excelAddProds": "Would you like to download the product(s) to your store ?",
+    "excelUpdateRemainders": "Do you want to confirm the changes?",
     "excelCancelList": "Do you want to cancel changes ?",
     "isInDate": "You have no current commitment",
     "checkCardStatus200": "Payment completed",

@@ -1,3 +1,6 @@
+.excelSection{
+  margin-top: 8px;
+}
 .excelLoaderContent{
   display: flex;
   flex-flow: row nowrap;
@@ -47,6 +50,47 @@
         margin: 5px;
         padding-left: 6px;
       }
+    }
+  }
+}
+.categoryCell {
+  min-width: 160px;
+  max-width: 220px;
+  vertical-align: middle;
+  :global {
+    .MuiAutocomplete-root {
+      width: 90%;
+      margin: 5px;
+    }
+    .MuiOutlinedInput-root {
+      padding: 0 4px 0 6px !important;
+      min-height: 0;
+      height: 24px;
+      font-size: inherit;
+      background: #fff;
+    }
+    .MuiOutlinedInput-notchedOutline {
+      border: 1px solid grey;
+      border-radius: 3px;
+    }
+    .Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-width: 1px;
+    }
+    .MuiAutocomplete-input {
+      padding: 1px 4px 1px 0 !important;
+      height: 20px !important;
+      box-sizing: border-box;
+    }
+    .MuiAutocomplete-endAdornment {
+      top: 50%;
+      transform: translateY(-50%);
+      right: 0;
+    }
+    .MuiAutocomplete-popupIndicator,
+    .MuiAutocomplete-clearIndicator {
+      padding: 0;
+      width: 18px;
+      height: 18px;
     }
   }
 }

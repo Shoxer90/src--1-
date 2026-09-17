@@ -3,7 +3,7 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import { updateIsFavorite } from "../../../services/products/productsRequests";
 import { LimitContext } from "../../../context/Context";
 import SnackErr from "../../dialogs/SnackErr";
-import { Box, Card, Dialog, Divider } from "@mui/material";
+import { Box, Card, Checkbox, Dialog, Divider } from "@mui/material";
 import UpdateProduct from "../product/UpdateProduct";
 import styles from "./index.module.scss";
 import StarIcon from '@mui/icons-material/Star';
@@ -17,6 +17,20 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 
 import InfoIcon from '@mui/icons-material/Info';
 import ProductMotion from "../productHistory/ProductMotion";
+
+const BarcodeMark = () => (
+  <svg width="15" height="13" viewBox="0 0 24 16" fill="currentColor" aria-hidden="true" style={{flexShrink:0}}>
+    <rect x="1" y="1" width="1.6" height="14" />
+    <rect x="4" y="1" width="1" height="14" />
+    <rect x="6.4" y="1" width="2.4" height="14" />
+    <rect x="10" y="1" width="1" height="14" />
+    <rect x="12.4" y="1" width="1.6" height="14" />
+    <rect x="15.4" y="1" width="1" height="14" />
+    <rect x="17.8" y="1" width="2.2" height="14" />
+    <rect x="21.4" y="1" width="1.6" height="14" />
+  </svg>
+);
+
 const style = {
   display:"flex",
   justifyContent:"flex-start",
@@ -57,7 +71,10 @@ const HomeContentItem = ({
   content,
   setCurrentPage,
   setOpenBasket,
-          setFrom
+          setFrom,
+  selectMode,
+  isSelected,
+  onToggleSelect,
 
 }) => {
   const {t} = useTranslation();
@@ -149,27 +166,53 @@ const HomeContentItem = ({
     }
   },[change,localStorage.getItem("emarkNewList")])
   return (
-    <Card style={{ border:product?.type.includes(".")? "solid #3FB68A 2px": "solid orange 2px",padding:"7px", cursor:"pointer"}}>
+    <Card
+      className={isSelected ? styles.cardSelected : undefined}
+      style={{
+        border: product?.type?.includes(".") ? "solid #3FB68A 2px" : "solid orange 2px",
+        padding:"7px",
+        cursor:"pointer",
+        position:"relative"
+      }}
+      onClick={() => {
+        if (selectMode) onToggleSelect?.(product?.id);
+      }}
+    >
     {/* <Card style={{ border:"solid orange 2px",padding:"7px", cursor:"pointer"}}> */}
-        <div style={{display:"flex", justifyContent:"space-between", padding:"2px 5px"}}>
+        <div style={{display:"flex", justifyContent:"space-between", padding:"2px 5px", alignItems:"center"}}>
+        {selectMode && (
+          <Checkbox
+            className={styles.cardSelectCheck}
+            size="small"
+            checked={!!isSelected}
+            onClick={(e) => e.stopPropagation()}
+            onChange={() => onToggleSelect?.(product?.id)}
+            sx={{
+              p: 0,
+              mr: 0.5,
+              color: "orange",
+              "&.Mui-checked": { color: "orange" }
+            }}
+          />
+        )}
 
         <div 
           className={product?.name?.length > 22 ? styles.hovertext : undefined}
-          style={{fontSize:"90%", fontWeight:700,alignItems:"center"}}
+          style={{fontSize:"90%", fontWeight:700,alignItems:"center", flex:1, minWidth:0}}
           data-hover={`${product?.name} ${product?.brand}`}
         >
             {product?.isEmark ? <QrCode2Icon fontSize="small" sx={{mr:0.21,color:"green"}} />: ""}
           {product?.name?.length > 25 ? `${product?.name.slice(0,24)}...` : `${product?.name}`} {" "}
           {product?.name?.length+product?.brand?.length < 25 && product?.brand ?`"${product?.brand}"`:""}
         </div>
-        <span className={styles.productContent_item_icons}>
+        <span className={styles.productContent_item_icons} onClick={(e)=>e.stopPropagation()}>
         {starSynth ?
           <StarIcon 
-            onClick = {()=>handleStarChange(false)}
+            onClick = {(e)=>{ e.stopPropagation(); handleStarChange(false); }}
             fontSize="medium" 
             sx={{color:"orangered"}}
           /> : <StarOutlineIcon 
-            onClick = {()=>handleStarChange(true)}
+            onClick = {(e)=>{ e.stopPropagation(); handleStarChange(true); }}
             fontSize="small"
             sx={{color:"orange"}}/>
         }
@@ -185,7 +228,7 @@ const HomeContentItem = ({
           <ModeIcon 
             fontSize="medium" 
             sx={{color:"orange"}}
-            onClick={()=>setOpenUpdateProduct(true)}
+            onClick={(e)=>{ e.stopPropagation(); setOpenUpdateProduct(true); }}
           />
         }
      
@@ -193,7 +236,20 @@ const HomeContentItem = ({
       </div>
       <Divider style={{margin:1, backgroundColor:"gray",width:"90%",alignSelf:"center",}}/>
         <Box style={style}>
-          <img style={style?.picture} src={product?.photo ? product?.photo : "/default-placeholder.png"} alt={index} />
+          <Box style={{width:"110px", height:"125px", display:"flex", flexDirection:"column", flexShrink:0}}>
+            <img
+              style={{...style?.picture, height:"105px"}}
+              src={product?.photo ? product?.photo : "/default-placeholder.png"}
+              alt={index}
+            />
+            <div
+              className={product?.innerCode?.length > 12 ? styles.hovertext : undefined}
+              data-hover={`${product?.innerCode || ""}`}
+              style={{fontSize:"80%", fontWeight:600, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth:"110px", lineHeight:1.2, textAlign:"center", marginTop:"2px"}}
+            >
+              {product?.innerCode || "—"}
+            </div>
+          </Box>
           <Box style={style.info}>
             <div style={{marginTop:"10px"}}> 
               {t("updates.price")}:  {product.price } {t("units.amd")}
@@ -221,10 +277,12 @@ const HomeContentItem = ({
                   <div
                     className={product?.barCode?.length > 17 ? styles.hovertext : null }
                     data-hover={`${product?.barCode}`}
+                    style={{display:"flex", alignItems:"center", gap:"3px"}}
                   > 
-                    {t("productinputs.code2")} : {product?.barCode?.length > 17 ? `${product?.barCode.slice(0,17)}...`: product?.barCode }
+                    <BarcodeMark />
+                    {product?.barCode?.length > 17 ? `${product?.barCode.slice(0,17)}...`: product?.barCode }
                   </div>
-                {product?.remainder ? <div className={styles.productContent_item_addBasket}>
+                {product?.remainder ? <div className={styles.productContent_item_addBasket} onClick={(e)=>e.stopPropagation()}>
                   <input 
                     max={`${product.remainder}`}
                     placeholder="1"
@@ -239,8 +297,10 @@ const HomeContentItem = ({
                   />
                 </div> :<div style={{height:"35px"}}>{""}</div>}
               </>: <>
-                <div> {t("productinputs.code2")} {product?.barCode} </div>
-                {/* <div> {t("productinputs.code2")} : {product?.barCode?.length > 20 ? `${product?.barCode.slice(20)}...`: product?.barCode }</div> */}
+                <div style={{display:"flex", alignItems:"center", gap:"3px"}}>
+                  <BarcodeMark />
+                  {product?.barCode}
+                </div>
                 <div style={{marginBottom:"14px",color:"red"}}>{t("productcard.outofstock")}</div>
               </>
             }

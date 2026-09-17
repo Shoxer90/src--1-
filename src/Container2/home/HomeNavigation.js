@@ -26,6 +26,11 @@ const HomeNavigation = ({
   selectedSubId,
   onSelectMain,
   onSelectSub,
+  onCategoriesChange,
+  bulkSelectMode,
+  selectedCount,
+  onToggleBulkSelect,
+  onRequestBulkDelete,
 }) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
@@ -116,6 +121,12 @@ const HomeNavigation = ({
         selectedSubId={selectedSubId}
         onSelectMain={onSelectMain}
         onSelectSub={onSelectSub}
+        onCategoriesChange={onCategoriesChange}
+        showSettings={!limitedUsing}
+        bulkSelectMode={bulkSelectMode}
+        selectedCount={selectedCount}
+        onToggleBulkSelect={onToggleBulkSelect}
+        onRequestBulkDelete={onRequestBulkDelete}
       />
     </div>
   </div>

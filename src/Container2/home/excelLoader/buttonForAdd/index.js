@@ -7,6 +7,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
 import InstallDesktopIcon from '@mui/icons-material/InstallDesktop';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -53,8 +55,8 @@ const ExcelBurger = ({t,setOpenNewProduct}) => {
         style={{color: "white",height: "35px",textTransform: "capitalize"}}
         onClick={(event) => setAnchorEl(event.currentTarget)}
       >
-        <ControlPointIcon style={{margin:"auto 1px"}}/>
-        {window.innerWidth> 481 && t("mainnavigation.newproduct")}
+        <BrowserUpdatedIcon style={{margin:"auto 1px"}}/>
+        {window.innerWidth> 481 && t("mainnavigation.productManagement")}
       </Button>
 
       <StyledMenu
@@ -86,6 +88,20 @@ const ExcelBurger = ({t,setOpenNewProduct}) => {
           <div> 
             <InstallDesktopIcon sx={{m:1}}/>
             {t("mainnavigation.multipleproduct")}
+          </div>
+        </MenuItem>
+
+        <MenuItem 
+        style={{padding:"1px 5px"}}
+        fontSize="medium"
+          onClick={()=>{
+            setAnchorEl(null)
+            redirect("/excelUpdate")
+          }}
+        >
+          <div> 
+            <EditNoteIcon sx={{m:1}}/>
+            {t("mainnavigation.quantityChange")}
           </div>
         </MenuItem>
       </StyledMenu>

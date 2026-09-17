@@ -806,6 +806,7 @@ const App = () => {
               }  
             />
             <Route path="/excel" element={<PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} />} />
+            <Route path="/excelUpdate" element={<PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} />} />
             <Route path="/feedback" element={<FeedBackPage />} />
             <Route path="/setting/cashiers" element={<Cashiers cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
             <Route path="/setting/user" element={<SettingsUser user={user} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc} limitedUsing={limitedUsing}/>} />
