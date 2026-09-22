@@ -17,6 +17,7 @@ import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import styles from "../index.module.scss";
 import { useTranslation } from 'react-i18next';
 import { useSuccessSound } from '../../../modules/PlaySound';
+import useDebouncedUniqueness from "../../hooks/useDebouncedUniqueness";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -50,6 +51,39 @@ const AddNewProduct = ({
   const [emptyValidate, setEmptyValidate] = useState(false);
   const [isUniqBarCode, setIsUniqBarcode] = useState(true);
   const [isUniqInnerCode, setIsUniqInnerCode] = useState(true);
+
+  const applyBarCodeUniq = (res) => {
+    if (res === false) {
+      setIsUniqBarcode(false);
+      setType("error");
+      setMessage(t("dialogs.unicBarCode"));
+    } else if (res === true) {
+      setIsUniqBarcode(true);
+    } else {
+      setType("error");
+      setMessage(t("dialogs.wrong"));
+    }
+  };
+
+  const applyInnerCodeUniq = (res) => {
+    if (res === false) {
+      setIsUniqInnerCode(false);
+      setType("error");
+      setMessage(t("dialogs.unicInnerCode"));
+    } else if (res === true) {
+      setIsUniqInnerCode(true);
+    } else {
+      setType("error");
+      setMessage(t("dialogs.wrong"));
+    }
+  };
+
+  useDebouncedUniqueness(newProduct?.barCode, uniqueBarCode, {
+    onResult: applyBarCodeUniq,
+  });
+  useDebouncedUniqueness(newProduct?.innerCode, uniqueInnerCode, {
+    onResult: applyInnerCodeUniq,
+  });
   
   const onlyNumberAndADot = (event,num) => {
     const valid = num === 2 ? /^\d*\.?(?:\d{1,2})?$/ : /^\d*\.?(?:\d{1,3})?$/ ;
@@ -136,14 +170,18 @@ const AddNewProduct = ({
 
       const res = await createProduct(newProduct)
       setEmptyValidate(true)
-      if (res === 400) {
+      const status = res?.status ?? res
+      const apiMessage = typeof res?.data === "string"
+        ? res.data
+        : res?.data?.message
+      if (status === 400) {
         setType("error")
-        setMessage(t("authorize.errors.emptyfield"))
+        setMessage(apiMessage || t("authorize.errors.emptyfield"))
         return
       }
-      if (typeof res === "number") {
+      if (typeof status === "number" && status !== 200) {
         setType("error")
-        setMessage(t("dialogs.wrong"))
+        setMessage(apiMessage || t("dialogs.wrong"))
         return
       }
       playSuccess()

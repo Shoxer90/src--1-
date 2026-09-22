@@ -177,7 +177,7 @@ export const createProduct = async(product) => {
     const data =  await axios.post(baseUrl + `Products/addProduct`, body, option)
     return data
   }catch(err){
-    return err?.response?.status
+    return err?.response
   }
 };
 

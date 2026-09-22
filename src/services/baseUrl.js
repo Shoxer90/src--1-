@@ -1,6 +1,6 @@
 
-export const baseUrl = "https://storex.payx.am/api/";
-// export const baseUrl = "https://storextest.payx.am/api/";
+// export const baseUrl = "https://storex.payx.am/api/";
+export const baseUrl = "https://storextest.payx.am/api/";
 // export const baseUrl = "https://localhost:7077/api/";
 
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);

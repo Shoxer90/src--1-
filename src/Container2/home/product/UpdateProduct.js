@@ -24,6 +24,7 @@ import BarcodeInput from "./BarcodeInput";
 import ProductCategorySelect from "./ProductCategorySelect";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchBarCodeSlice } from "../../../store/searchbarcode/barcodeSlice";
+import useDebouncedUniqueness from "../../hooks/useDebouncedUniqueness";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -60,6 +61,37 @@ const UpdateProduct = ({
     const [isUniqInnerCode, setIsUniqInnerCode] = useState(true);
     const [emptyValidate, setEmptyValidate] = useState(false);
     const barInput = useSelector(state => state?.barcode?.newProd);
+
+  const applyBarCodeUniq = (res) => {
+    if (res === false) {
+      setIsUniqBarcode(false);
+      setMessage({ message: t("dialogs.unicBarCode"), type: "error" });
+    } else if (res === true) {
+      setIsUniqBarcode(true);
+    } else {
+      setMessage({ message: t("dialogs.wrong"), type: "error" });
+    }
+  };
+
+  const applyInnerCodeUniq = (res) => {
+    if (res === false) {
+      setIsUniqInnerCode(false);
+      setMessage({ message: t("dialogs.unicInnerCode"), type: "error" });
+    } else if (res === true) {
+      setIsUniqInnerCode(true);
+    } else {
+      setMessage({ message: t("dialogs.wrong"), type: "error" });
+    }
+  };
+
+  useDebouncedUniqueness(currentProduct?.barCode, uniqueBarCode, {
+    skip: (value) => value === String(product?.barCode ?? "").trim(),
+    onResult: applyBarCodeUniq,
+  });
+  useDebouncedUniqueness(currentProduct?.innerCode, uniqueInnerCode, {
+    skip: (value) => value === String(product?.innerCode ?? "").trim(),
+    onResult: applyInnerCodeUniq,
+  });
   
 
   const updateImage = (e) => {
