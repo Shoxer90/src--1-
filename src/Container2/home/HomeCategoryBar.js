@@ -92,6 +92,7 @@ const HomeCategoryBar = ({
   selectedCount = 0,
   onToggleBulkSelect,
   onRequestBulkDelete,
+  allowBulkSelect = true,
 }) => {
   const { t } = useTranslation();
   const [openSettings, setOpenSettings] = useState(false);
@@ -133,7 +134,7 @@ const HomeCategoryBar = ({
         </CategorySlide>
         {showSettings && (
           <div className={styles.categoryBarActions}>
-            {selectedCount > 0 ? (
+            {allowBulkSelect && (selectedCount > 0 ? (
               <button
                 type="button"
                 className={styles.bulkDeleteBtn}
@@ -150,7 +151,7 @@ const HomeCategoryBar = ({
               >
                 <DeleteOutlineIcon fontSize="small" />
               </IconButton>
-            )}
+            ))}
             <IconButton
               size="small"
               className={styles.categorySettingsBtn}

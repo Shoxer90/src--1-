@@ -1,12 +1,13 @@
 import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { getPrepayment } from "../../services/products/productsRequests";
 import CardForPrepayment from "./components/CardForPrepayment";
 import Loader from "../loading/Loader";
+import PaginationSnip from "../pagination";
 
-import { Dialog, Pagination, PaginationItem } from "@mui/material";
+import { Dialog } from "@mui/material";
 
 import styles from "./index.module.scss";
 
@@ -24,16 +25,10 @@ const PrePaymentList = ({
 }) => {
   const search = useLocation().search;
   const currentPage = + (new URLSearchParams(search).get("page")) || 1 ;
-  const [page, setPage] = useState();
-  const [count, setCount] = useState();
   const [list, setList] = useState([]);
-  const [screenWidth, setScreenWidth] = useState();
+  const [count, setCount] = useState(20);
   const [load, setLoad] = useState(false);
   const {t} = useTranslation();
-
-  window.addEventListener('resize', function(event) {
-    setScreenWidth(window.innerWidth)
-  }, true);
 
   const getPrepaymentList = () => {
     getPrepayment({page: currentPage, count: 24, searchString: "", isPayd:false}).then((res) =>{
@@ -50,7 +45,6 @@ const PrePaymentList = ({
   useEffect(() => {
     setLoad(true)
     setList([])
-    setPage(currentPage)
     getPrepaymentList()
   },[currentPage, flag]);
 
@@ -77,29 +71,12 @@ const PrePaymentList = ({
         </div>
       </>:
       <h4 style={{color:"lightgrey", marginTop:"50px"}}>{t("history.noPrepaymentReciepts")}</h4> }
-      <div style={{display:"flex", justifyContent:"center"}}>
-        {count ? <Pagination
-          style={{
-            position:"fixed", 
-            background:"white",
-            paddingTop:"5px",
-            bottom:0, 
-            width:"100dvw",  
-            display:"flex",
-            justifyContent: "center"
-          }}
-          page={page}   
-          count={Math.ceil(count / 24)}
-          color="secondary"
-          size={screenWidth < 450 ? "small" : "large"}
-          renderItem={(item) => (
-            <PaginationItem
-              component={Link}
-              to={`/prepayment?page=${item?.page}`}
-              {...item}
-            />
-          )}/> : null}
-      </div>
+      <PaginationSnip
+        page={currentPage}
+        navig_Name="prepayment"
+        pageCount={count}
+        perPage={24}
+      />
       <Dialog open={load}><Loader /></Dialog>
     </div>
   )

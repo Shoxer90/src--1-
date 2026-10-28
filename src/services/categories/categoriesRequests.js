@@ -216,3 +216,35 @@ export const extractCategoryId = (payload) => {
   if (typeof payload.data?.id === "number") return payload.data.id;
   return null;
 };
+
+const STORE_CATEGORIES_URL = "https://marketx.am/api/store-categories";
+const STORE_CATEGORIES_ORIGIN = "https://marketx.am";
+
+export const getStoreCategoriesAcceptLanguage = () => {
+  const lang = (localStorage.getItem("lang") || localStorage.getItem("i18nextLng") || "hy").toLowerCase();
+  if (lang === "ru" || lang === "rus") return "ru";
+  if (lang === "eng" || lang === "en") return "en";
+  return "am";
+};
+
+export const getStoreCategories = async () => {
+  try {
+    const data = await axios.get(STORE_CATEGORIES_URL, {
+      headers: {
+        "Accept-Language": getStoreCategoriesAcceptLanguage(),
+      },
+    });
+    return Array.isArray(data?.data) ? data.data : [];
+  } catch (err) {
+    return [];
+  }
+};
+
+export const toStoreCategoryIconSrc = (item) => {
+  const value = getCategoryIcon(item);
+  if (!value) return "";
+  if (/^data:/i.test(value) || /^blob:/i.test(value) || /^https?:\/\//i.test(value)) {
+    return value;
+  }
+  return `${STORE_CATEGORIES_ORIGIN}${value.startsWith("/") ? "" : "/"}${value}`;
+};

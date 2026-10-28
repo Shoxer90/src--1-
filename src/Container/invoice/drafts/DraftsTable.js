@@ -223,15 +223,26 @@ const removeInvoiceDraft = (id) => {
           </Table>
         </TableContainer>
        
-        <Pagination 
-          style={{margi:"10px",
-            display: 'flex',
-            justifyContent: 'center',
-            padding:"10px",
+        <Pagination
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "12px",
+            "& .MuiPaginationItem-root": {
+              fontWeight: 600,
+              color: "#3a3a3a",
+              borderRadius: "10px",
+            },
+            "& .MuiPaginationItem-root:hover": {
+              backgroundColor: "rgba(255, 165, 0, 0.16)",
+            },
+            "& .MuiPaginationItem-root.Mui-selected": {
+              backgroundColor: "#FFA500",
+              color: "#fff",
+            },
           }}
-          count={Math.ceil(contentCount/10)} 
-          variant="outlined"
-          color="primary" 
+          count={Math.ceil(contentCount/10)}
+          shape="rounded"
           onChange={(event, value) => {
             setData({
               ...data,

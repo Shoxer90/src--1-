@@ -8,7 +8,6 @@ import { useLocation, useSearchParams } from "react-router-dom";
 import PaginationSnip from "../pagination";
 import { Dialog } from "@mui/material";
 import Loader from "../loading/Loader";
-import { loadResources } from "i18next";
 import HistoryContent from "./content/HistoryContent";
 import { columnNames } from "../../services/baseUrl";
 import { getPrepayment } from "../../services/products/productsRequests";
@@ -127,21 +126,12 @@ const HistoryPage = ({logOutFunc}) => {
           flag={flag}
           logOutFunc={logOutFunc}
         />
-        { historyContent?.count/perPage > 1 &&
-        <PaginationSnip 
-          style={{
-            position:"fixed", 
-            bottom:0, 
-            width:"100dvw",  
-            display:"flex",
-            justifyContent:"center"
-          }}
+        <PaginationSnip
           page={page}
           navig_Name={`history?status=${status?.status}&startDate=${searchParams.get("startDate")}&endDate=${searchParams.get("endDate")}`}
-          loader={loadResources}
           pageCount={historyContent?.count}
           perPage={perPage}
-        />}
+        />
       </div>
     </div>
     :

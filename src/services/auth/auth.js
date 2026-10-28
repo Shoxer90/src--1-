@@ -75,6 +75,19 @@ export const completeEhdmRegistration = async(newUserData) => {
   }
 };
 
+export const activateMarketX = async(storeCategoryId) => {
+  try{
+    const data = await axios.post(
+      baseUrl + `Registration/ActivateMarketX`,
+      { storeCategoryId },
+      option()
+    );
+    return data
+  }catch(err) {
+    return err?.response
+  }
+};
+
 export const payForEhdm = async(bool,paymentType ) => {
   try{
     const  data = await axios.get(baseUrl + `Registration/PayForEhdm?isWeb=true&attach=${bool}&paymentType=${paymentType}`, option());

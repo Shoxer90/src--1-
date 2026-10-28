@@ -31,6 +31,7 @@ const HomeNavigation = ({
   selectedCount,
   onToggleBulkSelect,
   onRequestBulkDelete,
+  allowBulkSelect = true,
 }) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
@@ -98,6 +99,13 @@ const HomeNavigation = ({
               {t("mainnavigation.favourite")}
               {t("mainnavigation.prod")}
             </button>
+            <button
+              type="button"
+              className={`${styles.statusChip} ${status === "GetMarketXProducts" ? styles.statusChip_active : ""}`}
+              onClick={()=>handleSendQuery("GetMarketXProducts", 3)}
+            >
+              {t("mainnavigation.marketx")}
+            </button>
           </div>
         </div>
         <div className={styles.mainNav_actions}>
@@ -127,6 +135,7 @@ const HomeNavigation = ({
         selectedCount={selectedCount}
         onToggleBulkSelect={onToggleBulkSelect}
         onRequestBulkDelete={onRequestBulkDelete}
+        allowBulkSelect={allowBulkSelect}
       />
     </div>
   </div>

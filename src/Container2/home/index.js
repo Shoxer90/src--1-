@@ -13,8 +13,7 @@ import SnackErr from "../dialogs/SnackErr";
 import styles from "./index.module.scss";
 import HomeContent from "./content/HomeContent";
 import { useLocation, useNavigate } from "react-router-dom";
-import { loadResources } from "i18next";
-import { PlaySound, useSuccessSound } from "../../modules/PlaySound";
+import { useSuccessSound } from "../../modules/PlaySound";
 import ConfirmDialog from "../dialogs/ConfirmDialog";
 
 const initState = {
@@ -187,6 +186,9 @@ const HomePage = ({
 
   useEffect(() => {
     setSelectedProductIds([]);
+    if (status === "GetMarketXProducts") {
+      setBulkSelectMode(false);
+    }
   }, [page, status, productCategoryId]);
 
   useEffect(() => {
@@ -195,8 +197,8 @@ const HomePage = ({
       if(res){
         // playSuccess();
         setFetching(false)
-        setTotalCount(res?.headers["count"])
-        setContent(res?.data)
+        setTotalCount(Number(res?.headers?.count) || 0)
+        setContent(Array.isArray(res?.data) ? res.data : [])
       }
     })
   }, [page, flag, status, productCategoryId]);
@@ -243,6 +245,7 @@ const HomePage = ({
         selectedCount={selectedProductIds.length}
         onToggleBulkSelect={toggleBulkSelectMode}
         onRequestBulkDelete={() => setOpenBulkDeleteConfirm(true)}
+        allowBulkSelect={status !== "GetMarketXProducts"}
       />
       <HomeContent
         measure={measure}
@@ -264,23 +267,14 @@ const HomePage = ({
         selectMode={bulkSelectMode}
         selectedProductIds={selectedProductIds}
         onToggleSelect={toggleProductSelect}
+        isMarketX={status === "GetMarketXProducts"}
       />
-      { totalCount/perPage > 1 &&
-        <PaginationSnip 
-          style={{
-            position:"fixed", 
-            bottom:0, 
-            width:"100dvw",  
-            display:"flex",
-            justifyContent:"center"
-          }}
-          page={page}
-          navig_Name={`prods?status=${status}`}
-          loader={loadResources}
-          pageCount={totalCount}
-          perPage={perPage}
-        />
-      }
+      <PaginationSnip
+        page={page}
+        navig_Name={`prods?status=${status}`}
+        pageCount={totalCount}
+        perPage={perPage}
+      />
       {openNewProd && <AddNewProduct 
         newProduct={newProduct}
         setProduct={setProduct}

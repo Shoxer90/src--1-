@@ -57,6 +57,109 @@ export const productQuery = async(type,page, categoryId) =>{
   }
 };
 
+const firstFilled = (...values) => values.find((value) => value != null && value !== "");
+
+const marketXList = (payload) => {
+  if (Array.isArray(payload)) return payload;
+  if (!payload || typeof payload !== "object") return [];
+  const known = payload.products
+    || payload.items
+    || payload.data
+    || payload.result
+    || payload.marketXProducts;
+  if (Array.isArray(known)) return known;
+  if (known && typeof known === "object") {
+    const nested = known.products || known.items || known.data || known.result;
+    if (Array.isArray(nested)) return nested;
+  }
+  return Object.values(payload).find(Array.isArray) || [];
+};
+
+export const toMarketXCard = (item) => {
+  if (!item || typeof item !== "object") return item;
+  const photos = Array.isArray(item.photos) ? item.photos : (Array.isArray(item.Photos) ? item.Photos : []);
+  const storePrice = firstFilled(item.price, item.Price);
+  const marketXPrice = firstFilled(item.marketXPrice, item.MarketXPrice, storePrice) ?? 0;
+  const storeDiscount = Number(firstFilled(item.discount, item.Discount) ?? 0) || 0;
+  const marketXDiscount = Number(firstFilled(item.marketXDiscount, item.MarketXDiscount) ?? 0) || 0;
+  const marketXDiscountedPrice = firstFilled(
+    item.marketXDiscountedPrice,
+    item.MarketXDiscountedPrice,
+    marketXPrice
+  );
+  return {
+    ...item,
+    id: firstFilled(item.id, item.Id, item.productId, item.ProductId),
+    name: firstFilled(item.name, item.Name, item.nameHy, item.nameRu, item.nameEn) || "",
+    nameHy: item.nameHy || item.NameHy || "",
+    nameRu: item.nameRu || item.NameRu || "",
+    nameEn: item.nameEn || item.NameEn || "",
+    descriptionHy: item.descriptionHy || item.DescriptionHy || "",
+    descriptionRu: item.descriptionRu || item.DescriptionRu || "",
+    descriptionEn: item.descriptionEn || item.DescriptionEn || "",
+    brand: item.brand || item.Brand || "",
+    photo: firstFilled(item.photo, item.Photo, photos[0], item.image, item.imageUrl) || "",
+    photos,
+    externalResources: Array.isArray(item.externalResources)
+      ? item.externalResources
+      : (Array.isArray(item.ExternalResources) ? item.ExternalResources : []),
+    price: storePrice ?? marketXPrice,
+    discount: storeDiscount,
+    discountedPrice: firstFilled(item.discountedPrice, item.DiscountedPrice, storePrice ?? marketXPrice),
+    marketXPrice,
+    marketXDiscount,
+    marketXDiscountType: Number(item.marketXDiscountType ?? item.MarketXDiscountType) || 0,
+    marketXDiscountedPrice,
+    showInMarketX: true,
+    barCode: firstFilled(item.barCode, item.barcode, item.BarCode) || "",
+    innerCode: item.innerCode || item.InnerCode || "",
+    remainder: item.remainder ?? item.Remainder,
+    measure: item.measure || item.Measure || "",
+    type: item.type || item.Type || "",
+  };
+};
+
+export const getMarketXProducts = async(page = 1, categoryId = null) => {
+  const option = {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+    params: {
+      page: Number(page) || 1,
+      count: 20,
+      categoryId: categoryId == null || categoryId === "" ? null : categoryId,
+    },
+    paramsSerializer: (params) => [
+      `page=${encodeURIComponent(params.page)}`,
+      `count=${encodeURIComponent(params.count)}`,
+      `categoryId=${params.categoryId == null ? "" : encodeURIComponent(params.categoryId)}`,
+    ].join("&"),
+  };
+  try{
+    const query = await axios.get(baseUrl + "Products/GetMarketXProducts", option);
+    const list = marketXList(query?.data);
+    const body = query?.data;
+    const bodyTotal = body && typeof body === "object" && !Array.isArray(body)
+      ? (body.totalCount ?? body.total ?? body.count ?? body.totalItems ?? body.allCount ?? body?.meta?.total)
+      : null;
+    const headerTotal = query?.headers?.count ?? query?.headers?.totalcount;
+    const parsedTotal = Number(Array.isArray(headerTotal) ? headerTotal[0] : (headerTotal ?? bodyTotal));
+    const count = Number.isFinite(parsedTotal)
+      ? parsedTotal
+      : (Array.isArray(list) ? list.length : 0);
+    return {
+      ...query,
+      data: (Array.isArray(list) ? list : []).map(toMarketXCard),
+      headers: {
+        ...query.headers,
+        count,
+      },
+    };
+  }catch(err) {
+    return err?.response?.status
+  }
+};
+
 export const byBarCode = async(status, barcode, categoryId) =>{
   let statusCount = 0;
   if (status === "GetAvailableProducts") {
@@ -238,6 +341,19 @@ export const updateProductList = async(body, stockNumber = 1) => {
     "discount": +(product?.discount),
     "lastUpdate": new Date().toISOString(),
     "isEmark": product?.isEmark,
+    "ShowInMarketX": Boolean(product?.showInMarketX ?? product?.ShowInMarketX),
+    "photos": Array.isArray(product?.photos) ? product.photos : [],
+    "externalResources": Array.isArray(product?.externalResources) ? product.externalResources : [],
+    "nameHy": product?.nameHy || "",
+    "nameRu": product?.nameRu || "",
+    "nameEn": product?.nameEn || "",
+    "descriptionHy": product?.descriptionHy || "",
+    "descriptionRu": product?.descriptionRu || "",
+    "descriptionEn": product?.descriptionEn || "",
+    "marketXDiscount": Number(product?.marketXDiscount) || 0,
+    "marketXDiscountType": Number(product?.marketXDiscountType) || 0,
+    "marketXDiscountedPrice": Number(product?.marketXDiscountedPrice) || 0,
+    "marketXPrice": Number(product?.marketXPrice) || 0,
     "dep": product?.dep,
     "isFavorite": product?.isFavorite,
     "coment": product?.coment,

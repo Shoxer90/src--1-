@@ -1,18 +1,17 @@
 .pagination_container {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    margin: 5px;
-    margin-bottom:0px;
-    margin-top:10px;
-    background-color: aliceblue;
-    border-top: solid darkgrey 2px;
-    // style={{
-        // position:fixed;
-        bottom:0; 
-        width:100dvw;  
-        display:flex;
-        justify-content:center;
-    //   }}
-
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 58px;
+  padding: 8px 16px 10px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.06);
 }

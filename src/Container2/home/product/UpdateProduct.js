@@ -5,7 +5,8 @@ import DialogContent from '@mui/material/DialogContent';
 import Slide from '@mui/material/Slide';
 import { updateProduct, uniqueBarCode, uniqueInnerCode } from "../../../services/products/productsRequests";
 import { Box } from "@mui/system";
-import { Checkbox, Divider, FormControl, FormControlLabel, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Checkbox, Divider, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, Tab, Tabs, TextField, Tooltip } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -25,6 +26,12 @@ import ProductCategorySelect from "./ProductCategorySelect";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchBarCodeSlice } from "../../../store/searchbarcode/barcodeSlice";
 import useDebouncedUniqueness from "../../hooks/useDebouncedUniqueness";
+import MarketXFields, { normalizeMarketXFields, toPhotoList } from "./MarketXFields";
+
+const isShownInMarketX = (item) => {
+  const flag = item?.showInMarketX ?? item?.ShowInMarketX;
+  return flag === true || flag === "true" || flag === 1 || flag === "1";
+};
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -46,8 +53,18 @@ const UpdateProduct = ({
   deleteBasketItem
 }) => {
   const {t} = useTranslation();
+  const navigate = useNavigate();
   const playSuccess = useSuccessSound();
   const dispatch = useDispatch()
+  const [isMarketXActive] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("isMarketXActive") || "false") === true;
+    } catch {
+      return false;
+    }
+  });
+  const [marketXPrompt, setMarketXPrompt] = useState(false);
+  const [editTab, setEditTab] = useState("storex");
   const [currentProduct,setCurrentProduct] = useState();
   const [confirmation, setConfirmation] = useState(false);
   const [message, setMessage] =  useState({message:"",type:""});
@@ -171,6 +188,25 @@ const UpdateProduct = ({
   
   const handleClose = () => {
     setOpenUpdateProduct(!openUpdateProd);
+  };
+
+  const handleMarketXClick = () => {
+    if (!isMarketXActive) {
+      setMarketXPrompt(true);
+      return;
+    }
+    const next = !isShownInMarketX(currentProduct);
+    setCurrentProduct({
+      ...currentProduct,
+      showInMarketX: next,
+    });
+    setEditTab(next ? "marketx" : "storex");
+  };
+
+  const goActivateMarketX = () => {
+    setMarketXPrompt(false);
+    handleClose();
+    navigate("/setting/services");
   };
 
   const handleDelete = async() => {
@@ -311,15 +347,20 @@ const UpdateProduct = ({
     }
   };
 
+  const sourcePhotos = toPhotoList(product).join("\n");
+
   useEffect(() => {
     getMeasure()
     setCurrentProduct({
       ...product,
+      showInMarketX: isShownInMarketX(product) || toPhotoList(product).length > 0,
+      ...normalizeMarketXFields(product),
     })
+    setEditTab("storex")
     priceValidate(product?.price, product?.discount, product?.discountType)
     setNewPrice(product?.price - (product?.price * product?.discount / 100))
 
-  }, [product?.discount, product?.price]);
+  }, [product?.id, product?.discount, product?.price, product?.showInMarketX, product?.ShowInMarketX, sourcePhotos]);
 
     const barcodeValidation = (event) => {
       const valid = /^[a-zA-Z0-9_]+$/
@@ -359,7 +400,8 @@ const UpdateProduct = ({
       open={!!openUpdateProd}
       TransitionComponent={Transition}
       keepMounted
-      width="lg"
+      fullWidth
+      maxWidth={isShownInMarketX(currentProduct) ? "md" : "sm"}
       id="live" aria-live="polite" 
     >
       <Box 
@@ -378,6 +420,23 @@ const UpdateProduct = ({
       <Divider/>
       { metric && <DialogContent>
         <h6>{t("productinputs.typeurl3")} {currentProduct?.type} </h6>
+        {isShownInMarketX(currentProduct) && (
+          <Tabs
+            value={editTab}
+            onChange={(_, value) => setEditTab(value)}
+            sx={{
+              minHeight: 40,
+              mb: 1,
+              "& .MuiTab-root": { textTransform: "none", fontWeight: 700, minHeight: 40 },
+              "& .Mui-selected": { color: "#3FB68A" },
+              "& .MuiTabs-indicator": { backgroundColor: "#3FB68A" },
+            }}
+          >
+            <Tab value="storex" label={t("settings.StoreX")} />
+            <Tab value="marketx" label={t("settings.MarketX")} />
+          </Tabs>
+        )}
+        {(!isShownInMarketX(currentProduct) || editTab === "storex") && <>
         <Box className={styles.update}>
         <TextField 
           autoComplete="off"
@@ -513,33 +572,41 @@ const UpdateProduct = ({
                     barcodeValidation(e)
                   }} 
                 />
-          {message?.message && 
-            <Dialog open={!!message.message}>
-              <SnackErr 
-                message={message?.message} 
-                type={message?.type} 
-                close={()=>{
-                  setMessage({message:"", type:""})
-                  setConfirmation(false)
-                }}
-              />
-            </Dialog>
-          }
         </Box>
           <div style={{height:"60px",color:"red",fontSize:"80%", width:"100%"}}>
            {fixMessage && fixMessage}
           </div>
-            <FormControlLabel 
-              style={{alignSelf:"start"}}
-              name="isEmark"
-              control={<Checkbox />} 
-              label={t("productinputs.isEmark")}
-              checked={!!currentProduct?.isEmark}
-              onChange={(e)=> setCurrentProduct({
-                ...currentProduct,
-                [e.target.name]: e.target.checked
-              })}
-            />
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", gap: 2 }}>
+              <FormControlLabel 
+                style={{alignSelf:"center", margin: 0}}
+                name="isEmark"
+                control={<Checkbox />} 
+                label={t("productinputs.isEmark")}
+                checked={!!currentProduct?.isEmark}
+                onChange={(e)=> setCurrentProduct({
+                  ...currentProduct,
+                  [e.target.name]: e.target.checked
+                })}
+              />
+              <Tooltip
+                title={isMarketXActive ? t("productinputs.marketXHover") : ""}
+                placement="top"
+                arrow
+                disableHoverListener={!isMarketXActive}
+              >
+                <FormControlLabel
+                  style={{ margin: 0 }}
+                  control={
+                    <Switch
+                      checked={isShownInMarketX(currentProduct)}
+                      onChange={handleMarketXClick}
+                    />
+                  }
+                  label={t("settings.MarketX")}
+                  labelPlacement="start"
+                />
+              </Tooltip>
+            </Box>
           <Box>
             {currentProduct?.dep === 2 && 
               <FormControlLabel 
@@ -565,6 +632,19 @@ const UpdateProduct = ({
             content={currentProduct?.photo} 
             />
           </Box>
+        </>}
+        {isShownInMarketX(currentProduct) && editTab === "marketx" && (
+          <>
+            <p style={{ margin: "4px 0 8px", color: "#3FB68A", fontSize: 14, lineHeight: 1.45, maxWidth: 420 }}>
+              {t("productinputs.marketXAvailable")}
+            </p>
+            <MarketXFields
+              value={currentProduct}
+              onChange={setCurrentProduct}
+              onWarn={(text) => setMessage({ message: text, type: "error" })}
+            />
+          </>
+        )}
         <Box className={styles.update_btns}>
           <Button 
             variant="contained" 
@@ -587,7 +667,46 @@ const UpdateProduct = ({
             {t("buttons.save")}
           </Button>
         </Box>
+        {message?.message &&
+          <Dialog open={!!message.message}>
+            <SnackErr
+              message={message?.message}
+              type={message?.type}
+              close={()=>{
+                setMessage({message:"", type:""})
+                setConfirmation(false)
+              }}
+            />
+          </Dialog>
+        }
       </DialogContent>}
+      <Dialog open={marketXPrompt} onClose={() => setMarketXPrompt(false)}>
+        <DialogContent sx={{ maxWidth: 440, textAlign: "center", px: 3, py: 3 }}>
+          <img src="/mx.png" alt="MarketX" style={{ width: 72, height: 72, objectFit: "contain" }} />
+          <h3 style={{ margin: "12px 0 8px", color: "#1f2937" }}>
+            {t("productinputs.marketXImportTitle")}
+          </h3>
+          <p style={{ margin: 0, color: "#4b5563", lineHeight: 1.6, fontSize: 15 }}>
+            {t("productinputs.marketXImportText")}
+          </p>
+          <Box sx={{ display: "flex", gap: 1.5, mt: 3, justifyContent: "center" }}>
+            <Button
+              variant="outlined"
+              onClick={() => setMarketXPrompt(false)}
+              sx={{ textTransform: "capitalize", minWidth: 120 }}
+            >
+              {t("buttons.cancel")}
+            </Button>
+            <Button
+              variant="contained"
+              onClick={goActivateMarketX}
+              sx={{ textTransform: "capitalize", minWidth: 120, background: "#3FB68A" }}
+            >
+              {t("settings.activate")}
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
       {confirmation &&
         <ConfirmDialog
           open={confirmation}

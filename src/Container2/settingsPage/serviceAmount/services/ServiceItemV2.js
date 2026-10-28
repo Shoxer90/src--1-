@@ -13,8 +13,13 @@ import Loader from "../../../loading/Loader";
 import ActivateStepByStep from "../pay/ActivatStepByStep"
 import { setPayForEhdm } from "../../../../store/storex/openPaySlice";
 import { formatNumberWithSpaces } from "../../../../modules/modules";
+import ActivateMarketXDialog from "./ActivateMarketXDialog";
 
 
+
+const ETRM_ID = 3;
+const STOREX_ID = 5;
+const SMS_ID = 6;
 
 const ServiceItemV2 = ({
   service,
@@ -35,6 +40,8 @@ const ServiceItemV2 = ({
   const [message, setMessage] = useState({message:"",type:""});
   const [openPay, setOpenPay] = useState(false);
   const [activateEhdm,setActivateEhdm] = useState(false);
+  const [openMarketX, setOpenMarketX] = useState(false);
+  const [openActivateConfirm, setOpenActivateConfirm] = useState(false);
    const [billsData, setBills] = useState({
     web: true,
     daysEnum: 1,
@@ -47,6 +54,22 @@ const ServiceItemV2 = ({
   });
   const disableStyle={opacity: 0.3};
   const {t} = useTranslation();
+  const isEtrmActive = Boolean(
+    content?.services?.some((item) => item?.id === ETRM_ID && item?.isActive)
+  );
+  const isEtrm = service?.id === ETRM_ID;
+  const isStoreX = service?.id === STOREX_ID;
+  const isSms = service?.id === SMS_ID;
+  const isMarketX = /marketx/i.test(service?.name || "");
+  const isStoreXFree = isStoreX && isEtrmActive;
+  const showRegisterButton = isEtrm && !service?.isActive;
+  const showFreeLabel = isStoreXFree;
+  const showPayButton = Boolean(service?.isActive) && !isStoreXFree;
+  const showActivateButton = !service?.isActive && !showRegisterButton && !showFreeLabel;
+  const showPrice = !isStoreXFree && !isSms && (service?.isActive || showActivateButton);
+  const serviceNameKey = `settings.${service?.name}`;
+  const translatedName = t(serviceNameKey);
+  const serviceTitle = translatedName !== serviceNameKey ? translatedName : service?.name;
   
 
   const closeMessage = () => {
@@ -63,16 +86,36 @@ const ServiceItemV2 = ({
       ...billsData,
       serviceType: service?.id
     })
-    if(service?.id === 3) {
+    if(isEtrm) {
       if(!user?.isRegisteredInEhdm && !service?.isActive) {
         setActivateEhdm(true)
 
        return  dispatch(setPayForEhdm(true))
       }
     }
-    if(service?.isActive && !isOpenPayForEhdm) {
+    if(showPayButton && !isOpenPayForEhdm) {
       setOpenPay(true)
     }
+  };
+
+  const handleActivate = () => {
+    if (isMarketX) {
+      setOpenMarketX(true);
+      return;
+    }
+    setOpenActivateConfirm(true);
+  };
+
+  const confirmActivateService = () => {
+    setOpenActivateConfirm(false);
+    setMessage({ message: t("dialogs.done"), type: "success" });
+    setRefresh(!refresh);
+  };
+
+  const confirmMarketXActivation = () => {
+    setOpenMarketX(false);
+    setMessage({ message: t("dialogs.done"), type: "success" });
+    setRefresh(!refresh);
   };
 
   useEffect(() =>{
@@ -95,8 +138,8 @@ const ServiceItemV2 = ({
         className={styles.service_item}
       >
         <div style={{display:"flex",justifyContent:"space-between"}}>
-          <h6 style={{margin:"4px"}}>{t(`settings.${service?.name}`)}</h6>
-          {service?.isActive && 
+          <h6 style={{margin:"4px"}}>{serviceTitle}</h6>
+          {showPayButton && 
             <Button 
               variant="contained" 
               onClick={notAvailableService}
@@ -106,7 +149,17 @@ const ServiceItemV2 = ({
               {t("basket.linkPayment")} 
             </Button>
           }
-          { !service?.isActive && service?.id === 3 && 
+          {showActivateButton && 
+            <Button 
+              variant="contained" 
+              onClick={handleActivate}
+              style={{ opacity:1}}
+              sx={{width:"150px",height:"30px",background:"#3FB68A",textTransform: "capitalize",}}
+            >
+              {t("settings.activate")} 
+            </Button>
+          }
+          {showRegisterButton && 
             <Button 
               variant="contained" 
               onClick={()=>{
@@ -118,41 +171,41 @@ const ServiceItemV2 = ({
               {t("settings.register")} 
           </Button>
           }
-          { !service?.isActive && service?.id === 5 &&  <h6 style={{margin:"4px",color:"green"}}>{t("settings.free")}</h6>}
+          {showFreeLabel && <h6 style={{margin:"4px",color:"green"}}>{t("settings.free")}</h6>}
 
         </div>
         <span
-          style={!service?.isActive  && service?.id !== 5 ? disableStyle: null}
+          style={!service?.isActive && !showPayButton && !showActivateButton && !showFreeLabel ? disableStyle: null}
         >
           
-      {service?.isActive && service?.id !== 6 &&
+      {showPrice &&
         <div className={styles.service_item_simpleRow}>
             <h6 style={{margin:"4px 0px"}}>{t("cardService.currentCommitment")}</h6>
             <h6 style={{margin:"4px 0px"}}>{formatNumberWithSpaces(service?.price)} {t("units.amd")}</h6>
         </div>
       }
-      {!service?.isActive && service?.id === 3 &&
+      {showRegisterButton &&
         <div className={styles.service_item_simpleRow}>
           <h6 style={{margin:"4px 0px",opacity:"0.7"}}>{t("landing.priceListRow155")}</h6>
           <h6 style={{margin:"4px 0px"}}>{formatNumberWithSpaces(service?.price)} {t("units.amd")}</h6>
         </div>
       }
-      {service?.id === 6 &&
+      {isSms &&
         <div className={styles.service_item_simpleRow}>
           <h6 style={{margin:"4px 0px"}}>{t("cardService.currentCommitment")} (100 {t("units.pcs")})</h6>
           <h6 style={{margin:"4px 0px"}}>{formatNumberWithSpaces(service?.price)} {t("units.amd")}</h6>
         </div>
       }
         <div className={styles.service_item_simpleRow} style={{fontWeight:700, fontSize:"100%",color:"green"}}>
-          <span>{service?.id === 6 ? t("settings.availSmsCount"):t("cardService.amountDate")}</span>
-          {service?.isActive && service?.id !== 6 ?
+          <span>{isSms ? t("settings.availSmsCount"):t("cardService.amountDate")}</span>
+          {service?.isActive && !isSms && !isStoreXFree ?
             <span>
               {(new Date(service?.nextPayment)).getDate()}. 
               {new Date(service?.nextPayment).getMonth()+1 < 10 ? `0${(new Date(service?.nextPayment)).getMonth()+1}`:new Date(service?.nextPayment).getMonth()+1}
               .{ new Date(service?.nextPayment).getFullYear()}
             </span> : ""
           }
-          { service?.id === 6 ?
+          { isSms ?
             <span>
               {user?.availableSmsCount} {t("units.pcs")}
             </span>:""
@@ -189,6 +242,12 @@ const ServiceItemV2 = ({
         payData={billsData}
         setPayData={setBills}
       />}
+      <ActivateMarketXDialog
+        open={openMarketX}
+        close={()=>setOpenMarketX(false)}
+        onConfirm={confirmMarketXActivation}
+        setMessage={setMessage}
+      />
        <ConfirmDialog 
         question={t("settings.clickEhdmAfterDone30000")}
         func={()=>setOpenDialog(false)}
@@ -198,6 +257,15 @@ const ServiceItemV2 = ({
         content={" "}
         t={t}
         nobutton={true}
+      />
+      <ConfirmDialog 
+        question={t("settings.activateServiceConfirm")}
+        func={confirmActivateService}
+        title=""
+        open={openActivateConfirm}
+        close={setOpenActivateConfirm}
+        content={" "}
+        t={t}
       />
     </>
   );

@@ -17,6 +17,7 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 
 import InfoIcon from '@mui/icons-material/Info';
 import ProductMotion from "../productHistory/ProductMotion";
+import MarketXBadge, { isOnMarketX } from "./MarketXBadge";
 
 const BarcodeMark = () => (
   <svg width="15" height="13" viewBox="0 0 24 16" fill="currentColor" aria-hidden="true" style={{flexShrink:0}}>
@@ -236,12 +237,13 @@ const HomeContentItem = ({
       </div>
       <Divider style={{margin:1, backgroundColor:"gray",width:"90%",alignSelf:"center",}}/>
         <Box style={style}>
-          <Box style={{width:"110px", height:"125px", display:"flex", flexDirection:"column", flexShrink:0}}>
+          <Box style={{width:"110px", height:"125px", display:"flex", flexDirection:"column", flexShrink:0, position:"relative"}}>
             <img
               style={{...style?.picture, height:"105px"}}
               src={product?.photo ? product?.photo : "/default-placeholder.png"}
               alt={index}
             />
+            {isOnMarketX(product) && <MarketXBadge />}
             <div
               className={product?.innerCode?.length > 12 ? styles.hovertext : undefined}
               data-hover={`${product?.innerCode || ""}`}

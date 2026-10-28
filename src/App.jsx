@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import Basket from "./Container/basket";
 import HistoryPage from "./Container2/historyPage";
 import Header from "./Container/Header/Header";
@@ -16,7 +16,7 @@ import CustomerSaleHistory from "./admin/panel/customers/CustomerSaleHistory";
 import CustomerCashiers from "./admin/panel/cashiers";
 import AdminInvoices from "./admin/panel/invoices";
 
-import { byBarCode, productQuery } from "./services/products/productsRequests";
+import { byBarCode, getMarketXProducts, productQuery } from "./services/products/productsRequests";
 import { getBasketContent } from "./modules/modules";
 import { LimitContext } from "./context/Context";
 
@@ -57,6 +57,7 @@ import { setSearchBarCodeSlice } from "./store/searchbarcode/barcodeSlice";
 import { replaceGS } from "./services/baseUrl";
 import InVoiceMainDialog from "./Container/invoice";
 import { restoreScannerIfEnabled } from "./Container/emarkScanner/ScannerManager";
+import PosPage from "./pos/PosPage";
 // import InVoiceMainDialog from "./Container/Header/invoice";
 
 const checkForUpdates = async () => {
@@ -158,6 +159,10 @@ const App = () => {
       localStorage.setItem("status", JSON.stringify(res?.payload?.isEhdmStatus)) 
       localStorage.setItem("reverse", JSON.stringify(res?.payload?.reverceStatus))
       localStorage.setItem("taxRegime", JSON.stringify(res?.payload?.taxRegime))
+      if (res?.payload && typeof res.payload === "object") {
+        const marketXFlag = res.payload.isMarketXActive ?? res.payload.IsMarketXActive
+        localStorage.setItem("isMarketXActive", JSON.stringify(marketXFlag === true || marketXFlag === "true"))
+      }
       checkUserStatus()
       if(res?.payload?.isInDate === false && !res?.payload?.days && res?.payload?.showPaymentPage){
         navigate("/setting/services")
@@ -334,6 +339,10 @@ const App = () => {
       const res = await queryFunction(status, 1, categoryFilter);
       setContent(res?.data);
       setCurrentPage(2);
+      return;
+    }
+
+    if(normalizedGroup === "GetMarketXProducts"){
       return;
     }
 
@@ -625,7 +634,10 @@ const App = () => {
   };
 
   const queryFunction = async(name, page=1, categoryId) => {
-    const data = await productQuery(name, page, categoryId ?? productCategoryId)
+    const resolvedCategory = categoryId ?? productCategoryId;
+    const data = name === "GetMarketXProducts"
+      ? await getMarketXProducts(page, resolvedCategory)
+      : await productQuery(name, page, resolvedCategory);
     return data === 401 ? logOutFunc() : data
   };
 
@@ -741,41 +753,34 @@ const App = () => {
           />
           {!isBlockedUser  && user ? <Routes>
             <Route
-              path="/" 
+              path="/"
               element={
-                <HomePage
-                  isLogin={isLogin}
+                <PosPage
+                  user={user}
+                  isAdmin={localStorage.getItem("role") === "Director"}
+                  canReverse={Boolean(user?.reverceStatus)}
+                  onLogout={logOutFunc}
                   measure={measure}
-                  dataGroup={dataGroup}
-                  setDataGroup={setDataGroup}
-                  setContent={setContent}
-                  content={content}
-                  setToBasket={setToBasket}
-                  deleteBasketItem={deleteBasketItem}
-                  basketExist={basketExist}
-                  queryFunction={queryFunction}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                  setFrom={setFrom}
-                  from={from}
-                  searchValue={searchValue}
-                  setSearchValue={setSearchValue}
-                  byBarCodeSearching={byBarCodeSearching}
-                  flag={flag}
-                  setFlag={setFlag}
-                  setFetching={setFetching}
-                  fetching={fetching}
-                  setOpenBasket={setOpenBasket}
-                  loadBasket={loadBasket}
-                  productCategoryId={productCategoryId}
-                  setProductCategoryId={setProductCategoryId}
                 />
-              }  
+              }
+            />
+            <Route
+              path="/returns"
+              element={
+                <PosPage
+                  user={user}
+                  isAdmin={localStorage.getItem("role") === "Director"}
+                  canReverse={Boolean(user?.reverceStatus)}
+                  onLogout={logOutFunc}
+                  measure={measure}
+                />
+              }
             />
 
             <Route
               path="/prods" 
               element={
+                localStorage.getItem("role") !== "Director" ? <Navigate to="/" replace /> :
                 <HomePage
                   isLogin={isLogin}
                   measure={measure}
@@ -805,8 +810,8 @@ const App = () => {
                 />
               }  
             />
-            <Route path="/excel" element={<PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} />} />
-            <Route path="/excelUpdate" element={<PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} />} />
+            <Route path="/excel" element={localStorage.getItem("role") === "Director" ? <PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} /> : <Navigate to="/" replace />} />
+            <Route path="/excelUpdate" element={localStorage.getItem("role") === "Director" ? <PasteExcelToReact logOutFunc={logOutFunc} setCurrentPage={setCurrentPage} /> : <Navigate to="/" replace />} />
             <Route path="/feedback" element={<FeedBackPage />} />
             <Route path="/setting/cashiers" element={<Cashiers cashierLimit={user?.cashiersMaxCount} logOutFunc={logOutFunc} /> } />
             <Route path="/setting/user" element={<SettingsUser user={user} whereIsMyUs={whereIsMyUs} logOutFunc={logOutFunc} limitedUsing={limitedUsing}/>} />
